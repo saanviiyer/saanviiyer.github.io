@@ -22,6 +22,14 @@ My research focuses on **brain stimulation and computer vision**, with interest 
 
 ---
 
+## Awards
+- [**Sigma Xi Best Display of Interdisciplinary Research**, 2024](https://wssef.org/wssef-2023-special-awards-grades-9-12-2/)
+- [**Armed Forces Excellence in Technology (PNW)**, 2024](https://wssef.org/wssef-2023-special-awards-grades-9-12-2/)
+- [**SWENext Global Innovator Award**, 2024, 2025](https://swe.org/outreach/swenext-awards/)
+- [**NASA Techrise Winner (Team Lead)**, 2024, 2025](https://www.nasa.gov/stmd-flight-opportunities/access-flight-tests/techrise/winners-of-fourth-techrise-student-challenge/)
+
+---
+
 ## Contact
 Email: ssubramanian@caltech.edu  
 GitHub: [saanviiyer](https://github.com/saanviiyer)  
