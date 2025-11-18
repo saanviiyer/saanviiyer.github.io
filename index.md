@@ -21,6 +21,7 @@ My research focuses on **brain stimulation and computer vision**, with interest 
 ---
 
 ## Awards
+- [**People's Choice Award @ Stanford Medicine Comprehensive Cancer Research Conference**, 2024](https://drive.google.com/file/d/1jMRbw48vh7ewmfSiXvcXfDMqBXOKrYhw/view?pli=1)
 - [**Sigma Xi Best Display of Interdisciplinary Research**, 2024](https://wssef.org/wssef-2023-special-awards-grades-9-12-2/)
 - [**Armed Forces Excellence in Technology (PNW)**, 2024](https://wssef.org/wssef-2023-special-awards-grades-9-12-2/)
 - [**SWENext Global Innovator Award**, 2024, 2025](https://swe.org/outreach/swenext-awards/)
