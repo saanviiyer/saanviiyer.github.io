@@ -31,7 +31,7 @@ My research focuses on **brain stimulation and computer vision**, with interest 
 ---
 
 ## Contact
-Email: ssubramanian@caltech.edu  
+Email: [ssubramanian@caltech.edu](mailto:ssubramanian@caltech.edu)  
 GitHub: [saanviiyer](https://github.com/saanviiyer)  
 
 ---
