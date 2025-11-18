@@ -1,0 +1,19 @@
+h1, h2, h3 {
+  color: #7A3EB1;
+}
+
+a {
+  color: #9B59B6;
+}
+
+a:hover {
+  color: #6C3483;
+  text-decoration: underline;
+}
+
+hr {
+  border: 0;
+  height: 2px;
+  background: #D7BDE2;
+  margin: 25px 0;
+}
