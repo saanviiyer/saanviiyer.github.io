@@ -18,8 +18,7 @@ My research focuses on **brain stimulation and computer vision**, with interest 
 ---
 
 ## Publications
-- [**Elucidating Neurodevelopmental Trajectories in Cancer with Topic Modeling: Revealing Persistent External Granule Layer Lineages in Medulloblastoma
-e**, 2025](https://www.biorxiv.org/content/10.1101/2025.11.12.687706v1)  
+- [**Elucidating Neurodevelopmental Trajectories in Cancer with Topic Modeling: Revealing Persistent External Granule Layer Lineages in Medulloblastoma**, 2025](https://www.biorxiv.org/content/10.1101/2025.11.12.687706v1)  
 
 ---
 
