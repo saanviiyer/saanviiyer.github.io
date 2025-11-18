@@ -1,3 +1,6 @@
+include:
+  - style.css
+
 title: "Saanvi S. Subramanian"
 description: "Computation and Neural Systems student at Caltech"
 theme: jekyll-theme-minimal
