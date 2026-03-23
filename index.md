@@ -8,10 +8,11 @@ My research focuses on **brain stimulation and computer vision**, with interest 
 ---
 
 ## Research Interests
-- Focused ultrasound brain stimulation
-- Visual perception in humans vs LLMs
+- Brain stimulation and neural signal processing
+- Foundation models for the brain
+- Predicting mutation effects with protein language models
 - Topic modeling in brain tumor development
-- Magnetosensation in humans  
+- Multisensory perception in humans  
 
 ---
 
