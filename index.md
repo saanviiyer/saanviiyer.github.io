@@ -3,13 +3,13 @@
 ## Welcome!
 
 I'm a Computation and Neural Systems undergraduate researcher at the **California Institute of Technology**. 
-My research focuses on **brain stimulation and computer vision**, with interest in BCI development.
+My research focuses on **brain stimulation and medical AI**, with interest in BCI development.
 
 ---
 
 ## Research Interests
 - Brain stimulation and neural signal processing
-- Foundation models for the brain
+- Multimodal medical foundation models
 - Predicting mutation effects with protein language models
 - Topic modeling in brain tumor development
 - Multisensory perception in humans  
