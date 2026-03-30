@@ -1,33 +1,38 @@
 <link rel="stylesheet" href="assets/style.css">
 
+<div class="sidebar-extra">
+  <div class="profile-pic-wrapper">
+    <img src="assets/profile.jpg" alt="Saanvi S. Subramanian" class="profile-pic" />
+  </div>
+
+  <h2 class="sidebar-section-title">Projects</h2>
+  <ul class="project-list sidebar-projects">
+    <li>
+      <div class="project-block">
+        <span class="project-title">BCI Signal Analysis</span>
+        <span class="project-description">Real-time non-invasive brain signal processing.</span>
+      </div>
+    </li>
+    <li>
+      <div class="project-block">
+        <span class="project-title">Multimodal MedAI</span>
+        <span class="project-description">Foundation model fusing EEG and imaging data.</span>
+      </div>
+    </li>
+    <li>
+      <div class="project-block">
+        <span class="project-title">Protein Mutation Prediction</span>
+        <span class="project-description">Leveraging protein LMs for mutation effects.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
 ## Welcome!
 I'm a Computation and Neural Systems undergraduate researcher at the **California Institute of Technology**. 
 My research focuses on **brain stimulation and medical AI**, with interest in BCI development.
 
 ---
-
-
-<h2>Projects</h2>
-<ul class="project-list">
-  <li>
-    <div class="project-block">
-      <span class="project-title">BCI Signal Analysis</span>
-      <span class="project-description">Real-time non-invasive brain signal processing.</span>
-    </div>
-  </li>
-  <li>
-    <div class="project-block">
-      <span class="project-title">Multimodal MedAI</span>
-      <span class="project-description">Foundation model fusing EEG and imaging data.</span>
-    </div>
-  </li>
-  <li>
-    <div class="project-block">
-      <span class="project-title">Protein Mutation Prediction</span>
-      <span class="project-description">Leveraging protein LMs for mutation effects.</span>
-    </div>
-  </li>
-</ul>
 
 ## Research Interests
 - Brain stimulation and neural signal processing
@@ -55,4 +60,3 @@ My research focuses on **brain stimulation and medical AI**, with interest in BC
 ## Contact
 Email: [ssubramanian@caltech.edu](mailto:ssubramanian@caltech.edu)  
 GitHub: [saanviiyer](https://github.com/saanviiyer)
-
