@@ -1,47 +1,52 @@
-<style>
-
-/* Purple theme styling */
-
-body {
-
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-
+/* Color updates for headers and links */
+h1, .view-profile {
+  color: #7A3EB1;
 }
 
-h1, h2, h3 {
-
-  color: 
-
-#7A3EB1; /* Purple headers */
-
-}
-
-a {
-
-  color: 
-
-#9B59B6; /* Brighter purple links */
-
+h2, h3, a {
+  color: #9B59B6;
 }
 
 a:hover {
-
-  color: 
-
-#6C3483;
-
-  text-decoration: underline;
-
+  color: #6C3483;
 }
 
-hr {
+/* Base styles for the project blocks */
+.project-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  border: 0;
+.project-list li {
+  margin-bottom: 20px;
+  /* Add a transition to make the hover effect smooth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  height: 2px;
+.project-block {
+  background-color: #F3E5F5; /* Light purple background */
+  border-radius: 12px;         /* Curved edges */
+  padding: 15px;
+  border: 1px solid #E1BEE7;
+  display: block;
+}
 
-  background: 
+/* The expanding hover effect */
+.project-list li:hover {
+  transform: scale(1.05);     /* Expands the block slightly */
+  box-shadow: 0 4px 15px rgba(122, 62, 177, 0.2); /* Adds a subtle glow */
+}
 
-#D7BDE2;
+.project-title {
+  display: block;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 5px;
+}
 
-  margin: 25px 0;
+.project-description {
+  color: #555;
+  font-size: 0.9em;
+}
