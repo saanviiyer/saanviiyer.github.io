@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet">
 ## Welcome!
 I'm a Computation and Neural Systems undergraduate researcher at the **California Institute of Technology**. 
 My research focuses on **brain stimulation and medical AI**, with interest in BCI development.
