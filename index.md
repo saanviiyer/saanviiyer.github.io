@@ -1,4 +1,6 @@
-<link rel="stylesheet" href="assets/style.css">
+---
+layout: default
+---
 
 ## Welcome!
 I'm a Computation and Neural Systems undergraduate researcher at the **California Institute of Technology**. 

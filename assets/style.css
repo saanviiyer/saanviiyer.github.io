@@ -2,12 +2,15 @@
    COLOR THEME
    ============================================= */
 h1,
-.view-profile {
+h1 a {
   color: #7A3EB1;
 }
 
 h2,
-h3,
+h3 {
+  color: #9B59B6;
+}
+
 a {
   color: #9B59B6;
 }
@@ -17,35 +20,41 @@ a:hover {
 }
 
 /* =============================================
-   FIX SIDEBAR SCROLLING
+   SIDEBAR LAYOUT FIX
+   Make the header a full-height fixed flex column
+   so it doesn't overflow and the GitHub link
+   sticks to the bottom.
    ============================================= */
 header {
   position: fixed !important;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 270px !important;
+  padding: 20px 20px 20px 20px !important;
+  overflow-y: auto !important;
   display: flex !important;
-  flex-direction: column;
-  padding-bottom: 20px;
-  box-sizing: border-box;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
-header .view {
-  margin-top: auto;
+/* Push GitHub link to bottom */
+.github-link {
+  margin-top: auto !important;
+  padding-top: 20px;
 }
 
 /* =============================================
    PROFILE PICTURE — full-width rectangle
    ============================================= */
 .profile-pic-wrapper {
-  margin: 20px 0 16px 0;
   width: 100%;
+  margin: 16px 0;
 }
 
 .profile-pic {
   width: 100%;
-  height: 200px;
+  height: 180px;
   border-radius: 8px;
   object-fit: cover;
   object-position: center top;
@@ -53,16 +62,24 @@ header .view {
   border: 2px solid #E1BEE7;
 }
 
+/* Show alt text placeholder style when image missing */
+.profile-pic[alt] {
+  background: #F3E5F5;
+  color: #9B59B6;
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 180px;
+}
+
 /* =============================================
-   SIDEBAR SECTION TITLE — match right-side h2
+   SIDEBAR PROJECTS TITLE — match right-side h2
    ============================================= */
 .sidebar-section-title {
   font-size: 1.5em;
-  /* matches the theme's h2 size */
   font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
   color: #9B59B6;
+  border: none;
 }
 
 /* =============================================
@@ -75,7 +92,7 @@ header .view {
 }
 
 .project-list li {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -95,12 +112,12 @@ header .view {
 .project-title {
   display: block;
   font-weight: bold;
-  font-size: 0.95em;
+  font-size: 0.9em;
   color: #333;
   margin-bottom: 3px;
 }
 
 .project-description {
   color: #555;
-  font-size: 0.82em;
+  font-size: 0.8em;
 }
