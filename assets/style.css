@@ -17,27 +17,49 @@ a:hover {
 }
 
 /* =============================================
-   PROFILE PICTURE
+   FIX SIDEBAR SCROLLING
    ============================================= */
-.profile-pic-wrapper {
-  margin: 20px 0 16px 0;
-  text-align: left;
+header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  display: flex !important;
+  flex-direction: column;
+  padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
-.profile-pic {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #9B59B6;
-  display: block;
+header .view {
+  margin-top: auto;
 }
 
 /* =============================================
-   SIDEBAR SECTION TITLE
+   PROFILE PICTURE — full-width rectangle
+   ============================================= */
+.profile-pic-wrapper {
+  margin: 20px 0 16px 0;
+  width: 100%;
+}
+
+.profile-pic {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border: 2px solid #E1BEE7;
+}
+
+/* =============================================
+   SIDEBAR SECTION TITLE — match right-side h2
    ============================================= */
 .sidebar-section-title {
-  font-size: 1.05em;
+  font-size: 1.5em;
+  /* matches the theme's h2 size */
+  font-weight: bold;
   margin-top: 0;
   margin-bottom: 10px;
   color: #9B59B6;
