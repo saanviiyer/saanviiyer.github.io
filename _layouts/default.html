@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: " en-US" }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% seo %}
+    <link rel="stylesheet" href="{{ " /assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ " /assets/style.css" | relative_url }}">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    {% include head-custom.html %}
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1><a href="{{ " /" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+
+            {% if site.logo %}
+            <img src="{{site.logo | relative_url}}" alt="Logo" />
+            {% endif %}
+
+            <p>{{ site.description | default: site.github.project_tagline }}</p>
+
+            {% if site.github.is_project_page %}
+            <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{
+                        site.github.repository_nwo }}</small></a></p>
+            {% endif %}
+
+            {% if site.github.is_user_page %}
+            <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
+            {% endif %}
+
+            <!-- Profile picture -->
+            <div class="profile-pic-wrapper">
+                <img src="{{ " /assets/profile.jpg" | relative_url }}" alt="Saanvi S. Subramanian"
+                    class="profile-pic" />
+            </div>
+
+            <!-- Projects in sidebar -->
+            <h2 class="sidebar-section-title">Projects</h2>
+            <ul class="project-list sidebar-projects">
+                <li>
+                    <div class="project-block">
+                        <span class="project-title">BCI Signal Analysis</span>
+                        <span class="project-description">Real-time non-invasive brain signal processing.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="project-block">
+                        <span class="project-title">Multimodal MedAI</span>
+                        <span class="project-description">Foundation model fusing EEG and imaging data.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="project-block">
+                        <span class="project-title">Protein Mutation Prediction</span>
+                        <span class="project-description">Leveraging protein LMs for mutation effects.</span>
+                    </div>
+                </li>
+            </ul>
+
+        </header>
+
+        <section>
+            {{ content }}
+        </section>
+
+        <footer>
+            {% if site.github.is_project_page %}
+            <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+            {% endif %}
+            <p><small>Hosted on GitHub Pages &mdash; Theme by <a
+                        href="https://github.com/orderedlist">orderedlist</a></small></p>
+        </footer>
+    </div>
+    <script src="{{ " /assets/js/scale.fix.js" | relative_url }}"></script>
+</body>
+
+</html>
