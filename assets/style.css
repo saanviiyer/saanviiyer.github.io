@@ -17,91 +17,29 @@ a:hover {
 }
 
 /* =============================================
-   PROFILE PICTURE IN SIDEBAR
+   PROFILE PICTURE
    ============================================= */
 .profile-pic-wrapper {
-  margin-bottom: 20px;
-  text-align: center;
+  margin: 20px 0 16px 0;
+  text-align: left;
 }
 
 .profile-pic {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #9B59B6;
   display: block;
-  margin: 0 auto;
-}
-
-/* Fallback placeholder if no image is set */
-.profile-pic[src="assets/profile.jpg"]:not([naturalWidth]) {
-  background: #F3E5F5;
-  content: '';
-}
-
-/* =============================================
-   SIDEBAR EXTRA: inject projects + photo
-   into the theme's left column
-   ============================================= */
-
-/*
-  The orderedlist/Minimal Mistakes theme wraps
-  the page in a two-column layout:
-    .wrapper > header  (left sidebar)
-    .wrapper > section (main content)
-
-  We position .sidebar-extra so it sits inside
-  the header column, after the existing name/title/link.
-*/
-
-/* Hide sidebar-extra from the normal document flow */
-.sidebar-extra {
-  display: none;
-  /* hidden by default; shown only when injected into header */
-}
-
-/*
-  On wide screens, use a CSS trick:
-  - Make .wrapper relative
-  - Pull sidebar-extra out of section and pin it to the left column area
-  We achieve this with a negative left margin / absolute positioning
-  relative to the theme's .wrapper container.
-*/
-
-@media (min-width: 768px) {
-
-  /* Make the wrapper a positioning context */
-  .wrapper {
-    position: relative;
-  }
-
-  /* Show and position the sidebar block */
-  .sidebar-extra {
-    display: block;
-    position: absolute;
-    top: 200px;
-    /* below the name/title/github link */
-    left: 0;
-    width: 270px;
-    /* matches the theme's header/sidebar width */
-    padding-right: 20px;
-    box-sizing: border-box;
-  }
-
-  /* Push main section content right so it doesn't overlap */
-  section {
-    margin-left: 290px;
-  }
 }
 
 /* =============================================
    SIDEBAR SECTION TITLE
    ============================================= */
 .sidebar-section-title {
-  font-size: 1.1em;
-  margin-top: 10px;
-  margin-bottom: 12px;
+  font-size: 1.05em;
+  margin-top: 0;
+  margin-bottom: 10px;
   color: #9B59B6;
 }
 
@@ -115,14 +53,14 @@ a:hover {
 }
 
 .project-list li {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .project-block {
   background-color: #F3E5F5;
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border: 1px solid #E1BEE7;
   display: block;
 }
@@ -135,25 +73,12 @@ a:hover {
 .project-title {
   display: block;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 0.95em;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .project-description {
   color: #555;
-  font-size: 0.85em;
-}
-
-/* Tighten up sidebar project blocks slightly */
-.sidebar-projects .project-block {
-  padding: 10px 12px;
-}
-
-.sidebar-projects .project-title {
-  font-size: 0.95em;
-}
-
-.sidebar-projects .project-description {
   font-size: 0.82em;
 }
