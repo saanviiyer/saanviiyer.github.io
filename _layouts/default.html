@@ -1,65 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-US">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% seo %}
-    <link rel="stylesheet" href="{{ " /assets/css/style.css" | relative_url }}">
-    <link rel="stylesheet" href="{{ " /assets/style.css" | relative_url }}">
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-    {% include head-custom.html %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% seo %}
+
+  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}">
+  {% include head-custom.html %}
 </head>
 
 <body>
-    <div class="wrapper">
-        <header>
-            <h1><a href="{{ " /" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
-            <p>{{ site.description | default: site.github.project_tagline }}</p>
-
-            <div class="profile-pic-wrapper">
-                <img src="{{ " /assets/profile.jpg" | relative_url }}" alt="Saanvi S. Subramanian"
-                    class="profile-pic" />
-            </div>
-
-            <h2 class="sidebar-section-title">Projects</h2>
-            <ul class="project-list">
-                <li>
-                    <div class="project-block">
-                        <span class="project-title">BCI Signal Analysis</span>
-                        <span class="project-description">Real-time non-invasive brain signal processing.</span>
-                    </div>
-                </li>
-                <li>
-                    <div class="project-block">
-                        <span class="project-title">Multimodal MedAI</span>
-                        <span class="project-description">Foundation model fusing EEG and imaging data.</span>
-                    </div>
-                </li>
-                <li>
-                    <div class="project-block">
-                        <span class="project-title">Protein Mutation Prediction</span>
-                        <span class="project-description">Leveraging protein LMs for mutation effects.</span>
-                    </div>
-                </li>
-            </ul>
-
-            <p class="view github-link"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
-        </header>
-
-        <section>
-            {{ content }}
-        </section>
-
-        <footer>
-            <p><small>Hosted on GitHub Pages &mdash; Theme by <a
-                        href="https://github.com/orderedlist">orderedlist</a></small></p>
-        </footer>
-    </div>
-    <script src="{{ " /assets/js/scale.fix.js" | relative_url }}"></script>
+  {{ content }}
 </body>
-
 </html>
