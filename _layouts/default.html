@@ -4,12 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% seo %}
-
   <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}">
-  {% include head-custom.html %}
 </head>
 
 <body>
-  {{ content }}
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <img src="{{ "/assets/profile.jpg" | relative_url }}" class="profile-pic">
+
+      <h1>Saanvi S.<br>Subramanian</h1>
+      <p class="tagline">Computation & Neural Systems<br>Caltech</p>
+
+      <nav>
+        <a href="#research">Research</a>
+        <a href="#publications">Publications</a>
+        <a href="#awards">Awards</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <a class="github-btn" href="https://github.com/saanviiyer">
+        View GitHub
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      {{ content }}
+    </main>
+
+  </div>
 </body>
 </html>
