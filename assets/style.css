@@ -32,7 +32,7 @@ body {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
-  max-width: 1120px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -103,7 +103,7 @@ body {
 }
 .dmtoggle:hover { color: var(--tx); border-color: var(--a1); }
 
-.content { padding: 44px 50px; max-width: 700px; position: relative; }
+.content { padding: 44px 50px; }
 
 .hero { margin-bottom: 44px; }
 .hero-tag { font-size: .75rem; font-weight: 500; color: var(--a1); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
