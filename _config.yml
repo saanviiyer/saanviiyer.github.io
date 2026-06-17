@@ -1,9 +1,7 @@
-include:
-  - style.css
+
 
 title: "Saanvi S. Subramanian"
 description: "<strong>Computation and Neural Systems student at Caltech</strong>"
-theme: jekyll-theme-minimal
 
 # Optional: include social links
 author:
