@@ -1,0 +1,16 @@
+<div class="entry-list">
+  {% for item in site.data.experiences %}
+  <div class="entry-card">
+    <div class="entry-top">
+      <h3>{% if item.link and item.link != "" %}<a href="{{ item.link }}" target="_blank" rel="noopener">{{ item.role }}</a>{% else %}{{ item.role }}{% endif %}</h3>
+      <span class="entry-dates">{{ item.dates }}</span>
+    </div>
+    <p class="entry-org">{{ item.org }}{% if item.location %} &middot; {{ item.location }}{% endif %}</p>
+    <ul>
+      {% for b in item.bullets %}
+      <li>{{ b }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>

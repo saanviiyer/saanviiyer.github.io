@@ -1,10 +1,18 @@
+title: Saanvi S. Subramanian
+email: ssubramanian@caltech.edu
+description: >-
+  Personal site — research, projects, and writing.
+baseurl: ""      # e.g. "/mysite" if hosted at a subpath, else leave blank
+url: ""          # e.g. "https://saanviiyer.github.io"
 
+# Markdown / build settings
+markdown: kramdown
+permalink: pretty
+exclude:
+  - README.md
 
-title: "Saanvi S. Subramanian"
-description: "<strong>Computation and Neural Systems student at Caltech</strong>"
-
-# Optional: include social links
-author:
-  name: "Saanvi Skanda Subramanian"
-  email: "ssubramanian@caltech.edu"
-  github: "saanviiyer"
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

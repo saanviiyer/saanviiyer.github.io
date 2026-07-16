@@ -1,0 +1,39 @@
+# Add a new experience by copying a block below.
+# Leave "link" blank ("") if there's nothing to link to.
+
+- role: "Undergraduate Research Intern and Assistant"
+  org: "Shimojo Psychophysics Laboratory"
+  location: "Pasadena, CA"
+  dates: "October 2025 – Present"
+  link: ""
+  bullets:
+    - "Run multimodal brain stimulation studies using focused ultrasound, EEG, and fMRI to map sensory and cortical responses."
+    - "Process and analyze EEG and imaging data to evaluate stimulation effects and optimize targeting accuracy."
+    - "Support experiments on inter-brain connectivity and noninvasive modulation of subcortical networks for potential clinical applications."
+
+- role: "Paid Research Intern, Pattwell Lab"
+  org: "Seattle Children's Research Institute – Ben Towne Center"
+  location: "Seattle, WA"
+  dates: "Summer 2025"
+  link: ""
+  bullets:
+    - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication pending: 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
+    - "Presented research at the Stanford Comprehensive Cancer Research Training Program; won People's Choice Award."
+
+- role: "Student Researcher"
+  org: "University of Washington Sensor Systems Laboratory"
+  location: "Seattle, WA"
+  dates: "2023 – 2024"
+  link: ""
+  bullets:
+    - "Designed and tested 3 novel energy harvester topologies in a 100W anechoic chamber."
+    - "Earned AFCEA Excellence in Technology, Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy at WA State Science & Engineering Fair."
+
+# - role: "New Role Title"
+#   org: "New Organization"
+#   location: "City, State"
+#   dates: "Month Year – Month Year"
+#   link: ""
+#   bullets:
+#     - "First accomplishment."
+#     - "Second accomplishment."

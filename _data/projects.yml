@@ -1,0 +1,22 @@
+# Add a new project by copying a block below.
+# Leave "link" blank ("") if there's no repo/demo to link to.
+
+- title: "CougarCareers Web Application"
+  tags: "JavaScript · PHP · HTML"
+  link: "https://github.com/"
+  bullets:
+    - "Co-built a full-stack web application for the school's counseling department to help students learn about career education opportunities and easily apply to jobs."
+
+- title: "Redox Probe Water Salinity Detector"
+  tags: "Arduino · Circuit Design"
+  link: ""
+  bullets:
+    - "Created a salinity detector using an Arduino and salt bridge for MIT Science Olympiad."
+    - "Won 1st Place in Detector Building at the MIT Invitational; 1st Place nationally in Detector Building, 8th Place in Figure That!"
+
+# - title: "New Project Name"
+#   tags: "Tech · Stack · Here"
+#   link: "https://github.com/yourname/repo"
+#   bullets:
+#     - "What it does / what you built."
+#     - "A result or outcome worth noting."
