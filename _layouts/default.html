@@ -3,34 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title | default: "Saanvi S. Subramanian" }}</title>
+  <title>{{ page.title | default: site.title }}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
 </head>
 <body>
 
-  <nav>
-    <a href="{{ '/' | relative_url }}" class="nav-name">Saanvi S. Subramanian</a>
-    <ul class="nav-links">
-      <li><a href="{{ '/pages/research.html' | relative_url }}">Research &amp; Projects</a></li>
-      <li><a href="{{ '/pages/about.html' | relative_url }}">About Me</a></li>
-      <li><a href="{{ '/pages/thinking.html' | relative_url }}">Thinking Out Loud</a></li>
-      <li><a href="{{ '/pages/misc.html' | relative_url }}">Misc.</a></li>
-      <li><a href="{{ '/pages/contact.html' | relative_url }}">Contact</a></li>
-    </ul>
-  </nav>
+  {% include nav.html %}
 
-  <main class="page-content">
-    {{ content }}
+  <main>
+    <div class="page-content">
+      {{ content }}
+    </div>
   </main>
 
-  <footer>
-    <svg class="email-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
-    </svg>
-    <span>Feel free to contact me @
-      <a href="mailto:ssubramanian@caltech.edu">ssubramanian@caltech.edu</a>
-    </span>
-  </footer>
+  {% include footer.html %}
 
 </body>
 </html>
