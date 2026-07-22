@@ -1,0 +1,14 @@
+<div class="entry-list">
+  {% for item in site.data.writings %}
+  <div class="entry-card">
+    <div class="entry-top">
+      <h3><a href="{{ '/assets/pdfs/' | relative_url }}{{ item.file }}" target="_blank" rel="noopener">{{ item.title }}</a></h3>
+      <span class="entry-dates">{{ item.date }}</span>
+    </div>
+    <p class="entry-org">
+      {{ item.venue }}{% if item.status and item.status != "" %} &middot; {{ item.status }}{% endif %}
+    </p>
+    {% if item.blurb %}<p class="entry-blurb">{{ item.blurb }}</p>{% endif %}
+  </div>
+  {% endfor %}
+</div>
