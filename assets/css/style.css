@@ -4,7 +4,6 @@
   --muted: #6B6B6B;
   --accent: #2B4EBF;
   --border: #E5E1D8;
-  --card: #FFFFFF;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,14 +18,16 @@ html, body {
 
 a { color: inherit; }
 
+.serif { font-family: 'Source Serif 4', serif; }
+
 /* ─── NAV ─── */
 nav {
   border-bottom: 1px solid var(--border);
-  padding: 0 48px;
+  padding: 0 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 64px;
   position: sticky;
   top: 0;
   background-color: var(--bg);
@@ -34,18 +35,20 @@ nav {
 }
 
 .nav-name {
+  font-family: 'Source Serif 4', serif;
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: 1.05rem;
   color: var(--ink);
   text-decoration: none;
 }
 
-.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links { display: flex; gap: 30px; list-style: none; }
 
 .nav-links a {
   text-decoration: none;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
   transition: color 0.15s;
 }
 
@@ -53,32 +56,38 @@ nav {
 
 /* ─── MAIN ─── */
 .page-content {
-  max-width: 680px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 72px 32px 96px;
+  padding: 80px 48px 100px;
 }
 
 /* ─── HOME / HERO ─── */
-.hero { padding-top: 24px; }
+.hero { padding-top: 12px; max-width: 760px; }
 
 .hero h1 {
-  font-size: 1.9rem;
+  font-family: 'Source Serif 4', serif;
   font-weight: 600;
+  font-style: italic;
+  font-size: 3rem;
   letter-spacing: -0.01em;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
+  line-height: 1.15;
 }
 
 .hero-subtitle {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   color: var(--ink);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .hero-mission {
-  font-size: 1rem;
-  color: var(--muted);
-  margin-bottom: 32px;
-  max-width: 520px;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 40px;
+  line-height: 1.5;
+  max-width: 640px;
 }
 
 .accent-link {
@@ -91,10 +100,10 @@ nav {
 .accent-link:hover { border-bottom-color: var(--accent); }
 
 .hero-links {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .text-link {
@@ -107,11 +116,13 @@ nav {
 .dot { color: var(--border); }
 
 /* ─── INTERIOR PAGES ─── */
-.page-header { margin-bottom: 36px; }
+.page-header { margin-bottom: 48px; }
 
 .page-header h1 {
-  font-size: 1.5rem;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
   font-weight: 600;
+  font-size: 2.1rem;
   letter-spacing: -0.01em;
 }
 
@@ -119,30 +130,43 @@ nav {
   color: var(--muted);
   font-size: 0.95rem;
   line-height: 1.7;
+  max-width: 640px;
 }
 
 .section-heading {
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   color: var(--muted);
-  margin: 44px 0 18px;
+  margin: 56px 0 20px;
 }
 .section-heading:first-of-type { margin-top: 0; }
 
-/* ─── ENTRY CARDS (experiences / projects) ─── */
-.entry-list { display: flex; flex-direction: column; gap: 28px; }
+/* ─── ENTRY LIST (experiences / projects / writings) ─── */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+}
 
 .entry-card {
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 24px;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 4px 28px;
+  border-top: 1px solid var(--border);
+  padding: 26px 0;
 }
 
-.entry-list .entry-card:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.entry-list .entry-card:first-child { border-top: none; }
+
+.entry-year {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding-top: 3px;
+  white-space: nowrap;
 }
+
+.entry-body { min-width: 0; }
 
 .entry-top {
   display: flex;
@@ -150,27 +174,40 @@ nav {
   align-items: baseline;
   flex-wrap: wrap;
   gap: 4px 16px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
-.entry-top h3 { font-size: 1rem; font-weight: 600; }
+.entry-top h3 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
 .entry-top h3 a { color: var(--ink); text-decoration: none; }
 .entry-top h3 a:hover { color: var(--accent); }
 
 .entry-dates { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
 
-.entry-org { font-size: 0.88rem; color: var(--muted); margin-bottom: 10px; }
+.entry-org { font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; }
 
 .entry-card ul { padding-left: 18px; }
-.entry-card li { font-size: 0.92rem; margin-bottom: 6px; color: var(--ink); }
+.entry-card li { font-size: 0.93rem; margin-bottom: 6px; color: var(--ink); }
 
-.entry-blurb { font-size: 0.92rem; color: var(--ink); }
+.entry-blurb { font-size: 0.93rem; color: var(--ink); margin-bottom: 8px; }
+
+.entry-link {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.entry-link:hover { text-decoration: underline; }
 
 /* ─── FOOTER ─── */
 footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
-  padding: 24px 32px;
+  padding: 28px 48px;
   text-align: center;
   font-size: 0.85rem;
   display: flex;
@@ -184,8 +221,12 @@ footer .email-icon { width: 15px; height: 15px; fill: var(--muted); flex-shrink:
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 700px) {
-  .page-content { padding: 48px 20px 64px; }
+  .page-content { padding: 56px 20px 72px; }
   nav { padding: 0 20px; }
   .nav-links { gap: 14px; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero-mission { font-size: 1.1rem; }
+  .entry-card { grid-template-columns: 1fr; gap: 4px; }
+  .entry-year { padding-top: 0; }
   .entry-top { flex-direction: column; }
 }
