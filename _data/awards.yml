@@ -1,0 +1,58 @@
+# Add a new award by copying a block below.
+# "detail" is optional context shown under the title.
+
+- title: "Accepted for Oral Presentation — 2026 Cascadia Mucosal Biology Symposium"
+  detail: "Selected for an oral presentation."
+  year: "2026"
+
+- title: "Oral Presentation — IEEE CIBCB 2026"
+  detail: "PRISM accepted for oral presentation at the IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology."
+  year: "2026"
+
+- title: "Salk Cancer Day Research Symposium"
+  detail: "Selected to present research at the Salk Institute Cancer Day Research Symposium."
+  year: "2026"
+
+- title: "Caltech Summer Undergraduate Research Fellowship (SURF)"
+  detail: "Awarded a competitive fellowship supporting summer research."
+  year: "2026"
+
+- title: "SWENext Global Innovator Award"
+  detail: "Society of Women Engineers K–12 program; awarded for community impact and STEM outreach. Also 2x STEM in Action awardee."
+  year: "2024, 2025"
+
+- title: "UW WAFER Conference Presenter"
+  detail: "Presented energy-harvesting research at the University of Washington Women at the Forefront of ECE Research (WAFER) conference."
+  year: "2024, 2025"
+
+- title: "Stanford CCRTP People's Choice Award"
+  detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program; one of three special distinction awardees among 40+ posters."
+  year: "2024"
+
+- title: "NCWiT Aspirations in Computing — Impact Award & 3x Affiliate Winner"
+  detail: "National Center for Women in Information Technology; Impact Award ($500) for computing career-development work, plus 3x Seattle / Western Washington regional winner."
+  year: "2024"
+
+- title: "National Merit Semifinalist"
+  detail: "Top PSAT/NMSQT scorer — fewer than 1% of graduating seniors nationwide."
+  year: "2024"
+
+- title: "AP Scholar with Distinction"
+  detail: "Earned scores of 5 on 13 AP exams."
+  year: "2024"
+
+- title: "WA State AAUW High School Scholar Recognition: Science"
+  detail: "American Association of University Women recognition for excellence in STEM, competition, and mentoring."
+  year: "2024"
+
+- title: "WA State Science & Engineering Fair — 3 Special Awards"
+  detail: "AFCEA Excellence in Technology (PNW), Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy (out of 170 competitors) for an energy-harvester prototype."
+  year: "2024"
+
+- title: "DECA — 1st @ Internationals & 1st @ State"
+  detail: "1st at ICDC in the Community Giving Project (out of 18,000+ competitors) for raising >$22,000 for cataract surgeries; 1st in state in Finance Operations Research."
+  year: "2024"
+
+- title: "Science Olympiad — MIT Invitational & 30 Career Medals"
+  detail: "1st in Detector Building and 8th in Figure That! at the MIT Invitational; 30 total medals across national, state, and regional competitions."
+  year: "2022 – 2024"

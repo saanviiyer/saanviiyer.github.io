@@ -1,0 +1,13 @@
+<div class="entry-list">
+  {% for item in site.data.awards %}
+  <div class="entry-card">
+    <div class="entry-year">{{ item.year }}</div>
+    <div class="entry-body">
+      <div class="entry-top">
+        <h3>{% if item.link and item.link != "" %}<a href="{{ item.link }}" target="_blank" rel="noopener">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</h3>
+      </div>
+      {% if item.detail %}<p class="entry-blurb">{{ item.detail }}</p>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
