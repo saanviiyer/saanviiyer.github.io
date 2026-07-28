@@ -64,6 +64,17 @@ nav {
 /* ─── HOME / HERO ─── */
 .hero { padding-top: 12px; max-width: 760px; }
 
+.hero-photo {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  object-position: center 30%;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  margin-bottom: 28px;
+  display: block;
+}
+
 .hero h1 {
   font-family: 'Source Serif 4', serif;
   font-weight: 600;
@@ -132,6 +143,31 @@ nav {
   line-height: 1.7;
   max-width: 640px;
 }
+
+/* ─── ABOUT ─── */
+.about-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.about-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: center 30%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.about-text p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 18px;
+  max-width: 620px;
+}
+.about-text p:last-child { margin-bottom: 0; }
 
 .section-heading {
   font-size: 0.82rem;
@@ -229,4 +265,6 @@ footer .email-icon { width: 15px; height: 15px; fill: var(--muted); flex-shrink:
   .entry-card { grid-template-columns: 1fr; gap: 4px; }
   .entry-year { padding-top: 0; }
   .entry-top { flex-direction: column; }
+  .about-layout { grid-template-columns: 1fr; gap: 24px; }
+  .about-photo { max-width: 240px; }
 }

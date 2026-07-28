@@ -1,14 +1,33 @@
 # Add a new experience by copying a block below.
 # Leave "link" blank ("") if there's nothing to link to.
 
+- role: "Pediatric Neuroradiology Intern"
+  org: "Stanford Medicine"
+  location: "Palo Alto, CA"
+  dates: "June 2026 – Present"
+  link: ""
+  bullets:
+    - "Awarded a Caltech Summer Undergraduate Research Fellowship (SURF)."
+    - "Building a multimodal foundation model for pediatric brain MRIs paired with EEG to improve epileptic lesion detection sensitivity."
+    - "Using SimCLR, 3D ViT, and NLP to map EEG-identified seizure onset zones to anatomical regions."
+
+- role: "Undergraduate Research Intern"
+  org: "Perona Laboratory — Computer Vision Research, Caltech"
+  location: "Pasadena, CA"
+  dates: "December 2025 – Present"
+  link: ""
+  bullets:
+    - "Developing a tri-modal radiogenomic foundation model, using contrastive learning to align 3D kidney CT scan features with gene expression mutation data from patients."
+    - "Processed 10,000+ paired CT-genomic samples and implemented vision transformers for a multimodal medical embedding space."
+
 - role: "Undergraduate Research Intern and Assistant"
-  org: "Shimojo Psychophysics Laboratory"
+  org: "Shimojo Psychophysics Laboratory, Caltech"
   location: "Pasadena, CA"
   dates: "October 2025 – Present"
   link: ""
   bullets:
-    - "Run multimodal brain stimulation studies using focused ultrasound, EEG, and fMRI to map sensory and cortical responses."
-    - "Process and analyze EEG and imaging data to evaluate stimulation effects and optimize targeting accuracy."
+    - "Analyze EEG and imaging data to evaluate noninvasive brain stimulation studies using focused ultrasound, EEG, and fMRI for clinical applications."
+    - "Lead and design multisensory integration studies, developing scripts for behavioral experiments and performing data analysis."
     - "Support experiments on inter-brain connectivity and noninvasive modulation of subcortical networks for potential clinical applications."
 
 - role: "Paid Research Intern, Pattwell Lab"
@@ -18,7 +37,7 @@
   link: ""
   bullets:
     - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication pending: 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
-    - "Presented research at the Stanford Comprehensive Cancer Research Training Program; won People's Choice Award."
+    - "Presented research at the Stanford Comprehensive Cancer Research Training Program; won the People's Choice Award."
 
 - role: "Student Researcher"
   org: "University of Washington Sensor Systems Laboratory"
@@ -27,7 +46,7 @@
   link: ""
   bullets:
     - "Designed and tested 3 novel energy harvester topologies in a 100W anechoic chamber."
-    - "Earned AFCEA Excellence in Technology, Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy at WA State Science & Engineering Fair."
+    - "Earned AFCEA Excellence in Technology, Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy at the WA State Science & Engineering Fair."
 
 # - role: "New Role Title"
 #   org: "New Organization"
