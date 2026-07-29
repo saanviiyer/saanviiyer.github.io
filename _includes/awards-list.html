@@ -1,10 +1,11 @@
 <div class="entry-list">
   {% for item in site.data.awards %}
   <div class="entry-card">
-    <div class="entry-year">{{ item.year }}</div>
+    <div class="entry-num">{{ forloop.index | prepend: "00" | slice: -3, 3 }}</div>
     <div class="entry-body">
       <div class="entry-top">
         <h3>{% if item.link and item.link != "" %}<a href="{{ item.link }}" target="_blank" rel="noopener">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</h3>
+        {% if item.year %}<span class="entry-dates">{{ item.year }}</span>{% endif %}
       </div>
       {% if item.detail %}<p class="entry-blurb">{{ item.detail }}</p>{% endif %}
     </div>

@@ -1,10 +1,11 @@
 <div class="entry-list">
   {% for item in site.data.writings %}
   <div class="entry-card">
-    <div class="entry-year">{{ item.date }}</div>
+    <div class="entry-num">{{ forloop.index | prepend: "00" | slice: -3, 3 }}</div>
     <div class="entry-body">
       <div class="entry-top">
         <h3>{{ item.title }}</h3>
+        {% if item.date %}<span class="entry-dates">{{ item.date }}</span>{% endif %}
       </div>
       <p class="entry-org">
         {{ item.venue }}{% if item.status and item.status != "" %} &middot; {{ item.status }}{% endif %}
