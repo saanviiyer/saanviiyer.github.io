@@ -1,6 +1,12 @@
 # Add a new project by copying a block below.
 # Leave "link" blank ("") if there's no repo/demo to link to.
 
+- title: "Microlearning in Neural Networks"
+  tags: "NeuroAI · Deep Learning"
+  link: ""
+  bullets:
+    - "Selected for the Neuromatch NeuroAI advanced course, where I built a group research project on microlearning."
+
 - title: "CougarCareers Web Application"
   tags: "JavaScript · PHP · HTML"
   link: "https://github.com/"
