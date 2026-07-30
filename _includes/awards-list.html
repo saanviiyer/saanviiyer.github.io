@@ -1,5 +1,6 @@
+{% assign items = site.data.awards | where: "category", include.cat %}
 <div class="entry-list">
-  {% for item in site.data.awards %}
+  {% for item in items %}
   <div class="entry-card">
     <div class="entry-num">{{ forloop.index | prepend: "00" | slice: -3, 3 }}</div>
     <div class="entry-body">

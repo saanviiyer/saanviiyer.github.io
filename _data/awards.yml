@@ -1,66 +1,92 @@
-# Add a new award by copying a block below.
+# Each entry has a "category": publication | talk | poster | award
+# Entries render grouped by category on the Research & Projects page.
 # "detail" is optional context shown under the title.
 
-- title: "Accepted for Oral Presentation — 2026 Cascadia Mucosal Biology Symposium"
-  detail: "Selected for an oral presentation."
+# ─── PUBLICATIONS ───
+- title: "Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma"
+  detail: "Manuscript in progress with the Pattwell Lab, Seattle Children's Research Institute. Machine-learning analysis of ~1M cells identifying malignant Medulloblastoma populations."
+  year: "In progress"
+  category: "publication"
+
+# ─── INVITED TALKS & ORAL PRESENTATIONS ───
+- title: "Oral Presentation — 2026 Cascadia Mucosal Biology Symposium"
+  detail: "Accepted for an oral presentation."
   year: "2026"
+  category: "talk"
 
 - title: "Oral Presentation — IEEE CIBCB 2026"
   detail: "PRISM accepted for oral presentation at the IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology."
   year: "2026"
-
-- title: "Salk Cancer Day Research Symposium"
-  detail: "Selected to present research at the Salk Institute Cancer Day Research Symposium."
-  year: "2026"
-
-- title: "Caltech Summer Undergraduate Research Fellowship (SURF)"
-  detail: "Awarded a competitive fellowship supporting summer research."
-  year: "2026"
-
-- title: "SWENext Global Innovator Award"
-  detail: "Society of Women Engineers K–12 program; awarded for community impact and STEM outreach. Also 2x STEM in Action awardee."
-  year: "2024, 2025"
-
-- title: "UW WAFER Conference Presenter"
-  detail: "Presented energy-harvesting research at the University of Washington Women at the Forefront of ECE Research (WAFER) conference."
-  year: "2024, 2025"
+  category: "talk"
 
 - title: "Invited Guest Speaker — Girls Who Code × Google"
   detail: "Invited to speak at Mount Si High School's Girls Who Code and Google event for Computer Science Education Week, sharing career insight alongside a Google employee panel and mock technical interviews for students exploring computer science."
   year: "2025"
+  category: "talk"
 
-- title: "Chuck Kaysner – Rivergrove Memorial Scholarship"
-  detail: "Recipient of the Chuck Kaysner – Rivergrove Memorial Scholarship in high school."
-  year: "2025"
-
-- title: "National Merit Finalist"
-  detail: "Top PSAT/NMSQT scorer — fewer than 1% of graduating seniors nationwide."
-  year: "2025"
+# ─── POSTERS & PRESENTATIONS ───
+- title: "Salk Cancer Day Research Symposium"
+  detail: "Selected to present research at the Salk Institute Cancer Day Research Symposium."
+  year: "2026"
+  category: "poster"
 
 - title: "Stanford CCRTP People's Choice Award"
   detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program; one of three special distinction awardees among 40+ posters."
   year: "2024"
+  category: "poster"
+
+- title: "UW WAFER Conference Presenter"
+  detail: "Presented energy-harvesting research at the University of Washington Women at the Forefront of ECE Research (WAFER) conference."
+  year: "2024, 2025"
+  category: "poster"
+
+# ─── AWARDS & HONORS ───
+- title: "Caltech Summer Undergraduate Research Fellowship (SURF)"
+  detail: "Awarded a competitive fellowship supporting summer research."
+  year: "2026"
+  category: "award"
+
+- title: "Chuck Kaysner – Rivergrove Memorial Scholarship"
+  detail: "Recipient of the Chuck Kaysner – Rivergrove Memorial Scholarship in high school."
+  year: "2025"
+  category: "award"
+
+- title: "National Merit Finalist"
+  detail: "Top PSAT/NMSQT scorer — fewer than 1% of graduating seniors nationwide."
+  year: "2025"
+  category: "award"
+
+- title: "SWENext Global Innovator Award"
+  detail: "Society of Women Engineers K–12 program; awarded for community impact and STEM outreach. Also 2x STEM in Action awardee."
+  year: "2024, 2025"
+  category: "award"
 
 - title: "NCWiT Aspirations in Computing — Impact Award & 3x Affiliate Winner"
   detail: "National Center for Women in Information Technology. Two-time Impact Award recipient (2023, 2024) for computing career-development work, plus 3x Seattle / Western Washington regional winner."
   year: "2023, 2024"
+  category: "award"
 
 - title: "AP Scholar with Distinction"
   detail: "Earned scores of 5 on 13 AP exams."
   year: "2024"
+  category: "award"
 
 - title: "WA State AAUW High School Scholar Recognition: Science"
   detail: "American Association of University Women recognition for excellence in STEM, competition, and mentoring."
   year: "2024"
+  category: "award"
 
 - title: "WA State Science & Engineering Fair — 3 Special Awards"
   detail: "AFCEA Excellence in Technology (PNW), Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy (out of 170 competitors) for an energy-harvester prototype."
   year: "2024"
+  category: "award"
 
 - title: "DECA — 1st @ Internationals & 1st @ State"
   detail: "1st at ICDC in the Community Giving Project (out of 18,000+ competitors) for raising >$22,000 for cataract surgeries; 1st in state in Finance Operations Research."
   year: "2024"
+  category: "award"
 
 - title: "Science Olympiad — MIT Invitational & 30 Career Medals"
   detail: "1st in Detector Building and 8th in Figure That! at the MIT Invitational; 30 total medals across national, state, and regional competitions."
   year: "2022 – 2024"
+  category: "award"
