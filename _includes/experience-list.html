@@ -13,6 +13,11 @@
         <li>{{ b }}</li>
         {% endfor %}
       </ul>
+      {% if item.cats %}
+      <div class="cat-tags">
+        {% for c in item.cats %}{% case c %}{% when "neuro" %}<span class="cat-tag cat-neuro">Neuroscience</span>{% when "ai" %}<span class="cat-tag cat-ai">AI / ML</span>{% when "compbio" %}<span class="cat-tag cat-compbio">Computational Biology</span>{% when "eng" %}<span class="cat-tag cat-eng">Engineering &amp; Software</span>{% endcase %}{% endfor %}
+      </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
