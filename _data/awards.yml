@@ -9,17 +9,22 @@
   category: "publication"
 
 # ─── INVITED TALKS & ORAL PRESENTATIONS ───
-- title: "Oral Presentation — 2026 Cascadia Mucosal Biology Symposium"
-  detail: "Accepted for an oral presentation."
+- title: "Oral Presentation, ECCV Artificial Intelligence for Medical 3D Vision Workshop"
+  detail: "CortSeer accepted for an oral presentation at the Artificial Intelligence for Medical 3D Vision workshop at ECCV."
   year: "2026"
   category: "talk"
 
-- title: "Oral Presentation — IEEE CIBCB 2026"
+- title: "Lightning Talk, 2026 Cascadia Mucosal Biology Symposium"
+  detail: "Invited to present a lightning talk at the 2026 Cascadia Mucosal Biology Symposium."
+  year: "2026"
+  category: "talk"
+
+- title: "Oral Presentation, IEEE CIBCB 2026"
   detail: "PRISM accepted for oral presentation at the IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology."
   year: "2026"
   category: "talk"
 
-- title: "Invited Guest Speaker — Girls Who Code × Google"
+- title: "Invited Guest Speaker, Girls Who Code × Google"
   detail: "Invited to speak at Mount Si High School's Girls Who Code and Google event for Computer Science Education Week, sharing career insight alongside a Google employee panel and mock technical interviews for students exploring computer science."
   year: "2025"
   category: "talk"
@@ -31,7 +36,7 @@
   category: "poster"
 
 - title: "Stanford CCRTP People's Choice Award"
-  detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program; one of three special distinction awardees among 40+ posters."
+  detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program. One of three special distinction awardees among 40+ posters."
   year: "2024"
   category: "poster"
 
@@ -46,23 +51,23 @@
   year: "2026"
   category: "award"
 
-- title: "Chuck Kaysner – Rivergrove Memorial Scholarship"
-  detail: "Recipient of the Chuck Kaysner – Rivergrove Memorial Scholarship in high school."
+- title: "Chuck Kaysner - Rivergrove Memorial Scholarship"
+  detail: "Recipient of the Chuck Kaysner - Rivergrove Memorial Scholarship in high school."
   year: "2025"
   category: "award"
 
 - title: "National Merit Finalist"
-  detail: "Top PSAT/NMSQT scorer — fewer than 1% of graduating seniors nationwide."
+  detail: "Top PSAT/NMSQT scorer, among fewer than 1% of graduating seniors nationwide."
   year: "2025"
   category: "award"
 
 - title: "SWENext Global Innovator Award"
-  detail: "Society of Women Engineers K–12 program; awarded for community impact and STEM outreach. Also 2x STEM in Action awardee."
+  detail: "Society of Women Engineers K-12 program. Awarded for community impact and STEM outreach, and named a 2x STEM in Action awardee."
   year: "2024, 2025"
   category: "award"
 
-- title: "NCWiT Aspirations in Computing — Impact Award & 3x Affiliate Winner"
-  detail: "National Center for Women in Information Technology. Two-time Impact Award recipient (2023, 2024) for computing career-development work, plus 3x Seattle / Western Washington regional winner."
+- title: "NCWiT Aspirations in Computing, Impact Award and 3x Affiliate Winner"
+  detail: "National Center for Women in Information Technology. Two-time Impact Award recipient (2023, 2024) for computing career-development work, plus 3x Seattle and Western Washington regional winner."
   year: "2023, 2024"
   category: "award"
 
@@ -71,22 +76,22 @@
   year: "2024"
   category: "award"
 
-- title: "WA State AAUW High School Scholar Recognition: Science"
+- title: "WA State AAUW High School Scholar Recognition in Science"
   detail: "American Association of University Women recognition for excellence in STEM, competition, and mentoring."
   year: "2024"
   category: "award"
 
-- title: "WA State Science & Engineering Fair — 3 Special Awards"
+- title: "WA State Science & Engineering Fair, 3 Special Awards"
   detail: "AFCEA Excellence in Technology (PNW), Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy (out of 170 competitors) for an energy-harvester prototype."
   year: "2024"
   category: "award"
 
-- title: "DECA — 1st @ Internationals & 1st @ State"
-  detail: "1st at ICDC in the Community Giving Project (out of 18,000+ competitors) for raising >$22,000 for cataract surgeries; 1st in state in Finance Operations Research."
+- title: "DECA, 1st at Internationals and 1st at State"
+  detail: "1st at ICDC in the Community Giving Project (out of 18,000+ competitors) for raising over $22,000 for cataract surgeries. Also 1st in state in Finance Operations Research."
   year: "2024"
   category: "award"
 
-- title: "Science Olympiad — MIT Invitational & 30 Career Medals"
-  detail: "1st in Detector Building and 8th in Figure That! at the MIT Invitational; 30 total medals across national, state, and regional competitions."
+- title: "Science Olympiad, MIT Invitational and 30 Career Medals"
+  detail: "1st in Detector Building and 8th in Figure That! at the MIT Invitational. 30 total medals across national, state, and regional competitions."
   year: "2022 – 2024"
   category: "award"

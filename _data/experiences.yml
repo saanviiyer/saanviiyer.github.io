@@ -12,7 +12,7 @@
     - "Using SimCLR, 3D ViT, and NLP to map EEG-identified seizure onset zones to anatomical regions."
 
 - role: "Undergraduate Research Intern"
-  org: "Perona Laboratory — Computer Vision Research, Caltech"
+  org: "Perona Laboratory (Computer Vision Research), Caltech"
   location: "Pasadena, CA"
   dates: "December 2025 – Present"
   link: ""
@@ -36,8 +36,8 @@
   dates: "Summer 2025"
   link: ""
   bullets:
-    - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication pending: 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
-    - "Presented research at the Stanford Comprehensive Cancer Research Training Program; won the People's Choice Award."
+    - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication in progress, titled 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
+    - "Presented research at the Stanford Comprehensive Cancer Research Training Program, where it won the People's Choice Award."
 
 - role: "Student Researcher"
   org: "University of Washington Sensor Systems Laboratory"
