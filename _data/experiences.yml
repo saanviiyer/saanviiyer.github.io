@@ -6,6 +6,7 @@
   location: "Palo Alto, CA"
   dates: "June 2026 – Present"
   link: ""
+  cats: ["ai", "neuro"]
   bullets:
     - "Awarded a Caltech Summer Undergraduate Research Fellowship (SURF)."
     - "Building a multimodal foundation model for pediatric brain MRIs paired with EEG to improve epileptic lesion detection sensitivity."
@@ -16,6 +17,7 @@
   location: "Pasadena, CA"
   dates: "December 2025 – Present"
   link: ""
+  cats: ["ai", "compbio"]
   bullets:
     - "Developing a tri-modal radiogenomic foundation model, using contrastive learning to align 3D kidney CT scan features with gene expression mutation data from patients."
     - "Processed 10,000+ paired CT-genomic samples and implemented vision transformers for a multimodal medical embedding space."
@@ -25,6 +27,7 @@
   location: "Pasadena, CA"
   dates: "October 2025 – Present"
   link: ""
+  cats: ["neuro"]
   bullets:
     - "Analyze EEG and imaging data to evaluate noninvasive brain stimulation studies using focused ultrasound, EEG, and fMRI for clinical applications."
     - "Lead and design multisensory integration studies, developing scripts for behavioral experiments and performing data analysis."
@@ -35,6 +38,7 @@
   location: "Seattle, WA"
   dates: "Summer 2025"
   link: ""
+  cats: ["compbio", "ai"]
   bullets:
     - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication in progress, titled 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
     - "Presented research at the Stanford Comprehensive Cancer Research Training Program, where it won the People's Choice Award."
@@ -44,6 +48,7 @@
   location: "Seattle, WA"
   dates: "2023 – 2024"
   link: ""
+  cats: ["eng"]
   bullets:
     - "Designed and tested 3 novel energy harvester topologies in a 100W anechoic chamber."
     - "Earned AFCEA Excellence in Technology, Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy at the WA State Science & Engineering Fair."

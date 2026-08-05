@@ -1,28 +1,71 @@
 # Add a new project by copying a block below.
 # Leave "link" blank ("") if there's no repo/demo to link to.
+# "status" is a short current-progress note shown under the title.
+# "cats" color-codes the project: neuro | ai | compbio | eng
+
+- title: "CortSeer"
+  tags: "Python · AI/ML"
+  status: "In active development. Accepted for oral presentation at the ECCV Artificial Intelligence for Medical 3D Vision Workshop, 2026."
+  link: ""
+  cats: ["ai", "neuro"]
+  bullets:
+    - "Clinical-grade web application for automated, clinically-guided lesion detection in medical imaging."
+    - "Maps EEG-identified seizure onset zones to anatomical regions, built on a multimodal MRI and EEG foundation model."
+
+- title: "PRISM: Protein Residue Impact and Signature Modeling"
+  tags: "Python · AI/ML"
+  status: "Accepted for oral presentation at IEEE CIBCB 2026. Additional papers in preparation."
+  link: "https://github.com/saanviiyer/PRISM"
+  cats: ["ai", "compbio"]
+  bullets:
+    - "A homology-free method that applies mutational signatures to coding sequences and measures the resulting shift in protein-language-model embeddings, as a probe of how mutations may reshape protein function. Developed with the Mora group at AITHYRA (Research Institute for Biomedical Artificial Intelligence)."
+
+- title: "Gauntlet"
+  tags: "Protein Design · AI/ML"
+  status: "In development."
+  link: ""
+  cats: ["ai", "compbio"]
+  bullets:
+    - "An audit harness for protein design. It stress-tests the fitness proxies that generative pipelines optimize against, checking them for trivial-baseline dominance and reward-hacking before an objective is trusted."
+
+- title: "Self-Defeating Surrogates"
+  tags: "Protein Design · AI/ML"
+  status: "Early-stage research."
+  link: ""
+  cats: ["ai", "compbio"]
+  bullets:
+    - "Studying when learned fitness proxies stop being reliable among the top protein variants an optimizer selects, and how to constrain directed evolution to the region where a surrogate still holds."
 
 - title: "Microlearning in Neural Networks"
   tags: "NeuroAI · Deep Learning"
+  status: "Built at the Neuromatch NeuroAI advanced course."
   link: ""
+  cats: ["ai", "neuro"]
   bullets:
     - "Selected for the Neuromatch NeuroAI advanced course, where I built a group research project on microlearning."
 
 - title: "CougarCareers Web Application"
   tags: "JavaScript · PHP · HTML"
-  link: "https://github.com/"
+  status: "Completed. Deployed for the school counseling department."
+  link: "https://github.com/saanviiyer/CougarConnect-CTE-Careers"
+  cats: ["eng"]
   bullets:
     - "Co-built a full-stack web application for the school's counseling department to help students learn about career education opportunities and easily apply to jobs."
 
 - title: "Redox Probe Water Salinity Detector"
   tags: "Arduino · Circuit Design"
+  status: "Completed. 1st Place in Detector Building at the MIT Invitational."
   link: ""
+  cats: ["eng"]
   bullets:
     - "Created a salinity detector using an Arduino and salt bridge for MIT Science Olympiad."
     - "Won 1st Place in Detector Building at the MIT Invitational. Placed 1st nationally in Detector Building and 8th in Figure That!"
 
 # - title: "New Project Name"
 #   tags: "Tech · Stack · Here"
+#   status: "Short current-progress note."
 #   link: "https://github.com/yourname/repo"
+#   cats: ["ai"]
 #   bullets:
 #     - "What it does / what you built."
 #     - "A result or outcome worth noting."
