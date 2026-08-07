@@ -51,6 +51,12 @@
   year: "2026"
   category: "award"
 
+- title: "NeuroAI Certificate of Completion, Neuromatch Academy"
+  detail: 'Completed the interactive track and the course project (85 hours). <a href="https://portal.neuromatchacademy.org/certificate/2cf6ab4e-100b-49a0-b1ad-bcd533d54f50" target="_blank" rel="noopener">Verify authenticity</a>.'
+  year: "2026"
+  category: "award"
+  link: "/assets/pdfs/neuroai_certificate.pdf"
+
 - title: "Chuck Kaysner - Rivergrove Memorial Scholarship"
   detail: "Recipient of the Chuck Kaysner - Rivergrove Memorial Scholarship in high school."
   year: "2025"
