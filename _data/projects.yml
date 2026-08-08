@@ -44,6 +44,14 @@
   bullets:
     - "Selected for the Neuromatch NeuroAI advanced course, where I built a group research project on microlearning."
 
+- title: "Steeling CO2: Sequestering CO2 through Steel Byproduct Processing"
+  tags: "Integrated Core · Chemistry"
+  status: "Integrated Core team project (Team SLAGC)."
+  link: ""
+  cats: ["eng"]
+  bullets:
+    - "A carbon-sequestration approach that extracts Ca(OH)2 from steel-slag byproduct and uses it to convert dissolved CO2 into calcium carbonate, backed by a coupled-ODE kinetic model and a full cost analysis (~$153 net gain per metric ton of CO2)."
+
 - title: "CougarCareers Web Application"
   tags: "JavaScript · PHP · HTML"
   status: "Completed. Deployed for the school counseling department."
