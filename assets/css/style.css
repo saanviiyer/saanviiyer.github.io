@@ -9,7 +9,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   color: var(--ink);
   background-color: var(--bg);
   font-size: 16px;
@@ -18,7 +18,7 @@ html, body {
 
 a { color: inherit; }
 
-.serif { font-family: 'Source Serif 4', serif; }
+.serif { font-family: 'Roboto', sans-serif; }
 
 /* ─── NAV ─── */
 nav {
@@ -35,7 +35,7 @@ nav {
 }
 
 .nav-name {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 1.05rem;
   color: var(--ink);
@@ -76,13 +76,12 @@ nav {
 }
 
 .hero h1 {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-style: italic;
-  font-size: 3rem;
-  letter-spacing: -0.01em;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: 3.6rem;
+  letter-spacing: 0;
   margin-bottom: 24px;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .hero-subtitle {
@@ -92,7 +91,7 @@ nav {
 }
 
 .hero-mission {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.4rem;
   color: var(--ink);
   margin-bottom: 40px;
@@ -100,7 +99,10 @@ nav {
   max-width: 680px;
 }
 .hero-mission em {
-  font-style: italic;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.28em;
   color: var(--accent);
 }
 
@@ -146,14 +148,14 @@ nav {
 }
 
 .threads-question {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.7rem;
   line-height: 1.4;
   letter-spacing: -0.01em;
   max-width: 760px;
   margin-bottom: 44px;
 }
-.threads-question em { font-style: italic; color: var(--accent); }
+.threads-question em { font-family: 'Dancing Script', cursive; font-weight: 700; font-style: normal; font-size: 1.22em; color: var(--accent); }
 
 .thread-grid {
   display: grid;
@@ -177,7 +179,7 @@ nav {
 }
 
 .thread-num {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.85rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
@@ -185,7 +187,7 @@ nav {
 }
 
 .thread-card h3 {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   margin: 10px 0 8px;
@@ -202,11 +204,10 @@ nav {
 .page-header { margin-bottom: 48px; }
 
 .page-header h1 {
-  font-family: 'Source Serif 4', serif;
-  font-style: italic;
-  font-weight: 600;
-  font-size: 2.1rem;
-  letter-spacing: -0.01em;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: 2.7rem;
+  letter-spacing: 0;
 }
 
 .page-placeholder {
@@ -242,7 +243,7 @@ nav {
 .about-text p:last-child { margin-bottom: 0; }
 
 .about-subhead {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.15rem;
   font-weight: 600;
   margin: 36px 0 12px;
@@ -290,7 +291,7 @@ nav {
 .entry-list .entry-card:first-child { border-top: none; }
 
 .entry-num {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.9rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
@@ -317,7 +318,7 @@ nav {
 }
 
 .entry-top h3 {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.12rem;
   font-weight: 600;
   line-height: 1.4;
