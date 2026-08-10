@@ -13,6 +13,8 @@
 </head>
 <body>
 
+  <canvas id="neural-bg" aria-hidden="true"></canvas>
+
   {% include nav.html %}
 
   <main>
@@ -23,5 +25,6 @@
 
   {% include footer.html %}
 
+  <script src="{{ '/assets/js/neural.js' | relative_url }}"></script>
 </body>
 </html>

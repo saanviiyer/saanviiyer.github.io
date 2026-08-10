@@ -8,17 +8,47 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html {
+  background-color: var(--bg);
+}
+
 html, body {
   font-family: 'Roboto', sans-serif;
   color: var(--ink);
-  background-color: var(--bg);
   font-size: 16px;
   line-height: 1.65;
 }
 
+body { background-color: transparent; }
+
 a { color: inherit; }
 
 .serif { font-family: 'Roboto', sans-serif; }
+
+/* ─── NEURAL BACKGROUND ─── */
+#neural-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.85;
+}
+#neural-bg.glitch {
+  animation: neuralGlitch 0.36s steps(2, end) 1;
+}
+@keyframes neuralGlitch {
+  0%   { filter: none; transform: translate(0, 0); }
+  15%  { filter: drop-shadow(2px 0 rgba(255, 0, 90, 0.55)) drop-shadow(-2px 0 rgba(0, 210, 255, 0.55)); transform: translate(-2px, 0); }
+  30%  { transform: translate(2px, 0); }
+  45%  { filter: drop-shadow(-3px 0 rgba(255, 0, 90, 0.40)) drop-shadow(3px 0 rgba(0, 210, 255, 0.40)); transform: translate(1px, -1px); }
+  70%  { filter: none; transform: translate(-1px, 0); }
+  100% { filter: none; transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #neural-bg { opacity: 0.6; }
+  #neural-bg.glitch { animation: none; }
+}
 
 /* ─── NAV ─── */
 nav {
