@@ -87,7 +87,7 @@
   var raf;
 
   function glitchOnce() {
-    var d = 5000 + Math.random() * 6000;
+    var d = 14000 + Math.random() * 13000;
     setTimeout(function () {
       canvas.classList.add('glitch');
       setTimeout(function () { canvas.classList.remove('glitch'); }, 360);
