@@ -557,9 +557,9 @@ footer .email-icon { width: 15px; height: 15px; fill: var(--muted); flex-shrink:
 }
 .footer-deco-flora {
   position: absolute;
-  right: 14px;
-  bottom: -12px;
-  width: 200px;
+  right: 24px;
+  bottom: -10px;
+  width: 244px;
   height: auto;
   pointer-events: none;
 }
