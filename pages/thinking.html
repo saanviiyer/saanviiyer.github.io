@@ -7,6 +7,15 @@ permalink: /pages/thinking/
   <h1>Thinking Out Loud</h1>
 </div>
 
-<div class="page-placeholder">
-  <p>✦ &nbsp; Content coming soon. Add thoughts, essays, and reflections here.</p>
+<p class="page-intro">Essays and half-formed thoughts on science, music, community, and whatever else I have been turning over lately.</p>
+
+<div class="post-list">
+  {% assign posts = site.posts | sort: 'date' | reverse %}
+  {% for post in posts %}
+  <a class="post-card" href="{{ post.url | relative_url }}">
+    <div class="post-card-meta">{{ post.date | date: "%b %Y" }}{% if post.tag %} &middot; {{ post.tag }}{% endif %}</div>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt }}</p>
+  </a>
+  {% endfor %}
 </div>
