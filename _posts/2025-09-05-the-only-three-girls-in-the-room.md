@@ -4,13 +4,15 @@ title: "The Only Three Girls in the Room"
 date: 2025-09-05
 tag: "Diversity in tech"
 permalink: /thinking/only-three-girls-in-the-room/
-excerpt: "In ninth grade I was one of three girls in a coding class of thirty. What that taught me about who technology gets built for."
+excerpt: "In 9th grade I was one of three girls in a coding class of 30. Founding a SWENext club, and learning that technology reflects the values of its creators."
 ---
 
-In ninth grade I walked into my first coding class and counted two other girls in a room of thirty. The three of us ended up clustered together, quietly aware that we didn't quite belong among the self-styled "brogrammers." By the end of the year, I had decided not to take another computer science class.
+In 9th grade, I eagerly stepped into my first coding class––only to find two other girls in the class of 30. The three of us found ourselves lost in an uninviting room of self-styled brogrammers, making us feel less like we belonged. This environment eventually discouraged me from taking a computer science class the following year.
 
-What changed my mind was a summer program at the University of Washington called Changemakers in Computing. It wasn't only about writing code. It was about building technology that actually works for the people who use it, like pulse oximeters that read correctly on darker skin. That reframed everything for me. Technology reflects the values of whoever builds it, and a tool designed by a narrow group tends to quietly fail everyone outside that group.
+However, my outlook changed when I joined the 2023 University of Washington Changemakers in Computing program. Beyond coding, the program emphasized building ethical and accessible technological solutions, such as pulse oximeters that work for darker skin tones. One of my biggest takeaways was that technology reflects the values of its creators, which made me ponder the impact of the lack of diversity in my school's technology classes.
 
-So I started a SWENext chapter at my school, less as a résumé line and more as the room I wished I had walked into in ninth grade. We ran beginner-friendly hackathons, invited women working in tech to talk about how they got there, and held workshops for anyone curious enough to show up. The club grew past thirty members, but the number I actually cared about was quieter: how many people stayed, kept building, and started to see themselves as engineers.
+Motivated to make a difference, I created a school-wide Society of Women Engineers (SWENext) club as an encouraging, supportive community for girls interested in computer science and engineering. I hosted talks with local women technology leaders, led beginner-friendly hackathons, and coordinated STEM-based skill-building workshops.
 
-Our end-of-year survey showed a 34% jump in members' interest in a tech career. I don't think that happened because we taught them to code faster. I think representation changes what feels possible, and what feels possible changes what gets built. If you want technology that serves more people, you have to widen the set of people who get to make it.
+In the winter, we hosted our first Innovation Challenge––a beginner-friendly hackathon to design technology for social good, with participation from 52 students across four schools. Later in the year, our SWENext team competed in large challenges like the University of Washington's Hack for Social Good hack-a-thon and the Microsoft Hunt the Wumpus state-wide contest, where we won 2nd place! To my excitement, the club grew to over 30 members, but what mattered most was the welcoming community we created for women to grow, support one another, and build lasting friendships.
+
+My journey has taught me that technology's innovation is driven both by considering the diversity of its users and, especially, that of its creators. Our SWENext year-end survey showed a 34% increase in members' interest in pursuing a technology-related career, which gives me hope that by encouraging diverse voices in technology, we can break stereotypes and build solutions with broader impact.
