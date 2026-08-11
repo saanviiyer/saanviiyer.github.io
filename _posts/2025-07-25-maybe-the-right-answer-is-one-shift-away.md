@@ -1,18 +1,18 @@
 ---
 layout: post
-title: "Maybe the Right Answer Is One Shift Away"
+title: "By Day a Student, By Night a Codebuster"
 date: 2025-07-25
 tag: "Cryptography"
 permalink: /thinking/one-shift-away/
-excerpt: "J'N B DPEFCVTUFS. On codebusting, and why creativity is often just seeing what is already there in a new way."
+excerpt: "J'N B DPEFCVTUFS. On cracking ciphers, and why creativity is often just seeing what is already there in a new way."
 ---
 
-J'N B DPEFCVTUFS. (A Caesar cipher, each letter shifted forward by one.)
+J'N B DPEFCVTUFS &lt;- a Caesar cipher: each letter is shifted by +1 letter.
 
-I'm a codebuster. Somewhere in middle school I picked up cryptography, starting with simple Caesar ciphers and working up to Patristocrats, and I never really put it down. My idea of a good time is unscrambling a block of gibberish until a hidden message falls out of it.
+By day, I'm a high school student. By night, I'm a codebuster. As a modern-day detective in the world of ciphers, my free time is spent unscrambling gibberish to uncover secret messages concealed behind layers of alphabetic substitution.
 
-The appeal isn't the moment the answer appears, though that part is nice. It's the process of getting there: counting letter frequencies, guessing where the invisible word breaks might be, spotting the one small pattern that unlocks the rest. A cipher looks like noise right up until it doesn't, and the flip between those two states happens entirely inside your own head.
+When I picked up cryptography last summer, I started with simple Caesar ciphers before advancing to challenging Patristocrat ciphers. To solve these, I have to spot words within words and imagine invisible breaks to make sense of the chaos and generate clues that propel me towards the solution.
 
-Codebusting taught me that creativity isn't only about inventing something new. Often it's about looking at what is already in front of you and seeing it differently. The letters never change. What changes is the frame you bring to them.
+Even when a code may initially seem uncrackable, I am confident that by staying calm and keeping my mind open, I will reach the solution––whether it be through intense calculations, analyzing letter frequency, uncovering word patterns, or a simple creative spark. For me, the thrill of cracking a code lies not just in the eureka moment of a solved cipher, but in going through the process itself.
 
-I've found that this transfers well beyond ciphers. When a problem feels genuinely stuck, I try to treat it the way I would treat an unbroken code: stay calm, keep the possibilities open, and trust that a solution exists even when I can't see it yet. More often than I would expect, the right answer was just one shift away.
+From cryptography, I've learned that creativity is more than just about coming up with new ideas; it's also about seeing what's already there in a new way. Whenever I find myself in a difficult situation, I can count on my codebusting skills to help me assess it patiently and think creatively––maybe the right answer is just a single shift away.

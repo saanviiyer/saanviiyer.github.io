@@ -4,13 +4,13 @@ title: "How Choir Changed the Way I Hear the World"
 date: 2025-08-20
 tag: "Music"
 permalink: /thinking/how-choir-changed-the-way-i-hear/
-excerpt: "I joined choir to fill an arts credit. It ended up teaching me that the patterns I love in science live in music too."
+excerpt: "I joined choir to fill an arts credit. It ended up teaching me that the patterns I admire in science live in music too."
 ---
 
-I joined my school's choir in ninth grade to fill an arts requirement. I liked singing on my own, but the idea of performing as part of a group felt foreign. I did not expect it to change the way I hear the world.
+When I joined my school's choir in 9th grade, I thought it would just be a class to fulfill my required arts credit. I loved to sing by myself, but the idea of performing with a group was unfamiliar. I never expected that my experience in choir would change the way I hear the world.
 
-From the first class, the focus was less on singing than on listening to each other. We started every rehearsal by giving a compliment to the person beside us. It sounds small, but it set the tone for the year. Blending voices turns out to depend on trust, and trust turns out to depend on paying real attention to the people around you.
+From the very first choir class, I realized that the focus wasn't just on singing but on connecting with each other. We started each class by giving compliments to the person next to us, which set the tone for the rest of the year. Soon, I found myself enjoying the process of building friendships and understood the importance of trust in making our voices blend together.
 
-Choir gave me a new way to listen, not only to music but to people, to their particular tones and timbres. And it kept surprising me with how much it rhymed with science. Harmony is ratios and frequencies. Dissonance is interference. The same patterns I chase in a physics problem were sitting inside a chord, except here they produced something that felt alive and a little overwhelming.
+Choir gave me a new way to listen—not just to music, but to people's unique tones and timbres. I realized the patterns that I admire in science also exist in music: harmonies rely on ratios and frequencies, yet they create something that feels deeply alive and profoundly emotional.
 
-That is the part I keep coming back to. The precision of science and the openness of art usually get filed in separate drawers, and choir showed me they don't have to be. In a good polyphony, the beauty belongs to no single voice. Whether it is a bossa nova line in jazz choir or a gospel arrangement, what I love is the moment the separate parts stop being separate. I still sing whenever I can, mostly because it is the clearest reminder I have that rigor and feeling are the same reach from different sides.
+Choir wasn't something I expected to enjoy and continue, but it revealed to me how the precision of science can come together with the unbridled creativity of art to create something extraordinary. With hauntingly expressive polyphonies and dissonance, the beauty of a choir transcends any one person's voice. Whether it be Bossa Nova pieces in Jazz Choir or Gospel arrangements in Bel Canto, I find great joy in singing in choir and connecting with those around me.
