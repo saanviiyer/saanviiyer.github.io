@@ -52,6 +52,17 @@
   bullets:
     - "A carbon-sequestration approach that extracts Ca(OH)2 from steel-slag byproduct and uses it to convert dissolved CO2 into calcium carbonate, backed by a coupled-ODE kinetic model and a full cost analysis (~$153 net gain per metric ton of CO2)."
 
+- title: "The Sandozer"
+  tags: "JavaScript · Cloudflare Workers · Arduino"
+  status: "Built at HackIllinois 2026 (John Deere × Arduino challenge)."
+  link: "https://youtu.be/WYq8iy92x8g"
+  cats: ["ai", "eng"]
+  bullets:
+    - "A mission-control web app for an autonomous sand-traversing robot: a flat-blade bulldozer on an Arduino Elegoo tank kit that navigates a 5×5 grid."
+    - "Full-stack build with a JavaScript single-page frontend and Cloudflare Pages/Workers serverless functions backed by D1, KV, and R2 storage."
+    - "Integrated the ElevenLabs API for spoken voice narration and the Web Speech API for voice command input; Teachable Machine computer vision handles terrain sensing."
+    - "Added a Google Gemini chat that answers questions about past runs via vector search, archived each mission in Snowflake, and monitored safety in real time (boundary, tilt, air quality, and traction by sand type)."
+
 - title: "CougarCareers Web Application"
   tags: "JavaScript · PHP · HTML"
   status: "Completed. Deployed for the school counseling department."
