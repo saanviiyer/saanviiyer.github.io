@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace }}" />
   <title>{{ page.title | default: site.title }}</title>
+
+  <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+  <meta property="og:title" content="{{ page.title | default: site.title }}" />
+  <meta property="og:description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace }}" />
+  {% unless page.layout == 'post' %}<meta property="og:image" content="{{ '/assets/img/og.png' | absolute_url }}" />{% endunless %}
+  <meta name="twitter:card" content="{% if page.layout == 'post' %}summary{% else %}summary_large_image{% endif %}" />
+  <meta name="twitter:title" content="{{ page.title | default: site.title }}" />
+  <meta name="twitter:description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace }}" />
+  {% unless page.layout == 'post' %}<meta name="twitter:image" content="{{ '/assets/img/og.png' | absolute_url }}" />{% endunless %}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

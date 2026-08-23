@@ -1,17 +1,33 @@
 ---
-title: Thinking Out Loud · Saanvi S. Subramanian
+title: Writing · Saanvi S. Subramanian
+description: >-
+  Essays by Saanvi S. Subramanian on minds, machines, identity, and the
+  experiences that change us.
 permalink: /pages/thinking/
 ---
 
 <div class="page-header">
-  <h1>Thinking Out Loud</h1>
+  <h1>Writing</h1>
 </div>
 
-<p class="page-intro">Essays and half-formed thoughts on science, music, community, and whatever else I have been turning over lately.</p>
+<p class="page-intro">Essays on minds, machines, identity, and the experiences that change us. I write to connect technical questions with the human stakes that made me care about them in the first place.</p>
 
+<h2 class="section-heading writing-heading">Recent</h2>
 <div class="post-list">
   {% assign posts = site.posts | sort: 'date' | reverse %}
-  {% for post in posts %}
+  {% for post in posts limit: 7 %}
+  <a class="post-card" href="{{ post.url | relative_url }}">
+    <div class="post-card-meta">{{ post.date | date: "%b %Y" }}{% if post.tag %} &middot; {{ post.tag }}{% endif %}</div>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt }}</p>
+  </a>
+  {% endfor %}
+</div>
+
+<h2 class="section-heading">Earlier work</h2>
+<p class="archive-note">An archive of earlier reporting and school essays. I keep them here as a record of how my questions and voice have changed.</p>
+<div class="post-list post-list-archive">
+  {% for post in posts offset: 7 %}
   <a class="post-card" href="{{ post.url | relative_url }}">
     <div class="post-card-meta">{{ post.date | date: "%b %Y" }}{% if post.tag %} &middot; {{ post.tag }}{% endif %}</div>
     <h3>{{ post.title }}</h3>

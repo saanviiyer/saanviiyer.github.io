@@ -13,7 +13,7 @@ Open `_data/experiences.yml`, copy one block, and fill it in:
     - "First accomplishment."
     - "Second accomplishment."
 ```
-It shows up automatically on the Research & Projects page. New entries at the top of the file appear first.
+It shows up automatically on the Research page. New entries at the top of the file appear first.
 
 ## Add a project
 Same idea, in `_data/projects.yml`:

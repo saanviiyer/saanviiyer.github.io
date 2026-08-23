@@ -1,9 +1,10 @@
 title: Saanvi S. Subramanian
 email: ssubramanian@caltech.edu
 description: >-
-  Reverse-engineering the brain with AI. Research, projects, and writing.
+  Machine learning for biological systems, with the brain as the north star.
+  Research and writing by Saanvi S. Subramanian.
 baseurl: ""      # e.g. "/mysite" if hosted at a subpath, else leave blank
-url: ""          # e.g. "https://saanviiyer.github.io"
+url: "https://saanviiyer.github.io"
 
 # Markdown / build settings
 markdown: kramdown
