@@ -1,5 +1,5 @@
 # Each entry has a "category": publication | talk | poster | award
-# Entries render grouped by category on the Research & Projects page.
+# Entries render grouped by category on the Research page.
 # "detail" is optional context shown under the title.
 
 # ─── PUBLICATIONS ───
@@ -57,7 +57,7 @@
 
 - title: "Stanford CCRTP People's Choice Award"
   detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program. One of three special distinction awardees among 40+ posters."
-  year: "2024"
+  year: "2025"
   category: "poster"
 
 - title: "UW WAFER Conference Presenter"
@@ -113,7 +113,7 @@
   category: "award"
 
 - title: "DECA, 1st at Internationals and 1st at State"
-  detail: "1st at ICDC in the Community Giving Project (out of 18,000+ competitors) for raising over $22,000 for cataract surgeries. Also 1st in state in Finance Operations Research."
+  detail: "1st at ICDC in the Community Giving Project after raising over $22,000 for cataract surgeries. Also 1st in state in Finance Operations Research."
   year: "2024"
   category: "award"
 

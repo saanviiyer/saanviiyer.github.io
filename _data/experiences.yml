@@ -29,20 +29,9 @@
   link: ""
   cats: ["neuro"]
   bullets:
-    - "Analyze EEG and imaging data to evaluate noninvasive brain stimulation studies using focused ultrasound, EEG, and fMRI for clinical applications."
-    - "Lead and design multisensory integration studies, developing scripts for behavioral experiments and performing data analysis."
-    - "Support experiments on inter-brain connectivity and noninvasive modulation of subcortical networks for potential clinical applications."
-
-- role: "Carbon Sequestration Project (Team SLAGC)"
-  org: "Caltech Integrated Core Program"
-  location: "Pasadena, CA"
-  dates: "2025 – 2026"
-  link: ""
-  cats: ["eng"]
-  bullets:
-    - "Interdisciplinary first-year honors team project designing a carbon-sequestration method that reacts Ca(OH)2, sourced from steel-manufacturing slag, with dissolved CO2 to precipitate and store calcium carbonate."
-    - "Led the introduction and experimental methods, designing proof-of-concept experiments that precipitated CaCO3 from seawater (verified by Raman spectroscopy) and attempted CaO extraction from slag (characterized by XRF)."
-    - "The team's kinetic model and cost analysis projected a net gain of roughly $153 per metric ton of CO2 sequestered."
+    - "Analyzing EEG and imaging data from noninvasive brain-stimulation studies using focused ultrasound, EEG, and fMRI."
+    - "Leading and designing multisensory-integration studies, including behavioral experiment scripts and data analysis."
+    - "Supporting experiments on inter-brain connectivity and noninvasive modulation of subcortical networks."
 
 - role: "Paid Research Intern, Pattwell Lab"
   org: "Seattle Children's Research Institute – Ben Towne Center"

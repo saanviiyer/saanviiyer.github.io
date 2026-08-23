@@ -1,30 +1,33 @@
 ---
-title: Research & Projects · Saanvi S. Subramanian
+title: Research · Saanvi S. Subramanian
+description: >-
+  Saanvi's research in multimodal biological AI, neural systems, medical
+  imaging, representation learning, and trustworthy model evaluation.
 permalink: /pages/research/
 ---
 
 <div class="page-header">
-  <h1>Research &amp; Projects</h1>
+  <h1>Research</h1>
 </div>
 
-<div class="legend">
-  <span class="legend-item"><span class="legend-dot" style="background:#0E0E52"></span> Neuroscience</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#B30089"></span> AI / ML</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#449DD1"></span> Computational Biology</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#C2948A"></span> Engineering &amp; Software</span>
+<p class="page-intro research-intro">My work starts with noisy, incomplete measurements of living systems and asks how computation can recover the structure that matters. I currently work across neural signals, medical imaging, cellular data, and protein representations. The biological scale changes; the methodological problem does not.</p>
+
+<div class="research-thesis">
+  <p class="research-thesis-label">Current research question</p>
+  <p class="research-thesis-main">How can multimodal models make biology legible enough to support a trustworthy decision?</p>
+  <p class="research-thesis-detail">That means pairing measurements that resolve one another, testing what the learned representation actually contains, and being explicit about where a model stops being reliable. My long-term direction is adaptive neural interfaces; my present work builds and stress-tests the pieces such systems would depend on.</p>
 </div>
 
-<h2 class="section-heading">Research Experience</h2>
+<h2 class="section-heading">Current &amp; prior research</h2>
 {% include experience-list.html %}
 
-<h2 class="section-heading">Projects</h2>
-{% include project-list.html %}
+<h2 class="section-heading">Selected projects</h2>
+{% include project-list.html featured=true %}
 
-<h2 class="section-heading">Selected code</h2>
-<ul class="about-interests code-list">
-  <li><strong><a class="accent-link" href="https://github.com/saanviiyer/PRISM" target="_blank" rel="noopener">PRISM</a>.</strong> Mechanistic interpretability of protein-language-model embeddings, measuring how mutational signatures shift a model's representation geometry. Interpretability and geometric ML.</li>
-  <li><strong><a class="accent-link" href="https://github.com/saanviiyer/engram" target="_blank" rel="noopener">engram</a>.</strong> Evaluating nominal gains in retention against matched learning: a controlled study of biologically-plausible mechanisms versus backprop under continual learning.</li>
-</ul>
+<p class="research-code-link">Code and works in progress live on <a class="accent-link" href="https://github.com/saanviiyer" target="_blank" rel="noopener">GitHub</a>.</p>
+
+<h2 class="section-heading">Earlier &amp; exploratory builds</h2>
+{% include project-list.html featured=false %}
 
 <h2 class="section-heading">Publications</h2>
 {% include awards-list.html cat="publication" %}

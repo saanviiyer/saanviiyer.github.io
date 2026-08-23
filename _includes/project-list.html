@@ -1,5 +1,6 @@
 <div class="entry-list">
   {% for item in site.data.projects %}
+  {% if include.featured == nil or item.featured == include.featured %}
   <div class="entry-card">
     <div class="entry-num">{{ forloop.index | prepend: "00" | slice: -3, 3 }}</div>
     <div class="entry-body">
@@ -20,5 +21,6 @@
       {% endif %}
     </div>
   </div>
+  {% endif %}
   {% endfor %}
 </div>

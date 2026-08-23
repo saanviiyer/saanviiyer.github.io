@@ -4,6 +4,7 @@
 # "cats" color-codes the project: neuro | ai | compbio | eng
 
 - title: "CortSeer"
+  featured: true
   tags: "Python · AI/ML"
   status: "In active development. Accepted for oral presentation at the ECCV Artificial Intelligence for Medical 3D Vision Workshop, 2026."
   link: ""
@@ -13,6 +14,7 @@
     - "Maps EEG-identified seizure onset zones to anatomical regions, built on a multimodal MRI and EEG foundation model."
 
 - title: "PRISM: Protein Residue Impact and Signature Modeling"
+  featured: true
   tags: "Python · AI/ML"
   status: "Accepted for oral presentation at IEEE CIBCB 2026. Additional papers in preparation."
   link: "https://github.com/saanviiyer/PRISM"
@@ -20,7 +22,17 @@
   bullets:
     - "A homology-free method that applies mutational signatures to coding sequences and measures the resulting shift in protein-language-model embeddings, as a probe of how mutations may reshape protein function. Developed with the Mora group at AITHYRA (Research Institute for Biomedical Artificial Intelligence)."
 
+- title: "Engram: Biologically Plausible Continual Learning"
+  featured: true
+  tags: "Python · NeuroAI"
+  status: "Controlled evaluation in active development."
+  link: "https://github.com/saanviiyer/engram"
+  cats: ["ai", "neuro"]
+  bullets:
+    - "A controlled study of whether biologically inspired learning mechanisms improve retention under continual learning when training exposure and optimization budgets are matched."
+
 - title: "Gauntlet"
+  featured: true
   tags: "Protein Design · AI/ML"
   status: "In development."
   link: ""
@@ -29,6 +41,7 @@
     - "An audit harness for protein design. It stress-tests the fitness proxies that generative pipelines optimize against, checking them for trivial-baseline dominance and reward-hacking before an objective is trusted."
 
 - title: "Self-Defeating Surrogates"
+  featured: true
   tags: "Protein Design · AI/ML"
   status: "Early-stage research."
   link: ""
@@ -37,14 +50,16 @@
     - "Studying when learned fitness proxies stop being reliable among the top protein variants an optimizer selects, and how to constrain directed evolution to the region where a surrogate still holds."
 
 - title: "Microlearning in Neural Networks"
+  featured: false
   tags: "NeuroAI · Deep Learning"
   status: "Built at the Neuromatch NeuroAI advanced course."
   link: ""
   cats: ["ai", "neuro"]
   bullets:
-    - "Selected for the Neuromatch NeuroAI advanced course, where I built a group research project on microlearning."
+    - "A Neuromatch NeuroAI group project studying microlearning as a candidate mechanism for memory and adaptation."
 
 - title: "Steeling CO2: Sequestering CO2 through Steel Byproduct Processing"
+  featured: false
   tags: "Integrated Core · Chemistry"
   status: "Integrated Core team project (Team SLAGC)."
   link: ""
@@ -53,6 +68,7 @@
     - "A carbon-sequestration approach that extracts Ca(OH)2 from steel-slag byproduct and uses it to convert dissolved CO2 into calcium carbonate, backed by a coupled-ODE kinetic model and a full cost analysis (~$153 net gain per metric ton of CO2)."
 
 - title: "The Sandozer"
+  featured: false
   tags: "JavaScript · Cloudflare Workers · Arduino"
   status: "Built at HackIllinois 2026 (John Deere × Arduino challenge)."
   link: "https://youtu.be/WYq8iy92x8g"
@@ -64,6 +80,7 @@
     - "Added a Google Gemini chat that answers questions about past runs via vector search, archived each mission in Snowflake, and monitored safety in real time (boundary, tilt, air quality, and traction by sand type)."
 
 - title: "CougarCareers Web Application"
+  featured: false
   tags: "JavaScript · PHP · HTML"
   status: "Completed. Deployed for the school counseling department."
   link: "https://github.com/saanviiyer/CougarConnect-CTE-Careers"
@@ -72,6 +89,7 @@
     - "Co-built a full-stack web application for the school's counseling department to help students learn about career education opportunities and easily apply to jobs."
 
 - title: "Redox Probe Water Salinity Detector"
+  featured: false
   tags: "Arduino · Circuit Design"
   status: "Completed. 1st Place in Detector Building at the MIT Invitational."
   link: ""
