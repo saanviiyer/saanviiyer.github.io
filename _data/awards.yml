@@ -3,6 +3,11 @@
 # "detail" is optional context shown under the title.
 
 # ─── PUBLICATIONS ───
+- title: "Electrophysiology-guided detection of epileptic lesions (CortSeer)"
+  detail: "Submitted to Brain Informatics. Stanford Medicine work fusing seizure-onset localization with 3D structural MRI to recover lesions missed by an imaging-only model."
+  year: "2026"
+  category: "publication"
+
 - title: "Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma"
   detail: "Manuscript in progress with the Pattwell Lab, Seattle Children's Research Institute. Machine-learning analysis of ~1M cells identifying malignant Medulloblastoma populations."
   year: "In progress"
