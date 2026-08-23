@@ -124,10 +124,10 @@ nav {
 }
 
 .hero-lead {
-  font-size: 1.22rem;
-  line-height: 1.55;
+  font-size: 1.18rem;
+  line-height: 1.6;
   color: var(--ink);
-  max-width: 660px;
+  max-width: 740px;
   margin-bottom: 18px;
 }
 .hero-lead .hl { color: var(--accent); font-weight: 600; }
