@@ -77,6 +77,11 @@
   category: "award"
   link: "/assets/pdfs/neuroai_certificate.pdf"
 
+- title: "2025 Neuroscience Research Prize Finalist"
+  detail: "American Academy of Neurology. Advanced to the final round of the national research prize, selected from a record number of entries."
+  year: "2025"
+  category: "award"
+
 - title: "Chuck Kaysner - Rivergrove Memorial Scholarship"
   detail: "Recipient of the Chuck Kaysner - Rivergrove Memorial Scholarship in high school."
   year: "2025"
@@ -88,8 +93,8 @@
   category: "award"
 
 - title: "SWENext Global Innovator Award"
-  detail: "Society of Women Engineers K-12 program. Awarded for community impact and STEM outreach, and named a 2x STEM in Action awardee."
-  year: "2024, 2025"
+  detail: "Society of Women Engineers K-12 program. Awarded for community impact and STEM outreach, named a 2x STEM in Action awardee, and a 2023 SWENext WE Local Award recipient."
+  year: "2023, 2024, 2025"
   category: "award"
 
 - title: "NCWiT Aspirations in Computing, Impact Award and 3x Affiliate Winner"
@@ -109,6 +114,11 @@
 
 - title: "WA State Science & Engineering Fair, 3 Special Awards"
   detail: "AFCEA Excellence in Technology (PNW), Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy (out of 170 competitors) for an energy-harvester prototype."
+  year: "2024"
+  category: "award"
+
+- title: "Central Sound Regional Science & Engineering Fair, 3rd Place"
+  detail: "Third place in the Systems Software & Embedded Systems category."
   year: "2024"
   category: "award"
 
