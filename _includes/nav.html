@@ -1,9 +1,12 @@
 <nav>
-  <a href="{{ '/' | relative_url }}" class="nav-name">Saanvi S. Subramanian</a>
+  <a href="{{ '/' | relative_url }}" class="nav-name">
+    <span>Saanvi S. Subramanian</span>
+    <small>Caltech · CNS</small>
+  </a>
   <ul class="nav-links">
-    <li><a href="{{ '/pages/research/' | relative_url }}">Research</a></li>
-    <li><a href="{{ '/pages/thinking/' | relative_url }}">Writing</a></li>
-    <li><a href="{{ '/pages/about/' | relative_url }}">About</a></li>
-    <li><a href="{{ '/pages/portfolio/' | relative_url }}">Portfolio</a></li>
+    <li><a{% if page.url == '/pages/research/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/research/' | relative_url }}"><span>01</span> Research</a></li>
+    <li><a{% if page.url == '/pages/thinking/' or page.layout == 'post' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/thinking/' | relative_url }}"><span>02</span> Writing</a></li>
+    <li><a{% if page.url == '/pages/about/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/about/' | relative_url }}"><span>03</span> About</a></li>
+    <li><a{% if page.url == '/pages/portfolio/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/portfolio/' | relative_url }}"><span>04</span> Portfolio</a></li>
   </ul>
 </nav>

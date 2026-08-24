@@ -5,40 +5,35 @@ description: >-
   and interventions that can improve health.
 ---
 
-<div class="hero">
-  <div class="hero-row">
-    <img class="hero-photo" src="{{ '/assets/img/saanvi.jpg' | relative_url }}" alt="Saanvi S. Subramanian" />
-    <div class="hero-intro">
-      <p class="hero-kicker">Studying intelligence in living systems</p>
-      <h1>Saanvi S. Subramanian</h1>
-      <p class="hero-subtitle">
-        Undergraduate at <a class="accent-link" href="https://www.caltech.edu" target="_blank" rel="noopener">Caltech</a>,
-        studying <a class="accent-link" href="https://www.bbe.caltech.edu/academics/cns" target="_blank" rel="noopener">Computation and Neural Systems</a>
-        with a minor in Math and Information Science, advised by
-        <a class="accent-link" href="https://www.bbe.caltech.edu/people/markus-meister" target="_blank" rel="noopener">Markus Meister</a>.
-      </p>
+<section class="hero">
+  <div class="hero-copy">
+    <p class="hero-kicker">Computation · neuroscience · biology</p>
+    <h1><span>Saanvi S.</span> Subramanian<span class="accent-period">.</span></h1>
+    <p class="hero-thesis">I build models of living systems to make their behavior more understandable, and eventually more changeable.</p>
+
+    <p class="hero-lead">
+      I am a Caltech undergraduate studying <a class="accent-link" href="https://www.bbe.caltech.edu/academics/cns" target="_blank" rel="noopener">Computation and Neural Systems</a>. My work uses machine learning to study brains and other biological systems, with an emphasis on questions that can lead to useful interventions.
+    </p>
+
+    <p class="hero-secondary">
+      I am also curious about neuro-based world models, what biological intelligence can teach us about alignment, and how increasingly capable biological AI should be evaluated safely.
+    </p>
+
+    <div class="hero-links" aria-label="Profile links">
+      <a class="primary-link" href="{{ '/pages/research/' | relative_url }}">Research <span aria-hidden="true">↗</span></a>
+      <a class="text-link" href="https://github.com/saanviiyer" target="_blank" rel="noopener">GitHub</a>
+      <a class="text-link" href="https://www.linkedin.com/in/saanvi-subramanian-669986259/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="text-link" href="mailto:{{ site.email }}">Email</a>
     </div>
   </div>
-  <p class="hero-lead">
-    I use machine learning to study <span class="hl">how brains and other living systems
-    work</span>. I am drawn to questions that can lead to useful interventions. A change to a
-    neural circuit or biological pathway can directly change a patient's condition, which gives
-    the research a clear connection to health.
-  </p>
-  <p class="hero-lead hero-secondary">
-    I am especially curious about neuro-based world models: how brains build internal
-    representations of the world and use them to guide behavior. I am beginning to explore how
-    these ideas relate to AI alignment. AI's growing ability to reason about biology also raises
-    biosecurity questions about how new capabilities should be evaluated and controlled.
-  </p>
 
-  <div class="hero-links">
-    <a class="primary-link" href="{{ '/pages/research/' | relative_url }}">Explore my research <span aria-hidden="true">&rarr;</span></a>
-    <span class="dot">&middot;</span>
-    <a class="text-link" href="https://github.com/saanviiyer" target="_blank" rel="noopener">GitHub</a>
-    <span class="dot">·</span>
-    <a class="text-link" href="https://www.linkedin.com/in/saanvi-subramanian-669986259/" target="_blank" rel="noopener">LinkedIn</a>
-    <span class="dot">·</span>
-    <a class="text-link" href="mailto:{{ site.email }}">Email</a>
-  </div>
-</div>
+  <figure class="hero-portrait">
+    <img class="hero-photo" src="{{ '/assets/img/saanvi.jpg' | relative_url }}" alt="Saanvi S. Subramanian" />
+    <figcaption>Caltech · Pasadena, California</figcaption>
+  </figure>
+</section>
+
+<aside class="home-note">
+  <p class="home-note-label">Current direction</p>
+  <p>Understanding internal representations in neural and biological systems well enough to support deliberate, evidence-based intervention.</p>
+</aside>
