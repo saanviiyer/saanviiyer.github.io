@@ -14,12 +14,15 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { background: var(--paper); scroll-behavior: smooth; }
-
-body {
+html {
   background:
     radial-gradient(circle at 88% 8%, rgba(177, 60, 104, 0.055), transparent 25rem),
     var(--paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  background: transparent;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 16px;
@@ -29,6 +32,26 @@ body {
 
 a { color: inherit; }
 ::selection { background: var(--accent-soft); }
+
+/* Animated neural circuit layer */
+#neural-bg {
+  height: 100%;
+  inset: 0;
+  opacity: 0.68;
+  pointer-events: none;
+  position: fixed;
+  width: 100%;
+  z-index: -1;
+}
+
+#neural-bg.glitch { animation: neural-glitch 0.36s steps(2, end) 1; }
+
+@keyframes neural-glitch {
+  0%, 100% { filter: none; transform: translate(0, 0); }
+  20% { filter: drop-shadow(2px 0 rgba(177, 60, 104, 0.28)); transform: translate(-1px, 0); }
+  45% { filter: drop-shadow(-2px 0 rgba(70, 111, 131, 0.3)); transform: translate(1px, -1px); }
+  72% { filter: none; transform: translate(-1px, 0); }
+}
 
 /* Navigation */
 nav {
@@ -478,7 +501,7 @@ footer a:hover { text-decoration: underline; }
 }
 
 @media (max-width: 620px) {
-  body { background: var(--paper); }
+  #neural-bg { opacity: 0.48; }
   nav { align-items: flex-start; flex-direction: column; gap: 12px; position: relative; }
   .nav-links { flex-wrap: wrap; gap: 5px 18px; }
   .nav-links a { font-size: 0.72rem; }
@@ -507,5 +530,7 @@ footer a:hover { text-decoration: underline; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  #neural-bg { opacity: 0.48; }
+  #neural-bg.glitch { animation: none; }
   .pf-thumb img { transition: none; }
 }

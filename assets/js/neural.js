@@ -6,7 +6,7 @@
   var ctx = canvas.getContext('2d');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var ACCENT = '68,157,209';       // Blue Bell (--accent-2)
+  var ACCENT = '70,111,131';       // Muted blue from the editorial palette
   var LINK_DIST = 175;             // connection radius (css px)
   var W, H, DPR;
   var nodes = [];
