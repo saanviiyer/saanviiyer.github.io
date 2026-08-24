@@ -76,7 +76,7 @@
   bullets:
     - "A mission-control web app for an autonomous sand-traversing robot: a flat-blade bulldozer on an Arduino Elegoo tank kit that navigates a 5×5 grid."
     - "Full-stack build with a JavaScript single-page frontend and Cloudflare Pages/Workers serverless functions backed by D1, KV, and R2 storage."
-    - "Integrated the ElevenLabs API for spoken voice narration and the Web Speech API for voice command input; Teachable Machine computer vision handles terrain sensing."
+    - "Integrated the ElevenLabs API for spoken voice narration and the Web Speech API for voice command input. Teachable Machine computer vision handles terrain sensing."
     - "Added a Google Gemini chat that answers questions about past runs via vector search, archived each mission in Snowflake, and monitored safety in real time (boundary, tilt, air quality, and traction by sand type)."
 
 - title: "CougarCareers Web Application"
