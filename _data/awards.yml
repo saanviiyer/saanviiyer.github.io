@@ -8,10 +8,11 @@
   year: "2026"
   category: "publication"
 
-- title: "Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma"
-  detail: "Manuscript in progress with the Pattwell Lab, Seattle Children's Research Institute. Machine-learning analysis of ~1M cells identifying malignant Medulloblastoma populations."
-  year: "In progress"
+- title: "Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma (preprint)"
+  detail: "Preprint with the Pattwell Lab, Seattle Children's Research Institute. Machine-learning analysis of ~1M cells identifying malignant Medulloblastoma populations."
+  year: "2025"
   category: "publication"
+  link: "https://www.biorxiv.org/content/10.1101/2025.11.12.687706v2.full"
 
 # ─── INVITED TALKS & ORAL PRESENTATIONS ───
 - title: "Oral Presentation, ECCV Artificial Intelligence for Medical 3D Vision Workshop"
@@ -59,6 +60,7 @@
   detail: "Only high school student invited to present Medulloblastoma research at the Stanford Comprehensive Cancer Research Training Program. One of three special distinction awardees among 40+ posters."
   year: "2025"
   category: "poster"
+  link: "/assets/verification/peoples-choice.pdf"
 
 - title: "UW WAFER Conference Presenter"
   detail: "Presented energy-harvesting research at the University of Washington Women at the Forefront of ECE Research (WAFER) conference."
@@ -72,7 +74,7 @@
   category: "award"
 
 - title: "NeuroAI Certificate of Completion, Neuromatch Academy"
-  detail: 'Completed the interactive track and the course project (85 hours). <a href="https://portal.neuromatchacademy.org/certificate/2cf6ab4e-100b-49a0-b1ad-bcd533d54f50" target="_blank" rel="noopener">Verify authenticity</a>.'
+  detail: "Completed the interactive track and the course project (85 hours)."
   year: "2026"
   category: "award"
   link: "/assets/pdfs/neuroai_certificate.pdf"
@@ -96,11 +98,13 @@
   detail: "Society of Women Engineers K-12 program. Awarded for community impact and STEM outreach, named a 2x STEM in Action awardee, and a 2023 SWENext WE Local Award recipient."
   year: "2023, 2024, 2025"
   category: "award"
+  link: "/assets/verification/swenext-global-innovator.pdf"
 
 - title: "NCWiT Aspirations in Computing, Impact Award and 3x Affiliate Winner"
   detail: "National Center for Women in Information Technology. Two-time Impact Award recipient (2023, 2024) for computing career-development work, plus 3x Seattle and Western Washington regional winner."
   year: "2023, 2024"
   category: "award"
+  link: "/assets/verification/ncwit-impact.pdf"
 
 - title: "AP Scholar with Distinction"
   detail: "Earned scores of 5 on 13 AP exams."
@@ -116,6 +120,7 @@
   detail: "AFCEA Excellence in Technology (PNW), Sigma Xi Best Interdisciplinary Research, and 1st Place Trophy (out of 170 competitors) for an energy-harvester prototype."
   year: "2024"
   category: "award"
+  link: "/assets/verification/wssef.pdf"
 
 - title: "Central Sound Regional Science & Engineering Fair, 3rd Place"
   detail: "Third place in the Systems Software & Embedded Systems category."
