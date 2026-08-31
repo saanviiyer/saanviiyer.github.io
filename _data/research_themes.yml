@@ -1,0 +1,29 @@
+# Research themes shown on the Research page.
+# Each theme groups projects (by matching projects.yml "theme" key) and
+# carries high-level progress bullets. Keep bullets qualitative: no
+# unpublished statistics while work is under double-blind review.
+# "key" must match the "theme" field on projects in projects.yml.
+
+- key: "neuro"
+  name: "Neuroscience & world models"
+  blurb: "How brains and models build usable representations of the world, and how those representations can guide an intervention."
+  bullets:
+    - "Foundation models for clinical neuroimaging that map electrophysiology to anatomy, so a prediction carries enough evidence to justify a clinical action. CortSeer is accepted for an oral presentation at the ECCV Artificial Intelligence for Medical 3D Vision workshop."
+    - "World models trained from pixels alone that recover heading and spatial structure without pose supervision. A training regime that withholds visual input for stretches produces markedly lower heading error and transfers to unseen arenas."
+    - "What fixes the order in which a world model's capabilities emerge, studied against rodent head-direction development, and whether biologically inspired learning rules improve retention once training exposure and optimization budget are matched (Engram)."
+
+- key: "biodesign"
+  name: "Trustworthy ML for biological design"
+  blurb: "When protein models actually encode the property being optimized, and when they only appear to."
+  bullets:
+    - "Measuring whether protein language models capture binding specificity, stability, and directed-evolution fitness, or score against them. PRISM, a homology-free mutational-signature probe of these embeddings, is accepted for an oral presentation at IEEE CIBCB 2026."
+    - "A recurring result across these lines: simple baselines (substitution matrices, amino-acid composition, mutation count) stay competitive with large models, and apparent gains usually trace to a missing control such as a within-background split or a one-hot floor."
+    - "Forecasting where a model will be unreliable before any labels exist, and asking what a screen actually covers, not only what it averages. Gauntlet packages this as an audit tool that stress-tests a fitness proxy for trivial-baseline dominance and reward-hacking before a wet lab trusts it."
+
+- key: "safety"
+  name: "AI safety & evaluation validity"
+  blurb: "Whether an evaluation, a claim, or a safeguard measures what its name says it does."
+  bullets:
+    - "plimsoll, a public command-line auditor that holds a research repository against twenty-two methodology gates and reports the quoted evidence behind each verdict. MIT licensed, CI green on Python 3.11 to 3.13."
+    - "Multiple-choice bio-risk benchmarks can be answered above chance without reading the question, and the exploitable structure is inherited from the format and is not specific to biology. A drop in such a score under a safety intervention is not on its own evidence that a capability was removed."
+    - "Whether an optimized inference stack makes the same decisions as the reference, plus pre-flight checks, sandboxing, and null-result detection for language-model agents doing biological work."
