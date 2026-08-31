@@ -3,8 +3,21 @@
 # "status" is a short current-progress note shown under the title.
 # "cats" color-codes the project: neuro | ai | compbio | eng
 
+- title: "plimsoll"
+  featured: true
+  theme: "safety"
+  tags: "Python · LLM Systems · Research Tooling"
+  status: "Public release, MIT licensed. CI green on Python 3.11–3.13."
+  link: "https://github.com/saanviiyer/plimsoll"
+  cats: ["ai", "eng"]
+  bullets:
+    - "A command-line auditor that holds a research repository against twenty-two methodology gates — trivial baselines, verified nulls, decisive controls, named confounds, printed denominators — and reports where it first fails them, with the quoted evidence each verdict rests on."
+    - "Three tiers: a static check that needs no API key, a Claude-backed adjudicator that runs one prompt-cached call per gate, and an evaluation harness that scores the auditor against instances built to the same standard it audits for."
+    - "Separates \"does not apply\" from \"fails\" as distinct verdict states, so an inapplicable gate is never scored as a miss, and turns its own gates on itself — CI re-runs the tool under two interpreter hash seeds and fails the build if the output differs."
+
 - title: "CortSeer"
   featured: true
+  theme: "neuro"
   tags: "Python · AI/ML"
   status: "In active development. Accepted for oral presentation at the ECCV Artificial Intelligence for Medical 3D Vision Workshop, 2026."
   link: ""
@@ -15,6 +28,7 @@
 
 - title: "PRISM: Protein Residue Impact and Signature Modeling"
   featured: true
+  theme: "biodesign"
   tags: "Python · AI/ML"
   status: "Accepted for oral presentation at IEEE CIBCB 2026. Additional papers in preparation."
   link: "https://github.com/saanviiyer/PRISM"
@@ -24,6 +38,7 @@
 
 - title: "Engram: Biologically Plausible Continual Learning"
   featured: true
+  theme: "neuro"
   tags: "Python · NeuroAI"
   status: "Controlled evaluation in active development."
   link: "https://github.com/saanviiyer/engram"
@@ -33,6 +48,7 @@
 
 - title: "Gauntlet"
   featured: true
+  theme: "biodesign"
   tags: "Protein Design · AI/ML"
   status: "In development."
   link: ""
@@ -42,6 +58,7 @@
 
 - title: "Self-Defeating Surrogates"
   featured: true
+  theme: "biodesign"
   tags: "Protein Design · AI/ML"
   status: "Early-stage research."
   link: ""

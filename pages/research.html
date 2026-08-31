@@ -19,10 +19,23 @@ permalink: /pages/research/
 <h2 class="section-heading">Current &amp; prior research</h2>
 {% include experience-list.html %}
 
-<h2 class="section-heading">Selected projects</h2>
-{% include project-list.html featured=true %}
+<h2 class="section-heading">Research themes &amp; projects</h2>
+{% include theme-projects.html %}
 
 <p class="research-code-link">Code and works in progress live on <a class="accent-link" href="https://github.com/saanviiyer" target="_blank" rel="noopener">GitHub</a>.</p>
+
+<h2 class="section-heading">Biosecurity</h2>
+<div class="biosec">
+  <p>A rapid biodefense response has to trust a model the first time it is pointed at something no one has characterized before. My biosecurity work asks whether the models and safeguards inside that loop earn that trust in exactly that regime, and it keeps finding that a headline number was measuring something other than what it was named after.</p>
+  <ul class="biosec-points">
+    <li><strong>Failure forecasting before labels exist.</strong> Predicting where a protein model will be unreliable on a sequence it has never seen, so a low-confidence call can be flagged in the setting a response system actually operates in. The obvious proxy for this, homolog depth, does not work.</li>
+    <li><strong>Coverage, not averages, for screening.</strong> Someone probing a detector needs one viable thing it misses, while the detector needs the whole viable space handled. A screen can score well on a ranking metric and still leave most of the viable set uncovered, which is the number a deployment should care about.</li>
+    <li><strong>Whether bio-risk evaluations measure capability at all.</strong> A widely used multiple-choice benchmark format can be answered above chance without reading the question, and the exploitable structure carries over from unrelated subjects. A change in that score under a safety intervention is not on its own evidence that a capability was added or removed.</li>
+    <li><strong>Honest capability accounting.</strong> On complete design landscapes, model-driven directed evolution shows no measurable uplift over classical methods at any tested budget, and the field's usual weak baseline manufactures an uplift that is not there. This constrains threat models in both directions and says where model-driven design does and does not yet buy speed.</li>
+    <li><strong>Tooling built to be run.</strong> An audit tool that tells a wet lab whether any model has earned a design decision, pre-flight checks that catch semantically unsafe lab protocols, a zero-trust sandbox with its own red team for agents doing variant-effect work, and a public auditor that checks a project's own claims against a methodology standard.</li>
+  </ul>
+  <p>The through-line is a discipline more than a set of results. The recurring cause of an inflated claim is a missing negative control, an ablated arm, a within-background split, a one-hot floor, a never-knew-it probe. In a biodefense pipeline a wrong characterization is expensive and a slow one is worse, so every claim earns a control before it is trusted.</p>
+</div>
 
 <h2 class="section-heading">Publications</h2>
 {% include awards-list.html cat="publication" %}

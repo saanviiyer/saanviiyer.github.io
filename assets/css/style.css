@@ -289,6 +289,78 @@ nav {
 
 .writing-heading { margin-top: 0; }
 
+.exp-group-heading {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 34px 0 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--accent-soft);
+}
+.exp-group-heading:first-of-type { margin-top: 8px; }
+
+/* Research themes */
+.research-theme { margin: 0 0 40px; }
+.theme-heading {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.18rem;
+  font-weight: 600;
+  margin: 30px 0 6px;
+}
+.theme-blurb { color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; max-width: 60ch; }
+.theme-progress {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+  max-width: 72ch;
+}
+.theme-progress li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 9px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.theme-progress li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.theme-projects { margin-top: 6px; }
+
+/* Biosecurity summary */
+.biosec { max-width: 74ch; }
+.biosec > p { color: var(--ink); line-height: 1.6; margin: 0 0 16px; }
+.biosec-points { list-style: none; margin: 0 0 18px; padding: 0; }
+.biosec-points li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 12px;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+.biosec-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.biosec-points strong { color: var(--ink); }
+
 /* Research and record lists */
 .entry-list { display: flex; flex-direction: column; }
 

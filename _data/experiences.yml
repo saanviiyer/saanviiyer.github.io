@@ -6,6 +6,7 @@
   location: "Palo Alto, CA"
   dates: "June 2026 – Present"
   link: ""
+  group: "neuro"
   cats: ["ai", "neuro"]
   bullets:
     - "Awarded a Caltech Summer Undergraduate Research Fellowship (SURF)."
@@ -17,6 +18,7 @@
   location: "Pasadena, CA"
   dates: "December 2025 – Present"
   link: ""
+  group: "compbio"
   cats: ["ai", "compbio"]
   bullets:
     - "Developing a tri-modal radiogenomic foundation model, using contrastive learning to align 3D kidney CT scan features with gene expression mutation data from patients."
@@ -27,6 +29,7 @@
   location: "Pasadena, CA"
   dates: "October 2025 – Present"
   link: ""
+  group: "neuro"
   cats: ["neuro"]
   bullets:
     - "Analyzing EEG and imaging data from noninvasive brain-stimulation studies using focused ultrasound, EEG, and fMRI."
@@ -38,6 +41,7 @@
   location: "Seattle, WA"
   dates: "Summer 2025"
   link: ""
+  group: "compbio"
   cats: ["compbio", "ai"]
   bullets:
     - "Built 9 regression and random forest models predicting cancerous cell formation with >90% accuracy from 1M Medulloblastoma cells. Publication in progress, titled 'Topic Modeling Shows Rhombic Lip Developmental Lineages Persist in Medulloblastoma.'"
@@ -48,6 +52,7 @@
   location: "Seattle, WA"
   dates: "2023 – 2024"
   link: ""
+  group: "eng"
   cats: ["eng"]
   bullets:
     - "Designed and tested 3 novel energy harvester topologies in a 100W anechoic chamber."
