@@ -15,6 +15,11 @@
   link: "https://www.biorxiv.org/content/10.1101/2025.11.12.687706v2.full"
 
 # ─── INVITED TALKS & ORAL PRESENTATIONS ───
+- title: "Lightning Talk & Poster, RoBoWoMo 2026 at IEEE IROS"
+  detail: '"A Faithful Heading Variable Emerges in Predictive World Models Only Under Partial Observability" accepted for both a lightning talk and a poster at the Robot World Models workshop (RoBoWoMo) at IEEE IROS 2026.'
+  year: "2026"
+  category: "talk"
+
 - title: "Oral Presentation, ECCV Artificial Intelligence for Medical 3D Vision Workshop"
   detail: 'CortSeer accepted for an oral presentation at the <a href="https://ai4m3d.github.io/#schedule" target="_blank" rel="noopener">Artificial Intelligence for Medical 3D Vision workshop</a> at ECCV.'
   year: "2026"
@@ -36,6 +41,11 @@
   category: "talk"
 
 # ─── POSTERS & PRESENTATIONS ───
+- title: "No BLAST, New Problems! Auditing Homology-Free Protein-Function Prediction"
+  detail: "Accepted to the Women in Machine Learning (WiML) workshop at NeurIPS 2026, and rated in the top 15% of all accepted papers across every review."
+  year: "2026"
+  category: "poster"
+
 - title: "Poster, CBEC (Biohub)"
   detail: "Accepted to present a poster at CBEC (Biohub) covering the Medulloblastoma work from Seattle Children's Research Institute and the PRISM protein-signature research with AITHYRA."
   year: "2026"
