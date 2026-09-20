@@ -27,7 +27,7 @@ Same idea, in `_data/projects.yml`:
 ```
 
 ## Edit a page's text
-Each file in `pages/` (about, contact, thinking, misc) is just the content for that page — no head/nav/footer to worry about, those live once in `_layouts/default.html`.
+Each file in `pages/` (about, contact, thinking, misc) is just the content for that page, no head/nav/footer to worry about, those live once in `_layouts/default.html`.
 
 ## Local preview
 ```
