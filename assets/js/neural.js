@@ -6,7 +6,14 @@
   var ctx = canvas.getContext('2d');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var ACCENT = '70,111,131';       // Muted blue from the editorial palette
+  // Neuron color follows the active theme via the --neuron-rgb CSS variable.
+  function neuronRGB() {
+    var v = getComputedStyle(document.body).getPropertyValue('--neuron-rgb');
+    return (v && v.trim()) || '124,22,92';
+  }
+  var ACCENT = neuronRGB();
+  window.addEventListener('themechange', function () { ACCENT = neuronRGB(); });
+
   var LINK_DIST = 175;             // connection radius (css px)
   var W, H, DPR;
   var nodes = [];
