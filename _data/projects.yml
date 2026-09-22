@@ -3,6 +3,17 @@
 # "status" is a short current-progress note shown under the title.
 # "cats" color-codes the project: neuro | ai | compbio | eng
 
+- title: "Faithful Heading in Predictive World Models"
+  featured: true
+  theme: "neuro"
+  tags: "Python · RL · World Models"
+  status: "Lightning talk + poster, RoBoWoMo 2026 at IEEE IROS."
+  link: ""
+  cats: ["ai", "neuro"]
+  bullets:
+    - "Predictive world models trained from pixels alone recover a faithful heading variable and spatial structure with no pose supervision."
+    - "The heading representation emerges only under partial observability: withholding visual input during stretches of training markedly lowers heading error, and the learned structure transfers to unseen arenas."
+
 - title: "plimsoll"
   featured: true
   theme: "safety"
@@ -11,9 +22,10 @@
   link: "https://github.com/saanviiyer/plimsoll"
   cats: ["ai", "eng"]
   bullets:
-    - "A command-line auditor that holds a research repository against twenty-two methodology gates — trivial baselines, verified nulls, decisive controls, named confounds, printed denominators — and reports where it first fails them, with the quoted evidence each verdict rests on."
+    - "A command-line auditor that holds a research repository against twenty-two methodology gates (trivial baselines, verified nulls, decisive controls, named confounds, printed denominators) and reports where it first fails them, with the quoted evidence each verdict rests on."
     - "Three tiers: a static check that needs no API key, a Claude-backed adjudicator that runs one prompt-cached call per gate, and an evaluation harness that scores the auditor against instances built to the same standard it audits for."
-    - "Separates \"does not apply\" from \"fails\" as distinct verdict states, so an inapplicable gate is never scored as a miss, and turns its own gates on itself — CI re-runs the tool under two interpreter hash seeds and fails the build if the output differs."
+    - "Separates \"does not apply\" from \"fails\" as distinct verdict states, so an inapplicable gate is never scored as a miss, and turns its own gates on itself. CI re-runs the tool under two interpreter hash seeds and fails the build if the output differs."
+    - "Built to be run, with pre-flight checks that catch semantically unsafe lab protocols and a zero-trust sandbox with its own red team for agents doing variant-effect work."
 
 - title: "CortSeer"
   featured: true
@@ -40,7 +52,7 @@
   featured: true
   theme: "neuro"
   tags: "Python · NeuroAI"
-  status: "Controlled evaluation in active development."
+  status: "Controlled evaluation in active development. (Independent project, no affiliation with any company.)"
   link: "https://github.com/saanviiyer/engram"
   cats: ["ai", "neuro"]
   bullets:
@@ -55,6 +67,7 @@
   cats: ["ai", "compbio"]
   bullets:
     - "An audit harness for protein design. It stress-tests the fitness proxies that generative pipelines optimize against, checking them for trivial-baseline dominance and reward-hacking before an objective is trusted."
+    - "Scores coverage of the viable set, not only ranking averages. Someone probing a detector needs one viable thing it misses, while the detector needs the whole viable space handled."
 
 - title: "Self-Defeating Surrogates"
   featured: true
@@ -65,6 +78,7 @@
   cats: ["ai", "compbio"]
   bullets:
     - "Studying when learned fitness proxies stop being reliable among the top protein variants an optimizer selects, and how to constrain directed evolution to the region where a surrogate still holds."
+    - "On complete design landscapes, model-driven directed evolution shows no measurable uplift over classical methods at any tested budget, which constrains threat models in both directions."
 
 - title: "Microlearning in Neural Networks"
   featured: false
