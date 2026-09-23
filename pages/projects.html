@@ -1,8 +1,9 @@
 ---
 title: Projects · Saanvi S. Subramanian
 description: >-
-  Personal projects by Saanvi S. Subramanian across world models, protein design,
-  continual learning, and AI evaluation.
+  Personal projects by Saanvi S. Subramanian: adversarial protein evaluations, ML
+  for protein engineering, world models, biologically inspired learning, and
+  tools built for fun.
 permalink: /pages/projects/
 ---
 
@@ -12,64 +13,73 @@ permalink: /pages/projects/
 
 <p class="cv-intro">things i have built to chase a question, with a short note on why.</p>
 
-<div class="cv-list">
+<h2 class="proj-cat">Adversarial evaluations on proteins</h2>
+<p class="proj-blurb"><strong><a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet" target="_blank" rel="noopener">gauntlet</a></strong> is an audit battery that stress-tests protein fitness proxies for trivial baselines and reward hacking. A plain mutation count beat ESM-2 zero-shot on measured PETase activity. <strong><a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/shibboleth" target="_blank" rel="noopener">shibboleth</a></strong> points the same battery at biosecurity screening, where proxies collapse at real operating points, and <strong><a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/crosstalk" target="_blank" rel="noopener">crosstalk</a></strong> tests binding specificity, which gets worse as models get bigger. <strong><a href="https://github.com/saanviiyer/plimsoll" target="_blank" rel="noopener">plimsoll</a></strong> is the same instinct as a tool. It holds any research repo against a methodology checklist before it ships a number. The shared question is whether a proxy has earned the decision it is used for.</p>
 
-  <article class="cv-item">
-    <h3>Faithful Heading in Predictive World Models</h3>
-    <p class="cv-meta">rl · world models · lightning talk + poster, RoBoWoMo @ IEEE IROS 2026</p>
-    <ul>
-      <li>World models trained from pixels alone recover a faithful heading variable with no pose supervision.</li>
-      <li>The heading representation emerges only under partial observability, and transfers to unseen arenas.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<h2 class="proj-cat">ML for protein engineering</h2>
+<p class="proj-blurb"><strong><a href="https://github.com/saanviiyer/PRISM" target="_blank" rel="noopener">PRISM</a></strong> applies all 78 cancer mutational signatures to protein-coding sequences and measures how each one moves ESM-2 embeddings across protein families. <strong><a href="https://github.com/saanviiyer/genmodels" target="_blank" rel="noopener">genmodels</a></strong> asks whether generative models have implicitly learned those evolutionary biases. This was supervised independent research with AITHYRA, and it is where my audit discipline came from. The pipeline ended up auditing its own metric.</p>
 
-  <article class="cv-item">
-    <h3><a href="https://github.com/saanviiyer/PRISM" target="_blank" rel="noopener">PRISM</a></h3>
-    <p class="cv-meta">protein language models · oral, IEEE CIBCB 2026</p>
-    <ul>
-      <li>A homology-free probe that applies mutational signatures to coding sequences and measures the shift in protein-language-model embeddings.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<h2 class="proj-cat">Predictive world models</h2>
+<p class="proj-blurb"><strong>faithful heading</strong> finds that predictive world models trained from pixels alone recover a faithful heading variable with no pose supervision, but only under partial observability. I ran ML simulations to understand how a robot perceives its environment from pixels alone, which connects to my interest in how brains build internal models of space from partial observations. Lightning talk and poster at the RoBoWoMo workshop, IEEE IROS 2026.</p>
 
-  <article class="cv-item">
-    <h3><a href="https://github.com/saanviiyer/engram" target="_blank" rel="noopener">Engram</a></h3>
-    <p class="cv-meta">continual learning · neuroai</p>
-    <ul>
-      <li>A controlled test of whether biologically inspired learning rules improve retention once training budget is matched.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<h2 class="proj-cat">Biologically inspired learning</h2>
+<p class="proj-blurb"><strong><a href="https://github.com/saanviiyer/engram" target="_blank" rel="noopener">engram</a></strong> is a controlled test of whether biologically inspired learning rules improve retention once training budget is matched. A fancier rule should beat a fair baseline, not a weak one.</p>
 
-  <article class="cv-item">
-    <h3>Gauntlet</h3>
-    <p class="cv-meta">protein design · ai evaluation</p>
-    <ul>
-      <li>An audit tool that stress-tests a fitness proxy for trivial-baseline dominance and reward-hacking before a wet lab trusts it.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<h2 class="proj-cat">For fun</h2>
+<p class="fun-intro">I build small tools and toys outside research.</p>
 
-  <article class="cv-item">
-    <h3><a href="https://github.com/saanviiyer/plimsoll" target="_blank" rel="noopener">plimsoll</a></h3>
-    <p class="cv-meta">ai safety · research tooling</p>
-    <ul>
-      <li>A public command-line auditor that holds a research repo against methodology gates and reports the evidence behind each verdict.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<p class="fun-label">research tools</p>
+<ul class="fun-list">
+  <li><a href="https://github.com/saanviiyer/lattice" target="_blank" rel="noopener">lattice</a> is a research workspace for annotating PDFs and taking Notion-style linked notes over a knowledge graph of your papers.</li>
+  <li><a href="https://github.com/saanviiyer/rxiver" target="_blank" rel="noopener">rxiver</a> is an arXiv workspace that recommends papers, sorts them into folders, and lets you chat with them.</li>
+  <li><a href="https://github.com/saanviiyer/paperclip" target="_blank" rel="noopener">paperclip</a> is a cleaner Zotero for saving papers, grouping them by topic, and running AI analysis across a collection.</li>
+  <li><a href="https://github.com/saanviiyer/gloss" target="_blank" rel="noopener">gloss</a> lets you highlight a sentence on a page or PDF and read an LLM explanation in a tooltip.</li>
+  <li><a href="https://github.com/saanviiyer/deadline-radar" target="_blank" rel="noopener">Deadline Radar</a> tracks ML, neuroscience, and computational-biology conference deadlines and exports them to your calendar.</li>
+</ul>
 
-  <article class="cv-item">
-    <h3>CortSeer</h3>
-    <p class="cv-meta">medical imaging · oral, ECCV AI for Medical 3D Vision workshop</p>
-    <ul>
-      <li>Maps EEG-identified seizure onset zones to anatomy on a multimodal MRI and EEG foundation model.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<p class="fun-label">music and creative</p>
+<ul class="fun-list">
+  <li><a href="https://github.com/saanviiyer/mixcut" target="_blank" rel="noopener">mixcut</a> auto-cuts a song's second verse and chorus into a beat-aligned splice to shorten it for mixes.</li>
+  <li><a href="https://github.com/saanviiyer/handsynth" target="_blank" rel="noopener">handsynth</a> plays synth chords from webcam hand tracking in the browser.</li>
+  <li><a href="https://github.com/saanviiyer/trackstar" target="_blank" rel="noopener">trackstar</a> plays a synth with hand gestures, then produces multitrack mixes with AI beats.</li>
+  <li><a href="https://github.com/saanviiyer/concertmatch" target="_blank" rel="noopener">concertmatch</a> turns your music taste into concert recommendations with tickets nearby.</li>
+  <li><a href="https://github.com/saanviiyer/deejai" target="_blank" rel="noopener">deejai</a> is a set of command-line music-production tools for balancing vocal takes and building beats.</li>
+  <li><a href="https://github.com/saanviiyer/dice" target="_blank" rel="noopener">dice</a> turns hand gestures into music controls in the browser and on desktop.</li>
+  <li><a href="https://github.com/saanviiyer/concert-scout" target="_blank" rel="noopener">concert-scout</a> ranks concert tickets from your listening taste using official event APIs.</li>
+</ul>
 
-</div>
+<p class="fun-label">apps and experiments</p>
+<ul class="fun-list">
+  <li><a href="https://github.com/saanviiyer/overheard" target="_blank" rel="noopener">overheard</a> is a language-practice app with spoken AI conversations and review scoring.</li>
+  <li><a href="https://github.com/saanviiyer/resume-tailor" target="_blank" rel="noopener">resume-tailor</a> turns a job posting into a tailored resume and drafted application answers.</li>
+  <li><a href="https://github.com/saanviiyer/lifecoach-ai" target="_blank" rel="noopener">lifecoach-ai</a> turns your goals into a roadmap with daily objectives and shared team chat rooms.</li>
+  <li><a href="https://github.com/saanviiyer/jobtinder" target="_blank" rel="noopener">jobtinder</a> is Tinder for recruiting, where you swipe to match candidates and jobs.</li>
+  <li><a href="https://github.com/saanviiyer/girl-math" target="_blank" rel="noopener">girl-math</a> sets a daily budget and rolls unspent money into a growing surplus.</li>
+  <li><a href="https://github.com/saanviiyer/draftdeck" target="_blank" rel="noopener">draftdeck</a> drafts your social posts and publishes nothing until you approve each one.</li>
+  <li><a href="https://github.com/saanviiyer/authzswarm" target="_blank" rel="noopener">authzswarm</a> runs a swarm of security checks against your own apps and reports the bugs it finds.</li>
+  <li><a href="https://github.com/saanviiyer/clipwright" target="_blank" rel="noopener">clipwright</a> turns longform film into 9:16 vertical shorts with burned-in captions.</li>
+  <li><a href="https://github.com/saanviiyer/greenlight" target="_blank" rel="noopener">greenlight</a> is a smarter Calendly where visitors request a slot and you approve it.</li>
+  <li><a href="https://github.com/saanviiyer/memonent" target="_blank" rel="noopener">memonent</a> is a calm notes app with daily and weekly digests and auto-grouping.</li>
+  <li><a href="https://github.com/saanviiyer/videogist" target="_blank" rel="noopener">videogist</a> turns a YouTube link or lecture series into a summary, a timestamped outline, and takeaways.</li>
+  <li><a href="https://github.com/saanviiyer/cellbio-shorts" target="_blank" rel="noopener">cellbio-shorts</a> renders narrated vertical explainer videos on cell biology and physics.</li>
+  <li><a href="https://github.com/saanviiyer/science-instagram-bot" target="_blank" rel="noopener">science-instagram-bot</a> drafts captioned science posts for Instagram.</li>
+  <li><a href="https://github.com/saanviiyer/hackillini26" target="_blank" rel="noopener">hackillini26</a> is my HackIllinois 2026 Mechathon web app.</li>
+  <li><a href="https://github.com/saanviiyer/thank-you-app" target="_blank" rel="noopener">thank you</a> is a feed-first social app for sharing everyday kindness, with web and iOS clients.</li>
+  <li><a href="https://github.com/saanviiyer/hunt-the-wumpus" target="_blank" rel="noopener">hunt-the-wumpus</a> is a playful browser take on the classic Hunt the Wumpus game.</li>
+  <li><a href="https://github.com/saanviiyer/CougarConnect-CTE-Careers" target="_blank" rel="noopener">CougarConnect</a> is a careers web app for my school's CTE program.</li>
+  <li><a href="https://github.com/saanviiyer/neural-steering-lab" target="_blank" rel="noopener">neural-steering-lab</a> is a front-end concept page for an embodied interpretability workbench.</li>
+</ul>
+
+<p class="fun-label">DECA projects</p>
+<ul class="fun-list">
+  <li>Community Giving Project (April 2024), with Prisha Kuberan and Kaustubh Grama, raised over $22,000 for cataract surgeries and won first at the international competition.</li>
+  <li>Finance Operations Research, first in state.</li>
+  <li>Integrated Marketing Campaign, a chapter promotion plan.</li>
+  <li>present, a start-up innovation business plan.</li>
+</ul>
+
+<h2 class="proj-cat">Outreach</h2>
+<p class="proj-blurb"><strong>Bothell SWENext.</strong> I founded my high school's SWENext club, part of the Society of Women Engineers' pre-college program. The club grew to over 100 members in its first year, running hackathons, guest speaker events, and workshops for outreach, mentorship, and career exploration, with a focus on marginalized identities in computing. SWE recognized it with a 2023 WE Local Award, and NCWIT named me a 2024 Aspirations in Computing Impact Award recipient for the work.</p>
 
 <h2 class="section-heading">publications</h2>
 {% include awards-list.html cat="publication" %}

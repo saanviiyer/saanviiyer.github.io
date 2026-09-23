@@ -34,10 +34,10 @@
   <div class="spotlight" id="spotlight" aria-hidden="true"></div>
   <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode"></button>
 
-  {% unless page.hide_nav %}{% include nav.html %}{% endunless %}
+  {% include nav.html %}
 
   <main>
-    <div class="page-content{% if page.hide_nav %} page-content-home{% endif %}">
+    <div class="page-content{% if page.home %} page-content-home{% endif %}">
       {{ content }}
     </div>
   </main>

@@ -694,7 +694,7 @@ footer a:hover { text-decoration: underline; }
 .home {
   max-width: 640px;
   margin: 0 auto;
-  padding: 120px 28px 96px;
+  padding: 44px 28px 96px;
 }
 .home-hi { font-size: 1.5rem; font-weight: 500; margin-bottom: 1.6rem; }
 .home > p {
@@ -834,3 +834,17 @@ footer a:hover { text-decoration: underline; }
   -webkit-backface-visibility: hidden;
 }
 .flip-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* card hover lift, so cards read as clickable */
+.flip-card, .exp-card-static { transition: transform 0.22s ease, box-shadow 0.22s ease; }
+.flip-card:hover, .exp-card-static:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16); }
+
+/* ============ Projects page (categories + for-fun lists) ============ */
+.proj-cat { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin: 42px 0 10px; }
+.proj-blurb { max-width: 680px; line-height: 1.6; margin: 0 0 14px; }
+.proj-blurb a, .fun-list li a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
+.fun-intro { max-width: 680px; color: var(--muted); margin: 4px 0 6px; }
+.fun-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 22px 0 9px; }
+.fun-list { list-style: none; margin: 0 0 6px; padding: 0; max-width: 680px; }
+.fun-list li { margin-bottom: 8px; line-height: 1.5; }
+.fun-list li a { font-weight: 600; }
