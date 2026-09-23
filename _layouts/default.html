@@ -77,17 +77,32 @@
     })();
   </script>
   <script>
-    // Flashcard flip: click or Enter/Space on a .flip-card toggles it.
+    // Flashcard flip: click or Enter/Space on a .flip-card toggles it. The
+    // container height animates to the visible face so the front stays compact.
     (function () {
+      function flip(card) {
+        card.classList.toggle('flipped');
+        var inner = card.querySelector('.flip-inner');
+        var back = card.querySelector('.flip-back');
+        if (!inner || !back) return;
+        inner.style.height = card.classList.contains('flipped') ? back.offsetHeight + 'px' : '';
+      }
       document.addEventListener('click', function (e) {
         if (e.target.closest('a')) return;
         var card = e.target.closest('.flip-card');
-        if (card) card.classList.toggle('flipped');
+        if (card) flip(card);
       });
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Enter' && e.key !== ' ') return;
         var card = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.flip-card') : null;
-        if (card) { e.preventDefault(); card.classList.toggle('flipped'); }
+        if (card) { e.preventDefault(); flip(card); }
+      });
+      window.addEventListener('resize', function () {
+        document.querySelectorAll('.flip-card.flipped').forEach(function (card) {
+          var inner = card.querySelector('.flip-inner');
+          var back = card.querySelector('.flip-back');
+          if (inner && back) inner.style.height = back.offsetHeight + 'px';
+        });
       });
     })();
   </script>

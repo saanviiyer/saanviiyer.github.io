@@ -818,19 +818,20 @@ footer a:hover { text-decoration: underline; }
 .exp-reflection a { color: var(--card-ink); text-decoration: underline; text-underline-offset: 2px; }
 .flip-mark { flex: none; font-family: var(--mono); font-size: 0.78em; font-weight: 400; opacity: 0.65; }
 
-/* flip mechanics */
-.flip-card { cursor: pointer; perspective: 1600px; }
+/* flip mechanics: each face keeps its own height, so the front is only as tall
+   as its bullets and grows to the reflection's height only when flipped. */
+.flip-card { cursor: pointer; perspective: 1600px; overflow: hidden; border-radius: 11px; }
 .flip-card .flip-inner {
-  display: grid;
-  transition: transform 0.62s cubic-bezier(0.2, 0.7, 0.2, 1);
+  position: relative;
+  transition: transform 0.62s cubic-bezier(0.2, 0.7, 0.2, 1), height 0.62s cubic-bezier(0.2, 0.7, 0.2, 1);
   transform-style: preserve-3d;
 }
 .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-card .flip-front { position: relative; }
+.flip-card .flip-back { position: absolute; top: 0; left: 0; width: 100%; transform: rotateY(180deg); }
 .flip-card .flip-front,
 .flip-card .flip-back {
-  grid-area: 1 / 1;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-.flip-card .flip-back { transform: rotateY(180deg); }
-.flip-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 11px; }
+.flip-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
