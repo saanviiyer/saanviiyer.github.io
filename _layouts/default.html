@@ -76,5 +76,20 @@
       document.addEventListener('mouseleave', function () { el.classList.remove('on'); });
     })();
   </script>
+  <script>
+    // Flashcard flip: click or Enter/Space on a .flip-card toggles it.
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        var card = e.target.closest('.flip-card');
+        if (card) card.classList.toggle('flipped');
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var card = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.flip-card') : null;
+        if (card) { e.preventDefault(); card.classList.toggle('flipped'); }
+      });
+    })();
+  </script>
 </body>
 </html>

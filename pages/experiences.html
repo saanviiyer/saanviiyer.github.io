@@ -1,7 +1,8 @@
 ---
 title: Experiences · Saanvi S. Subramanian
 description: >-
-  Research experiences by Saanvi S. Subramanian, with a short reflection on each.
+  Research experiences by Saanvi S. Subramanian, grouped by topic. Cards with a
+  reflection flip when you click them.
 permalink: /pages/experiences/
 ---
 
@@ -9,55 +10,98 @@ permalink: /pages/experiences/
   <h1>experiences</h1>
 </div>
 
-<p class="cv-intro">a few places i have worked, and what each one meant to me.</p>
+<section class="exp-group">
+  <h2 class="exp-group-title">ai for radiologists</h2>
+  <div class="exp-cards">
 
-<div class="cv-list">
+    <article class="flip-card" tabindex="0" role="button" aria-label="Stanford Pediatric Neuroradiology Lab. Click to flip.">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="exp-card-head">Stanford Pediatric Neuroradiology Lab, AIMI <span class="flip-mark" aria-hidden="true">↻</span></div>
+          <div class="exp-card-body">
+            <ul>
+              <li>Built AI brain lesion detection software application, in trial with clinical radiologists at Stanford.</li>
+              <li>Post-training and evals for clinical EEG foundation models.</li>
+              <li>Awarded Caltech SURF.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="exp-card-head">Stanford Pediatric Neuroradiology Lab, AIMI <span class="flip-mark" aria-hidden="true">↻</span></div>
+          <div class="exp-card-body">
+            <p class="exp-reflection">It was great collaborating with radiologists on this project, and building software for the division. My goal was to build lesion detection for epilepsy using MRI and EEG information, simulating the multimodal nature of a clinician's workflow, and this work is in publication. This experience was especially fun as my first summer in SF, where I grew a lot and got to <a href="#">meet exceptional teams building at the frontier of AI x Bio</a>.</p>
+          </div>
+        </div>
+      </div>
+    </article>
 
-  <article class="cv-item">
-    <h3>Stanford Pediatric Neuroradiology Lab, Stanford Medicine</h3>
-    <p class="cv-meta">with Caltech SURF · summer 2026</p>
-    <ul>
-      <li>Optimized an AI computer-vision model for brain-abnormality detection.</li>
-      <li>Built a web application now in trial with clinical radiologists at Stanford.</li>
-      <li>Post-training and evaluation for clinical EEG foundation models.</li>
-    </ul>
-    <p class="reflection">It was great to collaborate directly with clinicians and build AI software that fits into their workflow. It was also my first summer in SF, full of personal growth, and I came away inspired by the people there pushing the frontier of AI x bio.</p>
-  </article>
+    <article class="flip-card" tabindex="0" role="button" aria-label="Caltech Computer Vision Lab. Click to flip.">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="exp-card-head">Caltech Computer Vision Lab <span class="flip-mark" aria-hidden="true">↻</span></div>
+          <div class="exp-card-body">
+            <ul>
+              <li>Built a CT image encoder for kidney tumors (pretraining and fine-tuning).</li>
+              <li>Collaborated to build a CLIP-style model that links 3D CT scans with tumor gene mutations.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="exp-card-head">Caltech Computer Vision Lab <span class="flip-mark" aria-hidden="true">↻</span></div>
+          <div class="exp-card-body">
+            <p class="exp-reflection">This was my first research experience at Caltech, and first time working with CLIP. I learned about foundation models, encoders and decoders, and was supervised by Raphaela Kang and Joe Rich. This project is still ongoing!</p>
+          </div>
+        </div>
+      </div>
+    </article>
 
-  <article class="cv-item">
-    <h3>Perona Laboratory, Caltech</h3>
-    <p class="cv-meta">computer vision · dec 2025 – present</p>
-    <ul>
-      <li>Training a tri-modal radiogenomic model that aligns 3D kidney CT scans with gene-expression and mutation data.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+  </div>
+</section>
 
-  <article class="cv-item">
-    <h3>Shimojo Psychophysics Laboratory, Caltech</h3>
-    <p class="cv-meta">oct 2025 – present</p>
-    <ul>
-      <li>Analyzing EEG and imaging from noninvasive brain-stimulation studies using focused ultrasound and fMRI.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<section class="exp-group">
+  <h2 class="exp-group-title">brains &amp; behavior</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Shimojo Psychophysics Laboratory, Caltech</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Analyzing EEG and imaging from noninvasive brain-stimulation studies using focused ultrasound and fMRI.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
 
-  <article class="cv-item">
-    <h3>Pattwell Lab, Seattle Children's Research Institute</h3>
-    <p class="cv-meta">summer 2025</p>
-    <ul>
-      <li>Built ML models on ~1M medulloblastoma cells to identify malignant populations; presented at the Stanford CCRTP.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
+<section class="exp-group">
+  <h2 class="exp-group-title">cancer genomics</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Pattwell Lab, Seattle Children's Research Institute</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Built ML models on ~1M medulloblastoma cells to identify malignant populations; presented at the Stanford CCRTP.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
 
-  <article class="cv-item">
-    <h3>University of Washington Sensor Systems Laboratory</h3>
-    <p class="cv-meta">2023 – 2024</p>
-    <ul>
-      <li>Designed and tested novel energy-harvester topologies in an anechoic chamber.</li>
-    </ul>
-    <!-- reflection: add 1-2 sentences on why this pulled you in -->
-  </article>
-
-</div>
+<section class="exp-group">
+  <h2 class="exp-group-title">hardware &amp; sensing</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">University of Washington Sensor Systems Laboratory</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Designed and tested novel energy-harvester topologies in an anechoic chamber.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

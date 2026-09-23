@@ -11,6 +11,10 @@
   --neuron-rgb: 124, 22, 92;
   --glitch-rgb: 156, 28, 140;
   --spot-dim: rgba(23, 9, 15, 0.16);
+  --card-bg: #a3238f;
+  --card-head: #8a1c78;
+  --card-ink: #fdeaf7;
+  --card-sub: #f2b9e0;
   --serif: 'Newsreader', Georgia, serif;
   --sans: 'DM Sans', Arial, sans-serif;
   --mono: 'DM Mono', monospace;
@@ -29,6 +33,10 @@
   --neuron-rgb: 255, 130, 200;
   --glitch-rgb: 255, 134, 207;
   --spot-dim: rgba(0, 0, 0, 0.66);
+  --card-bg: #7a1a6c;
+  --card-head: #5f1454;
+  --card-ink: #fbe0f2;
+  --card-sub: #e8a6d3;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -770,3 +778,59 @@ footer a:hover { text-decoration: underline; }
 @media (hover: none), (prefers-reduced-motion: reduce) {
   .spotlight { display: none; }
 }
+
+/* ============ Experience groups + flip cards ============ */
+.exp-group { margin-bottom: 40px; }
+.exp-group-title {
+  color: var(--accent);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.18rem;
+  font-weight: 500;
+  margin: 34px 0 15px;
+}
+.exp-cards { display: grid; gap: 16px; max-width: 660px; }
+
+/* solid magenta card, header bar + body */
+.exp-card-face,
+.exp-card .flip-front,
+.exp-card .flip-back {
+  background: var(--card-bg);
+  border-radius: 11px;
+  overflow: hidden;
+}
+.exp-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  background: var(--card-head);
+  color: var(--card-ink);
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 12px 18px;
+}
+.exp-card-body { padding: 14px 20px 18px; color: var(--card-ink); }
+.exp-card-body ul { margin: 0 0 0 1.1rem; }
+.exp-card-body li { margin-bottom: 6px; line-height: 1.45; }
+.exp-card-body li::marker { color: var(--card-sub); }
+.exp-reflection { margin: 0; color: var(--card-sub); line-height: 1.55; }
+.exp-reflection a { color: var(--card-ink); text-decoration: underline; text-underline-offset: 2px; }
+.flip-mark { flex: none; font-family: var(--mono); font-size: 0.78em; font-weight: 400; opacity: 0.65; }
+
+/* flip mechanics */
+.flip-card { cursor: pointer; perspective: 1600px; }
+.flip-card .flip-inner {
+  display: grid;
+  transition: transform 0.62s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-card .flip-front,
+.flip-card .flip-back {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-card .flip-back { transform: rotateY(180deg); }
+.flip-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 11px; }
