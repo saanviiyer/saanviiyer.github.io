@@ -793,8 +793,8 @@ footer a:hover { text-decoration: underline; }
 
 /* solid magenta card, header bar + body */
 .exp-card-face,
-.exp-card .flip-front,
-.exp-card .flip-back {
+.flip-front,
+.flip-back {
   background: var(--card-bg);
   border-radius: 11px;
   overflow: hidden;
