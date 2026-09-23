@@ -10,6 +10,7 @@
   --nav-bg: rgba(247, 171, 212, 0.82);
   --neuron-rgb: 124, 22, 92;
   --glitch-rgb: 156, 28, 140;
+  --spot-dim: rgba(23, 9, 15, 0.16);
   --serif: 'Newsreader', Georgia, serif;
   --sans: 'DM Sans', Arial, sans-serif;
   --mono: 'DM Mono', monospace;
@@ -27,6 +28,7 @@
   --nav-bg: rgba(0, 0, 0, 0.72);
   --neuron-rgb: 255, 130, 200;
   --glitch-rgb: 255, 134, 207;
+  --spot-dim: rgba(0, 0, 0, 0.66);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -748,3 +750,23 @@ footer a:hover { text-decoration: underline; }
 .cv-item li { margin-bottom: 5px; line-height: 1.5; }
 .cv-item li::marker { color: var(--accent); }
 .reflection { font-weight: 600; margin-top: 13px; line-height: 1.5; }
+
+/* ============ Cursor spotlight (flashlight that follows the pointer) ============ */
+.spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    circle 300px at var(--mx, 50%) var(--my, 50%),
+    transparent 0,
+    transparent 42%,
+    var(--spot-dim) 100%
+  );
+}
+.spotlight.on { opacity: 1; }
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .spotlight { display: none; }
+}
