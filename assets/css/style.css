@@ -816,7 +816,6 @@ footer a:hover { text-decoration: underline; }
 .exp-card-body li::marker { color: var(--card-sub); }
 .exp-reflection { margin: 0; color: var(--card-sub); line-height: 1.55; }
 .exp-reflection a { color: var(--card-ink); text-decoration: underline; text-underline-offset: 2px; }
-.flip-mark { flex: none; font-family: var(--mono); font-size: 0.78em; font-weight: 400; opacity: 0.65; }
 
 /* flip mechanics: each face keeps its own height, so the front is only as tall
    as its bullets and grows to the reflection's height only when flipped. */
