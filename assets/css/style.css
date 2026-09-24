@@ -139,12 +139,14 @@ nav {
 .nav-links a.active { color: var(--ink); }
 .nav-links a.active span { color: var(--accent); }
 
-/* Main frame */
+/* Main frame: full width with comfortable, responsive side padding.
+   Long text blocks constrain themselves to a reading width; cards and grids
+   use the full available width. */
 .page-content {
   margin: 0 auto;
-  max-width: 1180px;
+  max-width: none;
   min-height: 68vh;
-  padding: 88px 32px 120px;
+  padding: 88px clamp(20px, 4vw, 76px) 120px;
 }
 
 /* Home */
@@ -522,17 +524,20 @@ nav {
 .about-text p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.7; margin-bottom: 20px; }
 
 /* Writing */
-.post-list { display: flex; flex-direction: column; max-width: 880px; }
+.post-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 0 40px;
+}
 
 .post-card {
+  display: block;
   border-top: 1px solid var(--border);
   color: var(--ink);
-  display: grid;
-  gap: 12px 28px;
-  grid-template-columns: 110px 1fr;
-  padding: 26px 0;
+  padding: 24px 0;
   text-decoration: none;
 }
+.post-card h3 { margin-bottom: 8px; }
 
 .post-card-meta {
   color: var(--accent);
@@ -565,7 +570,7 @@ nav {
 .post-back a { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; }
 
 /* Portfolio */
-.gallery { columns: 3 250px; column-gap: 22px; margin-bottom: 56px; }
+.gallery { columns: 240px; column-gap: 24px; margin-bottom: 56px; }
 .pf-item { break-inside: avoid; color: var(--ink); display: inline-block; margin: 0 0 25px; text-decoration: none; width: 100%; }
 .pf-thumb { display: block; overflow: hidden; position: relative; }
 .pf-thumb img { border: 1px solid var(--border); display: block; height: auto; transition: filter 0.2s, transform 0.25s; width: 100%; }
@@ -789,7 +794,11 @@ footer a:hover { text-decoration: underline; }
   font-weight: 500;
   margin: 34px 0 15px;
 }
-.exp-cards { display: grid; gap: 16px; max-width: 660px; }
+.exp-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 480px));
+  gap: 18px;
+}
 
 /* solid magenta card, header bar + body */
 .exp-card-face,
@@ -844,22 +853,15 @@ footer a:hover { text-decoration: underline; }
 .proj-blurb { max-width: 680px; line-height: 1.6; margin: 0 0 14px; }
 .proj-blurb a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
 .fun-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 28px 0 12px; }
-.fun-list {
+.fun-grid {
   display: grid;
-  grid-template-columns: minmax(120px, max-content) 1fr;
-  gap: 11px 26px;
-  align-items: baseline;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 20px 34px;
   margin: 0;
-  max-width: 720px;
 }
-.fun-list dt { font-weight: 600; }
-.fun-list dt a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
-.fun-list dd { margin: 0; line-height: 1.45; color: var(--ink); }
-@media (max-width: 560px) {
-  .fun-list { grid-template-columns: 1fr; gap: 1px 0; }
-  .fun-list dt { margin-top: 12px; }
-  .fun-list dd { color: var(--muted); }
-}
+.fun-item .fun-name { font-weight: 600; }
+.fun-item .fun-name a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
+.fun-item .fun-desc { display: block; margin-top: 3px; line-height: 1.45; color: var(--muted); }
 
 /* ============ Preprints (paper cards) ============ */
 .preprint { padding: 22px 0; border-top: 1px solid var(--border); max-width: 760px; }
