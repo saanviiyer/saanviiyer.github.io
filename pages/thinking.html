@@ -1,23 +1,19 @@
 ---
 title: Writing · Saanvi S. Subramanian
 description: >-
-  My essays about minds, technology, agency, and responsibility.
+  Essays by Saanvi S. Subramanian about minds, technology, agency, and responsibility.
 permalink: /pages/thinking/
 ---
 
 <div class="page-header">
-  <p class="page-eyebrow">Notebook</p>
   <h1>Writing</h1>
 </div>
-
-<p class="page-intro">I write about how minds work and how technology changes questions about agency and responsibility. The archive includes both formal essays and more personal pieces.</p>
 
 <h2 class="section-heading writing-heading">Recent</h2>
 <div class="post-list">
   {% assign posts = site.posts | sort: 'date' | reverse %}
   {% for post in posts limit: 7 %}
   <a class="post-card" href="{{ post.url | relative_url }}">
-    <div class="post-card-meta">{{ post.date | date: "%b %Y" }}{% if post.tag %} &middot; {{ post.tag }}{% endif %}</div>
     <h3>{{ post.title }}</h3>
     <p>{{ post.excerpt }}</p>
   </a>
@@ -25,11 +21,9 @@ permalink: /pages/thinking/
 </div>
 
 <h2 class="section-heading">Earlier work</h2>
-<p class="archive-note">Earlier reporting and school essays. I keep them here as a record of how my questions and writing have changed.</p>
 <div class="post-list post-list-archive">
   {% for post in posts offset: 7 %}
   <a class="post-card" href="{{ post.url | relative_url }}">
-    <div class="post-card-meta">{{ post.date | date: "%b %Y" }}{% if post.tag %} &middot; {{ post.tag }}{% endif %}</div>
     <h3>{{ post.title }}</h3>
     <p>{{ post.excerpt }}</p>
   </a>

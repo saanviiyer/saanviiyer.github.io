@@ -842,9 +842,42 @@ footer a:hover { text-decoration: underline; }
 /* ============ Projects page (categories + for-fun lists) ============ */
 .proj-cat { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin: 42px 0 10px; }
 .proj-blurb { max-width: 680px; line-height: 1.6; margin: 0 0 14px; }
-.proj-blurb a, .fun-list li a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
-.fun-intro { max-width: 680px; color: var(--muted); margin: 4px 0 6px; }
-.fun-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 22px 0 9px; }
-.fun-list { list-style: none; margin: 0 0 6px; padding: 0; max-width: 680px; }
-.fun-list li { margin-bottom: 8px; line-height: 1.5; }
-.fun-list li a { font-weight: 600; }
+.proj-blurb a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
+.fun-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 28px 0 12px; }
+.fun-list {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) 1fr;
+  gap: 11px 26px;
+  align-items: baseline;
+  margin: 0;
+  max-width: 720px;
+}
+.fun-list dt { font-weight: 600; }
+.fun-list dt a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
+.fun-list dd { margin: 0; line-height: 1.45; color: var(--ink); }
+@media (max-width: 560px) {
+  .fun-list { grid-template-columns: 1fr; gap: 1px 0; }
+  .fun-list dt { margin-top: 12px; }
+  .fun-list dd { color: var(--muted); }
+}
+
+/* ============ Preprints (paper cards) ============ */
+.preprint { padding: 22px 0; border-top: 1px solid var(--border); max-width: 760px; }
+.preprint:first-of-type { border-top: none; padding-top: 4px; }
+.preprint-badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); border: 1px solid var(--accent); border-radius: 999px;
+  padding: 3px 12px; margin-bottom: 11px;
+}
+.preprint h3 { font-family: var(--serif); font-size: 1.32rem; font-weight: 600; line-height: 1.25; margin-bottom: 5px; }
+.preprint h3 a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent); }
+.preprint-authors { color: var(--muted); font-size: 0.95rem; margin-bottom: 9px; }
+.preprint-desc { max-width: 680px; line-height: 1.55; margin-bottom: 13px; }
+.preprint-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.preprint-links a {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--accent); border: 1px solid var(--accent); border-radius: 999px;
+  padding: 6px 16px; text-decoration: none;
+}
+.preprint-links a:hover { background: var(--accent-soft); }
