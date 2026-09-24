@@ -114,18 +114,18 @@ permalink: /pages/portfolio/
   <p class="proj-line"><strong>Bothell SWENext.</strong> I founded my high school's SWENext club, part of the Society of Women Engineers' pre-college program. The club grew to over 100 members in its first year, running hackathons, guest speaker events, and workshops for outreach, mentorship, and career exploration, with a focus on marginalized identities in computing. SWE recognized it with a 2023 WE Local Award, and NCWIT named me a 2024 Aspirations in Computing Impact Award recipient for the work.</p>
 </section>
 
-<section id="writing" class="pf-section">
-  <h2 class="pf-heading">writing</h2>
+<section id="blog" class="pf-section">
+  <h2 class="pf-heading">blog</h2>
   {% assign posts = site.posts | sort: 'date' | reverse %}
-  <ul class="writing-list">
+  <ul class="blog-list">
     {% for post in posts limit: 7 %}
-    <li><span class="w-date">{{ post.date | date: "%b %Y" }}</span> <a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+    <li class="blog-post"><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="blog-date">{{ post.date | date: "%B %Y" }}</span></li>
     {% endfor %}
   </ul>
   <p class="w-earlier-label">earlier</p>
-  <ul class="writing-list writing-earlier">
+  <ul class="blog-list blog-earlier">
     {% for post in posts offset: 7 %}
-    <li><span class="w-date">{{ post.date | date: "%b %Y" }}</span> <a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+    <li class="blog-post"><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="blog-date">{{ post.date | date: "%B %Y" }}</span></li>
     {% endfor %}
   </ul>
 </section>
