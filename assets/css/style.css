@@ -893,10 +893,11 @@ footer a:hover { text-decoration: underline; }
 .pf-section:first-child { border-top: none; padding-top: 8px; }
 .pf-heading {
   font-family: var(--serif);
-  font-size: clamp(2.1rem, 4.4vw, 3.1rem);
+  font-size: clamp(2.7rem, 5.2vw, 4.2rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
-  margin-bottom: 26px;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin-bottom: 30px;
 }
 
 /* Experiences: prose entries, no boxes */
@@ -911,8 +912,15 @@ footer a:hover { text-decoration: underline; }
 .proj-line a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
 .proj-note { max-width: 76ch; color: var(--muted); line-height: 1.6; margin: 4px 0 8px; }
 
-/* Blog: title-forward post list */
-.blog-list { list-style: none; margin: 0 0 8px; padding: 0; max-width: 74ch; }
+/* Blog: title-forward post list, full width in two columns on desktop */
+.blog-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 0 52px;
+}
 .blog-post { padding: 14px 0; border-top: 1px solid var(--accent-soft); }
 .blog-post:first-child { border-top: none; padding-top: 4px; }
 .blog-post a {
