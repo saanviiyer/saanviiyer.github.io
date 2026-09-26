@@ -944,3 +944,20 @@ footer a:hover { text-decoration: underline; }
 }
 .blog-earlier .blog-post a { font-size: 1.06rem; }
 .w-earlier-label { color: var(--muted); font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.09em; text-transform: uppercase; margin: 24px 0 8px; }
+
+/* "still use" tag on active tools */
+.still-use {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 4px;
+  vertical-align: 1px;
+  white-space: nowrap;
+}
