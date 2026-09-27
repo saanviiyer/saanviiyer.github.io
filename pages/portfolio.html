@@ -72,6 +72,55 @@ permalink: /pages/portfolio/
 </section>
 
 <section class="exp-group">
+  <h2 class="exp-group-title">reward learning</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Google DeepMind and University of Edinburgh, with Maria Eckstein and Jessica Passlack</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Fitting recurrent neural networks to human behavior in a 487-participant bandit task space, to understand how people learn rewards.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="exp-group">
+  <h2 class="exp-group-title">surgical video models</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Caltech, with Yisong Yue</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Testing whether video foundation models actually use temporal information when assessing surgical movement.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- confirm Aureka contract before publishing -->
+<section class="exp-group">
+  <h2 class="exp-group-title">protein design</h2>
+  <div class="exp-cards">
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Aureka Biotech, with Danyal Rehman</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Reinforcement learning for protein design.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="exp-group">
   <h2 class="exp-group-title">cancer genomics</h2>
   <div class="exp-cards">
     <article class="exp-card-static">
@@ -107,6 +156,9 @@ permalink: /pages/portfolio/
 
 <section id="projects" class="pf-section">
   <h2 class="pf-heading">projects</h2>
+
+  <p class="fun-label">protein model evals</p>
+  <p class="proj-intro">most of my research is one question: do protein model evaluations survive contact with an optimizer? i build the stress tests, baselines, and controls first, then check whether a metric measures what it claims or just something easy to game.</p>
 
   <p class="proj-line"><strong><a href="{{ '/pages/projects/gauntlet/' | relative_url }}">gauntlet</a></strong> stress-tests protein fitness proxies for trivial baselines and reward hacking, and a plain mutation count beat ESM-2 zero-shot on measured PETase activity. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet" target="_blank" rel="noopener">code</a>, and a poster at WiML, NeurIPS 2026.</p>
 
