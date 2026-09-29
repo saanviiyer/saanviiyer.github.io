@@ -7,15 +7,9 @@ permalink: /thinking/prism-signature-steering/
 excerpt: "I simulated all 78 COSMIC mutational signatures on proteins, found a directional shift in embedding space, and watched simple controls explain most of it."
 ---
 
-## TL;DR
+**TL;DR.** I built PRISM to test whether cancer mutational signatures push protein sequences in consistent directions through the embedding space of a protein language model, and I ran the pipeline over all 78 COSMIC single-base-substitution signatures with ESM-2 650M. One signature, SBS17a, steered sequences toward the same Pfam family, PF17041, across two independent Pfam clans, which is the kind of recurrence a real effect would produce. When I added controls the story narrowed, because a composition-matched null reproduced 72% of the movement and protein length explained 92.5% of the displacement, so most of the apparent signal tracks simple sequence properties. An inverse probe decoded the shifts at AUC 0.94 on signatures it had seen and then dropped to 0.7% top-1 accuracy on held-out signatures, so the information was present in-distribution without transferring to new mechanisms.
 
-- I built PRISM to test whether cancer mutational signatures push protein sequences in consistent directions through the embedding space of a protein language model.
-- I simulated all 78 COSMIC single-base-substitution signatures on protein-coding sequences, embedded wild-type and mutant proteins with ESM-2 650M, and measured how far each mutant set moved toward Pfam domain centroids.
-- One signature, SBS17a, steered sequences toward the same Pfam family, PF17041, across two independent Pfam clans, which is the kind of recurrence a real effect would produce.
-- When I added controls, a composition-matched null reproduced 72% of the movement and protein length explained 92.5% of the displacement, so most of the apparent signal tracks simple sequence properties.
-- An inverse probe decoded the shifts at AUC 0.94 on signatures it had seen, then dropped to 0.7% top-1 accuracy on held-out signatures, so the information was present in-distribution without transferring to new mechanisms.
-
-## Methods
+## I built PRISM to test whether mutational signatures steer protein embeddings
 
 I started PRISM to answer a biological question, whether the mutational processes that damage DNA leave a consistent and readable trace in the proteins they alter. A mutational signature is the characteristic pattern of DNA base substitutions that a process leaves behind, and the COSMIC catalog lists 78 single-base-substitution signatures, each one a probability distribution over base changes in their sequence context. I wanted to know whether these processes move the proteins they hit toward particular regions of a protein model's representation, rather than spreading them around without any shared direction.
 
@@ -25,21 +19,25 @@ To measure that, I built a pipeline that runs from a signature to a geometric me
 
 To test whether these shifts carried signature-specific information, I trained an inverse probe, a classifier that reads an embedding shift and predicts which signature produced it. I evaluated it two ways, once on signatures it had seen during training and once with entire signatures held out, so I could separate whether the information was present from whether it generalized to new mechanisms. [DETAIL NEEDED: classifier type, how I featurized the shift, the number of signature classes, and the train and test sizes.]
 
-## Results
+## One signature moved sequences the same way across two clans
 
 On the raw geometry one signature stood out, because SBS17a repeatedly steered sequences toward the Pfam family PF17041, and it did so across two independent Pfam clan runs, which mattered since the same direction appearing in separate protein contexts is what a genuine effect would produce rather than a single coincidence. [DETAIL NEEDED: the names of the two Pfam clans.]
 
 **Figure 2.** [FIGURE NEEDED: SBS17a displacement toward PF17041 in each of the two clan runs, with the other signatures shown for comparison.]
 
+## Simple controls reproduced most of the movement
+
 The controls changed how I read that result. I built a composition-matched null that preserves amino-acid composition while removing the signature's specific structure, and it reproduced 72% of the original embedding movement. When I regressed displacement on protein length, length explained 92.5% of the variation in displacement. Taken together, most of the apparent movement tracks ordinary sequence properties that can line up with a functional axis, so the residual that is specific to the signature is small. [DETAIL NEEDED: whether 72% is the fraction of mean displacement reproduced by the null, and whether 92.5% is an R-squared from the length regression.]
 
 **Figure 3.** [FIGURE NEEDED: original displacement next to the composition-matched null and the length regression, showing how much movement each control accounts for.]
+
+## The probe decoded signatures it had seen and failed on new ones
 
 The inverse probe told a similar story about generalization. It reached an AUC of 0.94 on signatures represented in training, which says the embedding shifts are separable when the model has already seen the mechanism. On held-out signatures its top-1 accuracy fell to 0.7%, so the probe was reading signature-specific structure that did not transfer to mechanisms it had never seen. [DETAIL NEEDED: the number of signature classes, so the chance rate for the 0.7% held-out result is explicit.]
 
 **Figure 4.** [FIGURE NEEDED: in-distribution AUC next to held-out top-1 accuracy, with the chance line marked.]
 
-## Discussion
+## A decodable signal is not yet understanding
 
 What surprised me was how much a strong baseline changed the question I was asking. Before the controls the useful question looked like whether SBS17a moves embeddings, and after them it became what residual movement remains once composition and length are removed, whether that residual recurs across families, and which residues carry it. The held-out collapse pushed me the same way, since a probe can recover information from an activation without showing that the model learned a portable version of the mechanism.
 
