@@ -15,7 +15,9 @@ I started PRISM to answer a biological question, whether the mutational processe
 
 To measure that, I built a pipeline that runs from a signature to a geometric measurement. For each signature I sampled mutations on protein-coding sequences according to that signature's substitution probabilities, translated the mutated DNA into protein, and embedded both the wild-type and mutant proteins with ESM-2 650M, a protein language model that maps a sequence to a fixed vector. [DETAIL NEEDED: how many source coding sequences I used per signature, and how I pooled ESM-2 residue embeddings into one vector per protein.] I then compared each mutant cloud against a library of Pfam domain centroids, where Pfam is a database of protein families and a centroid is the average embedding of a family, so a shift toward a centroid means the mutated proteins sit closer to that family in the model's space. [DETAIL NEEDED: the exact displacement metric, for example cosine movement toward a centroid or Euclidean shift.]
 
-**Figure 1.** [FIGURE NEEDED: pipeline schematic running from an SBS signature, to simulated coding mutations, to ESM-2 650M embeddings of wild-type and mutant proteins, to displacement measured against Pfam centroids.]
+![PRISM pipeline schematic](../assets/images/prism-signature-steering/pipeline-schematic.png)
+
+**Figure 1.** The pipeline runs from an SBS signature, to simulated coding mutations, to ESM-2 650M embeddings of wild-type and mutant proteins, to displacement measured against Pfam centroids.
 
 To test whether these shifts carried signature-specific information, I trained an inverse probe, a classifier that reads an embedding shift and predicts which signature produced it. I evaluated it two ways, once on signatures it had seen during training and once with entire signatures held out, so I could separate whether the information was present from whether it generalized to new mechanisms. [DETAIL NEEDED: classifier type, how I featurized the shift, the number of signature classes, and the train and test sizes.]
 
@@ -29,13 +31,17 @@ On the raw geometry one signature stood out, because SBS17a repeatedly steered s
 
 The controls changed how I read that result. I built a composition-matched null that preserves amino-acid composition while removing the signature's specific structure, and it reproduced 72% of the original embedding movement. When I regressed displacement on protein length, length explained 92.5% of the variation in displacement. Taken together, most of the apparent movement tracks ordinary sequence properties that can line up with a functional axis, so the residual that is specific to the signature is small. [DETAIL NEEDED: whether 72% is the fraction of mean displacement reproduced by the null, and whether 92.5% is an R-squared from the length regression.]
 
-**Figure 3.** [FIGURE NEEDED: original displacement next to the composition-matched null and the length regression, showing how much movement each control accounts for.]
+![Composition-matched null reproduces 72% of the movement and protein length explains 92.5% of the displacement](../assets/images/prism-signature-steering/controls.png)
+
+**Figure 3.** The two controls account for most of the movement, since the composition-matched null reproduces 72% of it and protein length explains 92.5% of the displacement.
 
 ## The probe decoded signatures it had seen and failed on new ones
 
 The inverse probe told a similar story about generalization. It reached an AUC of 0.94 on signatures represented in training, which says the embedding shifts are separable when the model has already seen the mechanism. On held-out signatures its top-1 accuracy fell to 0.7%, so the probe was reading signature-specific structure that did not transfer to mechanisms it had never seen. [DETAIL NEEDED: the number of signature classes, so the chance rate for the 0.7% held-out result is explicit.]
 
-**Figure 4.** [FIGURE NEEDED: in-distribution AUC next to held-out top-1 accuracy, with the chance line marked.]
+![Inverse probe AUC 0.94 in-distribution versus 0.7 percent top-1 accuracy on held-out signatures](../assets/images/prism-signature-steering/decodability.png)
+
+**Figure 4.** The inverse probe reaches AUC 0.94 on signatures seen in training and 0.7% top-1 accuracy on held-out signatures.
 
 ## A decodable signal is not yet understanding
 
