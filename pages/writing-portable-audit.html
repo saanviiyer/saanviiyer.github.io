@@ -1,0 +1,29 @@
+---
+title: A portable audit for proxy-based evaluation under optimization pressure · Saanvi S. Subramanian
+permalink: /pages/writing/portable-audit/
+---
+
+<div class="page-header">
+  <p class="page-eyebrow">Research proposal</p>
+  <h1>A portable audit for proxy-based evaluation under optimization pressure</h1>
+</div>
+
+<article class="post-body">
+<p>A proxy can correlate with what we care about on ordinary data and become useless once a search process learns to exploit it. I saw this in PRISM: a protein-embedding score appeared biologically structured, yet a composition-matched control reproduced 72% of its movement, protein length explained 92.5% of displacement, and an unconstrained search pushed the score five standard deviations past the natural-protein floor while producing non-proteins. I want to turn that failure into a general audit.</p>
+
+<p>Research question: Can a small set of diagnostics predict when a learned score will fail under search, and do those diagnostics transfer across domains?</p>
+
+<p>The audit. First, characterize the proxy: wrap any model-derived score in the same evaluation interface, measuring bulk correlation, local ranking among the highest-scoring examples, sensitivity to cheap covariates, and invariance under counterfactual controls. Second, apply bounded pressure: run several search procedures while enforcing domain-validity constraints, tracking the score, external validity, and distance from the reference distribution at every step. This produces a pressure curve showing the point where score and validity first separate. Third, test portability: use PRISM as the completed protein instantiation, then repeat the audit on a text-embedding retrieval task with human-labeled relevance.</p>
+
+<p>Why this matters: alignment failures often appear at the interface between a model and the objective placed around it. World models, reward models, and protein-design systems all compress rich predictions into scores that downstream agents search against. A portable audit would make one question routine: will this score remain meaningful when it matters most?</p>
+
+<p>Hypothesis: proxy failures share three early signatures, sensitivity to easy covariates, weak ranking within the top tail, and a widening gap between score and validity under search.</p>
+
+<p>What success looks like: predictive (early diagnostics forecast the failure point across seeds and search procedures), portable (at least one diagnostic replicates in both protein and text settings), falsifiable (if only domain-specific tests work, the project reports that limit).</p>
+
+<p>Outputs: an open-source harness with adapters, controls, search traces, and compact audit reports; a research paper benchmarking which diagnostics predict proxy failure, where they transfer, and where they stop.</p>
+
+<p>Biological scope: all protein experiments use benign, existing sequences and computational validation. The project does not generate new functional sequences, run wet-lab validation, or release reusable steering probes.</p>
+</article>
+
+<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#writing">&larr; back to portfolio</a></p>

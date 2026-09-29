@@ -103,23 +103,6 @@ permalink: /pages/portfolio/
   </div>
 </section>
 
-<!-- confirm Aureka contract before publishing -->
-<section class="exp-group">
-  <h2 class="exp-group-title">protein design</h2>
-  <div class="exp-cards">
-    <article class="exp-card-static">
-      <div class="exp-card-face">
-        <div class="exp-card-head">Aureka Biotech, with Danyal Rehman</div>
-        <div class="exp-card-body">
-          <ul>
-            <li>Reinforcement learning for protein design.</li>
-          </ul>
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
-
 <section class="exp-group">
   <h2 class="exp-group-title">cancer genomics</h2>
   <div class="exp-cards">
@@ -156,6 +139,8 @@ permalink: /pages/portfolio/
 
 <section id="projects" class="pf-section">
   <h2 class="pf-heading">projects</h2>
+
+  <p class="proj-featured">flagship codebase: <a href="https://github.com/saanviiyer/prism" target="_blank" rel="noopener">PRISM</a></p>
 
   <p class="fun-label">protein model evals</p>
   <p class="proj-intro">most of my research is one question: do protein model evaluations survive contact with an optimizer? i build the stress tests, baselines, and controls first, then check whether a metric measures what it claims or just something easy to game.</p>
@@ -245,6 +230,12 @@ permalink: /pages/portfolio/
     <li class="blog-post"><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="blog-date">{{ post.date | date: "%B %Y" }}</span></li>
     {% endfor %}
   </ul>
+</section>
+
+<section id="writing" class="pf-section">
+  <h2 class="pf-heading">writing</h2>
+  <p class="proj-line"><strong><a href="{{ '/pages/writing/portable-audit/' | relative_url }}">A portable audit for proxy-based evaluation under optimization pressure</a></strong> is a one-page research proposal.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/writing/fitness-proxy/' | relative_url }}">Why a good fitness proxy can fail where it matters</a></strong> is a one-page technical explainer.</p>
 </section>
 
 <section id="portfolio" class="pf-section">

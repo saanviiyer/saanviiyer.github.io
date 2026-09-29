@@ -847,6 +847,8 @@ footer a:hover { text-decoration: underline; }
 .proj-blurb a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--accent); }
 .fun-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 28px 0 12px; }
 .proj-intro { max-width: 76ch; line-height: 1.62; margin: 0 0 20px; color: var(--muted); }
+.proj-featured { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.03em; margin: 0 0 20px; color: var(--muted); }
+.proj-featured a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 .fun-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));

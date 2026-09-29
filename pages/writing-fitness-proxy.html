@@ -1,0 +1,25 @@
+---
+title: Why a good fitness proxy can fail where it matters · Saanvi S. Subramanian
+permalink: /pages/writing/fitness-proxy/
+---
+
+<div class="page-header">
+  <p class="page-eyebrow">Technical explainer</p>
+  <h1>Why a good fitness proxy can fail where it matters</h1>
+</div>
+
+<article class="post-body">
+<p>A static benchmark can reward a scorer that breaks as soon as a generator starts selecting against it.</p>
+
+<p>Protein design systems rarely get to ask biology every question. Wet-lab measurements are slow, so a model ranks thousands or millions of candidates using a computable proxy for binding, stability, or function. That shortcut is useful. It also changes the evaluation problem. Once a search process starts choosing the sequences a proxy likes most, the relevant question is no longer "does the score correlate with fitness on average?" It is "does the score remain trustworthy at the exact edge the system selects?"</p>
+
+<p>Optimization selects error as well as signal. Write the proxy as the true fitness plus prediction error. A candidate can receive a high score because it is genuinely good, because the model is wrong in its favor, or both. Search over more candidates and the winner is increasingly likely to carry an unusually large positive error. This is the same selection effect behind a "winner's curse." Worked example: in one PRISM audit, the learned proxy showed bulk Spearman around 0.53, then lost most of that usefulness among the variants it ranked highest (top-k utility around 0.15). The aggregate metric hid the decision failure.</p>
+
+<p>The evaluation should follow the loop. Treat the scorer and the search process as one system, then ask three questions. First, does selection work? Report enrichment, regret, and utility inside the top k, in addition to whole-dataset correlation. Second, does pressure break it? Sweep proposal count, search budget, and update strength, plotting predicted gain against measured gain. Third, does it travel? Hold out protein families or scaffolds, then test whether calibration and ranking survive the shift.</p>
+
+<p>The same pattern links protein design, world models, and alignment. A protein generator can exploit a learned fitness model. A planner can exploit errors in a world model. A policy can exploit a reward model. The objects differ, but the technical shape is the same: a model predicts what we care about, another process searches against that prediction, and small systematic errors become attractive targets. The strongest evaluation is therefore evidence that the score keeps meaning the same thing after search begins.</p>
+
+<p>The takeaway: a proxy is useful only if it survives the decisions made with it.</p>
+</article>
+
+<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#writing">&larr; back to portfolio</a></p>

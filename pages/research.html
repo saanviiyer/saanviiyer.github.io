@@ -1,0 +1,45 @@
+---
+title: research · Saanvi S. Subramanian
+permalink: /pages/research/
+---
+
+<div class="page-header">
+  <h1>research</h1>
+</div>
+
+<p class="research-intro">I study when learned representations and scoring systems remain trustworthy once they are used to make decisions. I work across protein design, world models, and neuroscience, where a plausible benchmark can fail in the exact regime that matters.</p>
+
+<h2 class="section-heading">Reliable AI for biological design</h2>
+<p class="proj-blurb">i test whether protein models encode the biological property a design process needs, especially after a proxy becomes an objective. the recurring pattern is to start with trivial baselines and confound controls, then measure what happens in the top-ranked region an optimizer would actually use.</p>
+
+<p class="proj-line"><strong>PRISM:</strong> i built a pipeline that applies all 78 COSMIC single-base-substitution signatures to protein-coding sequences and measures how each mutant cloud moves through ESM-2 space relative to Pfam domain centroids. SBS17a repeatedly steered sequences toward PF17041 across two independent Pfam clans. the follow-up controls changed my interpretation: a composition-matched control reproduced 72% of the movement, and protein length explained 92.5% of displacement. the project became as much about auditing the representation as reading the signal.</p>
+
+<p class="proj-line"><strong>gauntlet:</strong> gauntlet stress-tests protein fitness proxies before they are used to rank designs. on measured PETase activity, a plain mutation-count baseline beat ESM-2 zero-shot. the broader audit asks whether a proxy adds value beyond trivial baselines, stays useful in the top-ranked tail, and resists reward hacking.</p>
+
+<p class="proj-line"><strong>action identifiability in protein-design agents:</strong> this project asks whether an agent's apparent success identifies the biological action that caused it. the goal is to separate good outcomes from justified decisions.</p>
+
+<p class="proj-line"><strong>biologos:</strong> biologos tests whether genomic-to-protein transfer survives direct controls. in the current evaluation, the apparent protein-fitness signal from a genomic language model was indistinguishable from a substitution-matrix baseline.</p>
+
+<p class="proj-line"><strong>plimsoll:</strong> plimsoll turns evaluation discipline into software. it checks a research repository for trivial baselines, verified nulls, decisive controls, named confounds, and printed denominators, then quotes the evidence behind each verdict.</p>
+
+<h2 class="section-heading">World models and learning</h2>
+<p class="proj-blurb">i study when a model builds a usable internal variable from partial observations, and how to tell whether that variable actually supports prediction or action.</p>
+
+<p class="proj-line"><strong>faithful heading:</strong> predictive world models trained from pixels recovered a faithful heading variable without pose supervision, but only under partial observability. i ran these simulations to understand when missing observations force a model to maintain a stable internal state instead of relying on the current frame.</p>
+
+<p class="proj-line"><strong>task-space reward learning:</strong> with researchers at Google DeepMind and the University of Edinburgh, i fit recurrent neural networks to behavior in a 487-participant bandit task space.</p>
+
+<p class="proj-line"><strong>surgical video models:</strong> i test whether video foundation models use temporal information when scoring surgical movement. a single still frame matched the full 16-frame video across the current encoders. the next experiments isolate order, change, and static appearance so the representation claim can be falsified.</p>
+
+<p class="proj-line"><strong>engram:</strong> engram is a controlled test of biologically inspired continual-learning rules. it asks whether an apparent retention gain remains after training exposure and compute are matched.</p>
+
+<h2 class="section-heading">AI for neuroscience and medicine</h2>
+<p class="proj-blurb">i build and evaluate models around the information a clinician actually uses, then test whether each modality changes the decision rather than only improving a benchmark.</p>
+
+<p class="proj-line"><strong>CortSeer:</strong> combines MRI with clinical and EEG findings to re-examine subtle epileptogenic lesions. i built the project during a Caltech SURF in Stanford Pediatric Neuroradiology. presented orally at the ECCV AI for Medical 3D Vision workshop.</p>
+
+<p class="proj-line">tumor representation learning and cancer genomics round out the earlier biological data work.</p>
+
+<p class="proj-blurb">Creative shelf stays small: music and things i made for myself, featuring mixcut, handsynth, and lattice.</p>
+
+<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; back to portfolio</a></p>
