@@ -1,0 +1,41 @@
+---
+title: writing · Saanvi S. Subramanian
+permalink: /pages/writing/
+---
+
+<section class="pf-section">
+  <h2 class="pf-heading">writing</h2>
+
+  <p class="fun-label">featured</p>
+  <ul class="writing-featured">
+    <li>
+      <a href="{{ '/thinking/the-probe-works-and-the-understanding-is-not-there/' | relative_url }}">The probe works. The understanding isn't there.</a>
+      <span class="writing-date">September 2026</span>
+      <span class="writing-desc">A protein-model stress test where a probe reached AUC 0.94 in-distribution and 0.7% top-1 on held-out signatures.</span>
+    </li>
+    <li>
+      <a href="{{ '/pages/writing/portable-audit/' | relative_url }}">A portable audit for proxy-based evaluation under optimization pressure</a>
+      <span class="writing-date">September 2026</span>
+      <span class="writing-desc">A research proposal to predict when a learned score will fail under search, and whether the diagnostics transfer across domains.</span>
+    </li>
+    <li>
+      <a href="{{ '/pages/writing/fitness-proxy/' | relative_url }}">Why a good fitness proxy can fail where it matters</a>
+      <span class="writing-date">September 2026</span>
+      <span class="writing-desc">A technical explainer on why a scorer that looks fine in bulk breaks at the top-ranked edge a search selects.</span>
+    </li>
+    <li>
+      <a href="{{ '/pages/writing/integrated-core-rfp/' | relative_url }}">Integrated Core RFP</a>
+      <span class="writing-date">Spring 2026</span>
+      <span class="writing-desc">A freshman research proposal on machine-learning-guided directed evolution of thermostable, alkaliphilic PETases.</span>
+    </li>
+  </ul>
+
+  <p class="fun-label">archive</p>
+  <ul class="blog-list">
+    <li class="blog-post"><a href="https://saanviss.substack.com/p/saanvis-surf-summer-in-sf-before" target="_blank" rel="noopener">saanvi's surf summer in sf before starting smore szn</a><span class="blog-date">September 2026</span></li>
+    {% assign posts = site.posts | sort: 'date' | reverse %}
+    {% for post in posts %}{% unless post.url contains 'the-probe-works' %}
+    <li class="blog-post"><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="blog-date">{{ post.date | date: "%B %Y" }}</span></li>
+    {% endunless %}{% endfor %}
+  </ul>
+</section>
