@@ -329,18 +329,11 @@ nav {
 }
 .recent-list li:first-child { border-top: none; }
 .recent-date {
-  display: inline-block;
-  min-width: 76px;
-  margin-right: 12px;
   color: var(--accent);
   font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  vertical-align: baseline;
-}
-@media (max-width: 620px) {
-  .recent-date { display: block; min-width: 0; margin: 0 0 3px; }
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  margin-right: 8px;
 }
 
 .exp-group-heading {
