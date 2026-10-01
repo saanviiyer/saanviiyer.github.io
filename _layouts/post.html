@@ -1,14 +1,22 @@
 ---
 layout: default
 ---
-<div class="page-header post-header">
-  <p class="page-eyebrow">Blog</p>
-  <h1>{{ page.title }}</h1>
-  <p class="post-meta">{{ page.date | date: "%B %Y" }}{% if page.tag %} &middot; {{ page.tag }}{% endif %}</p>
-</div>
+<article class="research-post">
+  <header class="rp-head">
+    <p class="rp-eyebrow"><a href="{{ '/pages/writing/' | relative_url }}">&larr; writing</a>{% if page.tag %} &middot; {{ page.tag }}{% endif %} &middot; {{ page.date | date: "%b %-d, %Y" }}</p>
+    <h1 class="rp-title">{{ page.title }}</h1>
+    {% if page.dek %}<p class="rp-dek">{{ page.dek }}</p>{% elsif page.excerpt %}<p class="rp-dek">{{ page.excerpt | strip_html | strip_newlines }}</p>{% endif %}
+    {% if page.image %}
+    <figure class="rp-hero">
+      <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">
+      {% if page.image_caption %}<figcaption>{{ page.image_caption }}</figcaption>{% endif %}
+    </figure>
+    {% endif %}
+  </header>
 
-<article class="post-body">
-  {{ content }}
+  <div class="rp-body">
+    {{ content }}
+  </div>
+
+  <p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>
 </article>
-
-<p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>

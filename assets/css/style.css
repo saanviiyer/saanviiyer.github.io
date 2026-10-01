@@ -552,16 +552,46 @@ nav {
 .post-card:hover h3 { color: var(--accent); }
 .post-list-archive .post-card h3 { font-size: 1.18rem; }
 
-.post-header { max-width: none; }
-.post-meta { color: var(--muted); font-family: var(--mono); font-size: 0.66rem; margin-top: 18px; text-transform: uppercase; }
-.post-body { max-width: none; }
-.post-body p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.82; margin-bottom: 23px; }
+/* Research post, centered reading column (Goodfire-style) */
+.research-post { max-width: 720px; margin: 0 auto; }
+.rp-head { margin-bottom: 40px; }
+.rp-eyebrow { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 22px; }
+.rp-eyebrow a { color: var(--accent); text-decoration: none; }
+.rp-eyebrow a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.rp-title { font-family: var(--serif); font-size: clamp(2.3rem, 4.8vw, 3.4rem); font-weight: 500; line-height: 1.06; letter-spacing: -0.028em; margin: 0; }
+.rp-dek { font-family: var(--serif); font-size: clamp(1.2rem, 2.3vw, 1.5rem); line-height: 1.42; color: var(--muted); margin: 22px 0 0; max-width: 60ch; }
+.rp-hero { margin: 36px 0 0; }
+.rp-hero img { width: 100%; height: auto; display: block; border-radius: 10px; }
+.rp-hero figcaption { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); line-height: 1.5; margin-top: 10px; }
+
+.rp-body { font-size: 1.12rem; line-height: 1.8; color: var(--ink); }
+.rp-body p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.8; margin: 0 0 22px; }
+.rp-body strong { font-weight: 600; }
+.rp-body h2 { font-family: var(--sans); font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.22; margin: 50px 0 14px; }
+.rp-body h3 { font-family: var(--sans); font-size: 1.18rem; font-weight: 600; margin: 34px 0 10px; }
+.rp-body ul, .rp-body ol { margin: 0 0 22px; padding-left: 1.3rem; }
+.rp-body li { font-family: var(--serif); font-size: 1.1rem; line-height: 1.7; margin-bottom: 9px; }
+.rp-body li::marker { color: var(--accent); }
+.rp-body a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.rp-body blockquote { border-left: 2px solid var(--accent); color: var(--muted); margin: 28px 0; padding-left: 22px; }
+.rp-body hr { border: none; border-top: 1px solid var(--accent-soft); margin: 44px 0; }
+.rp-body img { max-width: 100%; height: auto; }
+/* figures authored as an image paragraph followed by a bold caption paragraph */
+.rp-body p:has(> img) { text-align: center; margin: 34px 0 8px; }
+.rp-body p:has(> img) > img { width: 100%; border-radius: 8px; }
+.rp-body p:has(> img) + p { font-family: var(--mono); font-size: 0.74rem; line-height: 1.6; color: var(--muted); margin: 0 0 30px; }
+
+.post-back { margin-top: 56px; }
+.post-back a { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.06em; }
+.post-back a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* legacy pages still using .post-body keep a readable centered column */
+.post-body { max-width: 720px; margin: 0 auto; }
+.post-body p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.8; margin-bottom: 22px; }
 .post-body img { max-width: 100%; height: auto; margin: 8px 0; }
-.post-body h2 { font-family: var(--serif); font-size: 1.65rem; font-weight: 500; margin: 42px 0 15px; }
+.post-body h2 { font-family: var(--sans); font-size: 1.5rem; font-weight: 600; margin: 44px 0 14px; }
 .post-body blockquote { border-left: 2px solid var(--accent); color: var(--muted); margin: 28px 0; padding-left: 22px; }
 .post-body a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
-.post-back { margin-top: 52px; }
-.post-back a { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; }
 
 /* Portfolio */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px 20px; margin-bottom: 56px; }

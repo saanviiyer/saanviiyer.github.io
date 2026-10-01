@@ -3,12 +3,13 @@ title: A portable audit for proxy-based evaluation under optimization pressure Â
 permalink: /pages/writing/portable-audit/
 ---
 
-<div class="page-header">
-  <p class="page-eyebrow">Research proposal</p>
-  <h1>A portable audit for proxy-based evaluation under optimization pressure</h1>
-</div>
+<article class="research-post">
+  <header class="rp-head">
+    <p class="rp-eyebrow"><a href="{{ '/pages/writing/' | relative_url }}">&larr; writing</a> &middot; Research proposal</p>
+    <h1 class="rp-title">A portable audit for proxy-based evaluation under optimization pressure</h1>
+  </header>
 
-<article class="post-body">
+  <div class="rp-body">
 <p>A proxy can correlate with what we care about on ordinary data and become useless once a search process learns to exploit it. I saw this in PRISM: a protein-embedding score appeared biologically structured, yet a composition-matched control reproduced 72% of its movement, protein length explained 92.5% of displacement, and an unconstrained search pushed the score five standard deviations past the natural-protein floor while producing non-proteins. I want to turn that failure into a general audit.</p>
 
 <p>Research question: Can a small set of diagnostics predict when a learned score will fail under search, and do those diagnostics transfer across domains?</p>
@@ -24,6 +25,7 @@ permalink: /pages/writing/portable-audit/
 <p>Outputs: an open-source harness with adapters, controls, search traces, and compact audit reports; a research paper benchmarking which diagnostics predict proxy failure, where they transfer, and where they stop.</p>
 
 <p>Biological scope: all protein experiments use benign, existing sequences and computational validation. The project does not generate new functional sequences, run wet-lab validation, or release reusable steering probes.</p>
-</article>
+</div>
 
-<p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>
+  <p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>
+</article>
