@@ -13,7 +13,7 @@ excerpt: "I compared three local learning rules against backpropagation at match
 
 I started engram because biologically inspired learning rules are often reported to reduce catastrophic forgetting, and I wanted to know whether the improvement survives a fair comparison. Catastrophic forgetting is the failure where a network trained on a new task loses what it learned on an earlier one. In the published cases I looked at, the local rule arrives bundled with something else, such as sparsity or replay, and the retention gets credited to locality. I wanted to know whether locality itself does any work.
 
-The setup is class-incremental Split-CIFAR-10: five tasks of two classes each, a single growing output head, and no task labels at test time. I ran Split-FashionMNIST and Split-CIFAR-100 (ten tasks of ten classes) as replications. Every rule trains the same two-layer MLP with 256 hidden units. I measure retention as backward transfer (BWT), the change in accuracy on earlier tasks after training on later ones. The headline comparison uses 16 seeds, and each seed gives every method the identical task stream so the differences are paired. [NEEDS SAANVI: the paper's Statistics paragraph (iclr_locality.tex:189) still says 8 seeds while Table 2 is the 16-seed result. Confirm 16 is the number to quote.]
+The setup is class-incremental Split-CIFAR-10: five tasks of two classes each, a single growing output head, and no task labels at test time. I ran Split-FashionMNIST and Split-CIFAR-100 (ten tasks of ten classes) as replications. Every rule trains the same two-layer MLP with 256 hidden units. I measure retention as backward transfer (BWT), the change in accuracy on earlier tasks after training on later ones. The headline comparison uses 16 seeds, and each seed gives every method the identical task stream so the differences are paired.
 
 ## Matching learning accuracy is the whole experiment
 
@@ -21,7 +21,9 @@ A rule that learns each new task less well also has less to forget, so a raw ret
 
 I scored each rule against backpropagation at the same learning accuracy. I matched learning accuracy and tuned the baseline as carefully as each rule, with an equal tuning budget per rule on a held-out validation split and learning rates swept separately per dataset, so any remaining gap belongs to the rule. Matching is never exact, so I corrected each difference for the small learning-accuracy gap that remained.
 
-**Figure 1.** [NEEDS SAANVI: figure. The closest existing figure is biocl/results/figure_locality.png (BWT against learning accuracy, with the backpropagation ladder, the fit lines, the rules, and the replay arms), but it predates the 8 Aug rerun and needs regenerating before it goes in. It also shows condition means, not seeds.]
+![Backward transfer against learning accuracy on Split-CIFAR-10 and Split-CIFAR-100, where local rules sit on the backpropagation curve and replay sits above it](/assets/images/engram-continual-learning/locality.png)
+
+**Figure 1.** Backward transfer against learning accuracy. The backpropagation ladder traces a curve, the local rules fall on that same curve, and only replay sits above it, so locality does not move the forgetting-versus-learning trade-off.
 
 ## Two rules matched backpropagation, and the third cleared zero by 0.21 points
 
@@ -29,7 +31,9 @@ Under matched learning accuracy, feedback alignment differed from backpropagatio
 
 That bound has a limit I have to state with it. Split-CIFAR-10 with a growing head retains very little, 0.7 points, so the protocol sits near a floor. When I rescored within each task's own classes to lift it off that floor, the ordering held, with replay still clearly ahead and no local rule retaining better, but the curve then resolved retention only to about five points. Split-FashionMNIST failed as a quantitative instrument, with 12.29 points of held-out error.
 
-**Figure 2.** [NEEDS SAANVI: figure. No existing figure shows per-seed points. The nearest is panel B of biocl/results/figure_neurreps.png (departure from the null for each rule, with and without replay, with error bars). A per-seed version would need new plotting from biocl/results/matched_plasticity/split-cifar10/.]
+![Departure from the null for each learning rule, with and without replay, where the rules sit within the null band and every replay arm is about ten points above it](/assets/images/engram-continual-learning/neurreps.png)
+
+**Figure 2.** The right panel shows each rule's departure from the null band. The credit-assignment rules sit within the null scatter, while adding replay lifts every rule about ten points above it. The left panel shows how the representational geometry of each rule changes across the five tasks.
 
 ## Forgetting is an alignment problem too
 
@@ -37,4 +41,4 @@ Continued training of a deployed model, whether fine-tuning or RLHF, can erase c
 
 ## Acknowledgements
 
-[NEEDS SAANVI: collaborators, supervisors, and any support to credit. Nothing is recorded in the repo.] [NEEDS SAANVI: github.com/saanviiyer/engram currently holds only a .gitattributes file, and the paper says the code will be released on acceptance. Link it once the code is pushed, or remove the link.]
+Engram is independent research. I will release the code when the project is public.

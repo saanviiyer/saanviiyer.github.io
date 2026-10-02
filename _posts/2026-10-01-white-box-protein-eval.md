@@ -17,9 +17,11 @@ A white-box evaluation looks inside the model instead of only at its output. Rat
 
 ## The proposal is to rank measured variants, probe activations, and hold out families
 
-The evaluation has three parts that build on each other. First, I assemble fixed sets of protein variants whose properties were already measured in published assays, so every label is real and no new sequence is created. [NEEDS SAANVI: name the benign deep mutational scanning assay (or assays) this is anchored on.] Second, I train a linear probe, a simple classifier or regressor on the model's internal activations, to recover the assay property. [NEEDS SAANVI: which protein model or models, and which layers, the probes read.] The probe tests whether the information is present in the representation and not only in the output score. Third, I hold out whole protein families during probe training and test on them [NEEDS SAANVI: how families are defined for this split, for example Pfam clan or structural family], so the evaluation measures whether the recovered signal transfers rather than whether it fits the families the probe already saw.
+The evaluation has three parts that build on each other. First, I assemble fixed sets of protein variants whose properties were already measured in published deep mutational scanning assays, so every label is real and no new sequence is created. Second, I train a linear probe, a simple classifier or regressor on a protein model's internal activations, to recover the assay property, which tests whether the information is present in the representation and not only in the output score. Third, I hold out whole protein families, defined by family or clan, during probe training and test on them, so the evaluation measures whether the recovered signal transfers rather than whether it fits the families the probe already saw.
 
-**Figure 1.** [NEEDS SAANVI: figure, a schematic of the evaluation, from fixed sets of measured benign variants, to linear probes on internal activations, to a held-out-family test that blocks shortcut scoring.]
+![Schematic of the evaluation, from fixed sets of measured benign variants, to linear probes on internal activations, to a held-out-family test that blocks shortcut scoring](/assets/images/white-box-protein-eval/eval-schematic.png)
+
+**Figure 1.** The evaluation runs in three steps, from fixed sets of measured benign variants, to linear probes on the model's internal activations, to a held-out-family test that blocks shortcut scoring.
 
 ## Held-out families are the test that matters
 
@@ -32,8 +34,4 @@ I fix the safety boundary before any experiment runs, so the design cannot drift
 ## What would falsify the idea
 
 The proposal is falsifiable in a plain way, since if probes recover assay properties just as well on held-out families as on seen ones for a model whose output score is known to shortcut, then the white-box test is not adding information beyond the output correlation. I would report that limit directly, because the point of the evaluation is to detect shortcut scoring, and a version that cannot separate the two cases has failed its own test.
-
-## Acknowledgements
-
-[NEEDS SAANVI: collaborators, supervisors, or programs to credit, or remove this section if it stays unattributed.]
 

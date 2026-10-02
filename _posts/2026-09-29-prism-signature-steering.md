@@ -2,7 +2,6 @@
 layout: post
 title: "PRISM: methods, controls, and what each number is a number about"
 date: 2026-09-29
-published: false
 tag: "Research"
 permalink: /thinking/prism-signature-steering/
 excerpt: "The lab report for PRISM: how the pipeline works, what each control measures, and where the numbers came from."
@@ -16,7 +15,7 @@ A mutational signature is the characteristic pattern of DNA base substitutions a
 
 For each signature, the operator walks a coding sequence and samples substitutions from that signature's channel weights for the local trinucleotide. It writes edits in place, so a substitution can change the context for the next position, which is rare at per-position probabilities of order ten to the minus two. The current configuration generates ten mutants per protein and signature condition. Reverse-complement substitutions are omitted.
 
-The source proteins come from two Pfam clans: 65 usable accessions across 12 families in CL0023, and 9 accessions from a single family in CL0072. [NEEDS SAANVI: CL0023 is called "P-loop NTPase" in the papers and "the helicases" in the talk scripts, and CL0072's name appears only in the talk scripts. Confirm the labels you want used.] Other clan runs exist in the archive, so the two-clan framing is a selection from more runs, which I state plainly below.
+The source proteins come from two Pfam clans: 65 usable accessions across 12 families in CL0023, the P-loop NTPase clan, and 9 accessions from a single family in CL0072. Other clan runs exist in the archive, so the two-clan framing is a selection from more runs, which I state plainly below.
 
 Each mutant is translated and embedded with ESM-2 8M. Mean pooling over residue vectors, excluding the start and end tokens, gives one vector per protein. Displacement toward a Pfam family is the signed change in cosine distance to that family's centroid, so a positive value means the mutant mean sits closer to the family than the wild type does. The centroid library holds 27,481 Pfam family centroids at 320 dimensions. Steering analyses use hidden layer 5 of the same model.
 
@@ -34,13 +33,19 @@ The corrected rerun changes how much that recurrence is worth. The legacy pipeli
 
 One more bound on this arm: the PF17041 centroid is built from four seed sequences.
 
-**Figure 2.** [NEEDS SAANVI: figure, SBS17a ranked first of 78 toward PF17041 in each clan. The archive has this as all_runs/sbs17a_pf17041_ranking.png, which needs copying into the site assets, and its panel percentages are the pre-read-through values, so confirm which version you want shown.]
+![SBS17a ranks first of 78 signatures toward PF17041 in both clans](/assets/images/prism-signature-steering/sbs17a-ranking.png)
+
+**Figure 2.** SBS17a is the top-ranked signature of 78 for directing sequences toward PF17041 in both clans. The bar heights are the pre-read-through concentrations, 31.6% in CL0023 and 68.3% in CL0072, which the read-through rerun raises to 71.7% and 100% while keeping SBS17a first.
 
 ## Length explains most of the displacement magnitude
 
 Premature stops tie signature identity to protein length. Signatures differ in stop-codon probability, mean-pooled embeddings depend on the translated sequence, so length offers an explanation for displacement that needs no functional shift.
 
 Fitting mean absolute displacement on log translated length, one point per signature across all 78, gives R-squared 0.941 within CL0023. That is an ordinary least-squares fit on log length, and the fraction of variance it accounts for is the fraction of a per-signature summary, not of per-protein movement. Two provenance notes: the original analysis reported R-squared 0.925 for the same relationship but I found no code or saved output that produces it, and the archived re-derivation that gives 0.941 used 68 source sequences where the retained trajectory panel has 65, so it is not a re-analysis of exactly the same panel. The pairwise arm shows a weaker length association at R-squared 0.53.
+
+![Translated length by signature, and mean absolute displacement against log translated length with R-squared 0.941](/assets/images/prism-signature-steering/length-confound.png)
+
+**Figure 3.** Signatures differ in how long their translated sequences are, because they differ in stop-codon probability, and mean absolute displacement falls almost perfectly with log translated length at R-squared 0.941 across the 78 signatures.
 
 ## A composition-matched scramble reproduces 72% of the steering, on one readout
 
@@ -50,7 +55,9 @@ That 72% belongs to that readout and does not generalize across the project. On 
 
 A composition follow-up narrows this further. Amino-acid frequencies alone predict cosine distance to the PF17041 centroid at grouped cross-validated R-squared 0.339. On the change in distance rather than the level, that falls to 0.0966, so composition explains about a tenth of the movement itself. The closed-loop design arm found signature-guided minus composition-matched at -0.0027, p = 0.875.
 
-**Figure 3.** [NEEDS SAANVI: figure. The old controls.png was a hand-made two-bar chart with 72% and 92.5% typed into it and has been deleted. The archive has real-data versions at papers/recomb_figs/fig_scramble.pdf and fig_length_confound.pdf.]
+![The signature direction moves held-out embeddings toward PF17041, and a context-scrambled direction keeps 72% of that movement](/assets/images/prism-signature-steering/scramble.png)
+
+**Figure 4.** The real SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, and a context-scrambled direction that preserves composition keeps 72% of that movement. The right panel shows the context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014.
 
 ## The recommender: two evaluations, not one
 
@@ -60,7 +67,9 @@ It gets scored two ways, and the two are different tasks. The archived in-distri
 
 AUC measures discrimination over score thresholds on familiar mechanisms. Top-k measures whether the right signature surfaces for a mechanism never seen. Reporting only the first would describe a recommender that does not work out of distribution as one that works.
 
-**Figure 4.** [NEEDS SAANVI: figure, the in-distribution and leave-signatures-out results side by side. The existing decodability.png cannot be reused: it plots 0.007, which is the superseded run, and puts AUC and top-1 on one axis as though they were the same measurement. The archive has papers/recomb_figs/fig_loso.pdf.]
+![Transfer to unseen signatures: leave-signatures-out top-1 accuracy is 0.8 percent, below the 1.3 percent uniform line, and 0.0 percent with SBS17a withheld](/assets/images/prism-signature-steering/loso.png)
+
+**Figure 5.** Transfer to unseen signatures. Leave-signatures-out top-1 accuracy is 0.8%, below the 1.3% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld.
 
 ## What is not here
 
@@ -70,4 +79,4 @@ There is no residue-level attribution. Nothing here isolates which positions car
 
 ## Acknowledgements
 
-PRISM was supervised independent research with AITHYRA, with Gabriela Lobińska, and it was an oral presentation at IEEE CIBCB 2026. [NEEDS SAANVI: confirm this is how you want the collaboration credited, and add anyone else.] [NEEDS SAANVI: the code link. The paper points audit code at github.com/saanviiyer/protein-lm-audits/tree/main/prism and notes the public repositories do not yet contain all named audit outputs, so confirm which link to publish.]
+PRISM was supervised independent research with AITHYRA, with Gabriela Lobińska, and I presented it as an oral at IEEE CIBCB 2026. The audit code is in the [protein-lm-audits repository](https://github.com/saanviiyer/protein-lm-audits/tree/main/prism).
