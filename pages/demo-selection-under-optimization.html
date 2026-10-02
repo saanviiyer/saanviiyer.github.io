@@ -1,0 +1,162 @@
+---
+title: Demo · Selection under optimization · Saanvi S. Subramanian
+permalink: /pages/demos/selection-under-optimization/
+---
+
+<article class="research-post">
+  <header class="rp-head">
+    <p class="rp-eyebrow"><a href="{{ '/pages/writing/' | relative_url }}">&larr; writing</a> &middot; Interactive demo</p>
+    <h1 class="rp-title">Selection under optimization</h1>
+    <p class="rp-dek">A proxy that correlates with what you care about can still fail once a search optimizes against it. Move the sliders and watch the gap open.</p>
+  </header>
+
+  <div class="rp-body">
+    <p>This is a live simulation of the mechanism behind my protein-evaluation work. Each candidate has a true quality and a proxy score equal to that true quality plus independent error. A search looks at some number of candidates and keeps the one with the highest proxy. The question is what happens to the true quality of the kept candidate as the search looks at more candidates.</p>
+
+    <div class="demo-panel">
+      <div class="demo-controls">
+        <label>Proxy noise
+          <input id="sigma" type="range" min="0" max="2" step="0.05" value="0.8">
+          <span id="sigma-val" class="demo-num">0.80</span>
+        </label>
+        <label>Search budget (candidates)
+          <input id="budget" type="range" min="0" max="10" step="1" value="6">
+          <span id="budget-val" class="demo-num">64</span>
+        </label>
+      </div>
+      <svg id="demo-chart" viewBox="0 0 640 360" role="img" aria-label="Proxy score and true quality of the selected candidate as search budget grows"></svg>
+      <div class="demo-readout">
+        <div><span class="demo-k">Proxy of the kept candidate</span><span id="r-proxy" class="demo-v">--</span></div>
+        <div><span class="demo-k">True quality of the kept candidate</span><span id="r-true" class="demo-v">--</span></div>
+        <div><span class="demo-k">Optimism, proxy minus true</span><span id="r-gap" class="demo-v">--</span></div>
+      </div>
+    </div>
+
+    <p>With no noise the two curves sit on top of each other, because the proxy is the true quality and optimizing it optimizes what you want. Add noise and the proxy curve climbs faster than the true curve, because a larger search is more likely to find a candidate whose score is high for the wrong reason. That gap is the winner's curse, and it is why I report utility in the top-ranked region a design process would actually use, not just the bulk correlation.</p>
+
+    <p>The link to the projects is direct. In gauntlet a learned fitness proxy looked respectable in bulk and lost most of its usefulness among the top-ranked variants. In PRISM an unconstrained search pushed an embedding score far past the natural-protein floor while producing sequences that were not credible proteins. The white-box evaluation proposal is one answer to the same problem.</p>
+
+    <p class="demo-note">This is a Monte Carlo simulation drawn from Gaussian quality and Gaussian proxy error, averaged over many trials in your browser. It illustrates the selection mechanism and is not fit to any dataset.</p>
+  </div>
+
+  <p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>
+</article>
+
+<style>
+.demo-panel { border: 1px solid var(--read-card-edge); border-radius: 16px; padding: 20px; margin: 26px 0; background: rgba(255,255,255,0.35); }
+:root[data-theme="dark"] .demo-panel { background: rgba(255,255,255,0.04); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px 32px; margin-bottom: 14px; }
+.demo-controls label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.demo-controls input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.demo-num { font-family: var(--mono); color: var(--accent); font-size: 0.8rem; }
+#demo-chart { width: 100%; height: auto; display: block; }
+.demo-readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; margin-top: 14px; }
+.demo-readout > div { border-top: 1px solid var(--accent-soft); padding-top: 8px; }
+.demo-k { display: block; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.demo-v { display: block; font-family: var(--serif); font-size: 1.5rem; color: var(--ink); }
+.demo-note { font-family: var(--mono); font-size: 0.72rem; line-height: 1.6; color: var(--muted); }
+</style>
+
+<script>
+(function () {
+  var BUDGETS = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
+  var TRIALS = 500;
+  var svg = document.getElementById("demo-chart");
+  var sigmaEl = document.getElementById("sigma");
+  var budgetEl = document.getElementById("budget");
+  var NS = "http://www.w3.org/2000/svg";
+
+  function gauss() {
+    var u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  // For a budget B and noise sigma, average over trials the proxy and true of the argmax-proxy pick.
+  function curves(sigma) {
+    var proxy = [], tru = [];
+    for (var bi = 0; bi < BUDGETS.length; bi++) {
+      var B = BUDGETS[bi], sp = 0, st = 0;
+      for (var t = 0; t < TRIALS; t++) {
+        var bestProxy = -Infinity, bestTrue = 0;
+        for (var i = 0; i < B; i++) {
+          var tq = gauss();
+          var px = tq + sigma * gauss();
+          if (px > bestProxy) { bestProxy = px; bestTrue = tq; }
+        }
+        sp += bestProxy; st += bestTrue;
+      }
+      proxy.push(sp / TRIALS); tru.push(st / TRIALS);
+    }
+    return { proxy: proxy, tru: tru };
+  }
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function render() {
+    var sigma = parseFloat(sigmaEl.value);
+    var bIdx = parseInt(budgetEl.value, 10);
+    document.getElementById("sigma-val").textContent = sigma.toFixed(2);
+    document.getElementById("budget-val").textContent = BUDGETS[bIdx];
+
+    var d = curves(sigma);
+    var W = 640, H = 360, L = 56, R = 16, T = 18, Bm = 44;
+    var ink = css("--ink") || "#17090f";
+    var accent = css("--accent") || "#9c1c8c";
+    var muted = css("--muted") || "#6a2350";
+    var soft = css("--accent-soft") || "rgba(156,28,140,0.16)";
+
+    var maxY = 0;
+    for (var i = 0; i < d.proxy.length; i++) maxY = Math.max(maxY, d.proxy[i], d.tru[i]);
+    maxY = Math.max(1, Math.ceil(maxY * 10) / 10);
+
+    function x(i) { return L + (W - L - R) * (i / (BUDGETS.length - 1)); }
+    function y(v) { return T + (H - T - Bm) * (1 - v / maxY); }
+
+    var parts = [];
+    // axes
+    parts.push('<line x1="' + L + '" y1="' + y(0) + '" x2="' + (W - R) + '" y2="' + y(0) + '" stroke="' + ink + '" stroke-width="1"/>');
+    parts.push('<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + y(0) + '" stroke="' + ink + '" stroke-width="1"/>');
+    // y ticks
+    for (var g = 0; g <= maxY + 1e-9; g += (maxY <= 2 ? 0.5 : 1)) {
+      parts.push('<line x1="' + (L - 4) + '" y1="' + y(g) + '" x2="' + L + '" y2="' + y(g) + '" stroke="' + ink + '"/>');
+      parts.push('<text x="' + (L - 8) + '" y="' + (y(g) + 4) + '" text-anchor="end" font-size="11" fill="' + muted + '" font-family="monospace">' + g.toFixed(1) + '</text>');
+    }
+    // x labels
+    for (var k = 0; k < BUDGETS.length; k += 2) {
+      parts.push('<text x="' + x(k) + '" y="' + (H - Bm + 20) + '" text-anchor="middle" font-size="11" fill="' + muted + '" font-family="monospace">' + BUDGETS[k] + '</text>');
+    }
+    parts.push('<text x="' + ((L + W - R) / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="12" fill="' + muted + '" font-family="monospace">search budget (candidates)</text>');
+
+    function poly(arr, color, dash) {
+      var pts = arr.map(function (v, i) { return x(i) + "," + y(v); }).join(" ");
+      return '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.5"' + (dash ? ' stroke-dasharray="5 4"' : '') + '/>';
+    }
+    parts.push(poly(d.proxy, accent, false));
+    parts.push(poly(d.tru, ink, true));
+
+    // selected budget marker
+    parts.push('<line x1="' + x(bIdx) + '" y1="' + T + '" x2="' + x(bIdx) + '" y2="' + y(0) + '" stroke="' + muted + '" stroke-width="1" stroke-dasharray="2 3"/>');
+    parts.push('<circle cx="' + x(bIdx) + '" cy="' + y(d.proxy[bIdx]) + '" r="4.5" fill="' + accent + '"/>');
+    parts.push('<circle cx="' + x(bIdx) + '" cy="' + y(d.tru[bIdx]) + '" r="4.5" fill="' + ink + '"/>');
+
+    // legend
+    parts.push('<rect x="' + (L + 10) + '" y="' + (T + 2) + '" width="14" height="3" fill="' + accent + '"/>');
+    parts.push('<text x="' + (L + 30) + '" y="' + (T + 8) + '" font-size="11" fill="' + ink + '" font-family="monospace">proxy of kept candidate</text>');
+    parts.push('<rect x="' + (L + 10) + '" y="' + (T + 18) + '" width="14" height="3" fill="' + ink + '"/>');
+    parts.push('<text x="' + (L + 30) + '" y="' + (T + 24) + '" font-size="11" fill="' + ink + '" font-family="monospace">true quality of kept candidate</text>');
+
+    svg.innerHTML = parts.join("");
+
+    document.getElementById("r-proxy").textContent = d.proxy[bIdx].toFixed(2);
+    document.getElementById("r-true").textContent = d.tru[bIdx].toFixed(2);
+    document.getElementById("r-gap").textContent = (d.proxy[bIdx] - d.tru[bIdx]).toFixed(2);
+  }
+
+  sigmaEl.addEventListener("input", render);
+  budgetEl.addEventListener("input", render);
+  window.addEventListener("themechange", render);
+  render();
+})();
+</script>
