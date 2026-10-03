@@ -3,20 +3,14 @@ layout: default
 ---
 <article class="pp-wrap" id="top">
   <div class="bm-head">
-    <div class="bm-head-main">
-      <p class="bm-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
-      <h1 class="bm-title">{{ page.title }}</h1>
-      <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
-      {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
-      {% if page.venues %}<p class="bm-venues">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
-      {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
-      {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
-      {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
-    </div>
-    <div class="bm-head-side">
-      <div class="bm-video">{% if page.video %}{{ page.video }}{% else %}[explainer video]{% endif %}</div>
-      <p class="bm-video-cap">{{ page.video_caption | default: "Short summary of the work." }}</p>
-    </div>
+    <p class="bm-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
+    <h1 class="bm-title">{{ page.title }}</h1>
+    <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
+    {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
+    {% if page.venues %}<p class="bm-venues">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
+    {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
+    {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
+    {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
   </div>
 
   <nav class="pp-toc" id="ppToc" aria-label="On this page"></nav>
@@ -34,8 +28,8 @@ layout: default
   if (!toc) return;
   var links = [{ href: "#top", label: "Overview" }];
   document.querySelectorAll(".pp-thread[id]").forEach(function (t) {
-    var tag = t.querySelector(".pp-thread-tag");
-    if (tag) links.push({ href: "#" + t.id, label: tag.textContent.trim() });
+    var ttl = t.querySelector(".pp-thread-title");
+    if (ttl) links.push({ href: "#" + t.id, label: ttl.textContent.trim() });
   });
   if (document.getElementById("takeaways")) links.push({ href: "#takeaways", label: "Takeaways" });
   if (document.getElementById("cite")) links.push({ href: "#cite", label: "Cite" });
