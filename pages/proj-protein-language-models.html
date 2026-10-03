@@ -1,0 +1,294 @@
+---
+layout: project
+title: "Interpreting and evaluating protein language models"
+permalink: /projects/protein-language-models/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+hook: "A protein model's score can look right and still be wrong in the exact place a design process would use it, at the very top of the ranking."
+thesis: "I build evaluations and interpretability methods for protein models that survive contact with an optimizer."
+video: "[TODO: Saanvi to add explainer video]"
+---
+
+<p class="pp-section-num">01 &middot; The Challenge</p>
+<h2 class="pp-section-title">A good score is not the same as a good protein</h2>
+
+<p>A <strong>protein language model</strong> is a model trained on many protein sequences that maps a sequence to a vector or a score. People use those scores to rank candidate proteins and to guide design, keeping the sequences the model likes best. The trouble is that a score can correlate with a real property across ordinary examples and still fail once a search picks the sequences that score highest, because the search can find candidates whose score is high for the wrong reason.</p>
+
+<div class="callout-q">
+  <div class="cq-label">The central question</div>
+  <p>When a protein model gives a sequence a good score, is that because the sequence is actually good, or because the score is easy to move? And does the answer still hold at the top of the ranking, where a design process would actually use it?</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">Proxy</span>
+  <span class="cc-gloss">a computable score used in place of a slow measurement.</span>
+  <p>Wet-lab measurements are slow, so a model score stands in for binding, stability, or function. That shortcut is useful, and it also means the score, not the property, is what a search actually optimizes against.</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">Embedding effect versus validated biology</span>
+  <span class="cc-gloss">a shift in a model's representation is a fact about the model, not yet a fact about the protein.</span>
+  <p>Much of this work turns on that distinction. An embedding can move in a consistent direction while the move is explained by ordinary sequence properties, so the burden is to show that a residual survives the obvious controls before calling it biology.</p>
+</div>
+
+<figure class="pp-fig">
+  <img src="{{ '/assets/images/projects/plm/embedding-vs-biology.png' | relative_url }}" alt="An embedding score moves, controls remove most of the movement, and only a residual could reach validated biology">
+  <figcaption><strong>The distinction in one picture.</strong> An embedding score can move consistently (left). Composition, length, optimization pressure, and held-out transfer controls sit between that movement and any biological claim (center). After the controls, most of the movement is gone, and only a residual could count as validated biology (right).</figcaption>
+</figure>
+
+<p class="pp-section-num">02 &middot; The Approach</p>
+<h2 class="pp-section-title">An audit battery, run before the number is believed</h2>
+
+<p>The shared method is an audit battery that stress-tests a score before it is used to rank designs. It asks whether a score beats trivial baselines, whether it stays useful in the top-ranked tail, whether it resists reward hacking, whether it survives transfer to unseen cases, and whether a reported effect survives controls for composition and length. The point is to run the whole battery rather than the one check that happens to pass.</p>
+
+<ol class="howto">
+  <li>
+    <span class="ht-name">Naturalness metric</span>
+    <span class="ht-one">how protein-like a generated sequence is.</span>
+    A score is only meaningful on sequences that could plausibly be proteins, so the audit measures how far a candidate sits from the distribution of natural proteins and flags candidates that score well only by leaving that distribution.
+  </li>
+  <li>
+    <span class="ht-name">Leave-signatures-out protocol</span>
+    <span class="ht-one">hold out whole mechanisms, then test transfer.</span>
+    Instead of splitting examples at random, the audit removes entire mechanisms from training and asks the model to handle them at test time, which separates whether information is present from whether it generalizes to something new.
+  </li>
+  <li>
+    <span class="ht-name">Selection-aware permutation scheme</span>
+    <span class="ht-one">a null that accounts for picking the top candidate.</span>
+    Because a search keeps the best-scoring candidate, the right null is not a random draw but a permutation that mimics the selection, so the baseline reflects how often the effect would appear by chance once you optimize.
+  </li>
+</ol>
+
+<p class="pp-section-num">03 &middot; Results</p>
+<h2 class="pp-section-title">Seven threads, one thesis</h2>
+
+<!-- ===================== RQ1 ===================== -->
+<section class="pp-thread" id="rq1">
+  <div class="pp-thread-tag">RQ1</div>
+  <h3 class="pp-thread-title">No BLAST, New Problems! Auditing homology-free protein-function prediction</h3>
+  <p><span class="venue-badge">WiML @ NeurIPS 2026</span><span class="venue-badge">Top 15% of accepted</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=hsb1l06LlF" target="_blank" rel="noopener">Paper</a><a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/prism" target="_blank" rel="noopener">Code</a></p>
+
+  <p>This thread builds the audit battery and runs it on one homology-free framework that applies mutational signatures to protein-coding sequences and measures how the mutants move through a protein model's embedding space. The headline observation is real and the controls are the point: a consistent embedding movement is only the start of the evaluation.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="SBS17a ranks first of 78 signatures toward PF17041 in both Pfam clans">
+    <figcaption><strong>The observation.</strong> Of 78 COSMIC single-base-substitution signatures, SBS17a is the top-ranked one for steering mutants toward the Pfam family PF17041, the SasG_E domain, and it holds that rank in two independent Pfam clans. Bar heights are the pre-read-through concentrations, which a later translation fix raises while keeping SBS17a first.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>SBS17a steers mutants toward PF17041, the SasG_E domain, and the same direction recurs across two Pfam clans, which is what a real effect would produce rather than a single coincidence.</p>
+  </div>
+
+  <p>The five audit categories connect directly to that conclusion. The naturalness and baseline checks ask whether the movement needs biology at all, the composition and length controls ask whether it needs the signature specifically, and the transfer check asks whether a model can recognize the mechanism when the surface pattern changes. Run together, they turn the SBS17a to PF17041 observation from a claim about biology into a claim about the model's geometry.</p>
+
+  <div class="stat-callout"><div class="sc-num">72%</div><div class="sc-lab">of the embedding movement is reproduced by a composition-matched control</div></div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/prism-signature-steering/scramble.png' | relative_url }}" alt="A context-scrambled direction keeps 72 percent of the movement toward PF17041">
+    <figcaption><strong>Composition control.</strong> The real signature direction moves held-out embeddings toward the PF17041 centroid by 0.0425, and a context-scrambled direction that preserves composition keeps 72% of that movement. The right panel shows the context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014.</figcaption>
+  </figure>
+
+  <div class="stat-callout"><div class="sc-num">92.5%</div><div class="sc-lab">of the displacement variation is explained by protein length alone</div></div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/prism-signature-steering/length-confound.png' | relative_url }}" alt="Mean absolute displacement against log translated length, R-squared 0.941">
+    <figcaption><strong>Length control.</strong> Signatures differ in how long their translated sequences are, and mean absolute displacement falls with log translated length, so most of the magnitude is a length effect rather than a functional one.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>After the controls, the residual that is specific to the signature is small, so on this evidence SBS17a is an embedding effect and not a validated functional driver.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">Why a naturalness metric?</div>
+    <p>Because a score can be pushed to extreme values by sequences that are not credible proteins. Without a measure of how protein-like a candidate is, a high score cannot be told apart from a candidate that simply left the natural distribution.</p>
+  </div>
+
+  <div class="stat-callout"><div class="sc-num">5 SD</div><div class="sc-lab">how far an unconstrained optimizer pushes the proxy past the natural-protein floor</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 3</div>
+    <p>The fitness proxy looks healthy in bulk, with a Spearman of 0.53, and goes blind where it matters, with top-k utility of 0.15 among the highest-scoring variants, while an unconstrained optimizer reward-hacks it 5 standard deviations past the natural-protein floor.</p>
+  </div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/prism-signature-steering/loso.png' | relative_url }}" alt="Leave-signatures-out transfer: top-1 accuracy 0.8 percent, below the 1.3 percent uniform line">
+    <figcaption><strong>Transfer control.</strong> An inverse classifier reaches AUC 0.94 on signatures it has seen, and its top-1 accuracy collapses to 0.7% when whole signatures are withheld, below the uniform-guess line. The information is decodable in-distribution without transferring to new mechanisms.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 4</div>
+    <p>A probe can recover a signature from an activation at AUC 0.94 while failing to identify unseen signatures at 0.7% top-1, so decodability is not understanding.</p>
+  </div>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> The audit is demonstrated on one framework and one signature-domain finding. Its generality to other frameworks, signatures, and domains is untested here.</p>
+  </div>
+</section>
+
+<!-- ===================== RQ2 ===================== -->
+<section class="pp-thread" id="rq2">
+  <div class="pp-thread-tag">RQ2</div>
+  <h3 class="pp-thread-title">Does benchmark correlation predict selection quality for protein design?</h3>
+  <p><span class="venue-badge">NeurIPS Trust-AI-Eval 2026</span><span class="venue-badge">NeurIPS GEM Bio 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=KxSFpyRXzp" target="_blank" rel="noopener">Paper</a></p>
+
+  <p>A benchmark score is supposed to tell you which scorer will choose better proteins. This thread asks whether a scorer's correlation on a benchmark actually predicts the quality of the designs a search selects with it, and finds that the link is weak exactly where selection happens.</p>
+
+  <div class="why-box">
+    <div class="wb-q">Why this metric?</div>
+    <p>The result is a rank association between a scorer's benchmark correlation and the value of the designs it selects. It measures whether a higher-correlation scorer tends to select higher-value designs. It is not variance explained on the utility scale, so it does not say how much selection value a correlation buys, only whether the ordering tends to hold.</p>
+  </div>
+
+  <div class="stat-callout"><div class="sc-num">0.50 &rarr; 0.16</div><div class="sc-lab">squared rank association with selection value, from the top 10% down to the top 1%</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>The squared rank association with top-10% selection value is 0.50 and falls to 0.16 at the top 1%, so a benchmark correlation predicts selection quality less and less as selection gets more aggressive.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>3 of 41 assays give worse-than-random top-1% selections despite positive correlations, and SSMuLA libraries yield 0.265 more selection value than ProteinGym at the same correlation (p = 0.0001). The result replicates on ESM-2 650M and ESM-C 300M.</p>
+  </div>
+
+  <p class="todo-note">[TODO: Saanvi to add Methods appendix, assay selection, scoring procedures, prediction-model specs, supervised-model ingredients, and CV schemes.] [TODO: Saanvi to add figure; caption must describe what is actually shown, with no "similar slopes" claim unless verified.]</p>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> The comparisons are statistically dependent: 36 assay-scheme comparisons reuse 12 assays, so the bootstrap intervals are likely optimistic. What is next is a theoretical and causal analysis of how correlation maps to selection, and broader corpora and scorer types.</p>
+  </div>
+</section>
+
+<!-- ===================== RQ3 ===================== -->
+<section class="pp-thread" id="rq3">
+  <div class="pp-thread-tag">RQ3</div>
+  <h3 class="pp-thread-title">Representational identifiability limits action selection in a protein-design agent</h3>
+  <p><span class="venue-badge">NeurIPS AgenticLS 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=GhNJ7TTUyi" target="_blank" rel="noopener">Paper</a></p>
+  <p class="todo-note">[TODO: Saanvi to confirm whether this is the same work as the "Action Identifiability in Protein-Design Agents" talk listed as MoML 2026, and which title to display.]</p>
+
+  <p>If an agent is going to choose an action from a model's representation, two genuinely different actions must not look the same in that representation. This thread tests, in ESM-2 650M and under this search setup, whether distinct mutational processes stay distinguishable, and finds that much of the apparent distance is an artifact of how sequences are translated.</p>
+
+  <div class="stat-callout"><div class="sc-num">R&sup2; = 0.870</div><div class="sc-lab">of pairwise destination distance explained by a translation placeholder count, in ESM-2 650M</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>Across all 3,003 pairs of 78 COSMIC signatures, biologically distinct processes often reach similar destinations. A stop-at-first-stop translation truncates 25.8% of simulated mutants to one-residue placeholders, and the placeholder count explains up to R&sup2; = 0.870 of pairwise destination distance, in ESM-2 650M and under this search setup.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>The effect is model-dependent: 23.8% placeholder truncation in ESM-2 8M against 72.5% in ESM-2 650M. No broader identifiability conclusion is drawn beyond this model and setup.</p>
+  </div>
+
+  <p class="todo-note">[TODO: Saanvi to add Figure 1; its caption must state the threshold choice explicitly and consistently.]</p>
+</section>
+
+<!-- ===================== RQ4 ===================== -->
+<section class="pp-thread" id="rq4">
+  <div class="pp-thread-tag">RQ4</div>
+  <h3 class="pp-thread-title">When the verifier is wrong: red-teaming agent verification where ground truth exists</h3>
+  <p><span class="venue-badge">NeurIPS Verify-Agents 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=RyzGAFDM8S" target="_blank" rel="noopener">Paper</a></p>
+
+  <p>When an agent proposes candidates, a verifier decides which to keep. This thread red-teams that verifier in a setting where ground truth exists, so the real quality of what the verifier keeps can be measured rather than assumed.</p>
+
+  <div class="why-box">
+    <div class="wb-q">Threat model</div>
+    <p>The leaked-scorer attack assumes the scorer can see the held-out label. The pool-side attack assumes the attacker can shape the candidate pool to match the honest scorer's gate statistics. The defenses assume forward validation on fresh candidates, a sequential probe that spot-checks a fraction of decisions, and an in-house model fallback. Adaptive attackers assume knowledge of the probe.</p>
+  </div>
+
+  <div class="stat-callout"><div class="sc-num">0.991 AUROC, 0.028 gained</div><div class="sc-lab">a fully leaked scorer looks near-perfect yet adds almost no good candidates per batch over random</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>The fully leaked scorer reaches AUROC 0.991 but adds only 0.028 good candidates per batch over random, against 1.082 for the honest scorer, losing 1.05 good candidates per batch. Forward validation prevents the leakage attack.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>A pool-side attacker matches the honest scorer's gate statistics to three decimal places while losing 1.24 good candidates per batch. Sequential probing detects 99.2% of attacks at a 25% probe but recovers only 17% of the lost value at that same 25% probe; a 50% probe recovers 28%, and an in-house model fallback also raises recovery to 28%.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 3</div>
+    <p>Adaptive attackers who know the probe drop its detection from 99.2% to 45.9% at a 25% probe.</p>
+  </div>
+
+  <p class="todo-note">[TODO: Saanvi to add the detection-versus-recovery table or figure across probe sizes, with full captions and units, and a Methods appendix with batch size, ridge features and regularization, and the probe rejection rule.] What is next is mapping these attacks onto an LLM-judge setting.</p>
+</section>
+
+<!-- ===================== RQ5 ===================== -->
+<section class="pp-thread" id="rq5">
+  <div class="pp-thread-tag">RQ5</div>
+  <h3 class="pp-thread-title">Do protein model scores predict better proteins? Testing in-silico evidence against experimental measurements</h3>
+  <p><span class="venue-badge">NeurIPS AI4Science 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]</p>
+</section>
+
+<!-- ===================== RQ6 ===================== -->
+<section class="pp-thread" id="rq6">
+  <div class="pp-thread-tag">RQ6</div>
+  <h3 class="pp-thread-title">Does a protein design pipeline use more than composition?</h3>
+  <p><span class="venue-badge">Simbiochem 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]</p>
+</section>
+
+<!-- ===================== RQ7 ===================== -->
+<section class="pp-thread" id="rq7">
+  <div class="pp-thread-tag">RQ7</div>
+  <h3 class="pp-thread-title">Do pooled activations help explain intervention outcomes?</h3>
+  <p><span class="venue-badge">Interp4Discovery</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]</p>
+</section>
+
+<p class="pp-section-num">Takeaways</p>
+<h2 class="pp-section-title">What the threads add up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">Controls before conclusions</div>An embedding effect becomes a biological claim only after composition, length, and transfer controls, and SBS17a does not clear that bar.</div>
+  <div class="takeaway"><div class="tk-h">Correlation is not selection</div>A benchmark correlation predicts selection quality less and less as selection sharpens, dropping from 0.50 to 0.16 by the top 1%.</div>
+  <div class="takeaway"><div class="tk-h">Identifiability has limits</div>Distinct processes can look alike in a representation, and in ESM-2 650M a translation artifact explains most of the apparent distance.</div>
+  <div class="takeaway"><div class="tk-h">Verifiers can be gamed</div>A near-perfect-looking verifier can add almost no real value, and probes detect attacks far better than they recover the lost value.</div>
+</div>
+
+<div class="limitations">
+  <p><strong>Limitations across the line.</strong> Each result is scoped to the framework, model, and search setup it was measured in. The audits are demonstrated rather than proven general, several threads reuse a small set of assays or signatures, and the appendices marked above still need to be filled before any of these numbers should be quoted outside the papers.</p>
+</div>
+
+<p class="pp-section-num">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026noblast,
+  author    = {Saanvi S. Subramanian},
+  title     = {No BLAST, New Problems! Auditing Homology-Free Protein-Function Prediction},
+  booktitle = {Women in Machine Learning Workshop (WiML), NeurIPS},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=hsb1l06LlF}
+}
+
+@inproceedings{subramanian2026benchmark,
+  author    = {Saanvi S. Subramanian},
+  title     = {Does Benchmark Correlation Predict Selection Quality for Protein Design?},
+  booktitle = {NeurIPS Workshops (Trust-AI-Eval; GEM Bio)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=KxSFpyRXzp}
+}
+
+@inproceedings{subramanian2026identifiability,
+  author    = {Saanvi S. Subramanian},
+  title     = {Representational Identifiability Limits Action Selection in a Protein-Design Agent},
+  booktitle = {NeurIPS Agentic Life Sciences Workshop (AgenticLS)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=GhNJ7TTUyi}
+}
+
+@inproceedings{subramanian2026verifier,
+  author    = {Saanvi S. Subramanian},
+  title     = {When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists},
+  booktitle = {NeurIPS Verify-Agents Workshop},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=RyzGAFDM8S}
+}
+</div>
