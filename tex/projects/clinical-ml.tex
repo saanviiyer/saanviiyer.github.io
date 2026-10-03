@@ -1,0 +1,90 @@
+% Auto-generated editable source. Edit freely in VS Code.
+% This is a parallel source; the live site is still the .md / .html file.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\newcommand{\finding}[1]{\par\medskip\noindent\textbf{Finding.} #1\par\medskip}
+\newcommand{\stat}[2]{\par\medskip\begin{center}{\LARGE\textbf{#1}}\\[2pt]{\small #2}\end{center}\par\medskip}
+
+\title{Clinical machine learning, evaluated honestly}
+\author{Saanvi S. Subramanian}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{01 - The Challenge}
+\section*{The number on the slide is not the number at the bedside}
+The central question\par
+Focal cortical dysplasia
+  a subtle malformation of the cortex that causes epilepsy and is easy to miss on MRI.
+  These lesions can be small and low-contrast, so a detector that works on obvious cases can still fail on the subtle ones that bring a patient to imaging in the first place.\par
+Oracle localization
+  a result reported under the assumption that the correct region is already known.
+  When a method is told which lobe to search, its recovery numbers are an upper bound on what a real pipeline could achieve, because a real pipeline has to find the region first.\par
+\section*{02 - The Approach}
+\section*{Report the achievable number, and label the assumptions}
+\section*{03 - Results}
+\section*{Three threads, one standard of evidence}
+\subsection*{Detecting Subtle Epileptic Lesions}
+\textit{Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions}\par
+What the pipeline uses
+    annotated localization zones, not a raw EEG signal.
+    The zones come from clinical annotations and anatomical parcels, so the pipeline is told where to look. It does not read an EEG trace, which is why every recovery number here is an upper bound rather than an achievable EEG-guided result.\par
+14 of 24\par
+missed lesions recovered (58\%) under oracle localization, against 1.4 expected by chance, P \&lt; 0.001\par
+Finding 1\par
+Finding 2\par
+Finding 3\par
+Why call it an upper bound?\par
+[TODO: Saanvi to add the detection figure with a full multi-part caption. Dataset: 175 FCD cases.]\par
+\textbf{Limitations.} The pipeline relies on manual clinical annotations for the localization zones. The sensitivity against false-positive tradeoff is not fully characterized. Some hyperparameters, including the 0.90 outside-zone threshold, were chosen without full justification. And the method can harm well-detected cases, which is reported rather than hidden. What is next is an end-to-end pipeline that extracts localization directly from raw EEG, so the oracle assumption is removed.\par
+\subsection*{Routing EEG Localization Decisions}
+\textit{Wait, Predict, or Defer? Evaluating an Offline Sequential Routing Policy for EEG Localization}\par
+[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]\par
+\subsection*{Seven Failures in Clinical ML Evaluation}
+\textit{Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation}\par
+[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]\par
+\section*{Takeaways}
+\section*{What the threads add up to}
+Label the assumption\par
+Report the harm\par
+Evaluate the decision\par
+\textbf{Limitations across the line.} The strongest result is an oracle upper bound that a deployable pipeline has not yet reached, two threads still need their numbers and figures filled in, and several design choices were made without full justification. None of these numbers should be quoted outside the papers until the appendices are complete.\par
+\section*{Cite}
+@inproceedings\{subramanian2026fcd,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions\},
+  booktitle = \{ECCV Workshop on AI for Medical 3D Vision (AI4M3D)\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=8EdNGJbsTq\}
+\}
+
+@inproceedings\{subramanian2026rcmlr,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation\},
+  booktitle = \{NeurIPS RCMLR Workshop\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=k7zEEtF1V8\}
+\}\par
+\section*{Cite}
+\begin{verbatim}
+@inproceedings{subramanian2026fcd,
+  author    = {Saanvi S. Subramanian},
+  title     = {Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions},
+  booktitle = {ECCV Workshop on AI for Medical 3D Vision (AI4M3D)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=8EdNGJbsTq}
+}
+
+@inproceedings{subramanian2026rcmlr,
+  author    = {Saanvi S. Subramanian},
+  title     = {Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation},
+  booktitle = {NeurIPS RCMLR Workshop},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=k7zEEtF1V8}
+}
+\end{verbatim}
+\end{document}

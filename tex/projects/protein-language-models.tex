@@ -1,0 +1,152 @@
+% Auto-generated editable source. Edit freely in VS Code.
+% This is a parallel source; the live site is still the .md / .html file.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\newcommand{\finding}[1]{\par\medskip\noindent\textbf{Finding.} #1\par\medskip}
+\newcommand{\stat}[2]{\par\medskip\begin{center}{\LARGE\textbf{#1}}\\[2pt]{\small #2}\end{center}\par\medskip}
+
+\title{Interpreting and evaluating protein language models}
+\author{Saanvi S. Subramanian}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{01 - The Challenge}
+\section*{A good score is not the same as a good protein}
+The central question\par
+Proxy
+  a computable score used in place of a slow measurement.
+  Wet-lab measurements are slow, so a model score stands in for binding, stability, or function. That shortcut is useful, and it also means the score, not the property, is what a search actually optimizes against.\par
+Embedding effect versus validated biology
+  a shift in a model's representation is a fact about the model, not yet a fact about the protein.
+  Much of this work turns on that distinction. An embedding can move in a consistent direction while the move is explained by ordinary sequence properties, so the burden is to show that a residual survives the obvious controls before calling it biology.\par
+\section*{02 - The Approach}
+\section*{An audit battery, run before the number is believed}
+\section*{03 - Results}
+\section*{Seven threads, one thesis}
+\subsection*{Auditing Protein-Function Prediction}
+\textit{No BLAST, New Problems! Auditing Homology-Free Protein-Function Prediction}\par
+Finding 1\par
+72\%\par
+of the embedding movement is reproduced by a composition-matched control\par
+92.5\%\par
+of the displacement variation is explained by protein length alone\par
+Finding 2\par
+Why a naturalness metric?\par
+5 SD\par
+how far an unconstrained optimizer pushes the proxy past the natural-protein floor\par
+Finding 3\par
+Finding 4\par
+\textbf{Limitations.} The audit is demonstrated on one framework and one signature-domain finding. Its generality to other frameworks, signatures, and domains is untested here.\par
+\subsection*{Do Benchmarks Predict Better Designs?}
+\textit{Does Benchmark Correlation Predict Selection Quality for Protein Design?}\par
+Why this metric?\par
+0.50 -> 0.16\par
+squared rank association with selection value, from the top 10\% down to the top 1\%\par
+Finding 1\par
+Finding 2\par
+[TODO: Saanvi to add Methods appendix, assay selection, scoring procedures, prediction-model specs, supervised-model ingredients, and CV schemes.]\par
+\textbf{Limitations.} The comparisons are statistically dependent: 36 assay-scheme comparisons reuse 12 assays, so the bootstrap intervals are likely optimistic. What is next is a theoretical and causal analysis of how correlation maps to selection, and broader corpora and scorer types.\par
+\subsection*{Identifiability in Protein-Design Agents}
+\textit{Representational Identifiability Limits Action Selection in a Protein-Design Agent}\par
+R\textasciicircum{}2 = 0.870\par
+of pairwise destination distance explained by a translation placeholder count, in ESM-2 650M\par
+Finding 1\par
+Finding 2\par
+[TODO: Saanvi to add the placeholder-truncation figure; its caption must state the threshold choice explicitly and consistently.]\par
+\subsection*{Red-Teaming Agent Verifiers}
+\textit{When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists}\par
+Threat model\par
+0.991 AUROC, 0.028 gained\par
+a fully leaked scorer looks near-perfect yet adds almost no good candidates per batch over random\par
+Finding 1\par
+Finding 2\par
+Finding 3\par
+[TODO: Saanvi to add the detection-versus-recovery table across probe sizes with full units, and a Methods appendix with batch size, ridge features and regularization, and the probe rejection rule.] What is next is mapping these attacks onto an LLM-judge setting.\par
+\subsection*{Do Model Scores Mean Better Proteins?}
+\textit{Do Protein Model Scores Predict Better Proteins? Testing In-Silico Evidence Against Experimental Measurements}\par
+[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]\par
+\subsection*{More Than Composition?}
+\textit{Does a Protein Design Pipeline Use More Than Composition?}\par
+[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]\par
+\subsection*{Do Pooled Activations Explain Interventions?}
+\textit{Do Pooled Activations Help Explain Intervention Outcomes?}\par
+[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]\par
+\section*{Takeaways}
+\section*{What the threads add up to}
+Controls before conclusions\par
+Correlation is not selection\par
+Identifiability has limits\par
+Verifiers can be gamed\par
+\textbf{Limitations across the line.} Each result is scoped to the framework, model, and search setup it was measured in. The audits are demonstrated rather than proven general, several threads reuse a small set of assays or signatures, and the appendices marked above still need to be filled before any of these numbers should be quoted outside the papers.\par
+\section*{Cite}
+@inproceedings\{subramanian2026noblast,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{No BLAST, New Problems! Auditing Homology-Free Protein-Function Prediction\},
+  booktitle = \{Women in Machine Learning Workshop (WiML), NeurIPS\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=hsb1l06LlF\}
+\}
+
+@inproceedings\{subramanian2026benchmark,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{Does Benchmark Correlation Predict Selection Quality for Protein Design?\},
+  booktitle = \{NeurIPS Workshops (Trust-AI-Eval; GEM Bio)\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=KxSFpyRXzp\}
+\}
+
+@inproceedings\{subramanian2026identifiability,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{Representational Identifiability Limits Action Selection in a Protein-Design Agent\},
+  booktitle = \{NeurIPS Agentic Life Sciences Workshop (AgenticLS)\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=GhNJ7TTUyi\}
+\}
+
+@inproceedings\{subramanian2026verifier,
+  author    = \{Saanvi S. Subramanian\},
+  title     = \{When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists\},
+  booktitle = \{NeurIPS Verify-Agents Workshop\},
+  year      = \{2026\},
+  url       = \{https://openreview.net/forum?id=RyzGAFDM8S\}
+\}\par
+\section*{Cite}
+\begin{verbatim}
+@inproceedings{subramanian2026noblast,
+  author    = {Saanvi S. Subramanian},
+  title     = {No BLAST, New Problems! Auditing Homology-Free Protein-Function Prediction},
+  booktitle = {Women in Machine Learning Workshop (WiML), NeurIPS},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=hsb1l06LlF}
+}
+
+@inproceedings{subramanian2026benchmark,
+  author    = {Saanvi S. Subramanian},
+  title     = {Does Benchmark Correlation Predict Selection Quality for Protein Design?},
+  booktitle = {NeurIPS Workshops (Trust-AI-Eval; GEM Bio)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=KxSFpyRXzp}
+}
+
+@inproceedings{subramanian2026identifiability,
+  author    = {Saanvi S. Subramanian},
+  title     = {Representational Identifiability Limits Action Selection in a Protein-Design Agent},
+  booktitle = {NeurIPS Agentic Life Sciences Workshop (AgenticLS)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=GhNJ7TTUyi}
+}
+
+@inproceedings{subramanian2026verifier,
+  author    = {Saanvi S. Subramanian},
+  title     = {When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists},
+  booktitle = {NeurIPS Verify-Agents Workshop},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=RyzGAFDM8S}
+}
+\end{verbatim}
+\end{document}

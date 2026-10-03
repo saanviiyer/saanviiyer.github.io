@@ -10,6 +10,7 @@ url: "https://saanviiyer.github.io"
 markdown: kramdown
 permalink: pretty
 exclude:
+  - tex
   - README.md
 
 defaults:
