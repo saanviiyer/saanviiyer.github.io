@@ -1,20 +1,58 @@
 ---
 layout: default
 ---
-<article class="bm">
-  <p class="bm-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
-  <h1 class="bm-title">{{ page.title }}</h1>
-  <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
-  {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
-  {% if page.venues %}<p style="margin-top:12px;">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
-  {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
-  {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
-  {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
-  {% if page.video %}<div class="bm-video">{{ page.video }}</div>{% endif %}
+<article class="pp-wrap" id="top">
+  <div class="bm-head">
+    <div class="bm-head-main">
+      <p class="bm-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
+      <h1 class="bm-title">{{ page.title }}</h1>
+      <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
+      {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
+      {% if page.venues %}<p class="bm-venues">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
+      {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
+      {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
+      {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
+    </div>
+    <div class="bm-head-side">
+      <div class="bm-video">{% if page.video %}{{ page.video }}{% else %}[explainer video]{% endif %}</div>
+      <p class="bm-video-cap">{{ page.video_caption | default: "Short summary of the work." }}</p>
+    </div>
+  </div>
+
+  <nav class="pp-toc" id="ppToc" aria-label="On this page"></nav>
+
+  <div class="pp-body">
+    {{ content }}
+  </div>
 </article>
 
-<div class="pp-body">
-  {{ content }}
-</div>
-
 <p class="pp-back"><a href="{{ '/projects/' | relative_url }}">&larr; all projects</a></p>
+
+<script>
+(function () {
+  var toc = document.getElementById("ppToc");
+  if (!toc) return;
+  var links = [{ href: "#top", label: "Overview" }];
+  document.querySelectorAll(".pp-thread[id]").forEach(function (t) {
+    var tag = t.querySelector(".pp-thread-tag");
+    if (tag) links.push({ href: "#" + t.id, label: tag.textContent.trim() });
+  });
+  if (document.getElementById("takeaways")) links.push({ href: "#takeaways", label: "Takeaways" });
+  if (document.getElementById("cite")) links.push({ href: "#cite", label: "Cite" });
+  toc.innerHTML = links.map(function (l) { return '<a href="' + l.href + '">' + l.label + "</a>"; }).join("");
+  var map = {};
+  toc.querySelectorAll("a").forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
+  try {
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var a = map[e.target.id];
+        if (a && e.isIntersecting) {
+          toc.querySelectorAll("a").forEach(function (x) { x.classList.remove("on"); });
+          a.classList.add("on");
+        }
+      });
+    }, { rootMargin: "-25% 0px -70% 0px" });
+    document.querySelectorAll(".pp-thread[id], #takeaways, #top").forEach(function (el) { obs.observe(el); });
+  } catch (e) {}
+})();
+</script>
