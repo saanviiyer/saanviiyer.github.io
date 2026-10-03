@@ -1,0 +1,145 @@
+---
+layout: project
+title: "Clinical machine learning, evaluated honestly"
+permalink: /projects/clinical-ml/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+hook: "A clinical model can post a strong number and still be wrong about what matters at the bedside, so the evaluation has to match how the model would actually be used."
+thesis: "I build and evaluate clinical models against what actually matters in practice."
+video: "[TODO: Saanvi to add explainer video]"
+---
+
+<p class="pp-section-num">01 &middot; The Challenge</p>
+<h2 class="pp-section-title">The number on the slide is not the number at the bedside</h2>
+
+<p>A clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. A detector can look strong on average and still miss the hard cases a clinician needs help with, and a result that assumes the answer is already known can read as if the model found it. This line of work is about measuring clinical models against the decision they would actually support.</p>
+
+<div class="callout-q">
+  <div class="cq-label">The central question</div>
+  <p>When a clinical model reports a gain, is that a gain a clinician could obtain in practice, or a gain that only exists because the evaluation already assumed part of the answer?</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">Focal cortical dysplasia</span>
+  <span class="cc-gloss">a subtle malformation of the cortex that causes epilepsy and is easy to miss on MRI.</span>
+  <p>These lesions can be small and low-contrast, so a detector that works on obvious cases can still fail on the subtle ones that bring a patient to imaging in the first place.</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">Oracle localization</span>
+  <span class="cc-gloss">a result reported under the assumption that the correct region is already known.</span>
+  <p>When a method is told which lobe to search, its recovery numbers are an upper bound on what a real pipeline could achieve, because a real pipeline has to find the region first.</p>
+</div>
+
+<p class="pp-section-num">02 &middot; The Approach</p>
+<h2 class="pp-section-title">Report the achievable number, and label the assumptions</h2>
+
+<p>The approach is to separate what a method could do under ideal information from what it could do in practice, and to say which is which every time a number appears. Where a result depends on a region being known in advance, it is reported as an upper bound under oracle localization, and the honest failure cases are reported alongside the gains.</p>
+
+<p class="pp-section-num">03 &middot; Results</p>
+<h2 class="pp-section-title">Three threads, one standard of evidence</h2>
+
+<!-- ===================== Thread 1 ===================== -->
+<section class="pp-thread" id="t1">
+  <div class="pp-thread-tag">Thread 1</div>
+  <h3 class="pp-thread-title">Structural-functional integration for enhanced detection of subtle epileptogenic lesions</h3>
+  <p><span class="venue-badge">ECCV AI4M3D 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=8EdNGJbsTq" target="_blank" rel="noopener">Paper</a></p>
+
+  <p>This thread tests whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. The method adjusts a detection threshold by anatomical zone and searches for multiple candidate peaks inside a restricted region. The recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
+
+  <div class="concept-card">
+    <span class="cc-term">What the pipeline uses</span>
+    <span class="cc-gloss">annotated localization zones, not a raw EEG signal.</span>
+    <p>The zones come from clinical annotations and anatomical parcels, so the pipeline is told where to look. It does not read an EEG trace, which is why every recovery number here is an upper bound rather than an achievable EEG-guided result.</p>
+  </div>
+
+  <ol class="howto">
+    <li>
+      <span class="ht-name">Zone-conditioned threshold</span>
+      <span class="ht-one">lower the bar inside the suspected zone, raise it outside.</span>
+      The method adjusts a 3D nnU-Net detection threshold by anatomical zone defined on SynthSeg parcels, lowering it inside the zone and raising it to 0.90 outside, so a faint lesion in the right place is kept while false positives elsewhere are suppressed.
+    </li>
+    <li>
+      <span class="ht-name">Lobe-restricted multi-peak search</span>
+      <span class="ht-one">look for several candidate peaks within the lobe.</span>
+      Inside the restricted lobe, the method searches for multiple peaks rather than a single maximum, which is what recovers lesions that a single-threshold detector places just below its cutoff.
+    </li>
+  </ol>
+
+  <div class="stat-callout"><div class="sc-num">14 of 24</div><div class="sc-lab">missed lesions recovered (58%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>As an upper bound under perfect (oracle) localization, the lobe-restricted multi-peak search recovered 14 of 24 missed lesions, which is 58%, against 1.4 expected by chance, with P &lt; 0.001. This is not an achievable EEG-guided result.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>Finer subregional restriction added no significant improvement over the lobe, so the lobe is the level at which the localization prior helps.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 3</div>
+    <p>The honest failure case: the method can harm well-detected cases, because lowering the threshold inside a zone and raising it outside can suppress a lesion that the baseline detector would have found.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">Why call it an upper bound?</div>
+    <p>Because the recovery of 14 of 24 assumes the correct lobe is already known. A deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number, and the number is reported as an upper bound more than once for exactly this reason.</p>
+  </div>
+
+  <p class="todo-note">[TODO: Saanvi to add the detection figure with a full multi-part caption. Dataset: 175 FCD cases.]</p>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> The pipeline relies on manual clinical annotations for the localization zones. The sensitivity against false-positive tradeoff is not fully characterized. Some hyperparameters, including the 0.90 outside-zone threshold, were chosen without full justification. And the method can harm well-detected cases, which is reported rather than hidden. What is next is an end-to-end pipeline that extracts localization directly from raw EEG, so the oracle assumption is removed.</p>
+  </div>
+</section>
+
+<!-- ===================== Thread 2 ===================== -->
+<section class="pp-thread" id="t2">
+  <div class="pp-thread-tag">Thread 2</div>
+  <h3 class="pp-thread-title">Wait, predict, or defer? Evaluating an offline sequential routing policy for EEG localization</h3>
+  <p><span class="venue-badge">NeurIPS HAIC 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]</p>
+</section>
+
+<!-- ===================== Thread 3 ===================== -->
+<section class="pp-thread" id="t3">
+  <div class="pp-thread-tag">Thread 3</div>
+  <h3 class="pp-thread-title">Right number, wrong conclusion: seven failures in clinical ML evaluation</h3>
+  <p><span class="venue-badge">NeurIPS RCMLR 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=k7zEEtF1V8" target="_blank" rel="noopener">Paper</a></p>
+  <p class="todo-note">[TODO: Saanvi to fill in abstract, key numbers, and figures. OpenReview reviews can be pulled on request.]</p>
+</section>
+
+<p class="pp-section-num">Takeaways</p>
+<h2 class="pp-section-title">What the threads add up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">Label the assumption</div>A localization prior recovered 14 of 24 missed lesions, reported as an upper bound under oracle localization, not as an achievable EEG-guided result.</div>
+  <div class="takeaway"><div class="tk-h">Report the harm</div>The same method that recovers missed lesions can suppress well-detected ones, and that failure case is stated alongside the gain.</div>
+  <div class="takeaway"><div class="tk-h">Evaluate the decision</div>The routing and failure-mode threads ask what a clinician would actually do with a model, not only how it scores on a benchmark.</div>
+</div>
+
+<div class="limitations">
+  <p><strong>Limitations across the line.</strong> The strongest result is an oracle upper bound that a deployable pipeline has not yet reached, two threads still need their numbers and figures filled in, and several design choices were made without full justification. None of these numbers should be quoted outside the papers until the appendices are complete.</p>
+</div>
+
+<p class="pp-section-num">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026fcd,
+  author    = {Saanvi S. Subramanian},
+  title     = {Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions},
+  booktitle = {ECCV Workshop on AI for Medical 3D Vision (AI4M3D)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=8EdNGJbsTq}
+}
+
+@inproceedings{subramanian2026rcmlr,
+  author    = {Saanvi S. Subramanian},
+  title     = {Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation},
+  booktitle = {NeurIPS RCMLR Workshop},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=k7zEEtF1V8}
+}
+</div>

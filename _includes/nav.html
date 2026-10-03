@@ -6,7 +6,7 @@
   <ul class="nav-links">
     <li><a{% if page.url == '/' %} class="active" aria-current="page"{% endif %} href="{{ '/' | relative_url }}">home</a></li>
     <li><a href="{{ '/pages/portfolio/' | relative_url }}#experiences">experiences</a></li>
-    <li><a href="{{ '/pages/portfolio/' | relative_url }}#projects">projects</a></li>
+    <li><a{% if page.url == '/projects/' %} class="active" aria-current="page"{% endif %} href="{{ '/projects/' | relative_url }}">projects</a></li>
     <li><a{% if page.url == '/pages/writing/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/writing/' | relative_url }}">writing</a></li>
     <li><a{% if page.url == '/pages/research/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/research/' | relative_url }}">research</a></li>
     <li><a href="{{ '/pages/portfolio/' | relative_url }}#portfolio">portfolio</a></li>
