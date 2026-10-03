@@ -155,7 +155,12 @@ video: "[TODO: Saanvi to add explainer video]"
     <p>3 of 41 assays give worse-than-random top-1% selections despite positive correlations, and SSMuLA libraries yield 0.265 more selection value than ProteinGym at the same correlation (p = 0.0001). The result replicates on ESM-2 650M and ESM-C 300M.</p>
   </div>
 
-  <p class="todo-note">[TODO: Saanvi to add Methods appendix, assay selection, scoring procedures, prediction-model specs, supervised-model ingredients, and CV schemes.] [TODO: Saanvi to add figure; caption must describe what is actually shown, with no "similar slopes" claim unless verified.]</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq2/benchmark-decay.png' | relative_url }}" alt="Selection utility against bulk Spearman, with the squared rank association falling from 0.50 at the top 10 percent to 0.16 at the top 1 percent">
+    <figcaption><strong>One number, two constructs.</strong> Selection utility against the bulk Spearman that gets reported, for ProteinGym (41 assays) and SSMuLA (16), on ESM-2 650M. The squared rank association with selection value is 0.50 when selecting the top 10% and 0.16 when selecting the top 1%, so the same reported correlation buys less agreement as selection sharpens.</figcaption>
+  </figure>
+
+  <p class="todo-note">[TODO: Saanvi to add Methods appendix, assay selection, scoring procedures, prediction-model specs, supervised-model ingredients, and CV schemes.]</p>
 
   <div class="limitations">
     <p><strong>Limitations.</strong> The comparisons are statistically dependent: 36 assay-scheme comparisons reuse 12 assays, so the bootstrap intervals are likely optimistic. What is next is a theoretical and causal analysis of how correlation maps to selection, and broader corpora and scorer types.</p>
@@ -183,7 +188,12 @@ video: "[TODO: Saanvi to add explainer video]"
     <p>The effect is model-dependent: 23.8% placeholder truncation in ESM-2 8M against 72.5% in ESM-2 650M. No broader identifiability conclusion is drawn beyond this model and setup.</p>
   </div>
 
-  <p class="todo-note">[TODO: Saanvi to add Figure 1; its caption must state the threshold choice explicitly and consistently.]</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq3/cross-signature.png' | relative_url }}" alt="Left: steering specificity matrix. Right: cosine distances between target regions, where distinct signatures sit close together">
+    <figcaption><strong>Distinct signatures, shared destinations.</strong> Left: how much steering with each signature direction reduces distance toward each target region, where the off-diagonal gains show the steering is not specific. Right: cosine distances between the target regions themselves, where distinct signatures such as SBS1 and SBS7a sit 0.011 apart, a shared destination. In ESM-2 650M and under this search setup.</figcaption>
+  </figure>
+
+  <p class="todo-note">[TODO: Saanvi to add the placeholder-truncation figure; its caption must state the threshold choice explicitly and consistently.]</p>
 </section>
 
 <!-- ===================== RQ4 ===================== -->
@@ -217,7 +227,12 @@ video: "[TODO: Saanvi to add explainer video]"
     <p>Adaptive attackers who know the probe drop its detection from 99.2% to 45.9% at a 25% probe.</p>
   </div>
 
-  <p class="todo-note">[TODO: Saanvi to add the detection-versus-recovery table or figure across probe sizes, with full captions and units, and a Methods appendix with batch size, ridge features and regularization, and the probe rejection rule.] What is next is mapping these attacks onto an LLM-judge setting.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq4/audit-sweep.png' | relative_url }}" alt="Good candidates over random against the share of the batch spent on a random audit, for the honest scorer and the pool-side attacker">
+    <figcaption><strong>The audit destroys value before it undoes the attack.</strong> Good candidates per batch over random, against the share of the batch spent on a random audit. The honest scorer starts at 1.08 and falls as more of the batch is audited, while the pool-side attacker stays near zero throughout, so spending the batch on auditing costs the honest run more than it recovers from the attacked one.</figcaption>
+  </figure>
+
+  <p class="todo-note">[TODO: Saanvi to add the detection-versus-recovery table across probe sizes with full units, and a Methods appendix with batch size, ridge features and regularization, and the probe rejection rule.] What is next is mapping these attacks onto an LLM-judge setting.</p>
 </section>
 
 <!-- ===================== RQ5 ===================== -->
