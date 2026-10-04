@@ -35,7 +35,7 @@ I falsified a representation-transfer claim with its own control. A probe on gen
 
 ![A probe scoring 0.141 on held-out residues, 0.143 frameshifted, and 0.129 on the reverse complement](/assets/images/biologos-transfer/frame-control.png)
 
-**Figure 2.** The transfer probe scores about the same on held-out residues, on frameshifted input, and on the reverse complement, so it is invariant to destroying the reading frame and is reading residue identity rather than protein-level structure.
+**Figure 2.** The transfer probe scores about the same on held-out residues (0.141), on frameshifted input (0.143), and on the reverse complement (0.129), so it is invariant to destroying the reading frame. It drops only under a synonymous scramble (0.064), which changes codons without changing amino acids, so the probe is reading codon identity, which determines the amino acid, rather than protein-level structure.
 
 I found a context dose-response that was measuring composition. Real genomic context made one model monotonically worse, with a trend of -0.771, and composition-matched shuffled flanks that carry no genomic information reproduce it at -0.633. A second model with a wider window produced a clean positive trend that its shuffled twins fully account for, so context trends on this landscape run in both directions from noise.
 
