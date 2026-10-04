@@ -20,3 +20,10 @@ layout: default
 
   <p class="post-back"><a href="{{ '/pages/writing/' | relative_url }}">&larr; all writing</a></p>
 </article>
+
+{% if page.math %}
+<script>
+  window.MathJax = { tex: { displayMath: [['$$', '$$'], ['\\[', '\\]']], inlineMath: [['\\(', '\\)']] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+{% endif %}
