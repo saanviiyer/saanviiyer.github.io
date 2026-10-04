@@ -3,6 +3,8 @@ layout: post
 title: "Engram, and what a fair baseline does to local learning rules"
 date: 2026-09-30
 tag: "Research"
+section: technical
+thumb: /assets/images/engram-continual-learning/locality.png
 permalink: /thinking/engram-continual-learning/
 excerpt: "I compared three local learning rules against backpropagation at matched learning accuracy, and the retention advantage shrank to under a third of a point."
 ---

@@ -5,37 +5,98 @@ permalink: /pages/writing/
 
 <section class="pf-section">
   <h2 class="pf-heading">writing</h2>
+  <p class="proj-intro">Research write-ups, proposals, and essays. The technical pieces come first, then earlier personal and school writing. Nothing is deleted and no link changes.</p>
 
-  <p class="fun-label">featured</p>
-  <ul class="writing-featured">
-    <li>
-      <a href="{{ '/thinking/the-probe-works-and-the-understanding-is-not-there/' | relative_url }}">The probe works. The understanding isn't there.</a>
-      <span class="writing-date">September 2026</span>
-      <span class="writing-desc">A protein-model stress test where a probe reached AUC 0.94 in-distribution and 0.7% top-1 on held-out signatures.</span>
-    </li>
-    <li>
-      <a href="{{ '/pages/writing/portable-audit/' | relative_url }}">A portable audit for proxy-based evaluation under optimization pressure</a>
-      <span class="writing-date">September 2026</span>
-      <span class="writing-desc">A research proposal to predict when a learned score will fail under search, and whether the diagnostics transfer across domains.</span>
-    </li>
-    <li>
-      <a href="{{ '/pages/writing/fitness-proxy/' | relative_url }}">Why a good fitness proxy can fail where it matters</a>
-      <span class="writing-date">September 2026</span>
-      <span class="writing-desc">A technical explainer on why a scorer that looks fine in bulk breaks at the top-ranked edge a search selects.</span>
-    </li>
-    <li>
-      <a href="{{ '/pages/writing/integrated-core-rfp/' | relative_url }}">Integrated Core RFP</a>
-      <span class="writing-date">Spring 2026</span>
-      <span class="writing-desc">A freshman research proposal on machine-learning-guided directed evolution of thermostable, alkaliphilic PETases.</span>
-    </li>
-  </ul>
+  <p class="w-sec-label">featured</p>
+  <div class="w-cards">
+    <a class="w-card feat" href="{{ '/thinking/the-probe-works-and-the-understanding-is-not-there/' | relative_url }}">
+      <img class="wc-cover" src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="The probe works. The understanding isn't there.">
+      <div class="wc-body">
+        <div class="wc-meta">Personal site &middot; September 2026 &middot; 5 min read</div>
+        <div class="wc-title">The probe works. The understanding isn't there.</div>
+        <div class="wc-desc">A protein-model stress test where a probe reached AUC 0.94 in-distribution and 0.7% top-1 on held-out signatures.</div>
+        <div class="wc-read">read &rarr;</div>
+      </div>
+    </a>
+    <a class="w-card feat" href="{{ '/pages/writing/portable-audit/' | relative_url }}">
+      <img class="wc-cover" src="{{ '/assets/images/writing/portable-audit.png' | relative_url }}" alt="A portable audit for proxy-based evaluation under optimization pressure">
+      <div class="wc-body">
+        <div class="wc-meta">Personal site &middot; 2026 &middot; 2 min read</div>
+        <div class="wc-title">A portable audit for proxy-based evaluation under optimization pressure</div>
+        <div class="wc-desc">A research proposal to predict when a learned score will fail under search, and whether the diagnostics transfer across domains.</div>
+        <div class="wc-read">read &rarr;</div>
+      </div>
+    </a>
+    <a class="w-card feat" href="{{ '/pages/writing/fitness-proxy/' | relative_url }}">
+      <img class="wc-cover" src="{{ '/assets/images/writing/fitness-proxy.png' | relative_url }}" alt="Why a good fitness proxy can fail where it matters">
+      <div class="wc-body">
+        <div class="wc-meta">Personal site &middot; 2026 &middot; 2 min read</div>
+        <div class="wc-title">Why a good fitness proxy can fail where it matters</div>
+        <div class="wc-desc">A technical explainer on why a scorer that looks fine in bulk breaks at the top-ranked edge a search selects.</div>
+        <div class="wc-read">read &rarr;</div>
+      </div>
+    </a>
+  </div>
 
-  <p class="fun-label">archive</p>
-  <ul class="blog-list">
-    <li class="blog-post"><a href="https://saanviss.substack.com/p/saanvis-surf-summer-in-sf-before" target="_blank" rel="noopener">saanvi's surf summer in sf before starting smore szn</a><span class="blog-date">September 2026</span></li>
-    {% assign posts = site.posts | sort: 'date' | reverse %}
-    {% for post in posts %}{% unless post.url contains 'the-probe-works' %}
-    <li class="blog-post"><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="blog-date">{{ post.date | date: "%B %Y" }}</span></li>
-    {% endunless %}{% endfor %}
-  </ul>
+  <p class="w-sec-label">technical</p>
+  {% assign tech = site.posts | where: "section", "technical" | sort: 'date' | reverse %}
+  <p class="w-year">2026</p>
+  <div class="w-cards">
+    {% for p in tech %}
+    <a class="w-card" href="{{ p.url | relative_url }}">
+      {% if p.thumb %}<img class="wc-cover" src="{{ p.thumb | relative_url }}" alt="{{ p.title }}">{% else %}<div class="wc-cover wc-cover-ph"></div>{% endif %}
+      <div class="wc-body">
+        <div class="wc-meta">Personal site &middot; {{ p.date | date: "%b %Y" }} &middot; {{ p.content | number_of_words | divided_by: 200.0 | ceil }} min read</div>
+        <div class="wc-title">{{ p.title }}</div>
+        {% if p.excerpt %}<div class="wc-desc">{{ p.excerpt | strip_html | strip_newlines | truncatewords: 28 }}</div>{% endif %}
+        <div class="wc-read">read &rarr;</div>
+      </div>
+    </a>
+    {% endfor %}
+    <a class="w-card" href="{{ '/pages/writing/integrated-core-rfp/' | relative_url }}">
+      <img class="wc-cover" src="{{ '/assets/images/writing/integrated-core-rfp.png' | relative_url }}" alt="Integrated Core RFP">
+      <div class="wc-body">
+        <div class="wc-meta">Personal site &middot; Spring 2026 &middot; 1 min read</div>
+        <div class="wc-title">Integrated Core RFP</div>
+        <div class="wc-desc">A freshman research proposal on machine-learning-guided directed evolution of thermostable, alkaliphilic PETases.</div>
+        <div class="wc-read">read &rarr;</div>
+      </div>
+    </a>
+  </div>
+
+  <p class="w-sec-label">earlier writing</p>
+  {% assign early = site.posts | sort: 'date' | reverse %}
+  {% assign early_years = early | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {% for yr in early_years %}
+    {% assign shown = 0 %}
+    {% for p in yr.items %}{% unless p.section == "technical" %}{% assign shown = shown | plus: 1 %}{% endunless %}{% endfor %}
+    {% if yr.name == "2026" %}{% assign shown = shown | plus: 1 %}{% endif %}
+    {% if shown > 0 %}
+    <p class="w-year">{{ yr.name }}</p>
+    <div class="w-cards">
+      {% if yr.name == "2026" %}
+      <a class="w-card" href="https://saanviss.substack.com/p/saanvis-surf-summer-in-sf-before" target="_blank" rel="noopener">
+        <div class="wc-cover wc-cover-ph"></div>
+        <div class="wc-body">
+          <div class="wc-meta">Substack &middot; September 2026</div>
+          <div class="wc-title">saanvi's surf summer in sf before starting smore szn</div>
+          <div class="wc-desc">A personal essay on the SURF summer in San Francisco.</div>
+          <div class="wc-read">read on Substack &rarr;</div>
+        </div>
+      </a>
+      {% endif %}
+      {% for p in yr.items %}{% unless p.section == "technical" %}
+      <a class="w-card" href="{{ p.url | relative_url }}">
+        <div class="wc-cover wc-cover-ph"></div>
+        <div class="wc-body">
+          <div class="wc-meta">Personal site &middot; {{ p.date | date: "%b %Y" }} &middot; {{ p.content | number_of_words | divided_by: 200.0 | ceil }} min read</div>
+          <div class="wc-title">{{ p.title }}</div>
+          {% if p.excerpt %}<div class="wc-desc">{{ p.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</div>{% endif %}
+          <div class="wc-read">read &rarr;</div>
+        </div>
+      </a>
+      {% endunless %}{% endfor %}
+    </div>
+    {% endif %}
+  {% endfor %}
 </section>

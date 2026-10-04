@@ -3,6 +3,8 @@ layout: post
 title: "WMDP-Bio can be partly answered without reading the question"
 date: 2026-10-02
 tag: "Research"
+section: technical
+thumb: /assets/images/wmdp-bio-audit/option-only.png
 permalink: /thinking/wmdp-bio-audit/
 excerpt: "On WMDP-Bio, always picking the longest answer scores 46.5% against 25% chance, without reading the question."
 ---

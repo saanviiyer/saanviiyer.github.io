@@ -3,6 +3,8 @@ layout: post
 title: "The probe works and the understanding is not there"
 date: 2026-09-28
 tag: "Research"
+section: technical
+thumb: /assets/images/prism-signature-steering/sbs17a-ranking.png
 permalink: /thinking/the-probe-works-and-the-understanding-is-not-there/
 excerpt: "A probe hit AUC 0.94, then collapsed on held-out mechanisms."
 ---

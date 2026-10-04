@@ -3,6 +3,8 @@ layout: post
 title: "A white-box evaluation for protein models"
 date: 2026-10-01
 tag: "Research"
+section: technical
+thumb: /assets/images/white-box-protein-eval/eval-schematic.png
 permalink: /thinking/white-box-protein-eval/
 excerpt: "A proposal to test whether a protein model has learned an assay property by probing its internal activations and checking that the signal holds on held-out families."
 ---

@@ -3,6 +3,8 @@ layout: post
 title: "PRISM: methods, controls, and what each number is a number about"
 date: 2026-09-29
 tag: "Research"
+section: technical
+thumb: /assets/images/prism-signature-steering/scramble.png
 permalink: /thinking/prism-signature-steering/
 excerpt: "The lab report for PRISM: how the pipeline works, what each control measures, and where the numbers came from."
 ---

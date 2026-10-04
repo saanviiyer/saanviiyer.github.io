@@ -3,6 +3,8 @@ layout: post
 title: "biologos, and whether a genomic model knows protein function"
 date: 2026-10-03
 tag: "Research"
+section: technical
+thumb: /assets/images/biologos-transfer/spearman-comparison.png
 permalink: /thinking/biologos-transfer/
 excerpt: "I matched genomic and protein models on the same 25 deep mutational scanning assays, and a genomic model at Evo 2 scale does not clear a substitution matrix."
 ---

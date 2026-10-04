@@ -1118,3 +1118,18 @@ table.pp-table caption { font-family: var(--mono); font-size: 0.66rem; letter-sp
 table.pp-table th, table.pp-table td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--accent-soft); vertical-align: top; }
 table.pp-table th { font-family: var(--sans); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.02em; color: var(--ink); }
 table.pp-table td { font-family: var(--serif); line-height: 1.5; }
+
+/* Writing index: large year-grouped cards */
+.w-sec-label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 48px 0 6px; }
+.w-year { font-family: var(--serif); font-size: 1.5rem; font-weight: 500; color: var(--muted); margin: 30px 0 14px; }
+.w-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 26px; margin: 10px 0 20px; }
+.w-card { display: flex; flex-direction: column; text-decoration: none; color: var(--ink); background: var(--read-card); border: 1px solid var(--read-card-edge); border-radius: 18px; overflow: hidden; transition: transform .18s ease, box-shadow .18s ease; }
+.w-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(23,9,15,0.12); }
+.w-card.feat { border-color: var(--accent); }
+.wc-cover { aspect-ratio: 16 / 9; width: 100%; object-fit: cover; display: block; background: var(--accent-soft); }
+.wc-body { padding: 20px 22px 22px; }
+.wc-meta { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.wc-title { font-family: var(--serif); font-size: 1.4rem; line-height: 1.18; margin: 0 0 8px; }
+.wc-desc { font-size: 0.98rem; line-height: 1.55; color: var(--ink); }
+.wc-read { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-top: 12px; }
+.wc-cover-ph { background: linear-gradient(135deg, var(--paper-deep), var(--accent)); }
