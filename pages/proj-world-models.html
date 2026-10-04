@@ -1,0 +1,98 @@
+---
+layout: project
+title: "World models for biology and the brain"
+permalink: /projects/world-models/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+hook: "A model that predicts its next observation has to carry an internal state, and i study when that state becomes a usable variable and when continued training quietly erases what it already learned."
+thesis: "A world model builds a faithful internal variable only when the task forces it to, and the same training that adds new skill is what takes old skill away."
+---
+
+<p class="pp-question">what makes a predictive model build a usable internal variable, and what makes it keep one?</p>
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>a world model is a model that predicts what it will observe next, and to do that it has to hold an internal state. two questions follow. first, when does that state become a variable you can actually read and steer, rather than a tangle. i train action-conditioned world models on a robot's range sensors with no access to its heading, and a faithful heading variable appears only under partial observability: a blackout-trained model tracks true heading at a fidelity of 0.99 against 0.58 for an always-on model, and the variable behaves like a continuous attractor and can be steered causally. second, what happens to an old skill when a model keeps training. i compare biologically inspired learning rules against backpropagation at matched learning, and once the comparison is fair the retention advantage of locality is under a third of a point, while replay adds about ten. both halves are about the same thing: an internal representation is only as good as the pressure that shaped it.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">0.99 vs 0.58</div><div class="l">heading fidelity, blackout-trained against always-on, with no pose supervision</div></div>
+  <div class="stat"><div class="n">continuous attractor</div><div class="l">off-ring perturbations decay while a phase shift along the ring persists</div></div>
+  <div class="stat"><div class="n">+0.21 pts</div><div class="l">retention edge of the best local rule at matched learning, 95% CI [+0.11, +0.31]</div></div>
+  <div class="stat"><div class="n">+10.6 pts</div><div class="l">retention from replay, about fifty times the local-rule effect</div></div>
+</div>
+
+<p class="pp-section-num">01 &middot; The Approach</p>
+<h2 class="pp-section-title">two studies, one idea about internal state</h2>
+
+<p>both studies ask what shapes the variable a model carries, so i keep the measurement honest in the same way each time. in the heading study i never give the model pose and i never put a pose term in the loss, so any heading variable has to emerge on its own, and i measure fidelity only at the steps where the model must integrate, deep inside a blackout with no observation. in the continual-learning study i never let a fancy rule compete against a weak baseline, so i match the learning accuracy of every method before i compare how much it forgets. in both, the control is the point: a ring that appears in every model is not evidence until fidelity separates the conditions, and a retention gain is not evidence until the baseline is tuned as hard as the rule.</p>
+
+<p class="pp-section-num">02 &middot; Results</p>
+<h2 class="pp-section-title">two findings</h2>
+
+<section class="pp-thread" id="faithful-heading">
+  <h3 class="pp-thread-title">a faithful heading variable emerges only under partial observability</h3>
+  <p><span class="venue-badge">RoBoWoMo @ IEEE IROS 2026</span><span class="venue-badge">Lightning talk and poster</span></p>
+
+  <p>i train action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. hidden states form a ring in nearly every condition, including control models that cannot integrate heading, so ring shape alone is not evidence. the real test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. blackout training, where observations are withheld for stretches, produces a ring that tracks heading at a fidelity of 0.99, against 0.58 for an always-on model, so the faithful variable only appears when the task forces the model to hold it.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Blackout-trained ring tracks heading at 0.99, always-on at 0.58">
+    <figcaption><strong>figure 1.</strong> hidden states projected to their first two components, colored by true heading. the blackout-trained model keeps a clean ring whose coordinate tracks heading at a fidelity of 0.99, while the always-on model's ring is scrambled during a blackout and tracks heading at only 0.58.</figcaption>
+  </figure>
+
+  <p>the faithful ring behaves like a continuous attractor, which is the structure neuroscience proposes for head-direction cells: a perturbation off the ring decays back to it, while a shift in position along the ring is held rather than erased. rotating the ring plane changes the model's predicted observation to the one for the rotated heading, so the variable is used causally and not just correlated with heading.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/wm/faithful-attractor.png' | relative_url }}" alt="Perturbations decay, state returns to the manifold, and the phase offset persists for the blackout-trained model">
+    <figcaption><strong>figure 2.</strong> after a perturbation during a blackout, the off-ring component decays and the state returns to its manifold, while the induced phase offset along the ring persists for the blackout-trained model near 0.9 and decays for the always-on model toward 0.4. that pattern, decay off the ring and memory along it, is the continuous-attractor signature.</figcaption>
+  </figure>
+
+  <div class="finding"><div class="fn-label">Finding 1</div><p>with no pose supervision, a predictive world model builds a heading variable that tracks true heading at a fidelity of 0.99 only under partial observability, against 0.58 when trained always-on, and the variable is a causally steerable continuous attractor.</p></div>
+</section>
+
+<section class="pp-thread" id="engram">
+  <h3 class="pp-thread-title">a fair baseline erases the retention advantage of local learning rules</h3>
+  <p><span class="venue-badge">personal site</span></p>
+  <p class="bm-links"><a href="{{ '/thinking/engram-continual-learning/' | relative_url }}">Blog</a></p>
+
+  <p>biologically inspired learning rules are often reported to forget less than backpropagation, so i tested whether the advantage survives a fair comparison on class-incremental Split-CIFAR-10. a rule that learns each new task less well also has less to forget, so i first calibrated an instrument: weakening backpropagation along a ladder of settings makes backward transfer almost a deterministic function of learning accuracy, with an R-squared of 0.995, which sets how small a difference i can resolve, a held-out error of 1.09 points. i then scored each rule against backpropagation at the same learning accuracy, tuning the baseline as hard as the rule. feedback alignment and direct feedback alignment were indistinguishable from backpropagation, predictive coding retained 0.21 points more with a 95% interval of [+0.11, +0.31], about a fifth of the instrument's own error, and replay added 10.6 points. so any retention advantage from locality on this protocol is under a third of a point.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/engram-continual-learning/locality.png' | relative_url }}" alt="Backward transfer against learning accuracy, local rules on the backpropagation curve and replay above it">
+    <figcaption><strong>figure 3.</strong> backward transfer against learning accuracy. the backpropagation ladder traces a curve, the local rules fall on that same curve, and only replay sits above it, so locality does not move the forgetting-versus-learning trade-off.</figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/engram-continual-learning/neurreps.png' | relative_url }}" alt="Departure from the null for each rule, with and without replay">
+    <figcaption><strong>figure 4.</strong> each rule's departure from the null band. the credit-assignment rules sit within the null scatter, while adding replay lifts every rule about ten points above it. representational geometry differs across rules without changing the retention story.</figcaption>
+  </figure>
+
+  <p>i care about this beyond neuroscience because continued training of a deployed model, whether fine-tuning or reinforcement learning from human feedback, can erase capabilities and safety behaviors the model had before. that is catastrophic forgetting with a deployment address, and the one constraint engram adds is that any method claiming to protect earlier behavior has to be compared at matched learning of the new task.</p>
+
+  <div class="finding"><div class="fn-label">Finding 2</div><p>once learning accuracy is matched and the baseline is tuned fairly, the retention advantage of local rules is under a third of a point while replay adds 10.6, so locality itself does not reduce forgetting on this protocol.</p></div>
+</section>
+
+<p class="pp-section-num" id="takeaways">Takeaways</p>
+<h2 class="pp-section-title">what both studies share</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">pressure builds the variable</div>a faithful heading variable appears at fidelity 0.99 only when a blackout forces the model to integrate.</div>
+  <div class="takeaway"><div class="tk-h">it is a real attractor</div>off-ring perturbations decay, a phase shift along the ring persists, and rotation is causal.</div>
+  <div class="takeaway"><div class="tk-h">a fair baseline is everything</div>matched learning erases the local-rule retention edge, leaving under a third of a point.</div>
+  <div class="takeaway"><div class="tk-h">forgetting is an alignment problem</div>continued training erases old behavior the same way it erases an old task.</div>
+</div>
+
+<p class="pp-section-num">Limitations</p>
+<div class="limitations">
+  <p>the heading study is in simulation on a planar robot with range sensors, so whether the same faithful variable appears from richer sensing or on hardware is untested here. the continual-learning result is scoped to class-incremental Split-CIFAR-10 with a growing head, which sits near a retention floor, and a wider-window replication is the next step. the engram code is not public yet, so the Code link is held until it is released.</p>
+</div>
+
+<p class="pp-section-num" id="cite">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026heading,
+  author    = {Saanvi S. Subramanian},
+  title     = {A Faithful Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
+  booktitle = {Robot World Models Workshop (RoBoWoMo), IEEE IROS},
+  year      = {2026}
+}
+</div>
