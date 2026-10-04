@@ -11,43 +11,29 @@ permalink: /pages/portfolio/
   <h2 class="exp-group-title">ai for radiologists</h2>
   <div class="exp-cards">
 
-    <article class="flip-card" tabindex="0" role="button" aria-label="Stanford Pediatric Neuroradiology Lab. Click to flip.">
-      <div class="flip-inner">
-        <div class="flip-front">
-          <div class="exp-card-head">Stanford Pediatric Neuroradiology Lab, AIMI</div>
-          <div class="exp-card-body">
-            <ul>
-              <li>Built AI brain lesion detection software application, in trial with clinical radiologists at Stanford.</li>
-              <li>Post-training and evals for clinical EEG foundation models.</li>
-              <li>Awarded Caltech SURF.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="flip-back">
-          <div class="exp-card-head">Stanford Pediatric Neuroradiology Lab, AIMI</div>
-          <div class="exp-card-body">
-            <p class="exp-reflection">It was great collaborating with radiologists on this project, and building software for the division. My goal was to build lesion detection for epilepsy using MRI and EEG information, simulating the multimodal nature of a clinician's workflow, and this work is in publication. This experience was especially fun as my first summer in SF, where I grew a lot and got to <a href="#">meet exceptional teams building at the frontier of AI x Bio</a>.</p>
-          </div>
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Stanford Pediatric Neuroradiology Lab, AIMI</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Built an AI brain-lesion detection application, being evaluated with clinical radiologists at Stanford. [TODO: Saanvi to confirm the trial status and a link.]</li>
+            <li>Post-training and evaluations for clinical EEG foundation models.</li>
+            <li>Awarded a Caltech SURF.</li>
+          </ul>
+          <p class="exp-reflection">It was great collaborating with radiologists on this project and building software for the division. My goal was to build lesion detection for epilepsy using MRI and EEG information, simulating the multimodal nature of a clinician's workflow, and this work is being written up. [TODO: Saanvi to confirm the publication status and a link.] This experience was especially fun as my first summer in SF, where I grew a lot and got to meet exceptional teams building at the frontier of AI x Bio.</p>
         </div>
       </div>
     </article>
 
-    <article class="flip-card" tabindex="0" role="button" aria-label="Caltech Computer Vision Lab. Click to flip.">
-      <div class="flip-inner">
-        <div class="flip-front">
-          <div class="exp-card-head">Caltech Computer Vision Lab</div>
-          <div class="exp-card-body">
-            <ul>
-              <li>Built a CT image encoder for kidney tumors (pretraining and fine-tuning).</li>
-              <li>Collaborated to build a CLIP-style model that links 3D CT scans with tumor gene mutations.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="flip-back">
-          <div class="exp-card-head">Caltech Computer Vision Lab</div>
-          <div class="exp-card-body">
-            <p class="exp-reflection">This was my first research experience at Caltech, and first time working with CLIP. I learned about foundation models, encoders and decoders, and was supervised by Raphaela Kang and Joe Rich. This project is still ongoing!</p>
-          </div>
+    <article class="exp-card-static">
+      <div class="exp-card-face">
+        <div class="exp-card-head">Caltech Computer Vision Lab</div>
+        <div class="exp-card-body">
+          <ul>
+            <li>Built a CT image encoder for kidney tumors (pretraining and fine-tuning).</li>
+            <li>Collaborated to build a CLIP-style model that links 3D CT scans with tumor gene mutations.</li>
+          </ul>
+          <p class="exp-reflection">This was my first research experience at Caltech and my first time working with CLIP. I learned about foundation models, encoders and decoders, and was supervised by Raphaela Kang and Joe Rich. This project is still ongoing.</p>
         </div>
       </div>
     </article>
@@ -88,7 +74,7 @@ permalink: /pages/portfolio/
 </section>
 
 <section class="exp-group">
-  <h2 class="exp-group-title">surgical video models</h2>
+  <h2 class="exp-group-title">medical video models</h2>
   <div class="exp-cards">
     <article class="exp-card-static">
       <div class="exp-card-face">
@@ -140,40 +126,40 @@ permalink: /pages/portfolio/
 <section id="projects" class="pf-section">
   <h2 class="pf-heading">projects</h2>
 
-  <p class="proj-featured">flagship codebase: <a href="https://github.com/saanviiyer/prism" target="_blank" rel="noopener">PRISM</a></p>
+  <p class="fun-label">selected projects</p>
 
-  <p class="fun-label">protein model evals</p>
-  <p class="proj-intro">most of my research is one question: do protein model evaluations survive contact with an optimizer? i build the stress tests, baselines, and controls first, then check whether a metric measures what it claims or just something easy to game.</p>
+  <p class="proj-line"><strong><a href="{{ '/projects/prism/' | relative_url }}">PRISM</a></strong> applies all 78 COSMIC single-base-substitution signatures to protein-coding sequences, embeds the wild-type and mutant proteins with ESM-2, and measures how far each signature moves the mutants toward Pfam protein families, with controls that decide whether the movement is biological. SBS17a ranks first of 78 toward PF17041 across two independent clans, yet a composition-matched control reproduces 72% of that movement and protein length explains 92.5% of the displacement, so it reads as an embedding effect rather than a validated functional driver. oral, IEEE CIBCB 2026, accepted for additional venues [TODO: Saanvi to name the additional venues]. <a href="https://github.com/saanviiyer/PRISM" target="_blank" rel="noopener">code</a>, <a href="{{ '/projects/prism/' | relative_url }}">full page</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/gauntlet/' | relative_url }}">gauntlet</a></strong> stress-tests protein fitness proxies for trivial baselines and reward hacking, and a plain mutation count beat ESM-2 zero-shot on measured PETase activity. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet" target="_blank" rel="noopener">code</a>, and a poster at WiML, NeurIPS 2026.</p>
+  <p class="proj-line"><strong><a href="{{ '/projects/clinical-ml/' | relative_url }}">CortSeer</a></strong> adjusts a 3D nnU-Net detection threshold by anatomical zone and runs a lobe-restricted multi-peak search to recover epileptogenic lesions a detector would otherwise miss. as an upper bound under oracle localization, the lobe-restricted search recovered 14 of 24 missed lesions, which is 58%, against 1.4 expected by chance, with P below 0.001. oral, ECCV AI for Medical 3D Vision workshop 2026. [TODO: Saanvi to confirm the Brain Informatics submission before it is claimed.] <a href="https://ai4m3d.github.io/#schedule" target="_blank" rel="noopener">workshop</a>, <a href="{{ '/projects/clinical-ml/' | relative_url }}">full page</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/shibboleth/' | relative_url }}">shibboleth</a></strong> points the same battery at biosecurity screening, where the proxies collapse at real operating points. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/shibboleth" target="_blank" rel="noopener">code</a></p>
+  <p class="proj-line"><strong><a href="{{ '/projects/evaluations/' | relative_url }}">gauntlet</a></strong> is an audit battery that stress-tests a protein fitness proxy against trivial baselines and reward hacking before anyone ranks designs with it. on 504 measured PET-hydrolase variants, an ESM-2 650M zero-shot score ranks activity at a Spearman of 0.01 while a plain mutation count reaches 0.25. poster, AI for Science at NeurIPS 2026. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet" target="_blank" rel="noopener">code</a>, <a href="{{ '/projects/evaluations/' | relative_url }}">full page</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/crosstalk/' | relative_url }}">crosstalk</a></strong> measures binding specificity, which gets worse as models get bigger. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/crosstalk" target="_blank" rel="noopener">code</a></p>
+  <p class="proj-line"><strong><a href="{{ '/projects/world-models/' | relative_url }}">faithful heading</a></strong> trains action-conditioned world models on a robot's range sensors with no pose supervision and measures how closely a ring in the hidden state follows true heading deep inside a sensory blackout. a blackout-trained model tracks heading at a fidelity of 0.99 against 0.58 for an always-on model, and the variable behaves as a causally steerable continuous attractor. lightning talk and poster, RoBoWoMo at IEEE IROS 2026. [TODO: Saanvi to confirm whether the Robotics World Modeling poster at NeurIPS 2026 is this project.] <a href="{{ '/projects/world-models/' | relative_url }}">full page</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/plimsoll/' | relative_url }}">plimsoll</a></strong> holds any research repo against a methodology checklist before it ships a number. <a href="https://github.com/saanviiyer/plimsoll" target="_blank" rel="noopener">code</a></p>
+  <p class="fun-label">more research</p>
+  <p class="proj-intro">most of my research is one question: do model evaluations survive contact with an optimizer? i build the baselines, controls, and stress tests first, then check whether a metric measures what it claims or just something easy to game.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/prism/' | relative_url }}">PRISM</a></strong> applies all 78 cancer mutational signatures to protein sequences and measures how each one moves ESM-2 embeddings across protein families. <a href="https://github.com/saanviiyer/PRISM" target="_blank" rel="noopener">code</a>, and an oral at IEEE CIBCB 2026.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/biologos/' | relative_url }}">biologos</a></strong> matches a genomic model and a protein model on the same 25 deep mutational scanning assays to ask whether a DNA-trained model knows protein function or only looks like it does. a genomic model at Evo 2 7B scale reaches a mean Spearman of 0.266, statistically indistinguishable from a BLOSUM62 substitution matrix at 0.228 and far below ESM-2 650M at 0.466. poster, WiML at NeurIPS 2026, top 15%. <a href="https://github.com/saanviiyer/biologos" target="_blank" rel="noopener">code</a>, <a href="{{ '/thinking/biologos-transfer/' | relative_url }}">blog</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/genmodels/' | relative_url }}">genmodels</a></strong> asks whether generative models implicitly learned those evolutionary biases. <a href="https://github.com/saanviiyer/genmodels" target="_blank" rel="noopener">code</a></p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/action-identifiability/' | relative_url }}">action identifiability</a></strong> tests whether a protein-design agent's apparent success identifies the biological action behind it, by checking whether distinct mutational processes stay distinguishable in a model's representation across all 3,003 pairs of 78 processes. distinct processes often reach the same destination, and a translation placeholder count explains up to an R-squared of 0.870 of pairwise destination distance in ESM-2 650M. poster, AgenticLS at NeurIPS 2026, and presented at MoML 2026, MIT. <a href="https://openreview.net/forum?id=GhNJ7TTUyi" target="_blank" rel="noopener">paper</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/biologos/' | relative_url }}">biologos</a></strong> measures whether genomic-to-protein transfer survives its controls, and finds a genomic language model's protein-fitness signal indistinguishable from a substitution matrix. <a href="https://github.com/saanviiyer/biologos" target="_blank" rel="noopener">code</a></p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/benchmark-integrity/' | relative_url }}">benchmark integrity</a></strong> scores a hazardous-knowledge safety benchmark with rules that never read the question, to see how much of the score is an answer-writing artifact. a longest-answer rule scores 46.5% and a question-blind classifier 34.6% against 25% chance, so part of the score reflects how the options were written rather than knowledge. blog post. <a href="{{ '/thinking/wmdp-bio-audit/' | relative_url }}">blog</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/white-box-evaluation/' | relative_url }}">white-box evaluation</a></strong> proposes to test whether a protein model has learned an assay property by probing its internal activations and holding out whole families. <a href="{{ '/thinking/white-box-protein-eval/' | relative_url }}">blog</a></p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/engram/' | relative_url }}">engram</a></strong> asks whether biologically inspired local learning rules forget less than backpropagation once both are compared at the same learning accuracy on class-incremental Split-CIFAR-10. the best local rule retains 0.21 points more, with a 95% interval of [+0.11, +0.31], while replay adds 10.6, so locality itself does not reduce forgetting on this protocol. poster, AI4MetaScience at NeurIPS 2026. <a href="{{ '/thinking/engram-continual-learning/' | relative_url }}">blog</a>, code to be released. [TODO: Saanvi to confirm whether the Dale-constrained DevAI paper is this project.]</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/action-identifiability/' | relative_url }}">action identifiability</a></strong> asks whether a protein-design agent's success identifies the biological action that caused it. Presented at MoML 2026 at MIT.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/shibboleth/' | relative_url }}">shibboleth</a></strong> points the same audit battery at function-based biosecurity screening, to see whether the screening proxies hold at realistic operating points. the proxies collapse at low false-positive rates. [TODO: Saanvi to confirm the exact true-positive rate at a 1% false-positive rate before it is stated publicly.] code. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/shibboleth" target="_blank" rel="noopener">code</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/benchmark-integrity/' | relative_url }}">benchmark integrity</a></strong> shows a safety benchmark can be partly answered without reading the question, so part of a score is answer-writing artifact. <a href="{{ '/thinking/wmdp-bio-audit/' | relative_url }}">blog</a></p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/crosstalk/' | relative_url }}">crosstalk</a></strong> builds reinforcement-learning environments for protein binding specificity and measures how specificity prediction changes with model scale. binding specificity does not improve, and becomes harder to capture, as models get larger. [TODO: Saanvi to add the exact effect size.] code. <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/crosstalk" target="_blank" rel="noopener">code</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/faithful-heading/' | relative_url }}">faithful heading</a></strong> shows predictive world models trained from pixels alone recover a faithful heading variable only under partial observability. A lightning talk and poster at the RoBoWoMo workshop, IEEE IROS 2026.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/plimsoll/' | relative_url }}">plimsoll</a></strong> is a tool for researchers auditing their own work: it checks a repository against a methodology checklist, looking for trivial baselines, verified nulls, decisive controls, named confounds, and printed denominators, and it quotes the evidence behind each verdict. it is built to catch an overstated number before it ships, not to make a research claim of its own. code. <a href="https://github.com/saanviiyer/plimsoll" target="_blank" rel="noopener">code</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/engram/' | relative_url }}">engram</a></strong> is a controlled test of whether biologically inspired learning rules improve retention once training budget is matched. <a href="https://github.com/saanviiyer/engram" target="_blank" rel="noopener">code</a></p>
+  <p class="proj-line"><strong><a href="{{ '/projects/proposals/' | relative_url }}">white-box evaluation</a></strong> is a proposal. the question is whether a protein model has actually learned an assay property or is shortcutting it, and the proposed method ranks already-measured benign variants, trains linear probes on the model's internal activations, and holds whole protein families out at test time. it would be falsified if the probes recovered the property just as well on held-out families as on seen ones for a model whose output score is known to shortcut, and it reports no results. proposal. <a href="{{ '/projects/proposals/' | relative_url }}">proposal</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/cortseer/' | relative_url }}">CortSeer</a></strong> maps EEG-identified seizure onset zones to anatomy on a multimodal MRI and EEG foundation model, and is submitted to Brain Informatics. An oral at the ECCV <a href="https://ai4m3d.github.io/#schedule" target="_blank" rel="noopener">AI for Medical 3D Vision</a> workshop.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/genmodels/' | relative_url }}">genmodels</a></strong> asks whether generative protein models implicitly learned the evolutionary mutational biases that PRISM measures. the work is ongoing and i am not reporting a result yet. [TODO: Saanvi to add the preliminary finding and its scope.] ongoing. <a href="https://github.com/saanviiyer/genmodels" target="_blank" rel="noopener">code</a>.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/reward-learning/' | relative_url }}">task-space reward learning</a></strong> fits recurrent networks to human behavior in a 487-participant bandit task space, with Google DeepMind and the University of Edinburgh.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/reward-learning/' | relative_url }}">task-space reward learning</a></strong> fits recurrent networks to human behavior in a 487-participant bandit task space, with Google DeepMind and the University of Edinburgh, to study how people learn rewards across a space of tasks. the work is ongoing and i am reporting no conclusions yet. [TODO: Saanvi to add the preliminary finding and its scope, and to confirm whether the NeurReps extended abstract on recovering temporal lags is this project.] ongoing.</p>
 
-  <p class="proj-line"><strong><a href="{{ '/pages/projects/surgical-video-models/' | relative_url }}">surgical video models</a></strong> tests whether video foundation models use temporal information when scoring surgical movement, where a single frame matched the full clip across current encoders.</p>
+  <p class="proj-line"><strong><a href="{{ '/pages/projects/surgical-video-models/' | relative_url }}">medical video models</a></strong> tests whether video foundation models use temporal information when they score medical movement, for RCP. across the current encoders a single still frame matched the full 16-frame video, which is a preliminary result rather than a conclusion. ongoing. [TODO: Saanvi to confirm scope and add detail.]</p>
 
   <p class="fun-label">research tools</p>
   <div class="fun-grid">
