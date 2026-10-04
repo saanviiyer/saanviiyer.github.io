@@ -1,0 +1,150 @@
+---
+layout: project
+title: "Evaluations that survive optimizers"
+permalink: /projects/evaluations/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+hook: "A score that looks healthy on a benchmark can be useless, or gameable, in the exact place a search would use it, so i build the controls that tell the two apart before anyone acts on the number."
+thesis: "An evaluation is only trustworthy if it still means what it claims once a model or a search optimizes against it."
+---
+
+<p class="pp-question">when a model scores well on a benchmark, is it good at the task, or just good at the benchmark?</p>
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>this is a program of evaluations, each one testing whether a score keeps its meaning under pressure. a zero-shot protein proxy ranks measured PET-hydrolase activity at a Spearman of 0.01 while a plain mutation count reaches 0.25, so the proxy is useless at the thing it is for. a benchmark correlation predicts the value a search actually selects less and less as selection sharpens, from a squared rank association of 0.50 at the top 10% to 0.16 at the top 1%. distinct biological actions collapse to the same destination in a model's representation, so an agent cannot tell them apart. a verifier that looks near-perfect, at an AUROC of 0.991, adds almost no real value over random. a genomic language model's protein-fitness signal does not clear a substitution matrix. and a safety benchmark can be answered 46.5% of the time without reading the question. the throughline is that none of these failures shows up in the headline number, and all of them show up once you add the control.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">0.01</div><div class="l">zero-shot proxy Spearman on PETase activity, against 0.25 for a mutation count</div></div>
+  <div class="stat"><div class="n">0.50 &rarr; 0.16</div><div class="l">benchmark-to-selection agreement, from the top 10% to the top 1%</div></div>
+  <div class="stat"><div class="n">0.991</div><div class="l">AUROC of a verifier that adds only 0.028 good candidates per batch over random</div></div>
+  <div class="stat"><div class="n">46.5%</div><div class="l">of a safety benchmark answered by picking the longest option, against 25% chance</div></div>
+  <div class="stat"><div class="n">+0.038</div><div class="l">a genomic model's lead over a substitution matrix, an interval that contains zero</div></div>
+</div>
+
+<p class="pp-section-num">01 &middot; The Approach</p>
+<h2 class="pp-section-title">one method, run before any number is believed</h2>
+
+<p>every project here runs the same battery on a different score. i wrap a model-derived score in a common interface and ask four things of it. first, does it beat a trivial baseline, like a mutation count or the longest answer. second, does it stay useful in the top-ranked region a search would actually act on, not just on average. third, does it survive a confound control for composition, length, or answer-writing style. fourth, does it transfer to cases the model never saw, rather than only to familiar ones. a score that passes all four is trustworthy, and a score that passes only the headline is not.</p>
+
+<p>the flagship of this program is PRISM, which runs the full battery on one homology-free protein-function framework and is written up on its own page.</p>
+
+<p class="bm-links"><a href="{{ '/projects/prism/' | relative_url }}">Read the PRISM page &rarr;</a></p>
+
+<p class="pp-section-num">02 &middot; Results</p>
+<h2 class="pp-section-title">six evaluations, one lesson</h2>
+
+<section class="pp-thread" id="gauntlet">
+  <h3 class="pp-thread-title">a zero-shot protein proxy is useless at the thing it is for</h3>
+  <p><span class="venue-badge">protein-lm-audits</span><span class="venue-badge">gauntlet</span></p>
+  <p>people rank candidate proteins with a computable score because measurement is slow, so the score has to actually track the property it stands in for. across 504 measured PET-hydrolase variants over 25 studies, an ESM-2 650M zero-shot score ranks activity at a within-study Spearman of 0.01, a substitution matrix is negative, and a plain count of mutations reaches 0.25. a number that cannot beat counting mutations is not measuring function.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/eval/gauntlet-proxy-audit.png' | relative_url }}" alt="Zero-shot ESM-2 ranks PETase activity at 0.01 while a mutation count reaches 0.25">
+    <figcaption><strong>figure 1.</strong> within-study rank correlation with measured outcomes for four scorers, on PET-hydrolytic activity (504 variants, 25 studies) and melting temperature (376 variants, 15 studies). the ESM-2 650M zero-shot score sits near zero on activity, below a hydropathy feature and well below a mutation count at 0.25.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 1</div><p>a zero-shot protein language model ranks measured PETase activity at a Spearman of 0.01, worse than a mutation count at 0.25, so it adds nothing over a trivial baseline on the task it is used for.</p></div>
+</section>
+
+<section class="pp-thread" id="benchmark">
+  <h3 class="pp-thread-title">a benchmark correlation does not predict better designs</h3>
+  <p><span class="venue-badge">NeurIPS Trust-AI-Eval 2026</span><span class="venue-badge">NeurIPS GEM Bio 2026</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=KxSFpyRXzp" target="_blank" rel="noopener">Paper</a></p>
+  <p>a benchmark score is supposed to tell you which scorer will choose better proteins, so i measured whether it does. the result is a rank association between a scorer's benchmark correlation and the value of the designs it selects, and it weakens as selection sharpens, from a squared association of 0.50 when keeping the top 10% to 0.16 when keeping the top 1%. three of 41 assays give worse-than-random top-1% selections despite positive correlations, and at the same correlation an SSMuLA library yields 0.265 more selection value than a ProteinGym assay, with p equal to 0.0001. it replicates on ESM-2 650M and ESM-C 300M.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq2/benchmark-decay.png' | relative_url }}" alt="Selection utility against bulk Spearman, squared association 0.50 at top 10 percent and 0.16 at top 1 percent">
+    <figcaption><strong>figure 2.</strong> selection utility against the bulk Spearman that gets reported, for ProteinGym and SSMuLA on ESM-2 650M. the same reported correlation buys 0.50 of the squared association with selection value at the top 10% and only 0.16 at the top 1%.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 2</div><p>benchmark correlation predicts selection quality less as selection sharpens, from a squared association of 0.50 at the top 10% to 0.16 at the top 1%, and the benchmark family matters more than the score.</p></div>
+</section>
+
+<section class="pp-thread" id="identifiability">
+  <h3 class="pp-thread-title">distinct actions collapse to the same place in a representation</h3>
+  <p><span class="venue-badge">NeurIPS AgenticLS 2026</span><span class="venue-badge">MoML 2026 (MIT)</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=GhNJ7TTUyi" target="_blank" rel="noopener">Paper</a></p>
+  <p>if an agent is going to choose an action from a model's representation, two genuinely different actions must not look the same there. across all 3,003 pairs of 78 mutational processes, biologically distinct processes often reach the same destination, and much of the apparent distance is an artifact of how sequences are translated: a stop-at-first-stop rule truncates 25.8% of mutants to one-residue placeholders, and the placeholder count explains up to an R-squared of 0.870 of pairwise destination distance. the effect is model-dependent, at 23.8% in ESM-2 8M against 72.5% in ESM-2 650M, so every claim is scoped to the model and search setup it was measured in.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq3/cross-signature.png' | relative_url }}" alt="Distinct signatures reach shared destinations in ESM-2 650M">
+    <figcaption><strong>figure 3.</strong> left, how much steering with each signature direction reduces distance toward each target region, where the off-diagonal gains show the steering is not specific. right, cosine distances between the target regions themselves, where distinct signatures sit close together, in ESM-2 650M.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 3</div><p>distinct mutational processes reach shared destinations in ESM-2 650M, and a translation artifact explains up to an R-squared of 0.870 of the apparent distance, so representational identifiability limits what an agent can select.</p></div>
+</section>
+
+<section class="pp-thread" id="verifier">
+  <h3 class="pp-thread-title">a near-perfect verifier can add almost no value</h3>
+  <p><span class="venue-badge">NeurIPS Verify-Agents 2026</span></p>
+  <p class="bm-links"><a href="https://openreview.net/forum?id=RyzGAFDM8S" target="_blank" rel="noopener">Paper</a></p>
+  <p>when an agent proposes candidates, a verifier decides which to keep, so i red-teamed the verifier in a setting where ground truth exists and the real quality of what it keeps can be measured. a fully leaked scorer reaches an AUROC of 0.991 yet adds only 0.028 good candidates per batch over random, against 1.082 for an honest scorer, and a pool-side attacker matches the honest scorer's gate statistics to three decimal places while losing 1.24 good candidates per batch. a probe that spot-checks 25% of decisions detects 99.2% of attacks but recovers only 17% of the lost value at that same probe size, and an adaptive attacker who knows the probe drops its detection to 45.9%.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/plm/rq4/audit-sweep.png' | relative_url }}" alt="Good candidates over random against the share of the batch spent on a random audit">
+    <figcaption><strong>figure 4.</strong> good candidates per batch over random, against the share of the batch spent on a random audit. the honest scorer starts at 1.08 and falls as more of the batch is audited, while the pool-side attacker stays near zero, so the audit costs the honest run more than it recovers from the attacked one.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 4</div><p>a verifier at an AUROC of 0.991 adds only 0.028 good candidates per batch over random, and a probe that detects 99.2% of attacks recovers only 17% of the lost value, so detection is not recovery.</p></div>
+</section>
+
+<section class="pp-thread" id="biologos">
+  <h3 class="pp-thread-title">a genomic model does not clear a substitution matrix</h3>
+  <p><span class="venue-badge">personal site</span></p>
+  <p class="bm-links"><a href="{{ '/thinking/biologos-transfer/' | relative_url }}">Blog</a><a href="https://github.com/saanviiyer/biologos" target="_blank" rel="noopener">Code</a></p>
+  <p>DNA and protein are two encodings of one molecule, so i matched a genomic model and a protein model on the same 25 deep mutational scanning assays. a genomic model at Evo 2 7B scale reaches a mean Spearman of 0.266, which is statistically indistinguishable from the BLOSUM62 substitution matrix at 0.228, is beaten by five chemical features, and sits far below ESM-2 650M at 0.466. the Nucleotide Transformer family carries no signal at any scale i tested.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/biologos-transfer/spearman-comparison.png' | relative_url }}" alt="Evo 2 7B at 0.266 overlapping BLOSUM62 at 0.228, both far below ESM-2 at 0.466">
+    <figcaption><strong>figure 5.</strong> mean Spearman across the 25 assays with 95% intervals and per-assay points. Evo 2 at 0.266 overlaps BLOSUM62 at 0.228, both sit below a chemistry ridge and far below ESM-2 650M at 0.466.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 5</div><p>a genomic model at Evo 2 scale leads a substitution matrix by 0.038 with an interval that contains zero, so its protein-fitness signal does not clear a substitution matrix.</p></div>
+</section>
+
+<section class="pp-thread" id="wmdp">
+  <h3 class="pp-thread-title">a safety benchmark is partly answerable without the question</h3>
+  <p><span class="venue-badge">personal site</span></p>
+  <p class="bm-links"><a href="{{ '/thinking/wmdp-bio-audit/' | relative_url }}">Blog</a></p>
+  <p>a safety benchmark is only meaningful if its score reflects knowledge rather than how the options were written, so i scored WMDP-Bio with rules that never read the question. always choosing the longest of the four options scores 46.5% against 25% chance, and a classifier trained on the option text alone reaches 34.6%, so part of the score is an answer-writing artifact. across all 57 MMLU subjects run through the same battery, WMDP-Bio sits at the 96.5th percentile on option-only solvability. this reports aggregate findings only, with no item text and no recipe for exploiting the artifact.</p>
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/wmdp-bio-audit/option-only.png' | relative_url }}" alt="Longest-answer rule 46.5 percent and question-blind classifier 34.6 percent against 25 percent chance">
+    <figcaption><strong>figure 6.</strong> accuracy of two question-blind rules against the 0.25 chance line. the longest-answer rule reaches 0.465 and a question-blind classifier 0.346, both with intervals that exclude chance.</figcaption>
+  </figure>
+  <div class="finding"><div class="fn-label">Finding 6</div><p>on WMDP-Bio a longest-answer rule scores 46.5% and a question-blind classifier 34.6% against 25% chance, so part of a safety score is an artifact of how the options were written.</p></div>
+</section>
+
+<p class="pp-section-num" id="takeaways">Takeaways</p>
+<h2 class="pp-section-title">what the program adds up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">proxies fail at the task</div>a protein proxy ranks PETase activity at 0.01, below a mutation count at 0.25.</div>
+  <div class="takeaway"><div class="tk-h">benchmarks mispredict selection</div>correlation-to-selection agreement falls from 0.50 to 0.16 as selection sharpens.</div>
+  <div class="takeaway"><div class="tk-h">representations lose identifiability</div>distinct actions collapse together, up to R-squared 0.870 explained by a translation artifact.</div>
+  <div class="takeaway"><div class="tk-h">verifiers can be gamed</div>an AUROC of 0.991 adds 0.028 value, and detection does not equal recovery.</div>
+  <div class="takeaway"><div class="tk-h">transfer is overread</div>a genomic model does not clear a substitution matrix.</div>
+  <div class="takeaway"><div class="tk-h">benchmarks leak</div>46.5% of a safety benchmark is answerable without the question.</div>
+</div>
+
+<p class="pp-section-num">Limitations</p>
+<div class="limitations">
+  <p>each result is scoped to the framework, model, and search setup it was measured in, and several reuse a small set of assays or signatures, so the intervals are likely optimistic where the comparisons are dependent. the audits are demonstrated rather than proven general. the methods appendices for the benchmark-to-selection and verifier studies are not yet written, and no number here should be quoted outside its paper until they are.</p>
+</div>
+
+<p class="pp-section-num" id="cite">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026benchmark,
+  author    = {Saanvi S. Subramanian},
+  title     = {Does Benchmark Correlation Predict Selection Quality for Protein Design?},
+  booktitle = {NeurIPS Workshops (Trust-AI-Eval; GEM Bio)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=KxSFpyRXzp}
+}
+
+@inproceedings{subramanian2026identifiability,
+  author    = {Saanvi S. Subramanian},
+  title     = {Representational Identifiability Limits Action Selection in a Protein-Design Agent},
+  booktitle = {NeurIPS Agentic Life Sciences Workshop (AgenticLS)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=GhNJ7TTUyi}
+}
+
+@inproceedings{subramanian2026verifier,
+  author    = {Saanvi S. Subramanian},
+  title     = {When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists},
+  booktitle = {NeurIPS Verify-Agents Workshop},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=RyzGAFDM8S}
+}
+</div>

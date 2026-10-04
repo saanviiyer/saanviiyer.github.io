@@ -5,29 +5,51 @@ permalink: /projects/
 
 <section class="pf-section">
   <h2 class="pf-heading">projects</h2>
-  <p class="proj-intro">Evaluations and interpretability for AI in biology and the brain. The question across all of it is whether a measurement still means what it claims once a model is used to choose or design something.</p>
+  <p class="proj-intro">Research in three lanes: evaluations that survive optimizers, world models for biology and the brain, and clinical machine learning evaluated honestly. The question across all of it is whether a measurement still means what it claims once a model is used to choose, design, or diagnose.</p>
 
+  <p class="w-sec-label">evaluations that survive optimizers</p>
   <div class="proj-cards">
-    <a class="proj-card" href="{{ '/projects/protein-language-models/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/projects/cover-protein.png' | relative_url }}" alt="Interpreting and evaluating protein language models">
+    <a class="proj-card" href="{{ '/projects/evaluations/' | relative_url }}">
+      <img class="pc-cover" src="{{ '/assets/images/projects/cover-protein.png' | relative_url }}" alt="Evaluations that survive optimizers">
       <div class="pc-body">
-        <div class="pc-tag">Protein models</div>
-        <div class="pc-title">Interpreting and evaluating protein language models</div>
-        <div class="pc-venue">Seven papers, NeurIPS 2026 workshops, WiML, and more</div>
-        <div class="pc-desc">I build evaluations and interpretability methods for protein models that survive contact with an optimizer. The threads cover <em>homology-free function prediction</em>, <em>benchmark-to-selection</em> correlation, <em>representational identifiability</em>, and <em>verifier red-teaming</em>.</div>
+        <div class="pc-tag">Flagship</div>
+        <div class="pc-title">Evaluations that survive optimizers</div>
+        <div class="pc-venue">NeurIPS 2026 workshops, WiML, and more</div>
+        <div class="pc-desc">Six evaluations testing whether a score keeps its meaning under pressure: <em>fitness proxies</em>, <em>benchmark-to-selection</em>, <em>representational identifiability</em>, <em>verifier red-teaming</em>, <em>genomic-to-protein transfer</em>, and a <em>safety benchmark</em> that leaks.</div>
       </div>
     </a>
+    <a class="proj-card" href="{{ '/projects/prism/' | relative_url }}">
+      <img class="pc-cover" src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="PRISM">
+      <div class="pc-body">
+        <div class="pc-tag">Paper, WiML @ NeurIPS 2026</div>
+        <div class="pc-title">PRISM</div>
+        <div class="pc-venue">Top 15% of accepted</div>
+        <div class="pc-desc">The flagship audit: every cancer mutational signature applied to proteins, and the controls that decide whether a repeatable <em>embedding movement</em> is biology or an artifact.</div>
+      </div>
+    </a>
+    <a class="proj-card" href="{{ '/projects/proposals/' | relative_url }}">
+      <img class="pc-cover" src="{{ '/assets/images/white-box-protein-eval/eval-schematic.png' | relative_url }}" alt="Proposals">
+      <div class="pc-body">
+        <div class="pc-tag">Proposals</div>
+        <div class="pc-title">Proposals</div>
+        <div class="pc-venue">no results, by design</div>
+        <div class="pc-desc">Two evaluations i want to run: a <em>white-box</em> probe of what a protein model's representation carries, and a <em>portable audit</em> that stress-tests any score under search.</div>
+      </div>
+    </a>
+  </div>
 
+  <p class="w-sec-label">clinical machine learning, evaluated honestly</p>
+  <div class="proj-cards">
     <a class="proj-card" href="{{ '/projects/clinical-ml/' | relative_url }}">
       <img class="pc-cover" src="{{ '/assets/images/projects/cover-clinical.png' | relative_url }}" alt="Clinical machine learning, evaluated honestly">
       <div class="pc-body">
         <div class="pc-tag">Clinical ML</div>
         <div class="pc-title">Clinical machine learning, evaluated honestly</div>
         <div class="pc-venue">ECCV AI4M3D (oral), NeurIPS RCMLR (oral), NeurIPS HAIC</div>
-        <div class="pc-desc">I build and evaluate clinical models against what actually matters in practice. The threads cover <em>epileptogenic lesion detection</em>, a <em>sequential routing policy</em> for EEG localization, and <em>seven failure modes</em> in clinical ML evaluation.</div>
+        <div class="pc-desc">Building and evaluating clinical models against what matters in practice: <em>epileptogenic lesion detection</em>, a <em>sequential routing policy</em>, and <em>seven failure modes</em> in clinical ML evaluation.</div>
       </div>
     </a>
   </div>
 
-  <p class="proj-intro" style="font-size:1rem;">Tools, apps, and earlier projects live on the <a href="{{ '/pages/portfolio/' | relative_url }}#projects">portfolio page</a>.</p>
+  <p class="proj-intro" style="font-size:1rem;">World models for biology and the brain (faithful heading, engram) are being written up next. Tools, apps, and earlier projects live on the <a href="{{ '/pages/portfolio/' | relative_url }}#projects">portfolio page</a>.</p>
 </section>

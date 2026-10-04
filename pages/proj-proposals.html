@@ -1,0 +1,61 @@
+---
+layout: project
+title: "Proposals"
+permalink: /projects/proposals/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+hook: "Two proposals that turn the failures i keep measuring into evaluations you can run before you trust a score, one that looks inside the model and one that stress-tests any score under search."
+thesis: "If a score fails under optimization pressure, an evaluation should be able to predict that before the score is used, not after."
+---
+
+<p class="pp-question">can you tell, in advance, whether a score will still mean what it claims once a search optimizes against it?</p>
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>these are two proposals, not results. the first is a white-box evaluation that looks inside a protein model and asks whether an assay property is recoverable from its internal activations and whether that recovery survives a shift to unfamiliar families. the second is a portable audit that wraps any model-derived score and runs bounded search against it, to see where the score and the real quality first separate. both carry a fixed safety boundary: benign, already-measured proteins only, no new sequences, and no reusable steering probe. i report no results on this page.</p>
+</div>
+
+<section class="pp-thread" id="white-box">
+  <h3 class="pp-thread-title">a white-box evaluation for protein models</h3>
+  <p><span class="venue-badge">proposal</span></p>
+
+  <p><strong>the question.</strong> a protein model is usually judged by whether its output score correlates with a measured property, and that test can pass for the wrong reason, because the score can read a feature that lines up with the property only on familiar data. i want to separate a model that has learned the property from one that is shortcutting, since the difference decides whether the score can be trusted on something new.</p>
+
+  <p><strong>the proposed method.</strong> the evaluation has three parts. first, i assemble fixed sets of protein variants whose properties were already measured in published deep mutational scanning assays, so every label is real and no new sequence is created. a concrete starting point is the ADRB2_HUMAN_Jones_2020 beta-2 adrenergic receptor scan, a benign, published assay. second, i train a linear probe, a simple regressor on a protein model's internal activations, to recover the assay property, which tests whether the information is present in the representation and not only in the output score. i would read ESM-2 650M activations [TODO: Saanvi to fix the exact layer to probe]. third, i hold out whole protein families during probe training and test on them, so the evaluation measures whether the recovered signal transfers rather than whether it fits the families the probe already saw.</p>
+
+  <p><strong>what would falsify it.</strong> if probes recover the assay property just as well on held-out families as on seen ones for a model whose output score is known to shortcut, then the white-box test adds nothing beyond the output correlation and has failed its own purpose.</p>
+
+  <p><strong>the safety boundary.</strong> the proposal uses only benign, already-measured proteins, generates no new functional sequences, runs no wet-lab validation, and releases no reusable steering probe. the output is a report of where a model's representation does and does not carry an assay property, which is a statement about the model rather than a tool for designing anything.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/white-box-protein-eval/eval-schematic.png' | relative_url }}" alt="Fixed sets of measured benign variants, linear probes on internal activations, and a held-out-family test">
+    <figcaption><strong>figure 1.</strong> the three steps of the evaluation, from fixed sets of measured benign variants, to linear probes on the model's internal activations, to a held-out-family test that blocks shortcut scoring.</figcaption>
+  </figure>
+</section>
+
+<section class="pp-thread" id="portable-audit">
+  <h3 class="pp-thread-title">a portable audit for proxy-based evaluation under optimization pressure</h3>
+  <p><span class="venue-badge">proposal</span></p>
+
+  <p><strong>the question.</strong> a proxy can correlate with what we care about on ordinary data and become useless once a search learns to exploit it. i want a small set of diagnostics that predict when a learned score will fail under search, and that transfer across domains rather than being tuned to one.</p>
+
+  <p><strong>the proposed method.</strong> the audit has three parts. first, i characterize the proxy by wrapping any model-derived score in one interface and measuring bulk correlation, local ranking in the top tail, sensitivity to cheap covariates, and invariance under counterfactual controls. second, i apply bounded pressure by running several search procedures while enforcing domain-validity constraints, tracking the score, external validity, and distance from the reference distribution at every step, which produces a curve showing where score and validity first separate. third, i test portability by using PRISM as the completed protein instance, then repeating the audit on a text-embedding retrieval task with human-labeled relevance.</p>
+
+  <p><strong>what would falsify it.</strong> my hypothesis is that proxy failures share three early signatures: sensitivity to easy covariates, weak ranking within the top tail, and a widening gap between score and validity under search. if only domain-specific tests predict failure and none of these three transfers between the protein and text settings, the portable claim is false and i report that limit.</p>
+
+  <p><strong>the safety boundary.</strong> all protein experiments use benign, existing sequences and computational validation only. the project generates no new functional sequences, runs no wet-lab validation, and releases no reusable steering probe.</p>
+</section>
+
+<p class="pp-section-num" id="takeaways">Takeaways</p>
+<h2 class="pp-section-title">why these two</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">look inside</div>the white-box evaluation asks whether a representation carries the property, not just whether the output score correlates.</div>
+  <div class="takeaway"><div class="tk-h">push on it</div>the portable audit runs search against a score and watches where it breaks, before the score is trusted.</div>
+  <div class="takeaway"><div class="tk-h">bounded by design</div>both use benign, measured proteins only, and release nothing that could be repurposed.</div>
+</div>
+
+<p class="pp-section-num">Limitations</p>
+<div class="limitations">
+  <p>these are proposals and report no results. the white-box evaluation still needs its exact probing layer fixed, and the portable audit's transfer claim is untested until it runs in both the protein and the text setting. neither should be cited as a finding.</p>
+</div>
