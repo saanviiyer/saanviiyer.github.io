@@ -83,6 +83,11 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <div class="stat-callout"><div class="sc-num">14 of 24</div><div class="sc-lab">missed lesions recovered (58%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
 
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left: baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right: the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
+    <figcaption><strong>figure 1. detection, then recovery.</strong> left, the baseline T2-FLAIR nnU-Net detects 86.3% of lesions across the four cohorts, 151 of 175, missing 24. of those misses 17 are silent, meaning the model produced no suprathreshold output at all, and 7 are mislocalized, meaning it made a confident prediction 34 to 139 mm from the lesion. right, restricting a multi-peak search to the lesion lobe recovers 14 of the 24 misses, 58%, split into 10 of 17 silent and 4 of 7 mislocalized, far above the 1.4 expected from a spatially uninformative search (P &lt; 0.001). every recovery appears within the top four candidate peaks. the lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling, not an achievable EEG-guided number.</figcaption>
+  </figure>
+
   <div class="finding">
     <div class="fn-label">Finding 1</div>
     <p>as an upper bound under perfect (oracle) localization, the lobe-restricted multi-peak search recovered 14 of 24 missed lesions, which is 58%, against 1.4 expected by chance, with P &lt; 0.001. this is not an achievable EEG-guided result.</p>
@@ -95,7 +100,7 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <div class="finding">
     <div class="fn-label">Finding 3</div>
-    <p>the honest failure case: the method can harm well-detected cases, because lowering the threshold inside a zone and raising it outside can suppress a lesion that the baseline detector would have found on its own.</p>
+    <p>the honest failure case is a wrong prior. pointing the search at the opposite-side lobe collapses recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions rather than merely failing to help. tightening the zone also costs: the subregional zone dropped two cases the lobe had recovered. the prior has to be right, and no finer than the lobe.</p>
   </div>
 
   <div class="why-box">
@@ -105,10 +110,8 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a real pipeline can supply the lobe without being told it. the oracle number says the ceiling is worth chasing; it does not say the floor has been reached.</p>
 
-  <p class="todo-note">[TODO: Saanvi to add the detection figure with a full multi-part caption. Dataset: 175 FCD cases.]</p>
-
   <div class="limitations">
-    <p><strong>Limitations.</strong> the pipeline relies on manual clinical annotations for the localization zones. the sensitivity against false-positive tradeoff is not fully characterized. some hyperparameters, including the 0.90 outside-zone threshold, were chosen without full justification. and the method can harm well-detected cases, which is reported rather than hidden. what is next is an end-to-end pipeline that extracts localization directly from raw EEG, so the oracle assumption is removed.</p>
+    <p><strong>Limitations.</strong> the localization zone is simulated from the confirmed lesion lobe, not from a real EEG report or raw signal, so every recovery number is a ceiling a real prior would approach rather than reach. the recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 24 across a sweep of them, but they were set on this cohort with no held-out split and there is no external test set yet. the recovery step has not been checked for specificity on healthy controls. the next step is a pipeline that takes localization from real EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
   </div>
 </section>
 
