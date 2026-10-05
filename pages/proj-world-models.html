@@ -22,12 +22,19 @@ thesis: "A world model builds a faithful internal variable only when the task fo
   <div class="stat"><div class="n">+10.6 pts</div><div class="l">retention from replay, about fifty times the local-rule effect</div></div>
 </div>
 
-<p class="pp-section-num">01 &middot; The Approach</p>
+<p class="pp-section-num">01 &middot; The Challenge</p>
+<h2 class="pp-section-title">why an internal variable is the thing to measure</h2>
+
+<p>a world model is a model trained to predict its own next observation. to predict well when the world is partly hidden, it has to carry some internal state that stands in for what it cannot currently see, and the interesting question is what that state becomes. if it becomes a clean variable that lines up with something real, like which way the agent is facing, you can read it, trust it, and steer it. if it stays a tangle, the model can still predict while carrying nothing you can use. most work reads structure off a hidden state and calls it understanding, but structure is cheap: a ring can appear in a model that cannot actually track heading, so the shape alone proves nothing.</p>
+
+<p>there is a second half to this. a variable a model has already built is not safe just because it exists, because the same training that teaches a new skill can quietly overwrite an old one. in a deployed model that is catastrophic forgetting with a cost attached, since the behavior being overwritten can be a capability or a safety property the model had before. both halves ask the same question from opposite ends: an internal representation is only as good as the pressure that shaped it and the pressure that is later allowed to reshape it. why this matters: people increasingly read conclusions off a model's internal state and assume continued training only adds, and both assumptions are where this work pushes back.</p>
+
+<p class="pp-section-num">02 &middot; The Approach</p>
 <h2 class="pp-section-title">two studies, one idea about internal state</h2>
 
 <p>both studies ask what shapes the variable a model carries, so i keep the measurement honest in the same way each time. in the heading study i never give the model pose and i never put a pose term in the loss, so any heading variable has to emerge on its own, and i measure fidelity only at the steps where the model must integrate, deep inside a blackout with no observation. in the continual-learning study i never let a fancy rule compete against a weak baseline, so i match the learning accuracy of every method before i compare how much it forgets. in both, the control is the point: a ring that appears in every model is not evidence until fidelity separates the conditions, and a retention gain is not evidence until the baseline is tuned as hard as the rule.</p>
 
-<p class="pp-section-num">02 &middot; Results</p>
+<p class="pp-section-num">03 &middot; Results</p>
 <h2 class="pp-section-title">two findings</h2>
 
 <section class="pp-thread" id="faithful-heading">
@@ -42,6 +49,8 @@ thesis: "A world model builds a faithful internal variable only when the task fo
   </figure>
 
   <p>the faithful ring behaves like a continuous attractor, which is the structure neuroscience proposes for head-direction cells: a perturbation off the ring decays back to it, while a shift in position along the ring is held rather than erased. rotating the ring plane changes the model's predicted observation to the one for the rotated heading, so the variable is used causally and not just correlated with heading.</p>
+
+  <p>why this matters: a ring shows up in almost every one of these models, so anyone reading structure off a hidden state could point at it and call it a heading representation. the fidelity test under blackout and the causal rotation are what separate a variable the model actually integrates and uses from one that merely looks the part, and only the partial-observability condition produces the real one.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/wm/faithful-attractor.png' | relative_url }}" alt="Perturbations decay, state returns to the manifold, and the phase offset persists for the blackout-trained model">
