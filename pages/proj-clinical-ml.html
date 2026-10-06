@@ -122,7 +122,16 @@ video: "[TODO: Saanvi to add explainer video]"
   <p><span class="venue-badge">NeurIPS HAIC 2026</span><span class="venue-badge">Sole author</span></p>
   <p class="todo-note">[TODO: Saanvi to add the HAIC OpenReview link.]</p>
 
-  <p>a model that is forced to answer every case will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. this thread evaluates a different design: instead of always predicting, a policy decides per case whether to wait for more signal, commit to a prediction, or defer the case to a clinician. the policy is scored offline on held-out localization decisions, so the question is concrete, does routing beat an always-predict baseline on the cases that actually matter, and at what deferral rate.</p>
+  <p>a model that is forced to answer every patient will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. this thread evaluates a different design on 166 patients: instead of always predicting, a policy watches the localizer's output as 10-second EEG segments arrive and decides, at each step, whether to report the current hemisphere, wait for another segment, or defer the patient after a fixed observation budget. nothing is retrained, the policy replays held-out predictions, and every threshold is chosen on training patients only. the policies are compared at 40% coverage, meaning each answers the 40% of patients it is most willing to commit to and defers the rest.</p>
+
+  <p>the result is that the signal which knows when to answer is not the model's own confidence. at 40% coverage, a policy that routes on cross-segment self-agreement, how often the separate segments point to the same hemisphere, answers its patients at 88.4% accuracy, against 70.0% for the model's own confidence, 67.3% for random routing, and 68.7% for answering every patient. the bootstrap gap between self-agreement and confidence is 18.7 points [95% CI +7.3, +30.6] over 4,000 resamples. the sequential policy reaches that accuracy on about 7.9 segments per answered patient, and reading all of a patient's segments before deciding gains almost nothing, 89.0%, while spending about three times as many observations. the tradeoff holds across segment orderings and observation budgets.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/clinical/haic-routing.png' | relative_url }}" alt="Left: at 40% coverage self-agreement answers at 88.4% versus 70.0% for confidence and 67.3% random. Right: a risk-coverage curve where only self-agreement rises as coverage falls.">
+    <figcaption><strong>figure 2. who to answer, and when.</strong> left, accuracy on the answered patients at 40% coverage: a policy that routes on cross-segment self-agreement reaches 88.4%, while the model's own confidence (70.0%) and random routing (67.3%) barely beat answering every patient (68.7%, dashed). right, the risk-coverage tradeoff: as the policy answers fewer patients, self-agreement accuracy climbs along a real curve, from 68.7% at full coverage to 94.3% at 20%, while confidence stays flat near 63 to 71% at every coverage, so it never isolates the patients worth answering. 166 patients, one 10-second EEG segment per observation.</figcaption>
+  </figure>
+
+  <div class="finding"><div class="fn-label">Finding 4</div><p>at 40% coverage, routing on cross-segment self-agreement answers patients at 88.4% accuracy against 70.0% for the model's own confidence and 68.7% for answering everyone, a bootstrap gap of 18.7 points [CI +7.3, +30.6], so the signal that knows when to answer is agreement across segments, not confidence.</p></div>
 
   <div class="why-box">
     <div class="wb-q">why evaluate a routing policy at all?</div>
@@ -131,7 +140,9 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: this is the same standard as thread 1 applied to deployment, that a model should be judged on the action it supports. here the action is a triage choice, and the evaluation asks whether the policy improves that choice rather than whether it posts a higher number.</p>
 
-  <p class="todo-note">[TODO: Saanvi to add the key numbers (deferral rate, accuracy on predicted cases against the always-predict baseline) and the main figure. OpenReview reviews can be pulled on request.]</p>
+  <div class="limitations">
+    <p><strong>Limitations.</strong> this is an offline replay of a routing policy, not an observed clinician-agent team, and a deferral has no measured downstream clinician outcome. segment order is tested against random within-patient reorderings but is not a prospective arrival log, and the policy runs on cached out-of-fold predictions from a single clinical corpus.</p>
+  </div>
 </section>
 
 <!-- ===================== Thread 3 ===================== -->
@@ -159,13 +170,13 @@ video: "[TODO: Saanvi to add explainer video]"
 <div class="takeaways">
   <div class="takeaway"><div class="tk-h">label the assumption</div>a localization prior recovered 14 of 24 missed lesions, reported as an upper bound under oracle localization, not as an achievable EEG-guided result.</div>
   <div class="takeaway"><div class="tk-h">report the harm</div>the same method that recovers missed lesions can suppress well-detected ones, and that failure case is stated next to the gain.</div>
-  <div class="takeaway"><div class="tk-h">evaluate the decision</div>the routing thread judges a triage choice, not a benchmark score, because the useful quantity is how often the model is confidently wrong.</div>
+  <div class="takeaway"><div class="tk-h">evaluate the decision</div>a routing policy that answers on cross-segment self-agreement reaches 88.4% at 40% coverage, against 70.0% for the model's own confidence.</div>
   <div class="takeaway"><div class="tk-h">make the standard explicit</div>the seven-failures catalogue is the checklist the other two threads are held to, applied first to my own numbers.</div>
 </div>
 
 <p class="pp-section-num">Limitations</p>
 <div class="limitations">
-  <p><strong>Limitations across the line.</strong> the strongest result is an oracle upper bound that a deployable pipeline has not yet reached, two threads still need their numbers and figures filled in, and several design choices were made without full justification. none of these numbers should be quoted outside the papers until the appendices are complete.</p>
+  <p><strong>Limitations across the line.</strong> the strongest detection result is an oracle upper bound that a deployable pipeline has not yet reached, the routing result is an offline replay rather than a clinician-agent study, and the failure-mode catalogue still needs its numbers and figure filled in. none of these numbers should be quoted outside the papers until the appendices are complete.</p>
 </div>
 
 <p class="pp-section-num" id="cite">Cite</p>

@@ -9,6 +9,8 @@ url: "https://saanviiyer.github.io"
 # Markdown / build settings
 markdown: kramdown
 permalink: pretty
+plugins:
+  - jekyll-redirect-from
 exclude:
   - tex
   - README.md

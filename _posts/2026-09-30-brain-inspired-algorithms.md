@@ -5,7 +5,9 @@ date: 2026-09-30
 tag: "Research"
 section: technical
 thumb: /assets/images/engram-continual-learning/locality.png
-permalink: /thinking/engram-continual-learning/
+permalink: /thinking/brain-inspired-algorithms/
+redirect_from:
+  - /thinking/engram-continual-learning/
 excerpt: "This summer, through the NeuroAI Neuromatch program, I explored brain-inspired learning algorithms and tested whether locality actually reduces catastrophic forgetting. Once the baseline is tuned as hard as the rule, the advantage shrinks to under a third of a point."
 ---
 
