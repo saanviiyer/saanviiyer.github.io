@@ -152,7 +152,52 @@ video: "[TODO: Saanvi to add explainer video]"
   <p><span class="venue-badge">NeurIPS RCMLR 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
   <p class="bm-links"><a href="https://openreview.net/forum?id=k7zEEtF1V8" target="_blank" rel="noopener">Paper</a></p>
 
-  <p>this thread is the standard behind the other two, written down. it catalogues seven ways a clinical ML result can report a statistic that is computed correctly and still invite a conclusion that is wrong, each with a worked case. the oracle upper bound in thread 1 is itself an instance of the first failure, reporting a number that assumes part of the answer, which is why that bound is labeled every time it appears. the point of the catalogue is not to collect mistakes, it is to give a checklist a result has to pass before its number means what it seems to.</p>
+  <p>this thread is the standard behind the other two, written down. it catalogues seven corrections to my own EEG-localization work where a statistic was computed correctly and still invited a conclusion that was wrong, each with the one worked number that changed and the claim it would have licensed. the oracle upper bound in thread 1 is the same kind of error these are about, a number that is right but assumes part of the answer, which is why that bound is labeled every time it appears. the point of the catalogue is not to collect mistakes, it is to give a checklist a result has to pass before its number means what it seems to, applied first to my own.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/clinical/rcmlr-seven-corrections.png' | relative_url }}" alt="Seven corrections where a correctly computed number changed meaning after a check: chance floor, break-even threshold, coordinate ablation, missing control, axis granularity, the re-analysis, and cohort scope.">
+    <figcaption><strong>figure 3. right number, wrong conclusion.</strong> the seven corrections, each with the number as it first read and what the check changed it to. in every row the value was computed correctly; what moved was the claim it supported. five of the seven right-hand entries are not hypothetical, they existed in internal write-ups, and one retracts another.</figcaption>
+  </figure>
+
+  <ol class="howto">
+    <li>
+      <span class="ht-name">a denominator that flattered every model</span>
+      <span class="ht-one">2.00&times; over chance, but a spatial-blind model still clears 1.57&times;.</span>
+      a density-matched chance baseline corrects for how many channels a window labels, not which are a priori likely, so a read-out with the spatial structure removed still beats it by learning the class-frequency prior; the corrected floor is a model-free prior-only predictor at 1.37&times;. it would have licensed reading a chance-denominated margin as spatial skill.
+    </li>
+    <li>
+      <span class="ht-name">a threshold that moved when we added seeds</span>
+      <span class="ht-one">a 90% prior beat no-prior at 3 seeds, and the effect reverses at 8.</span>
+      at 8 seeds a 90%-accurate prior is indistinguishable from no prior (p = 0.55), so break-even sits at or above 90%, and the derived claim that the localizer clears the bar does not survive. this one had no cheap diagnostic.
+    </li>
+    <li>
+      <span class="ht-name">an ablation that could not fail</span>
+      <span class="ht-one">coordinates looked inert (2.30&rarr;2.13&times;) because identity reached the head anyway.</span>
+      the read-out indexed tokens by channel position, so sensor identity survived however the coordinates were corrupted; with identity removed first the same corruption costs 1.53&rarr;1.22&times;. phrased as a mechanism rather than a measurement, this is the one that would have done the most downstream damage.
+    </li>
+    <li>
+      <span class="ht-name">a comparison missing one of its controls</span>
+      <span class="ht-one">pretraining credited the full 1.604, worth +0.072 against its own twin.</span>
+      two pretrained encoders were compared with only one random-init control; giving EEGPT its own twin shows its pretrained 1.604 sits against a random-init 1.532, so pretraining is worth +0.072, not the whole number.
+    </li>
+    <li>
+      <span class="ht-name">two ablations at incomparable granularities</span>
+      <span class="ht-one">sensor dominance (0.068 vs 0.80) is a tie once matched (0.300 vs 0.295).</span>
+      the two costs came from different read-outs at different severities, mid-range on one axis against the extreme of the other, so the dominance claim was an artifact of the comparison rather than the representation.
+    </li>
+    <li>
+      <span class="ht-name">the previous correction was also wrong</span>
+      <span class="ht-one">the axes cannot be ranked becomes the sensor axis winning by 14.9 sd.</span>
+      block permutation whitens rather than removing order, its cost collinear with spectral distortion at r = 0.998, and clean order-only and identity-only probes separate the axes decisively; the first and last claims read as a stable finding with no sign that neither analysis behind them held.
+    </li>
+    <li>
+      <span class="ht-name">a single-site result we called cohort-wide</span>
+      <span class="ht-one">a 262-case hurt column was 25 cases, all one site.</span>
+      the sweep capped at a sorted-filename prefix, which was one site; re-run on the full cohort it is 259 of 262 with signs unchanged, but only then is it the multi-site statement the original number asserted.
+    </li>
+  </ol>
+
+  <div class="finding"><div class="fn-label">Finding 5</div><p>across seven self-reported corrections the value was computed correctly each time and the check changed what it licensed; six were cheap to notice, a single run or count or question, and the seventh, the break-even threshold, had no cheap diagnostic, which is why it is reported as an ordering rather than a threshold.</p></div>
 
   <div class="why-box">
     <div class="wb-q">why write the failures down?</div>
@@ -160,8 +205,6 @@ video: "[TODO: Saanvi to add explainer video]"
   </div>
 
   <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: a correct number with a wrong conclusion is the most dangerous kind of clinical result, because it survives review on its arithmetic. the catalogue is the review the arithmetic does not get.</p>
-
-  <p class="todo-note">[TODO: Saanvi to add the seven failure modes as a short list, with the one worked number per mode used in the paper, and the summary figure. OpenReview reviews can be pulled on request.]</p>
 </section>
 
 <p class="pp-section-num" id="takeaways">Takeaways</p>
@@ -176,7 +219,7 @@ video: "[TODO: Saanvi to add explainer video]"
 
 <p class="pp-section-num">Limitations</p>
 <div class="limitations">
-  <p><strong>Limitations across the line.</strong> the strongest detection result is an oracle upper bound that a deployable pipeline has not yet reached, the routing result is an offline replay rather than a clinician-agent study, and the failure-mode catalogue still needs its numbers and figure filled in. none of these numbers should be quoted outside the papers until the appendices are complete.</p>
+  <p><strong>Limitations across the line.</strong> the strongest detection result is an oracle upper bound that a deployable pipeline has not yet reached, the routing result is an offline replay rather than a clinician-agent study, and the failure-mode catalogue is a set of self-reported corrections to my own EEG-localization work rather than a general audit of the field. none of these numbers should be quoted outside the papers until the appendices are complete.</p>
 </div>
 
 <p class="pp-section-num" id="cite">Cite</p>
