@@ -13,7 +13,7 @@ video: "[TODO: Saanvi to add explainer video]"
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p>a clinical model is usually judged by one benchmark number, and that number can be correct while the conclusion drawn from it is wrong. this line of work builds and evaluates clinical models against the decision they would actually support at the bedside. the main study asks whether an anatomical localization prior helps a 3D detector recover epileptogenic lesions it would otherwise miss: restricting the search to the suspected lobe and looking for several candidate peaks recovers 14 of 24 missed lesions, 58%, against 1.4 expected by chance, with P below 0.001. that number is an upper bound reported under oracle localization, which means it assumes the correct lobe is already known, so it is deliberately not presented as an achievable EEG-guided result. two further threads carry the same standard: a routing policy that decides per case whether to wait, predict, or defer, and a catalogue of seven ways a clinical evaluation can report the right number and still support the wrong conclusion.</p>
+  <p>a clinical model is usually judged by one benchmark number, and that number can be correct while the conclusion drawn from it is wrong. I build and evaluate clinical models against the decision they would actually support at the bedside. the main study asks whether an anatomical localization prior helps a 3D detector recover epileptogenic lesions it would otherwise miss. restricting the search to the suspected lobe and looking for several candidate peaks recovers 14 of 24 missed lesions, 58%, against 1.4 expected by chance, with P below 0.001. that number is an upper bound reported under oracle localization, which means it assumes the correct lobe is already known, so I do not present it as an achievable EEG-guided result. two further threads carry the same standard. one is a routing policy that decides per patient whether to wait, predict, or defer, and the other is a catalogue of seven ways a clinical evaluation can report the right number and still support the wrong conclusion.</p>
 </div>
 
 <div class="stat-row">
@@ -26,7 +26,7 @@ video: "[TODO: Saanvi to add explainer video]"
 <p class="pp-section-num">01 &middot; The Challenge</p>
 <h2 class="pp-section-title">the number on the slide is not the number at the bedside</h2>
 
-<p>a clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. a detector can look strong on average and still miss the hard cases a clinician actually needs help with, and a result that quietly assumes the answer is already known can read as if the model found it. the whole point of this line of work is to measure a clinical model against the decision it would really support, and to say out loud which assumptions each number rests on.</p>
+<p>a clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. a detector can look strong on average and still miss the hard cases a clinician actually needs help with, and a result that quietly assumes the answer is already known can read as if the model found it. what I am doing in this work is measuring a clinical model against the decision it would really support, and saying out loud which assumptions each number rests on.</p>
 
 <div class="callout-q">
   <div class="cq-label">The central question</div>
@@ -36,7 +36,7 @@ video: "[TODO: Saanvi to add explainer video]"
 <div class="concept-card">
   <span class="cc-term">focal cortical dysplasia</span>
   <span class="cc-gloss">a subtle malformation of the cortex that causes epilepsy and is easy to miss on MRI.</span>
-  <p>these lesions can be small and low-contrast, so a detector that works on obvious cases can still fail on the subtle ones that bring a patient to imaging in the first place. the hard case is the whole point, because the easy lesions do not need a model.</p>
+  <p>these lesions can be small and low-contrast, so a detector that works on obvious cases can still fail on the subtle ones that bring a patient to imaging in the first place. the subtle ones are what I care about here, because the obvious lesions do not need a model.</p>
 </div>
 
 <div class="concept-card">
@@ -48,7 +48,7 @@ video: "[TODO: Saanvi to add explainer video]"
 <p class="pp-section-num">02 &middot; The Approach</p>
 <h2 class="pp-section-title">report the achievable number, and label the assumptions</h2>
 
-<p>the approach is to separate what a method could do under ideal information from what it could do in practice, and to say which is which every time a number appears. where a result depends on a region being known in advance, it is reported as an upper bound under oracle localization, and the honest failure cases are reported next to the gains rather than buried. the standard is the same across all three threads: a number is only as trustworthy as the assumption printed beside it.</p>
+<p>I separate what a method could do under ideal information from what it could do in practice, and I say which is which every time a number appears. where a result depends on a region being known in advance, I report it as an upper bound under oracle localization, and I put the honest failure cases next to the gains instead of burying them. the standard is the same across all three threads. a number is only as trustworthy as the assumption printed beside it.</p>
 
 <p class="pp-section-num">03 &middot; Results</p>
 <h2 class="pp-section-title">three threads, one standard of evidence</h2>
@@ -60,7 +60,7 @@ video: "[TODO: Saanvi to add explainer video]"
   <p><span class="venue-badge">ECCV AI4M3D 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
   <p class="bm-links"><a href="https://openreview.net/forum?id=8EdNGJbsTq" target="_blank" rel="noopener">Paper</a></p>
 
-  <p>this thread tests whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. the intuition is simple: a detector that scores every voxel with one global threshold either sets the bar high and loses faint real lesions, or sets it low and drowns in false positives. if you already suspect which lobe the lesion is in, you can lower the bar there and raise it everywhere else, so a faint lesion in the right place survives while noise elsewhere is suppressed. the method does exactly that, and then searches for several candidate peaks inside the restricted region rather than trusting a single maximum. the recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
+  <p>I wanted to know whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. the intuition is simple. a detector that scores every voxel with one global threshold either sets the bar high and loses faint real lesions, or sets it low and fills up with false positives. if you already suspect which lobe the lesion is in, you can lower the bar there and raise it everywhere else, so a faint lesion in the right place survives while noise elsewhere is suppressed. the method does that, and then searches for several candidate peaks inside the restricted region rather than trusting a single maximum. the recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
 
   <div class="concept-card">
     <span class="cc-term">what the pipeline uses</span>
@@ -84,8 +84,8 @@ video: "[TODO: Saanvi to add explainer video]"
   <div class="stat-callout"><div class="sc-num">14 of 24</div><div class="sc-lab">missed lesions recovered (58%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left: baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right: the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
-    <figcaption><strong>figure 1. detection, then recovery.</strong> left, the baseline T2-FLAIR nnU-Net detects 86.3% of lesions across the four cohorts, 151 of 175, missing 24. of those misses 17 are silent, meaning the model produced no suprathreshold output at all, and 7 are mislocalized, meaning it made a confident prediction 34 to 139 mm from the lesion. right, restricting a multi-peak search to the lesion lobe recovers 14 of the 24 misses, 58%, split into 10 of 17 silent and 4 of 7 mislocalized, far above the 1.4 expected from a spatially uninformative search (P &lt; 0.001). every recovery appears within the top four candidate peaks. the lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling, not an achievable EEG-guided number.</figcaption>
+    <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left, baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right, the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
+    <figcaption><strong>figure 1. detection, then recovery.</strong> left, the baseline T2-FLAIR nnU-Net detects 86.3% of lesions across the four cohorts, 151 of 175, missing 24. of those misses 17 are silent, meaning the model produced no suprathreshold output at all, and 7 are mislocalized, meaning it made a confident prediction 34 to 139 mm from the lesion. right, restricting a multi-peak search to the lesion lobe recovers 14 of the 24 misses, 58%, split into 10 of 17 silent and 4 of 7 mislocalized, well above the 1.4 expected from a spatially uninformative search (P &lt; 0.001). every recovery appears within the top four candidate peaks. the lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling, not an achievable EEG-guided number.</figcaption>
   </figure>
 
   <div class="finding">
@@ -100,15 +100,15 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <div class="finding">
     <div class="fn-label">Finding 3</div>
-    <p>the honest failure case is a wrong prior. pointing the search at the opposite-side lobe collapses recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions rather than merely failing to help. tightening the zone also costs: the subregional zone dropped two cases the lobe had recovered. the prior has to be right, and no finer than the lobe.</p>
+    <p>the honest failure case is a wrong prior. pointing the search at the opposite-side lobe drops recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions rather than just failing to help. tightening the zone also costs, since the subregional zone dropped two cases the lobe had recovered. the prior has to be right, and no finer than the lobe.</p>
   </div>
 
   <div class="why-box">
     <div class="wb-q">why call it an upper bound?</div>
-    <p>because the recovery of 14 of 24 assumes the correct lobe is already known. a deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number. that is why it is reported as an upper bound every time it appears, and why the next step is removing the assumption rather than tuning it.</p>
+    <p>because the recovery of 14 of 24 assumes the correct lobe is already known. a deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number. that is why I report it as an upper bound every time it appears, and why the next step is removing the assumption rather than tuning it.</p>
   </div>
 
-  <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a real pipeline can supply the lobe without being told it. the oracle number says the ceiling is worth chasing; it does not say the floor has been reached.</p>
+  <p class="why-box" style="background:none;border:none;padding-left:0;">this matters because the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a real pipeline can supply the lobe without being told it. the oracle number shows the ceiling is high enough to aim for. it does not show the floor has been reached.</p>
 
   <div class="limitations">
     <p><strong>Limitations.</strong> the localization zone is simulated from the confirmed lesion lobe, not from a real EEG report or raw signal, so every recovery number is a ceiling a real prior would approach rather than reach. the recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 24 across a sweep of them, but they were set on this cohort with no held-out split and there is no external test set yet. the recovery step has not been checked for specificity on healthy controls. the next step is a pipeline that takes localization from real EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
@@ -122,13 +122,13 @@ video: "[TODO: Saanvi to add explainer video]"
   <p><span class="venue-badge">NeurIPS HAIC 2026</span><span class="venue-badge">Sole author</span></p>
   <p class="todo-note">[TODO: Saanvi to add the HAIC OpenReview link.]</p>
 
-  <p>a model that is forced to answer every patient will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. this thread evaluates a different design on 166 patients: instead of always predicting, a policy watches the localizer's output as 10-second EEG segments arrive and decides, at each step, whether to report the current hemisphere, wait for another segment, or defer the patient after a fixed observation budget. nothing is retrained, the policy replays held-out predictions, and every threshold is chosen on training patients only. the policies are compared at 40% coverage, meaning each answers the 40% of patients it is most willing to commit to and defers the rest.</p>
+  <p>a model forced to answer every patient will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. so I evaluated a different design on 166 patients. instead of always predicting, a policy watches the localizer's output as 10-second EEG segments arrive and decides, at each step, whether to report the current hemisphere, wait for another segment, or defer the patient after a fixed observation budget. nothing is retrained, the policy replays held-out predictions, and I choose every threshold on training patients only. the policies are compared at 40% coverage, which means each answers the 40% of patients it is most willing to commit to and defers the rest.</p>
 
-  <p>the result is that the signal which knows when to answer is not the model's own confidence. at 40% coverage, a policy that routes on cross-segment self-agreement, how often the separate segments point to the same hemisphere, answers its patients at 88.4% accuracy, against 70.0% for the model's own confidence, 67.3% for random routing, and 68.7% for answering every patient. the bootstrap gap between self-agreement and confidence is 18.7 points [95% CI +7.3, +30.6] over 4,000 resamples. the sequential policy reaches that accuracy on about 7.9 segments per answered patient, and reading all of a patient's segments before deciding gains almost nothing, 89.0%, while spending about three times as many observations. the tradeoff holds across segment orderings and observation budgets.</p>
+  <p>what surprised me is that the signal that knows when to answer is not the model's own confidence. at 40% coverage, a policy that routes on cross-segment self-agreement, how often the separate segments point to the same hemisphere, answers its patients at 88.4% accuracy, against 70.0% for the model's own confidence, 67.3% for random routing, and 68.7% for answering every patient. the bootstrap gap between self-agreement and confidence is 18.7 points [95% CI +7.3, +30.6] over 4,000 resamples. the sequential policy reaches that accuracy on about 7.9 segments per answered patient, and reading all of a patient's segments before deciding gains almost nothing, 89.0%, while spending about three times as many observations. the tradeoff holds across segment orderings and observation budgets.</p>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/clinical/haic-routing.png' | relative_url }}" alt="Left: at 40% coverage self-agreement answers at 88.4% versus 70.0% for confidence and 67.3% random. Right: a risk-coverage curve where only self-agreement rises as coverage falls.">
-    <figcaption><strong>figure 2. who to answer, and when.</strong> left, accuracy on the answered patients at 40% coverage: a policy that routes on cross-segment self-agreement reaches 88.4%, while the model's own confidence (70.0%) and random routing (67.3%) barely beat answering every patient (68.7%, dashed). right, the risk-coverage tradeoff: as the policy answers fewer patients, self-agreement accuracy climbs along a real curve, from 68.7% at full coverage to 94.3% at 20%, while confidence stays flat near 63 to 71% at every coverage, so it never isolates the patients worth answering. 166 patients, one 10-second EEG segment per observation.</figcaption>
+    <img src="{{ '/assets/images/projects/clinical/haic-routing.png' | relative_url }}" alt="Left, at 40% coverage self-agreement answers at 88.4% versus 70.0% for confidence and 67.3% random. Right, a risk-coverage curve where only self-agreement rises as coverage falls.">
+    <figcaption><strong>figure 2. who to answer, and when.</strong> left, accuracy on the answered patients at 40% coverage. a policy that routes on cross-segment self-agreement reaches 88.4%, while the model's own confidence (70.0%) and random routing (67.3%) barely beat answering every patient (68.7%, dashed). right, the risk-coverage trade-off. as the policy answers fewer patients, self-agreement accuracy climbs along a real curve, from 68.7% at full coverage to 94.3% at 20%, while confidence stays flat near 63 to 71% at every coverage, so it never isolates the patients it should answer. 166 patients, one 10-second EEG segment per observation.</figcaption>
   </figure>
 
   <div class="finding"><div class="fn-label">Finding 4</div><p>at 40% coverage, routing on cross-segment self-agreement answers patients at 88.4% accuracy against 70.0% for the model's own confidence and 68.7% for answering everyone, a bootstrap gap of 18.7 points [CI +7.3, +30.6], so the signal that knows when to answer is agreement across segments, not confidence.</p></div>
@@ -138,7 +138,7 @@ video: "[TODO: Saanvi to add explainer video]"
     <p>because the useful quantity in the clinic is not average accuracy, it is how often the model is confidently wrong on a case a clinician would have caught. a policy that knows when to abstain can be worth more than one that is slightly more accurate on average, and the only way to see that is to evaluate the decision, not the raw score.</p>
   </div>
 
-  <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: this is the same standard as thread 1 applied to deployment, that a model should be judged on the action it supports. here the action is a triage choice, and the evaluation asks whether the policy improves that choice rather than whether it posts a higher number.</p>
+  <p class="why-box" style="background:none;border:none;padding-left:0;">this matters because it applies the same standard as thread 1 to deployment, that a model should be judged on the action it supports. here the action is a triage choice, and the question is whether the policy improves that choice rather than whether it posts a higher number.</p>
 
   <div class="limitations">
     <p><strong>Limitations.</strong> this is an offline replay of a routing policy, not an observed clinician-agent team, and a deferral has no measured downstream clinician outcome. segment order is tested against random within-patient reorderings but is not a prospective arrival log, and the policy runs on cached out-of-fold predictions from a single clinical corpus.</p>
@@ -155,30 +155,30 @@ video: "[TODO: Saanvi to add explainer video]"
   <p>this thread is the standard behind the other two, written down. it catalogues seven corrections to my own EEG-localization work where a statistic was computed correctly and still invited a conclusion that was wrong, each with the one worked number that changed and the claim it would have licensed. the oracle upper bound in thread 1 is the same kind of error these are about, a number that is right but assumes part of the answer, which is why that bound is labeled every time it appears. the point of the catalogue is not to collect mistakes, it is to give a checklist a result has to pass before its number means what it seems to, applied first to my own.</p>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/clinical/rcmlr-seven-corrections.png' | relative_url }}" alt="Seven corrections where a correctly computed number changed meaning after a check: chance floor, break-even threshold, coordinate ablation, missing control, axis granularity, the re-analysis, and cohort scope.">
-    <figcaption><strong>figure 3. right number, wrong conclusion.</strong> the seven corrections, each with the number as it first read and what the check changed it to. in every row the value was computed correctly; what moved was the claim it supported. five of the seven right-hand entries are not hypothetical, they existed in internal write-ups, and one retracts another.</figcaption>
+    <img src="{{ '/assets/images/projects/clinical/rcmlr-seven-corrections.png' | relative_url }}" alt="Seven corrections where a correctly computed number changed meaning after a check, chance floor, break-even threshold, coordinate ablation, missing control, axis granularity, the re-analysis, and cohort scope.">
+    <figcaption><strong>figure 3. right number, wrong conclusion.</strong> the seven corrections, each with the number as it first read and what the check changed it to. in every row the value was computed correctly. what moved was the claim it supported. five of the seven right-hand entries are not hypothetical, they existed in internal write-ups, and one retracts another.</figcaption>
   </figure>
 
   <ol class="howto">
     <li>
       <span class="ht-name">a denominator that flattered every model</span>
       <span class="ht-one">2.00&times; over chance, but a spatial-blind model still clears 1.57&times;.</span>
-      a density-matched chance baseline corrects for how many channels a window labels, not which are a priori likely, so a read-out with the spatial structure removed still beats it by learning the class-frequency prior; the corrected floor is a model-free prior-only predictor at 1.37&times;. it would have licensed reading a chance-denominated margin as spatial skill.
+      a density-matched chance baseline corrects for how many channels a window labels, not which are a priori likely, so a read-out with the spatial structure removed still beats it by learning the class-frequency prior. the corrected floor is a model-free prior-only predictor at 1.37&times;. it would have licensed reading a chance-denominated margin as spatial skill.
     </li>
     <li>
-      <span class="ht-name">a threshold that moved when we added seeds</span>
+      <span class="ht-name">a threshold that moved when I added seeds</span>
       <span class="ht-one">a 90% prior beat no-prior at 3 seeds, and the effect reverses at 8.</span>
       at 8 seeds a 90%-accurate prior is indistinguishable from no prior (p = 0.55), so break-even sits at or above 90%, and the derived claim that the localizer clears the bar does not survive. this one had no cheap diagnostic.
     </li>
     <li>
       <span class="ht-name">an ablation that could not fail</span>
       <span class="ht-one">coordinates looked inert (2.30&rarr;2.13&times;) because identity reached the head anyway.</span>
-      the read-out indexed tokens by channel position, so sensor identity survived however the coordinates were corrupted; with identity removed first the same corruption costs 1.53&rarr;1.22&times;. phrased as a mechanism rather than a measurement, this is the one that would have done the most downstream damage.
+      the read-out indexed tokens by channel position, so sensor identity survived however the coordinates were corrupted. with identity removed first, the same corruption costs 1.53&rarr;1.22&times;. phrased as a mechanism rather than a measurement, this is the one that would have done the most downstream damage.
     </li>
     <li>
       <span class="ht-name">a comparison missing one of its controls</span>
       <span class="ht-one">pretraining credited the full 1.604, worth +0.072 against its own twin.</span>
-      two pretrained encoders were compared with only one random-init control; giving EEGPT its own twin shows its pretrained 1.604 sits against a random-init 1.532, so pretraining is worth +0.072, not the whole number.
+      I compared two pretrained encoders with only one random-init control. giving EEGPT its own twin shows its pretrained 1.604 sits against a random-init 1.532, so pretraining is worth +0.072, not the whole number.
     </li>
     <li>
       <span class="ht-name">two ablations at incomparable granularities</span>
@@ -188,23 +188,23 @@ video: "[TODO: Saanvi to add explainer video]"
     <li>
       <span class="ht-name">the previous correction was also wrong</span>
       <span class="ht-one">the axes cannot be ranked becomes the sensor axis winning by 14.9 sd.</span>
-      block permutation whitens rather than removing order, its cost collinear with spectral distortion at r = 0.998, and clean order-only and identity-only probes separate the axes decisively; the first and last claims read as a stable finding with no sign that neither analysis behind them held.
+      block permutation whitens rather than removing order, its cost collinear with spectral distortion at r = 0.998, and clean order-only and identity-only probes separate the axes decisively. the first and last claims would have read as a stable finding, with no sign that neither analysis behind them held.
     </li>
     <li>
-      <span class="ht-name">a single-site result we called cohort-wide</span>
+      <span class="ht-name">a single-site result I called cohort-wide</span>
       <span class="ht-one">a 262-case hurt column was 25 cases, all one site.</span>
-      the sweep capped at a sorted-filename prefix, which was one site; re-run on the full cohort it is 259 of 262 with signs unchanged, but only then is it the multi-site statement the original number asserted.
+      the sweep capped at a sorted-filename prefix, which was one site. re-run on the full cohort it is 259 of 262 with signs unchanged, but only then is it the multi-site statement the original number asserted.
     </li>
   </ol>
 
-  <div class="finding"><div class="fn-label">Finding 5</div><p>across seven self-reported corrections the value was computed correctly each time and the check changed what it licensed; six were cheap to notice, a single run or count or question, and the seventh, the break-even threshold, had no cheap diagnostic, which is why it is reported as an ordering rather than a threshold.</p></div>
+  <div class="finding"><div class="fn-label">Finding 5</div><p>across seven self-reported corrections the value was computed correctly each time and the check changed what it licensed. six were cheap to notice, a single run or count or question, and the seventh, the break-even threshold, had no cheap diagnostic, which is why I report it as an ordering rather than a threshold.</p></div>
 
   <div class="why-box">
     <div class="wb-q">why write the failures down?</div>
     <p>because each failure is a trap the rest of this work is built to avoid, and naming them turns a set of habits into a standard someone else can apply. a reader can take the catalogue to a result, mine included, and ask which of the seven it might be making.</p>
   </div>
 
-  <p class="why-box" style="background:none;border:none;padding-left:0;">why this matters: a correct number with a wrong conclusion is the most dangerous kind of clinical result, because it survives review on its arithmetic. the catalogue is the review the arithmetic does not get.</p>
+  <p class="why-box" style="background:none;border:none;padding-left:0;">this matters because a correct number with a wrong conclusion is the hardest kind of clinical result to catch, since it passes review on its arithmetic. the catalogue is the review the arithmetic does not get.</p>
 </section>
 
 <p class="pp-section-num" id="takeaways">Takeaways</p>
