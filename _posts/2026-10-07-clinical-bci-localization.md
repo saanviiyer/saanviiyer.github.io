@@ -5,6 +5,7 @@ date: 2026-10-07
 tag: "Research"
 section: technical
 permalink: /thinking/clinical-bci-localization/
+thumb: /assets/images/clinical-bci-localization/floor-and-breakeven.png
 excerpt: "I asked whether a scalp-EEG readout can tell you where a brain lesion is, which is what a surgical workup needs. There is real spatial signal, but it sits right at the edge of being useful, and most of the work was building the baseline that shows that."
 ---
 
@@ -29,6 +30,10 @@ The lesson repeated at a coarser scale and in the other direction. At hemisphere
 ## Is the signal accurate enough to help?
 
 Real signal is not the same as useful signal, so I asked the next question directly. How accurate does a localization prior have to be before conditioning a lesion detector on it beats using no prior at all? I swept prior quality from chance to a perfect oracle. With enough seeds, a prior that is 90 percent accurate does not beat the no-prior baseline. It is indistinguishable from it, at p equal to 0.55, so break-even sits at or above 90 percent accuracy. My localizer runs at about 0.90, 0.903 out of sample and 0.918 in sample, which is marginal either way. The spatial signal exists, and it is right at the threshold where it would start to help, not clearly past it.
+
+![Left, localization as a multiple of chance: prior-only floor 1.37, spatial-blind model 1.57, full localizer 2.00. Right, prior accuracy against a break-even threshold at 0.90, with the localizer at 0.903 and 0.918.](/assets/images/clinical-bci-localization/floor-and-breakeven.png)
+
+**Figure 1. Real signal, at the edge of useful.** Left, localization scored as a multiple of density-matched chance. A model with no spatial information already reaches 1.37 times chance, a model that keeps its features but loses sensor identity reaches 1.57, and the full localizer reaches 2.00, so part of the headline is a label-frequency prior. Against the proper floor the localizer still clears it, by a corrected 1.62 times the floor. Right, how accurate a prior has to be before it helps a lesion detector. Break-even sits at or above 0.90, and the localizer lands at 0.903 out of sample and 0.918 in sample, right at the edge. At hemisphere level, where there is no label to exploit, the same model-free predictor scores 0.729 times chance, below chance.
 
 ## Where a localization prior clearly works
 
