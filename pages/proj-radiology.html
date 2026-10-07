@@ -1,0 +1,30 @@
+---
+title: radiology · Saanvi S. Subramanian
+permalink: /pages/projects/radiology/
+---
+
+<div class="page-header">
+  <h1>radiology</h1>
+</div>
+
+<p class="proj-blurb">three threads on how imaging models learn from labels and how imaging connects to genomics. all three are in progress, and each status below says exactly where it stands.</p>
+
+<h2 class="section-heading">what a label-degradation study actually measures</h2>
+
+<p class="proj-line"><strong>status:</strong> in preparation for the CVPR 2027 main track. not submitted, not accepted.</p>
+
+<p class="proj-blurb">a common way to ask how much annotation quality matters is to hold a trained segmenter fixed and score it against deliberately degraded masks. i started this inside <a href="{{ '/pages/projects/cortseer/' | relative_url }}">CortSeer</a> on focal cortical dysplasia MRI, and found that the ordering of corruption types it produces can be reproduced by an eroded copy of the expert mask, with no learned model at all. so the fixed model is ranking the reference, not the supervision. the question has to be asked by training on degraded labels and scoring against clean ones. in a pre-registered test on ADE20K and COCO, labels that are precise but partial (scribbles) trained better segmenters than labels that are complete but coarse (boxes) at matched training-label fidelity, by 0.06 to 0.14 Dice across three matched doses on both datasets, and a fixed model scored against those same labels ranked them the other way. on PASCAL-Part the type effect was real but about 18 times smaller than the effect of how much label was removed.</p>
+
+<h2 class="section-heading">radiogenomic CLIP</h2>
+
+<p class="proj-line"><strong>status:</strong> in progress at the Caltech Computer Vision Lab. no results reported yet.</p>
+
+<p class="proj-blurb">a CLIP-style model that links 3D CT scans of kidney tumors with the tumors' gene mutations, so that imaging and genomics share one embedding space. for the imaging side i built a CT image encoder for kidney tumors, pretrained and then fine-tuned.</p>
+
+<h2 class="section-heading">interpreting genomic representations</h2>
+
+<p class="proj-line"><strong>status:</strong> in progress. no results reported yet.</p>
+
+<p class="proj-blurb">asking what the genomic side of a model like this actually encodes, before trusting it to stand in for a tumor's biology. [TODO: Saanvi to add one sentence on the representation, the data, and the method.]</p>
+
+<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; all projects</a></p>
