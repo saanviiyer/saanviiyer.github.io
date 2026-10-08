@@ -1,0 +1,514 @@
+---
+layout: project
+title: "AI evals and agents in life sciences"
+permalink: /projects/agent-evals-life-sciences/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+status: "Draft in progress"
+hook: "Three NeurIPS 2026 workshop posters that each attack the same question from a different side: do our ways of evaluating AI agents in biology actually measure what we claim?"
+thesis: "An agent evaluation in biology is only as good as the link between its signal and the outcome, and that link is usually assumed rather than measured."
+venues:
+  - "NeurIPS 2026 Verify-Agents"
+  - "NeurIPS 2026 AgenticLS"
+  - "NeurIPS 2026 Trust-AI-Eval"
+  - "NeurIPS 2026 GEM-Bio"
+---
+
+<div class="draft-banner" style="border:1px solid #c98; background:#fdf6ec; padding:0.85rem 1rem; margin:0 0 1.75rem; border-radius:4px;">
+  <strong>Draft in progress.</strong> this page groups three workshop posters into one line of argument. the per-poster
+  numbers below are taken from the submitted manuscripts, but the synthesis, the figures, and the venue
+  links are not finished. every <span class="todo-note">[TODO]</span> marks a place where i have not yet written the
+  claim rather than a place where a number is missing. nothing here should be quoted outside the individual papers.
+  <br><br>
+  <small><strong>Number provenance, and a warning.</strong> every number here was transcribed from the
+  <code>conference drafts/review/</code> copies, whose own README says <em>"nothing here is authoritative"</em>.
+  the authoritative path for each paper is recorded in <code>review/MANIFEST.tsv</code>: for threads 1 and 3,
+  <code>RESEARCH/gauntlet/papers/{verify_agents,tae,gem_bio}/main.tex</code>; for thread 2,
+  <code>RESEARCH/AITHYRA/gabriela/saanvi/papers/agenticls_short_prism.tex</code>.
+  the content used here is the <em>better</em> content — the review copy of verify_agents (4 Oct) withdraws a
+  damage-against-truthful-value correlation of r = +0.993 on 14 of 14 tasks that the authoritative source
+  (17 Aug) still asserts — but those revisions exist only in a copy that <code>make_review.sh</code>
+  regenerates, and <code>--check</code> cannot see them because it compares each source against its recorded
+  hash and never checks whether a copy was edited.
+  <span class="todo-note">[TODO: promote the 4 Oct verify_agents revisions into the authoritative path before
+  make_review.sh runs again. 21 review copies diverge from their sources; a snapshot is in
+  <code>conference drafts/_rescued_review_edits_2026-10-07/</code>.]</span></small>
+</div>
+
+<p class="pp-question">when we evaluate an AI agent doing biology, are we measuring whether it found something true, or only whether it scored well on the signal we happened to hand it?</p>
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p class="todo-note">[TODO: Saanvi to write the megapaper abstract. the three posters are drafted and their
+  numbers are stable, but the single paragraph that makes them one paper rather than three does not exist yet.
+  the raw material is below. what it needs is the claim about where in the evaluation stack each failure sits —
+  the verifier, the representation, the benchmark metric — and why those three are the same problem seen from
+  three heights rather than three unrelated findings.]</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">0.991</div><div class="l">AUROC of a memorizing scorer that passes every trust-gate trial and still performs at random</div></div>
+  <div class="stat"><div class="n">0.50 &rarr; 0.16</div><div class="l">variance in selection value explained by reported correlation, from the top 10% to the top 1%</div></div>
+  <div class="stat"><div class="n">0.011</div><div class="l">cosine distance at which three biologically distinct mutational processes become one destination</div></div>
+  <div class="stat"><div class="n">41 + 70 + 3,003</div><div class="l">deep mutational scans, benchmark units, and signature pairs across the three studies</div></div>
+</div>
+
+<p class="pp-section-num">01 &middot; The Challenge</p>
+<h2 class="pp-section-title">the evaluation is the part nobody evaluates</h2>
+
+<p>an agent doing biology is judged by a signal: a verifier's verdict, a benchmark correlation, a validation
+score computed in some representation. the agent gets scrutinised and the signal does not. but the signal is
+where the assumption lives. a verifier can certify a scorer that has memorised the answers. a benchmark
+correlation can be genuine and still fail to predict the decision anyone makes from it. a validation score
+computed in the same representation the agent optimises is not independent evidence. in each case the
+arithmetic is right and the conclusion is wrong, and the failure is invisible from the headline number.</p>
+
+<div class="callout-q">
+  <div class="cq-label">The central question</div>
+  <p>do our ways of evaluating AI agents in biology actually measure what we claim?</p>
+</div>
+
+<p>biology is where this is checkable. deep mutational scans record the experimental outcome for nearly every
+candidate in a pool, so an agent's decisions can be replayed and its counterfactual actions scored directly.
+that makes the domain a place where a verifier can be held against ground truth rather than against another
+model's opinion. all three posters exploit that, and the <a href="{{ '/projects/evaluations/' | relative_url }}">evaluations</a>
+line of work is where the same control battery gets applied to single model scores.</p>
+
+<div class="concept-card">
+  <span class="cc-term">complete-outcome domain</span>
+  <span class="cc-gloss">a task where nearly every available action already has a recorded experimental result.</span>
+  <p>this is the property that makes the verifier itself measurable. without it, a verifier's silence is
+  indistinguishable from a verifier that works, because there is nothing to contradict it.</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">selection value</span>
+  <span class="cc-gloss">the fraction of achievable gain captured by acting on a model's top-ranked candidates.</span>
+  <p>an oracle ranking gives 1 and random selection gives 0. this is the quantity a design campaign actually
+  receives, and it is not the quantity a benchmark reports.</p>
+</div>
+
+<div class="concept-card">
+  <span class="cc-term">action-space identifiability</span>
+  <span class="cc-gloss">whether the candidate actions an agent chooses among reach distinguishable destinations in its representation.</span>
+  <p>if two hypotheses drive the system to the same representational state, no accuracy metric or calibration
+  curve can recover a distinction the representation does not contain.</p>
+</div>
+
+<p class="pp-section-num">02 &middot; The Approach</p>
+<h2 class="pp-section-title">attack the signal, not the agent</h2>
+
+<p class="todo-note">[TODO: Saanvi to write the methods throughline. the three posters share a move — take the
+evaluation signal, construct the adversarial or control condition that the signal cannot see, and measure
+against recorded outcomes — but they use that move at different levels and i have not written down why those
+levels are the right decomposition. candidate framing: the verifier (what certifies the scorer), the
+representation (what the agent acts through), the metric (what the field reports). say whether that is a
+stack, a taxonomy, or just three examples.]</p>
+
+<p class="pp-section-num">03 &middot; Results</p>
+<h2 class="pp-section-title">three posters, one standard of evidence</h2>
+
+<!-- ===================== Thread 1 ===================== -->
+<section class="pp-thread" id="t1">
+  <h3 class="pp-thread-title">when the verifier is wrong</h3>
+  <p class="pp-thread-sub">when the verifier is wrong: red-teaming agent verification where ground truth exists</p>
+  <p><span class="venue-badge">NeurIPS Verify-Agents 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to add the Verify-Agents OpenReview link once the decision is out.]</p>
+
+  <p>this is the poster that red-teams the verifier itself. a closed-loop protein-design agent picks candidates
+  from a pool of thousands, and a trust gate decides whether to delegate that ranking to a supplied scorer by
+  checking the scorer's AUROC against the outcomes collected so far. the gate never verifies that the supplied
+  scorer is actually parameter-free, which is the whole vulnerability. 41 deep mutational scans of 1,800 to
+  7,900 candidates each, plus five published multi-round campaigns, drawn from ProteinGym, FLIP, and PETML.</p>
+
+  <ol class="howto">
+    <li>
+      <span class="ht-name">the leakage attack</span>
+      <span class="ht-one">a scorer that memorises the observed outcomes and outputs noise everywhere else.</span>
+      across 4,920 trials, a fully leaked scorer reaches gate AUROC 0.991 and passes 100% of trials, against
+      0.663 and 77.2% for a truthful zero-shot scorer. it ranks above the useful scorer and performs at random
+      on the unmeasured pool, costing about 1.05 good candidates per batch. even 25% leakage passes 77% of the
+      time. optimising against this gate rewards memorisation.
+    </li>
+    <li>
+      <span class="ht-name">forward validation, and why it is not enough</span>
+      <span class="ht-one">score the scorer only on measurements collected after it was supplied.</span>
+      acquisition order creates the holdout, so the gate never has to inspect the scorer's implementation. this
+      removes the leakage advantage: the truthful scorer holds at 0.687 and 79.5% while the fully leaked scorer
+      falls to 0.495 and 34.8%, which is the finite-sample false-pass floor rather than residual signal.
+    </li>
+    <li>
+      <span class="ht-name">the pool-side attack forward validation cannot see</span>
+      <span class="ht-one">leave every measured candidate untouched and corrupt only the unmeasured pool.</span>
+      because the measured scores are unchanged, both gates return identical statistics to the truthful scorer
+      by construction, 0.663 and 0.676. the selections lose 1.24 good candidates per batch. no gate that reads
+      only previously measured candidates can detect this.
+    </li>
+    <li>
+      <span class="ht-name">top-pick probing, and probe-aware evasion</span>
+      <span class="ht-one">measure a prefix of the scorer's own top picks before committing the batch.</span>
+      a 25% probe detects 99.2% of naive pool-side attacks while costing the truthful scorer 4.4% of its yield.
+      an attacker who baits the top of the ranking to match the probe drops detection to 45.9%, and to 39.6%
+      at a 50% probe.
+    </li>
+  </ol>
+
+  <div class="stat-callout"><div class="sc-num">0.991</div><div class="sc-lab">gate AUROC of a memorizing scorer that passes 100% of trials and performs at random, against 0.663 and 77.2% for the truthful scorer worth +1.082</div></div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/verifier-attack.png' | relative_url }}" alt="Three panels. Left, gate scores rise with leakage level. Center, only the truthful scorer improves candidate selection. Right, forward validation preserves the truthful scorer while cutting leaked scorers' pass rate.">
+    <figcaption><strong>figure 1. the gate rewards the wrong signal.</strong> <span class="todo-note">[TODO:
+    Saanvi to write the full caption. the panels are: left, gate score against leakage level, with the 25%
+    point slightly below the truthful scorer; center, selection value, where only the truthful scorer helps;
+    right, forward validation holding the truthful scorer while leaked scorers fall to chance. say in the caption
+    that the right panel is the defence and that the next figure is the attack it cannot see.]</span></figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/verifier-probe.png' | relative_url }}" alt="Left, probing preserves most truthful-scorer value while pushing the pool-side attacker toward random. Right, truthful-scorer refusals fall mostly on trials where the scorer added little value.">
+    <figcaption><strong>figure 2. top-pick probing across all 41 scans.</strong> <span class="todo-note">[TODO:
+    caption. the point worth making is the false-alarm structure: the probe rejects the truthful scorer in 48%
+    of trials, but those are trials where it would have captured 0.142 good candidates against 1.943 on
+    accepted trials, so the refusals are concentrated where the scorer was not worth trusting anyway.]</span></figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/verifier-crossover.png' | relative_url }}" alt="Left, good candidates per batch for the in-house and supplied scorers as campaign size grows. Right, fraction of tasks where the in-house model wins.">
+    <figcaption><strong>figure 3. the supplied scorer loses its advantage as data accumulate.</strong>
+    <span class="todo-note">[TODO: caption. note that the eligible task set shrinks from 41 to 35 at 384
+    measurements because some tasks lack enough data, so the crossover is a within-task comparison at each
+    size and not a single fixed cohort.]</span></figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>a trust gate that evaluates a supplied scorer in sample certifies a scorer that has memorised the
+    evaluation outcomes. it ranks that scorer above a truthful one at AUROC 0.991 against 0.663, passes it in
+    every trial, and the agent loses about 1.05 good candidates per batch for following it.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>forward validation closes the leakage surface and nothing else. an attacker restricted to the unmeasured
+    pool produces gate statistics identical to the truthful scorer by construction and costs 1.24 good candidates
+    per batch. detecting it requires spending experimental budget on candidates the scorer currently recommends.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 3</div>
+    <p>detection is not recovery. the probe catches nearly every naive pool-side attack but recovers only about
+    10% of the lost value when the fallback is random selection, moving the agent from &minus;0.162 to
+    &minus;0.036 where the truthful scorer would have given +1.082. an in-house ridge model trained on the
+    campaign's own 48 measurements recovers 17% at a 25% probe and 28% at a 50% probe, and overtakes the
+    supplied scorer entirely after roughly 115 measurements, reaching +1.745 against +0.741 at 384.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">why does detection without a fallback fail?</div>
+    <p>because if being caught sends the agent to random selection, and the attacker's goal was already to
+    reduce the agent to random, detection imposes almost no cost on the attacker. a verifier needs a fallback
+    that preserves value, which means an independent source of capability outside the compromised scorer's
+    control. verification can tell you when you need that. it cannot supply it.</p>
+  </div>
+
+  <p class="why-box" style="background:none;border:none;padding-left:0;">the poster also reports four further
+  verifier pathologies measured against ground truth — a sampled stochastic baseline that biases the comparison
+  toward itself (decision accuracy 43.1% to 56.9% once the expectation is used), verifier selection that does
+  not survive held-out tasks (the incumbent rule moves from second to last across 35 held-out scans), a
+  protocol mismatch worth about a fifth of the observed gap, and a gate statistic whose resolution cannot
+  support its own threshold (fold enrichment moves in discrete steps and is exactly zero for 34.3% of
+  estimates <span class="todo-note">[TODO: the step size is unresolved in REVISIONS.md — the paper derives
+  48/25 = 1.92 over four attainable values, REVISIONS says six values, and REVIEWS computes steps of 2.0 from
+  5 picks against a decile of 4.8. pick one and fix it in the paper before quoting a step size here.]</span>). a fifth pathology appeared on 13 tasks and disappears across all 41, so it is withdrawn in the
+  appendix.</p>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> the evaluation is offline and counterfactual on pools that earlier
+    experimental choices already selected, so differences between policies are interpretable and absolute
+    performance is not a population estimate. the policy-transfer experiment covers six non-LLM policy classes
+    and shows that damage follows the fraction of action selection delegated to the compromised scorer, with
+    the gate reading 0.6632 under both conditions and changing its decision in 0 of 1,640 trials. transfer to
+    an LLM-driven research agent is untested and the mapping in the limitations section is conceptual.
+    <span class="todo-note">[TODO: resolve the 7 unverified citations flagged in REVISIONS.md before this goes
+    anywhere beyond the workshop.]</span></p>
+  </div>
+</section>
+
+<!-- ===================== Thread 2 ===================== -->
+<section class="pp-thread" id="t2">
+  <h3 class="pp-thread-title">representational identifiability</h3>
+  <p class="pp-thread-sub">representational identifiability limits action selection in a protein-design agent</p>
+  <p><span class="venue-badge">NeurIPS AgenticLS 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to add the AgenticLS OpenReview link. also decide whether this page or
+  <a href="{{ '/pages/projects/action-identifiability/' | relative_url }}">the action-identifiability stub</a>
+  is the canonical home for this thread — right now the stub says MoML 2026 and this says AgenticLS, and both
+  cannot be the whole story.]</p>
+
+  <p>the previous thread asks whether the verifier can be trusted. this one asks something earlier: whether the
+  representation the agent acts through can tell its candidate answers apart at all. the testbed is a
+  hypothesise-simulate-validate loop for mutational-driver discovery, using ESM-2 and the 78 COSMIC somatic
+  mutation signatures. the agent proposes a mutational process, enacts its mean hidden-state displacement by
+  activation steering, and compares the enacted direction against the displacement the measured mutation caused.
+  if two processes reach the same destination, no amount of calibration recovers the difference.</p>
+
+  <p>three biologically distinct processes — SBS1 (clock-like), SBS7a (UV), SBS2 (APOBEC) — land at pairwise
+  cosine distance at or below 0.011, while SBS17a sits out at 0.04 to 0.08. the catalogue confusion is not
+  just COSMIC's own structure: SBS2 and SBS7a do have similar spectra at cosine 0.71, but SBS2 and SBS1 are
+  near-orthogonal in COSMIC at cosine 0.02 and still merge in ESM-2. the representation is collapsing a
+  distinction the catalogue makes.</p>
+
+  <div class="concept-card">
+    <span class="cc-term">what the composition control shows</span>
+    <span class="cc-gloss">ESM-2 separates marginal substitution composition more strongly than trinucleotide context.</span>
+    <p>scrambling trinucleotide context while preserving each substitution type's marginal probability moves the
+    destination by 0.0081 &plusmn; 0.0016, against a seed-to-seed floor of 0.0014 &plusmn; 0.0005. so context
+    does register, 5.8&times; above the sampling floor, but the effect is 3.6 to 7.3&times; smaller than the
+    separation between signatures with different substitution composition. the three collapsed processes are
+    all C&gt;T dominated and SBS17a is T&gt;C dominated, which is the composition axis, not the biology.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 4</div>
+    <p>across all 3,003 pairs of the 78 COSMIC signatures, biologically distinct mutational processes often
+    reach similar ESM-2 destinations, and the separation that does exist tracks broad substitution composition
+    rather than the trinucleotide context that defines the signatures. an agent in this representation should
+    return the compatible set or abstain, not name one process.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 5</div>
+    <p>the measurement procedure was doing much of the work. stop-at-first-stop translation turns 524 of 2,028
+    simulated mutants (25.8%) into one-residue placeholders, and per-signature placeholder count alone explains
+    R&sup2; = 0.683 of pairwise destination distance at 8M and 0.870 at 650M. length control removes the
+    artifact, but the binary collapse rate then becomes strongly scale-dependent: 23.8% of pairs at or below
+    the 0.011 threshold at 8M against 72.5% at 650M. i report both and do not pick one as a catalogue-wide rate.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 6</div>
+    <p>the embedding-proximity objective is exploitable, and the validation check shares its representation.
+    an agent making unconstrained single-residue edits drives cosine distance to the PF17041 centroid from
+    0.26 to 0.009 over 200 edits, landing 5.0 standard deviations below the natural-protein reference mean of
+    0.194 &plusmn; 0.037 across 25 measured proteins, while ESM-2 naturalness falls from &minus;0.41 to &minus;0.50,
+    2.2 sd below the natural band. the removed plausibility signal does detect the departure. but because both
+    the objective and the causal self-validation score live in ESM-2, validation in the same representation is
+    not independent evidence against this failure.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">why does the 0.011 threshold need this much hedging?</div>
+    <p>because it was defined from the SBS1&ndash;SBS7a distance in the original four-signature 8M uncontrolled
+    experiment, and it does not carry the same meaning elsewhere. it contains the SBS1/SBS7a/SBS2 reference
+    cluster in two of the four model-by-readout conditions and splits it in the other two. picking the condition
+    where it behaves after seeing the result would overstate collapse, so the catalogue-wide conclusion rests
+    on continuous distances and within-process spread instead.</p>
+  </div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/identifiability-signatures.png' | relative_url }}" alt="Left, enacting each mutational process moves held-out proteins toward its outcome region, with SBS1, SBS7a and SBS2 overlapping at the 0.011 threshold while SBS17a lies farther out. Right, pairwise destination distances show the same pattern.">
+    <figcaption><strong>figure 4. action-space identifiability in ESM-2 8M.</strong> <span class="todo-note">[TODO:
+    caption. left panel is the steering cross-matrix, right is pairwise destination distance. the caption should
+    say that the 0.011 reference line is the threshold inherited from the original four-signature experiment,
+    and point the reader to the audit for why that line does not mean the same thing in all four
+    model-by-readout conditions.]</span></figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/identifiability-decoding.png' | relative_url }}" alt="Confusion matrix for a probe decoding which of five mutational processes produced an ESM-2 displacement.">
+    <figcaption><strong>figure 5. what the representation can and cannot decode.</strong> <span class="todo-note">[TODO:
+    caption. the probe reaches 66% five-way accuracy against 20% chance with SBS17a at 89%, so the
+    representation is not empty. the caption needs to make the right point from that: the confusions are not
+    random, and the SBS1/SBS2 confusion happens despite near-orthogonal COSMIC spectra at cosine 0.02, which
+    is the cell that matters.]</span></figcaption>
+  </figure>
+
+  <p class="todo-note">[TODO: Saanvi to decide whether the capability results — 26.2% recommender top-1 against 1.3% for the strongest frequency
+  baseline, falling to near chance on held-out targets and processes, and SBS17a enacted at cosine 0.53
+  &plusmn; 0.03 — belong on this page at all, or whether they are context that invites the reader to score the
+  agent when the point is to score the representation.]</p>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> the steering and decoding experiments cover a subset of signatures while
+    the destination analysis covers all 78, so catalogue-wide overlap is established and per-signature steering
+    specificity is not. ESM-2 8M and 650M share training data and tokenisation, so the scale comparison is not
+    an independent-model replication. the unconstrained optimisation result shows this objective can be
+    exploited under single-residue search, not that every constrained design objective fails the same way.
+    a matched-compute control also erases the apparent agency gain: at 100 scorer calls, fixed and random
+    search reach final centroid distances of 0.1586 and 0.1585 against 0.1625 for the adaptive policy, so the
+    adaptive policy has no measured advantage on those 20 protein-goal tasks. that control does not touch the
+    identifiability result, but it is why the release ledger has this poster as position-only.</p>
+  </div>
+</section>
+
+<!-- ===================== Thread 3 ===================== -->
+<section class="pp-thread" id="t3">
+  <h3 class="pp-thread-title">does benchmark correlation predict selection quality?</h3>
+  <p class="pp-thread-sub">does benchmark correlation predict selection quality for protein design?</p>
+  <p><span class="venue-badge">NeurIPS Trust-AI-Eval 2026</span><span class="venue-badge">NeurIPS GEM-Bio 2026</span><span class="venue-badge">Sole author</span></p>
+  <p class="todo-note">[TODO: Saanvi to add both OpenReview links, and to say on the page how the two
+  submissions differ rather than letting a reader assume they are the same poster twice. as drafted, TAE
+  carries the top-1%/top-10% cutoff decay across 60 units and the label-free diagnostic, and GEM-Bio carries
+  the top-20% cutoff all four corpora support, the PETML near-zero result, and the Rubisco controls. the
+  release ledger has GEM-Bio on venue hold, so the split may not survive.]</p>
+
+  <p>the first two threads attack a verifier and a representation. this one attacks the number the field
+  actually reports. protein benchmarks report Spearman correlation between model scores and measured outcomes,
+  which summarises ranking quality over an entire assay. a design campaign does something else: it takes the
+  top few candidates and tests them. those are different quantities, and the question is how much the first
+  tells you about the second. 70 units across four corpora — 41 ProteinGym scans, 16 SSMuLA combinatorial
+  libraries, three Rubisco kinetic axes from 8,760 single mutants, and 10 PETML plastic-degradation campaigns.</p>
+
+  <div class="stat-callout"><div class="sc-num">0.50 &rarr; 0.16</div><div class="sc-lab">variance in selection value explained by reported correlation, from the top 10% (&rho; = +0.707) to the top 1% (&rho; = +0.404), across 60 units</div></div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 7</div>
+    <p>correlation becomes less informative exactly where campaigns act. it explains half the variance in
+    top-10% selection value and 16% at top-1%. three of the 41 ProteinGym assays produce worse-than-random
+    top-1% selections despite positive reported correlations, the worst at selection value &minus;0.300 on a
+    reported &rho; of +0.105.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 8</div>
+    <p>the same reported correlation means different things in different benchmark families. at matched
+    correlation, SSMuLA libraries deliver +0.265 more top-1% selection value than ProteinGym assays
+    (Mann&ndash;Whitney p = 0.0001), and +0.147 at top-10% (p = 0.0022). a second scorer family reproduces the
+    offset at +0.252 (p = 0.0003). so an aggregate leaderboard score mixes model behaviour with benchmark
+    composition, and two methods evaluated on different family mixtures are not comparable through the reported
+    scalar alone.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 9</div>
+    <p>the obvious label-free fix does not transfer. score-distribution skew looks promising retrospectively,
+    correlating with residual top-1% selection value at +0.633 across 60 units and +0.489 within ProteinGym,
+    but its sign reverses across families: fitted on ProteinGym and applied to SSMuLA it gives &minus;0.388, and
+    the reverse direction gives &minus;0.582. a fourth corpus reverses it again, &minus;0.783 within PETML
+    against +0.551 within ProteinGym. skew adds information when it accompanies the reported correlation, and
+    fails as a standalone transferable rule.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 10</div>
+    <p>the critique has a boundary, and reporting it is part of the result. where a supervised model has genuine
+    signal, correlation and selection improve together: across 12 assays and three cross-validation schemes on
+    identical folds, mean selection gain is +0.035 at both cutoffs against a bulk correlation gain of +0.031.
+    a blanket claim that correlation is invalid would exceed the evidence. the narrower attribution problem
+    survives though — per-unit correlation and selection gains track at top-10% (&rho; = +0.679) but not at
+    top-1% (&rho; = +0.168, p = 0.33), so an aggregate correlation gain does not identify which assays improved
+    at a sharp cutoff.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">what does the GEM-Bio side add?</div>
+    <p>a top-20% cutoff that all four corpora support, which is where the PETML result lives: selecting the top
+    20% of variants on 10 published plastic-degradation studies captures essentially none of the achievable
+    gain, &minus;0.016 for ESM-2 and &minus;0.006 for ESM-C, against +0.326, +0.461, and +0.423 on SSMuLA,
+    Rubisco, and ProteinGym. and the Rubisco controls, which are the cleanest demonstration that a headline
+    correlation is a composite: ESM-2 reaches &rho; = +0.631 against maximum turnover across 8,760 single
+    mutants, restricting to well-measured variants drops it to +0.364, and partialling out wild-type residue
+    preference drops it to +0.259. positive signal survives, but the raw number was substantially measurement
+    quality and site conservation.</p>
+  </div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/selection-decay.png' | relative_url }}" alt="Reported correlation against selection value at two cutoffs. Each point is one assay, library or kinetic axis. The relationship weakens at the sharper cutoff.">
+    <figcaption><strong>figure 6. reported correlation against selection value.</strong> <span class="todo-note">[TODO:
+    caption. each point is one benchmark unit. the caption should name the three ProteinGym assays below zero
+    at top-1% and say that the per-corpus fits have similar slopes with different intercepts, which is the
+    family offset the next figure tests.]</span></figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/selection-replicate.png' | relative_url }}" alt="The benchmark-family offset and the cutoff-dependent decay, measured with two independent scorer families.">
+    <figcaption><strong>figure 7. the offset replicates under a second scorer.</strong> <span class="todo-note">[TODO:
+    caption. the two scorers come from different labs and agree at the unit level, correlating at +0.892 on
+    reported correlation and +0.899 on top-1% selection value, which is why the surviving offset is a property
+    of the benchmarks rather than of one model.]</span></figcaption>
+  </figure>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/selection-campaign.png' | relative_url }}" alt="Left, mean top-20 percent selection utility per corpus under ESM-2 and ESM-C with the range across units. Right, all 70 units plotted separately.">
+    <figcaption><strong>figure 8. selection utility at the cutoff all four corpora support.</strong>
+    <span class="todo-note">[TODO: caption. the plastic-degradation studies sit at approximately zero under
+    both model families while the other three corpora are clearly positive. the caption should resist reading
+    that as a model failure: it is a statement about this collection of campaign-style data, and the power
+    analysis says 10 studies cannot support a precise between-corpus comparison.]</span></figcaption>
+  </figure>
+
+  <div class="limitations">
+    <p><strong>Limitations.</strong> one scientific domain, and units within a corpus are not fully independent
+    because they share experimental conventions. the family offset is estimated from ProteinGym and SSMuLA
+    only; Rubisco and PETML show instability across regimes but are too few or too heterogeneous to estimate
+    comparable offsets. the mechanism is unidentified: dead-variant fraction, library size, score dispersion,
+    and label skew each close at most 39% of the family gap, and mutation regime closes 96% but is almost
+    perfectly confounded with family membership since every SSMuLA unit is multi-mutant. the PETML corpus has
+    10 usable studies against roughly 120 needed for 80% power on an effect of the observed size, so the
+    near-zero utility is interpretable and the between-corpus comparison is not. the Rubisco controls come from
+    one protein under one protocol.</p>
+  </div>
+</section>
+
+<p class="pp-section-num" id="takeaways">Takeaways</p>
+<h2 class="pp-section-title">what the three add up to</h2>
+
+<p class="todo-note">[TODO: Saanvi to write this section properly. the four cards below are placeholders that
+restate each poster's headline. what the section needs instead is the argument the megapaper makes that no
+single poster makes — something about where in the evaluation stack the failures sit and what a reader should
+do differently. the candid version of this section may also have to concede that the three posters share a
+method and a domain more than they share a finding, and that claiming a unified result would be the same kind
+of overreach the posters are about.]</p>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">the verifier is attackable</div>a trust gate certifies a memorizing scorer at AUROC 0.991 and 100% pass rate while the agent loses about 1.05 good candidates per batch, and the defence that fixes it cannot see the next attack.</div>
+  <div class="takeaway"><div class="tk-h">the representation may not resolve the question</div>biologically distinct mutational processes reach the same ESM-2 destination, and validation computed in that same representation is not independent evidence.</div>
+  <div class="takeaway"><div class="tk-h">the reported metric is not the acted-on metric</div>benchmark correlation explains half the variance in top-10% selection value and 16% at top-1%, and the same correlation means different things in different benchmark families.</div>
+  <div class="takeaway"><div class="tk-h">report the boundary too</div>each poster names where its own critique stops: a withdrawn pathology, a scale-dependent collapse rate reported as two numbers, a supervised regime where correlation and selection improve together.</div>
+</div>
+
+<p class="pp-section-num">Limitations</p>
+<div class="limitations">
+  <p><strong>Limitations across the line.</strong> all three studies are offline and counterfactual on pools
+  that prior experimental choices already selected, so they support claims about differences between policies,
+  representations, and metrics rather than population-level statements about protein space. none involves an
+  LLM-driven agent, so transfer to the systems the framing is aimed at is untested. the domain is protein
+  function throughout, which is what makes ground truth available and also what limits the scope. and the
+  release ledger has GEM-Bio on venue hold, Trust-AI-Eval conditional, AgenticLS as position-only after the
+  matched-compute control, and Verify-Agents conditional on a citation check — so none of these numbers should
+  be quoted outside their papers yet.</p>
+</div>
+
+<p class="pp-section-num">Related pages</p>
+<p>the single-score version of this argument, where each individual model number gets its control, is on the
+<a href="{{ '/projects/evaluations/' | relative_url }}">evaluations that survive optimizers</a> page. the
+clinical counterpart, where the same standard is applied to a model that would act at a bedside, is
+<a href="{{ '/projects/clinical-ml/' | relative_url }}">clinical machine learning, evaluated plainly</a>.
+<span class="todo-note">[TODO: the evaluations page already carries the 0.991 verifier result and the
+0.50-to-0.16 decay as two of its five stats, and the action-identifiability stub covers thread 2. decide which
+page owns which result before this goes live, or the site will state the same finding three times with three
+different amounts of context.]</span></p>
+
+<p class="pp-section-num" id="cite">Cite</p>
+<p class="todo-note">[TODO: these three entries are the individual workshop papers. if the megapaper becomes a
+single arXiv preprint, add its entry here and say which of the three it supersedes.]</p>
+<div class="bibtex">@inproceedings{subramanian2026verifyagents,
+  author    = {Saanvi S. Subramanian},
+  title     = {When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists},
+  booktitle = {NeurIPS Workshop on Who Verifies the Agents? Toward Reliable Agent Development},
+  year      = {2026}
+}
+
+@inproceedings{subramanian2026agenticls,
+  author    = {Saanvi S. Subramanian},
+  title     = {Representational Identifiability Limits Action Selection in a Protein-Design Agent},
+  booktitle = {NeurIPS Workshop on Agentic AI for Biological Discovery},
+  year      = {2026}
+}
+
+@inproceedings{subramanian2026selection,
+  author    = {Saanvi S. Subramanian},
+  title     = {Does Benchmark Correlation Predict Selection Quality for Protein Design?},
+  booktitle = {NeurIPS Workshop on Trust-AI-Eval: Can We Trust AI Evaluation?},
+  year      = {2026}
+}
+</div>

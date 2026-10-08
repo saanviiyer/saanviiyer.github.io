@@ -1,0 +1,237 @@
+% Editable source for pages/proj-agent-evals-life-sciences.html
+% This is a parallel source; the live site still renders from the .html file.
+% DRAFT IN PROGRESS. Every [TODO] is a place where the claim is not written yet,
+% not a place where a number is missing.
+%
+% NUMBER PROVENANCE -- CORRECTED 2026-10-07.
+%   All numbers were transcribed from conference drafts/review/, whose README states
+%   "nothing here is authoritative". The authoritative path per review/MANIFEST.tsv is:
+%     threads 1,3  RESEARCH/gauntlet/papers/{verify_agents,tae,gem_bio}/main.tex
+%     thread 2     RESEARCH/AITHYRA/gabriela/saanvi/papers/agenticls_short_prism.tex
+%   The content used is nonetheless the BETTER content: the 4 Oct review copy of
+%   verify_agents withdraws a damage-vs-truthful-value correlation r = +0.993 on 14 of 14
+%   tasks that the 17 Aug authoritative source still asserts. Those revisions live ONLY in
+%   a regenerable copy, and make_review.sh --check cannot detect an edited copy -- it only
+%   compares each source against its recorded hash.
+% TODO promote the 4 Oct verify_agents revisions into the authoritative path.
+%   21 review copies diverge from their sources; snapshot in
+%   conference drafts/_rescued_review_edits_2026-10-07/
+%
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\newcommand{\todo}[1]{\par\medskip\noindent\textcolor{red}{\textbf{[TODO]} #1}\par\medskip}
+\newcommand{\finding}[2]{\par\medskip\noindent\textbf{Finding #1.} #2\par\medskip}
+
+\title{AI evals and agents in life sciences\\\large Draft in progress}
+\author{Saanvi S. Subramanian \\ California Institute of Technology}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\small \textbf{Draft in progress.} This groups three NeurIPS 2026 workshop
+posters into one line of argument. The per-poster numbers are from the submitted manuscripts; the synthesis,
+the figure captions and the venue links are not finished. Nothing here should be quoted outside the individual
+papers.}}
+\end{center}
+
+\section*{The question}
+
+When we evaluate an AI agent doing biology, are we measuring whether it found something true, or only whether
+it scored well on the signal we happened to hand it?
+
+\todo{Write the megapaper abstract. The three posters are drafted and their numbers are stable, but the single
+paragraph that makes them one paper rather than three does not exist yet. It needs the claim about where in
+the evaluation stack each failure sits --- the verifier, the representation, the benchmark metric --- and why
+those are the same problem at three heights rather than three unrelated findings.}
+
+\section*{01 --- The challenge}
+
+An agent doing biology is judged by a signal: a verifier's verdict, a benchmark correlation, a validation score
+computed in some representation. The agent gets scrutinised and the signal does not. But the signal is where
+the assumption lives. In each case below the arithmetic is right and the conclusion is wrong, and the failure
+is invisible from the headline number.
+
+Biology is where this is checkable, because deep mutational scans record the outcome for nearly every candidate
+in a pool, so an agent's decisions can be replayed and counterfactual actions scored directly.
+
+\paragraph{Complete-outcome domain.} A task where nearly every available action already has a recorded
+experimental result. This is the property that makes the verifier itself measurable.
+
+\paragraph{Selection value.} The fraction of achievable gain captured by acting on a model's top-ranked
+candidates. An oracle ranking gives 1, random gives 0. This is what a campaign receives and not what a
+benchmark reports.
+
+\paragraph{Action-space identifiability.} Whether the candidate actions an agent chooses among reach
+distinguishable destinations in its representation.
+
+\section*{02 --- The approach}
+
+\todo{Write the methods throughline. The three posters share a move --- take the evaluation signal, construct
+the adversarial or control condition the signal cannot see, measure against recorded outcomes --- but they
+apply it at different levels and I have not written down why those levels are the right decomposition.
+Candidate framing: the verifier, the representation, the metric. Say whether that is a stack, a taxonomy, or
+just three examples.}
+
+\section*{03 --- Results}
+
+\subsection*{Thread 1: When the verifier is wrong}
+
+\emph{When the Verifier Is Wrong: Red-Teaming Agent Verification Where Ground Truth Exists.}
+NeurIPS Verify-Agents 2026. \todo{OpenReview link once the decision is out.}
+
+A closed-loop protein-design agent picks candidates from a pool of thousands, and a trust gate decides whether
+to delegate that ranking to a supplied scorer by checking its AUROC against outcomes collected so far. The gate
+never verifies that the supplied scorer is actually parameter-free. 41 deep mutational scans of 1{,}800--7{,}900
+candidates each, plus five published multi-round campaigns, from ProteinGym, FLIP and PETML.
+
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Leakage attack.} Across 4{,}920 trials a fully leaked scorer reaches gate AUROC 0.991 and
+  passes 100\% of trials, against 0.663 and 77.2\% for an honest zero-shot scorer. It performs at random on
+  the unmeasured pool, costing about 1.05 good candidates per batch. Even 25\% leakage passes 77\% of the time.
+  \item \textbf{Forward validation.} Scoring the scorer only on measurements collected after it was supplied
+  removes the leakage advantage: honest holds at 0.687 and 79.5\%, fully leaked falls to 0.495 and 34.8\%,
+  which is the finite-sample false-pass floor rather than residual signal.
+  \item \textbf{Pool-side attack.} Leaving every measured candidate untouched and corrupting only the
+  unmeasured pool returns gate statistics identical to the honest scorer by construction, 0.663 and 0.676,
+  while losing 1.24 good candidates per batch.
+  \item \textbf{Top-pick probing.} A 25\% probe detects 99.2\% of naive pool-side attacks at a 4.4\% cost to
+  honest yield. A probe-aware attacker that baits the top of the ranking drops detection to 45.9\%, and 39.6\%
+  at a 50\% probe.
+\end{itemize}
+
+\finding{1}{A trust gate that evaluates a supplied scorer in sample certifies a scorer that has memorised the
+evaluation outcomes, ranking it above an honest one at AUROC 0.991 against 0.663.}
+
+\finding{2}{Forward validation closes the leakage surface and nothing else. A pool-side attacker is identical
+to the honest scorer from the gate's view by construction.}
+
+\finding{3}{Detection is not recovery. The probe catches nearly every naive attack but recovers about 10\% of
+lost value with random fallback, moving the agent from $-0.162$ to $-0.036$ where honest would give $+1.082$.
+An in-house ridge model on the campaign's own 48 measurements recovers 17\% at a 25\% probe and 28\% at 50\%,
+and overtakes the supplied scorer after roughly 115 measurements, reaching $+1.745$ against $+0.741$ at 384.}
+
+Four further verifier pathologies are measured against ground truth: a sampled stochastic baseline that biases
+the comparison toward itself (43.1\% to 56.9\% decision accuracy once the expectation is used); verifier
+selection that does not survive held-out tasks (the incumbent moves from second to last across 35 held-out
+scans); a protocol mismatch worth about a fifth of the observed gap; and a gate statistic whose resolution
+cannot support its threshold (fold enrichment moves in discrete steps --- step size UNRESOLVED, see
+% REVISIONS.md: paper says 48/25=1.92 over four values, REVISIONS says six values, REVIEWS computes 2.0 ---
+and is exactly zero for 34.3\% of
+estimates). A fifth appeared on 13 tasks and disappears across all 41, so it is withdrawn.
+
+\textbf{Limitations.} Offline and counterfactual on pools that prior experimental choices already selected.
+Six non-LLM policy classes; damage follows the fraction of action selection delegated to the compromised
+scorer, with the gate reading 0.6632 under both conditions and changing its decision in 0 of 1{,}640 trials.
+Transfer to an LLM-driven agent is untested. \todo{Resolve the 7 unverified citations flagged in REVISIONS.md.}
+
+\subsection*{Thread 2: Representational identifiability}
+
+\emph{Representational Identifiability Limits Action Selection in a Protein-Design Agent.}
+NeurIPS AgenticLS 2026. \todo{OpenReview link. Also decide whether this page or the existing
+action-identifiability stub is the canonical home --- the stub says MoML 2026 and this says AgenticLS, and both
+cannot be the whole story.}
+
+A hypothesise--simulate--validate loop for mutational-driver discovery over ESM-2 and the 78 COSMIC signatures.
+The agent proposes a process, enacts its mean hidden-state displacement by activation steering, and compares
+the enacted direction against the real mutation's displacement.
+
+Three biologically distinct processes --- SBS1 (clock-like), SBS7a (UV), SBS2 (APOBEC) --- land at pairwise
+cosine distance $\leq 0.011$, while SBS17a sits at 0.04--0.08. SBS2 and SBS7a do have similar COSMIC spectra
+(cosine 0.71), but SBS2 and SBS1 are near-orthogonal in COSMIC (cosine 0.02) and still merge in ESM-2.
+
+\finding{4}{Across all 3{,}003 pairs of the 78 signatures, distinct processes often reach similar destinations,
+and the separation that exists tracks broad substitution composition rather than trinucleotide context.
+Scrambling context while preserving substitution marginals moves the destination by $0.0081 \pm 0.0016$ against
+a seed floor of $0.0014 \pm 0.0005$ --- $5.8\times$ above the floor, but 3.6--$7.3\times$ smaller than the
+separation between signatures of differing composition.}
+
+\finding{5}{The measurement procedure was doing much of the work. Stop-at-first-stop translation turns 524 of
+2{,}028 mutants (25.8\%) into one-residue placeholders, and placeholder count alone explains $R^2 = 0.683$ of
+pairwise distance at 8M and 0.870 at 650M. Length control removes the artifact, but the binary collapse rate
+becomes scale-dependent: 23.8\% of pairs at or below 0.011 at 8M against 72.5\% at 650M. Both are reported and
+neither is claimed as a catalogue-wide rate.}
+
+\finding{6}{The embedding-proximity objective is exploitable and the validation check shares its
+representation. Unconstrained single-residue edits drive distance to the PF17041 centroid from 0.26 to 0.009
+over 200 edits, 5.0 sd below the natural-protein reference mean of $0.194 \pm 0.037$ across 25 proteins, while ESM-2
+naturalness falls from $-0.41$ to $-0.50$, 2.2 sd below the natural band. The removed plausibility signal does
+detect the departure, but validation in the same representation the agent optimises is not independent
+evidence.}
+
+\todo{Decide whether the capability results --- 26.2\% recommender top-1 against 1.3\% for the strongest
+frequency baseline, falling to near chance on held-out targets and processes, SBS17a enacted at cosine
+$0.53 \pm 0.03$ --- belong on this page at all, or whether they are context that invites the reader to score
+the agent when the point is to score the representation.}
+
+\textbf{Limitations.} Steering and decoding cover a subset of signatures while the destination analysis covers
+all 78. ESM-2 8M and 650M share training data and tokenisation, so the scale comparison is not an
+independent-model replication. A matched-compute control erases the apparent agency gain: at 100 scorer calls,
+fixed and random search reach 0.1586 and 0.1585 final centroid distance against 0.1625 for the adaptive policy,
+which is why the release ledger has this poster as position-only. That control does not touch the
+identifiability result.
+
+\subsection*{Thread 3: Does benchmark correlation predict selection quality?}
+
+\emph{Does Benchmark Correlation Predict Selection Quality for Protein Design?}
+NeurIPS Trust-AI-Eval 2026 and NeurIPS GEM-Bio 2026. \todo{Both OpenReview links. Say on the page how the two
+submissions differ rather than letting a reader assume it is one poster twice. As drafted, TAE carries the
+top-1\%/top-10\% decay across 60 units and the label-free diagnostic; GEM-Bio carries the top-20\% cutoff all
+four corpora support, the PETML near-zero result and the Rubisco controls. GEM-Bio is on venue hold, so the
+split may not survive.}
+
+70 units across four corpora: 41 ProteinGym scans, 16 SSMuLA combinatorial libraries, three Rubisco kinetic
+axes from 8{,}760 single mutants, 10 PETML plastic-degradation campaigns.
+
+\finding{7}{Correlation becomes less informative exactly where campaigns act. It explains half the variance in
+top-10\% selection value ($\rho = +0.707$) and 16\% at top-1\% ($\rho = +0.404$). Three of 41 ProteinGym
+assays produce worse-than-random top-1\% selections despite positive reported correlations, the worst at
+$-0.300$ on a reported $\rho$ of $+0.105$.}
+
+\finding{8}{The same reported correlation means different things in different benchmark families. At matched
+correlation, SSMuLA delivers $+0.265$ more top-1\% selection value than ProteinGym (Mann--Whitney
+$p = 0.0001$) and $+0.147$ at top-10\% ($p = 0.0022$). A second scorer family reproduces it at $+0.252$
+($p = 0.0003$).}
+
+\finding{9}{The obvious label-free fix does not transfer. Score skew correlates with residual top-1\%
+selection value at $+0.633$ across 60 units and $+0.489$ within ProteinGym, but reverses sign across families:
+$-0.388$ fitted on ProteinGym applied to SSMuLA, $-0.582$ in reverse, and $-0.783$ within PETML against
+$+0.551$ within ProteinGym. It adds information alongside the reported correlation and fails as a standalone
+rule.}
+
+\finding{10}{The critique has a boundary. Where a supervised model has real signal, correlation and selection
+improve together: across 12 assays and three CV schemes on identical folds, mean selection gain is $+0.035$ at
+both cutoffs against a bulk correlation gain of $+0.031$. The narrower attribution problem survives: per-unit
+gains track at top-10\% ($\rho = +0.679$) but not at top-1\% ($\rho = +0.168$, $p = 0.33$).}
+
+The GEM-Bio side adds the top-20\% cutoff all four corpora support, where PETML captures essentially none of
+the achievable gain ($-0.016$ ESM-2, $-0.006$ ESM-C) against $+0.326$, $+0.461$ and $+0.423$ on SSMuLA,
+Rubisco and ProteinGym; and the Rubisco controls, where $\rho = +0.631$ against maximum turnover drops to
+$+0.364$ on well-measured variants and $+0.259$ after partialling out wild-type residue preference.
+
+\textbf{Limitations.} One domain; units within a corpus are not fully independent. The family offset is
+estimated from ProteinGym and SSMuLA only. The mechanism is unidentified: dead-variant fraction, library size,
+score dispersion and label skew each close at most 39\% of the gap, and mutation regime closes 96\% but is
+almost perfectly confounded with family since every SSMuLA unit is multi-mutant. PETML has 10 usable studies
+against roughly 120 needed for 80\% power at the observed effect size.
+
+\section*{Takeaways}
+
+\todo{Write this section properly. What it needs is the argument the megapaper makes that no single poster
+makes --- where in the evaluation stack the failures sit and what a reader should do differently. The honest
+version may have to concede that the three posters share a method and a domain more than they share a finding,
+and that claiming a unified result would be the same kind of overreach the posters are about.}
+
+\section*{Limitations across the line}
+
+All three studies are offline and counterfactual on pools that prior experimental choices already selected.
+None involves an LLM-driven agent, so transfer to the systems the framing targets is untested. The domain is
+protein function throughout, which is what makes ground truth available and also what limits the scope. The
+release ledger has GEM-Bio on venue hold, Trust-AI-Eval conditional, AgenticLS position-only after the
+matched-compute control, and Verify-Agents conditional on a citation check.
+
+\end{document}
