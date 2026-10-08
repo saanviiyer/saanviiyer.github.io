@@ -6,10 +6,10 @@ tag: "Research"
 section: technical
 thumb: /assets/images/biologos-transfer/spearman-comparison.png
 permalink: /thinking/biologos-transfer/
-excerpt: "I matched genomic and protein models on the same 25 deep mutational scanning assays, and a genomic model at Evo 2 scale does not clear a substitution matrix."
+excerpt: "I matched genomic and protein models on the same 25 deep mutational scanning assays, and at this sample size a genomic model at Evo 2 scale is not distinguishable from a substitution matrix."
 ---
 
-**TL;DR.** I built biologos to ask whether a model trained on DNA knows anything about protein function, measured against a protein model on the same 25 deep mutational scanning assays. A genomic model at Evo 2 7B scale does acquire some protein-fitness signal, reaching a mean Spearman of 0.266, but that is statistically indistinguishable from the BLOSUM62 substitution matrix at 0.228, it is beaten by a handful of hand-picked chemical properties, and it sits far below ESM-2 650M at 0.466. The Nucleotide Transformer family carries no signal at any scale I tested. Much of this project is a corrections ledger, because four earlier results turned out to be artifacts of how I asked the question.
+**TL;DR.** I built biologos to ask whether a model trained on DNA knows anything about protein function, measured against a protein model on the same 25 deep mutational scanning assays. A genomic model at Evo 2 7B scale does acquire some protein-fitness signal, reaching a mean Spearman of 0.266, but at this sample size that is not distinguishable from the BLOSUM62 substitution matrix at 0.228, a test that could not have separated it from one 37% better, and it is behind a set of supervised chemical features by -0.0202 in an interval that contains zero, while it sits far below ESM-2 650M at 0.466. The Nucleotide Transformer family carries no signal at any scale I tested. Much of this project is a corrections ledger, because four earlier results turned out to be artifacts of how I asked the question.
 
 ## I built biologos to test whether a model trained on DNA knows protein function
 
@@ -23,9 +23,9 @@ The measurement uses deep mutational scanning assays, which are experiments that
 
 **Figure 1.** Mean Spearman across the 25 assays, with 95% intervals. ESM-2 650M, a protein model, reaches 0.4655. A chemistry ridge fit leave-one-cluster-out reaches 0.2860. Evo 2 7B, a genomic model, reaches 0.2658. BLOSUM62 alone reaches 0.2282. The Nucleotide Transformer v2 50M sits at -0.0132.
 
-The comparison that matters is Evo 2 against the substitution matrix. Evo 2 minus BLOSUM62 is +0.0376, with an interval of [-0.012, +0.087] that contains zero, and Evo 2 is higher in 14 of the 25 assays. Against five fitted chemical features Evo 2 is behind, at -0.0202.
+The comparison that matters is Evo 2 against the substitution matrix. Evo 2 minus BLOSUM62 is +0.0376, in an interval of [-0.012, +0.087] that contains zero, and Evo 2 is higher in 14 of the 25 assays, so the data do not distinguish the two at this sample size, a test that could not have separated Evo 2 from a matrix 37% better. Against a set of supervised chemical features, fit leave-one-cluster-out, Evo 2 is behind at -0.0202, in an interval of [-0.0729, +0.0354] that contains zero and higher in 9 of the 25 assays, and that comparison is not like-for-like because the chemistry ridge is supervised while Evo 2 is scored zero-shot.
 
-So a genomic model at Evo 2 scale does acquire protein-fitness signal, and the careful way to state it is that the signal is statistically indistinguishable from a substitution matrix, is beaten by five hand-chosen chemical properties, and sits far below a protein model. The Nucleotide Transformer family carries no signal at all at any scale I tested, and its scaling trend does not reach Evo 2, because extrapolated to 7B it predicts +0.024 against the +0.266 measured, short by a factor of eleven.
+So a genomic model at Evo 2 scale does acquire protein-fitness signal, and the careful way to state it is that the signal is not distinguishable from a substitution matrix at this sample size, is behind a set of supervised chemical features in an interval that contains zero, and sits far below a protein model. The Nucleotide Transformer family carries no signal at all at any scale I tested, and its scaling trend does not reach Evo 2, because extrapolated to 7B it predicts +0.028 against the +0.266 measured, short by a factor of 9.5.
 
 ## Four things I got wrong first
 
