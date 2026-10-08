@@ -34,7 +34,7 @@ permalink: /pages/demos/selection-under-optimization/
 
     <p>With no noise the two curves sit on top of each other, because the proxy is the true quality and optimizing it optimizes what you want. Add noise and the proxy curve climbs faster than the true curve, because a larger search is more likely to find a candidate whose score is high for the wrong reason. That gap is the winner's curse, and it is why I report utility in the top-ranked region a design process would actually use, not just the bulk correlation.</p>
 
-    <p>The link to the projects is direct. In gauntlet a learned fitness proxy looked respectable in bulk and lost most of its usefulness among the top-ranked variants. In PRISM an unconstrained search pushed an embedding score far past the natural-protein floor while producing sequences that were not credible proteins. The white-box evaluation proposal is one answer to the same problem.</p>
+    <p>The link to the projects is direct. In gauntlet a learned fitness proxy looked respectable in bulk and lost most of its usefulness among the top-ranked variants. In PRISM an unconstrained search pushed an embedding score far outside the natural-protein reference band while producing sequences that were not credible proteins. The white-box evaluation proposal is one answer to the same problem.</p>
 
     <p class="demo-note">This is a Monte Carlo simulation drawn from Gaussian quality and Gaussian proxy error, averaged over many trials in your browser. It illustrates the selection mechanism and is not fit to any dataset.</p>
   </div>
