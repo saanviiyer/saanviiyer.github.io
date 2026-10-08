@@ -1,0 +1,68 @@
+<svg viewBox="0 0 720 356" role="img" xmlns="http://www.w3.org/2000/svg"><style>.tk{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;fill:#5B6773}.tk2{font-family:ui-monospace,Menlo,monospace;font-size:11px;fill:#15202A}.al{font-family:ui-monospace,Menlo,monospace;font-size:11px;fill:#5B6773}.pt{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:500;fill:#15202A}</style><rect x="-4" y="-4" width="728.0" height="364.0" fill="#ffffff"/>
+<line x1="207.9" y1="14" x2="207.9" y2="306" stroke="#E2E7EC"/>
+<text x="207.9" y="322" text-anchor="middle" class="tk">2.40</text>
+<line x1="302.5" y1="14" x2="302.5" y2="306" stroke="#E2E7EC"/>
+<text x="302.5" y="322" text-anchor="middle" class="tk">2.45</text>
+<line x1="397.1" y1="14" x2="397.1" y2="306" stroke="#E2E7EC"/>
+<text x="397.1" y="322" text-anchor="middle" class="tk">2.50</text>
+<line x1="491.8" y1="14" x2="491.8" y2="306" stroke="#E2E7EC"/>
+<text x="491.8" y="322" text-anchor="middle" class="tk">2.55</text>
+<line x1="586.4" y1="14" x2="586.4" y2="306" stroke="#E2E7EC"/>
+<text x="586.4" y="322" text-anchor="middle" class="tk">2.60</text>
+<line x1="681.1" y1="14" x2="681.1" y2="306" stroke="#E2E7EC"/>
+<text x="681.1" y="322" text-anchor="middle" class="tk">2.65</text>
+<text x="435.0" y="340" text-anchor="middle" class="al">test loss at best validation checkpoint (nats/char), lower is better</text>
+<line x1="195.9" y1="14" x2="195.9" y2="306" stroke="#15202A" stroke-dasharray="5 4" stroke-width="1.5"/>
+<text x="200.9" y="24" class="tk">backprop 2.394</text>
+<text x="0" y="34" class="pt">K = 16</text>
+<text x="12" y="50" class="tk2">Dust</text>
+<line x1="408.3" y1="46" x2="430.3" y2="46" stroke="#7059AE" stroke-width="2" opacity="0.5"/>
+<circle cx="409.7" cy="46" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="408.3" cy="46" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="430.3" cy="46" r="4" fill="#7059AE" opacity="0.75"/>
+<line x1="416.1" y1="38" x2="416.1" y2="54" stroke="#15202A" stroke-width="2"/>
+<text x="12" y="76" class="tk2">Apical (unbiased)</text>
+<line x1="387.2" y1="72" x2="401.0" y2="72" stroke="#2D5C9E" stroke-width="2" opacity="0.5"/>
+<circle cx="401.0" cy="72" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="387.2" cy="72" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="393.1" cy="72" r="4" fill="#2D5C9E" opacity="0.75"/>
+<line x1="393.8" y1="64" x2="393.8" y2="80" stroke="#15202A" stroke-width="2"/>
+<text x="12" y="102" class="tk2">Precision-weighted</text>
+<line x1="490.4" y1="98" x2="506.7" y2="98" stroke="#B8433B" stroke-width="2" opacity="0.5"/>
+<circle cx="490.4" cy="98" r="4" fill="#B8433B" opacity="0.75"/>
+<circle cx="506.7" cy="98" r="4" fill="#B8433B" opacity="0.75"/>
+<circle cx="501.7" cy="98" r="4" fill="#B8433B" opacity="0.75"/>
+<line x1="499.6" y1="90" x2="499.6" y2="106" stroke="#15202A" stroke-width="2"/>
+<text x="0" y="138" class="pt">K = 64</text>
+<text x="12" y="154" class="tk2">Dust</text>
+<line x1="355.3" y1="150" x2="391.9" y2="150" stroke="#7059AE" stroke-width="2" opacity="0.5"/>
+<circle cx="375.4" cy="150" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="355.3" cy="150" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="391.9" cy="150" r="4" fill="#7059AE" opacity="0.75"/>
+<line x1="374.2" y1="142" x2="374.2" y2="158" stroke="#15202A" stroke-width="2"/>
+<text x="12" y="180" class="tk2">Apical (unbiased)</text>
+<line x1="349.5" y1="176" x2="363.7" y2="176" stroke="#2D5C9E" stroke-width="2" opacity="0.5"/>
+<circle cx="349.5" cy="176" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="353.4" cy="176" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="363.7" cy="176" r="4" fill="#2D5C9E" opacity="0.75"/>
+<line x1="355.5" y1="168" x2="355.5" y2="184" stroke="#15202A" stroke-width="2"/>
+<text x="12" y="206" class="tk2">Precision-weighted</text>
+<line x1="363.3" y1="202" x2="387.4" y2="202" stroke="#B8433B" stroke-width="2" opacity="0.5"/>
+<circle cx="363.3" cy="202" r="4" fill="#B8433B" opacity="0.75"/>
+<circle cx="369.4" cy="202" r="4" fill="#B8433B" opacity="0.75"/>
+<circle cx="387.4" cy="202" r="4" fill="#B8433B" opacity="0.75"/>
+<line x1="373.4" y1="194" x2="373.4" y2="210" stroke="#15202A" stroke-width="2"/>
+<text x="0" y="242" class="pt">K = 256</text>
+<text x="12" y="258" class="tk2">Dust</text>
+<line x1="343.7" y1="254" x2="349.2" y2="254" stroke="#7059AE" stroke-width="2" opacity="0.5"/>
+<circle cx="349.2" cy="254" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="346.3" cy="254" r="4" fill="#7059AE" opacity="0.75"/>
+<circle cx="343.7" cy="254" r="4" fill="#7059AE" opacity="0.75"/>
+<line x1="346.4" y1="246" x2="346.4" y2="262" stroke="#15202A" stroke-width="2"/>
+<text x="12" y="284" class="tk2">Apical (unbiased)</text>
+<line x1="343.1" y1="280" x2="347.5" y2="280" stroke="#2D5C9E" stroke-width="2" opacity="0.5"/>
+<circle cx="344.8" cy="280" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="343.1" cy="280" r="4" fill="#2D5C9E" opacity="0.75"/>
+<circle cx="347.5" cy="280" r="4" fill="#2D5C9E" opacity="0.75"/>
+<line x1="345.1" y1="272" x2="345.1" y2="288" stroke="#15202A" stroke-width="2"/>
+</svg>
