@@ -50,15 +50,15 @@ before you credit a score with understanding, make it clear two low bars. it has
 
 **Figure 3.** within-study rank correlation with measured outcomes for four scorers. the ESM-2 650M zero-shot score sits near zero on PET-hydrolytic activity, below a hydropathy feature and well below a mutation count.
 
-the confound control is the other bar. a mutational signature appeared to steer proteins toward a specific family in a protein model's embedding space, which looked like a biological finding. then the controls spoke. a composition-matched scramble, which keeps the amino-acid makeup and destroys the signature's structure, reproduced 72% of the movement, and protein length alone explained 92.5% of how far sequences moved. what is left that is specific to the signature is small.
+the confound control is the other bar. a mutational signature appeared to steer proteins toward a specific family in a protein model's embedding space, which looked like a biological finding. then the controls spoke. a composition-matched scramble, which keeps the amino-acid makeup and destroys the signature's structure, reproduced 72% of the movement on the steering readout, and about 34% on a second readout, while protein length alone explained 94.1% of how far sequences moved. what is left that is specific to the signature is small.
 
 ![A composition-matched scramble reproduces 72 percent of the embedding movement](/assets/images/prism-signature-steering/scramble.png)
 
-**Figure 4.** the real signature direction moves held-out embeddings toward the target family by 0.0425, and a composition-matched scramble keeps 72% of that at 0.0306. a movement in a representation is not a biological finding until it survives composition and length.
+**Figure 4.** the measured signature direction moves held-out embeddings toward the target family by 0.0425, and a composition-matched scramble keeps 72% of that at 0.0306. a movement in a representation is not a biological finding until it survives composition and length.
 
 ## decodability is not understanding
 
-a subtler failure lives at the representation level. a linear probe is a simple classifier read off a model's internal activations, and people take a probe that recovers a concept as evidence that the model represents it. but a probe can be right for the wrong reason. i trained a probe to name which mutational process produced an embedding shift, and on processes it saw in training it reached an AUC of 0.94. when i held out whole processes and asked it to name ones it had never seen, its top-1 accuracy fell to 0.7%, below a uniform guess.
+a subtler failure lives at the representation level. a linear probe is a simple classifier read off a model's internal activations, and people take a probe that recovers a concept as evidence that the model represents it. but a probe can be right for the wrong reason. i trained a probe to name which mutational process produced an embedding shift, and on processes it saw in training it reached an AUC of 0.94. when i held out whole processes and asked it to name ones it had never seen, its top-1 accuracy fell to 0.775%, below a uniform guess.
 
 ![Inverse probe AUC 0.94 on seen signatures, 0.8 percent on held-out ones](/assets/images/prism-signature-steering/loso.png)
 
@@ -74,17 +74,17 @@ the same caution applies to claims that a model has transferred knowledge or tha
 
 ## when the evaluator is the attack surface
 
-so far the model was the thing being measured. but in an agent loop the evaluator is itself a component, and a component can be gamed. i red-teamed a verifier, the part that decides which of an agent's proposals to keep, in a setting where ground truth exists so the real quality of what it keeps can be measured. a fully leaked scorer reached an AUROC of 0.991 and added only 0.028 good candidates per batch over random, against 1.082 for an honest scorer. worse, a probe that spot-checks a quarter of decisions detects 99.2% of attacks but recovers only 17% of the lost value, so catching an attack is not the same as undoing it.
+so far the model was the thing being measured. but in an agent loop the evaluator is itself a component, and a component can be gamed. i red-teamed a verifier, the part that decides which of an agent's proposals to keep, in a setting where ground truth exists so the actual quality of what it keeps can be measured. a fully leaked scorer reached an AUROC of 0.991 and added only 0.028 good candidates per batch over random, against 1.082 for an truthful scorer. worse, a probe that spot-checks a quarter of decisions detects 99.2% of attacks but recovers only about 10% of the lost value when its fallback is random selection, so catching an attack is not the same as undoing it. getting to 17% needs a second source of capability the attacker does not control, a model trained on the campaign's own measurements, which is a different fix from the detector.
 
-![Good candidates over random fall as more of the batch is audited, for the honest scorer](/assets/images/projects/plm/rq4/audit-sweep.png)
+![Good candidates over random fall as more of the batch is audited, for the truthful scorer](/assets/images/projects/plm/rq4/audit-sweep.png)
 
-**Figure 7.** good candidates per batch over random, against the share of the batch spent on a random audit. the honest run loses value to the audit faster than the audit recovers from the attacked one, so detection and recovery are different quantities and have to be reported separately.
+**Figure 7.** good candidates per batch over random, against the share of the batch spent on a random audit. the truthful run loses value to the audit faster than the audit recovers from the attacked one, so detection and recovery are different quantities and have to be reported separately.
 
 ## a protocol: evaluations that survive optimizers
 
 the thread through all six is that the failure never shows up in the headline number and always shows up once you add the control. so i run the same battery on any score before i trust it. first, does it beat a trivial baseline like a mutation count or the longest answer. second, does it stay useful in the top-ranked region a search would actually act on, measured as top-k utility rather than bulk correlation. third, does the signal survive a confound control for composition, length, or writing style. fourth, does it transfer to cases the model never saw, tested by holding whole groups out. a fifth rule sits underneath the others: when a search selects the top candidate, the right null is not a random draw but one that mimics the selection, because that is the baseline the winner's curse is measured against.
 
-two forward versions of this are worth naming. a white-box evaluation asks whether an assay property is even recoverable from a model's internal activations and whether that recovery survives a shift to unfamiliar families, which tests understanding rather than output correlation. a portable audit wraps any score, runs bounded search against it, and reports where the score and the real quality first separate, so the audit travels across domains rather than being tuned to one.
+two forward versions of this are worth naming. a white-box evaluation asks whether an assay property is even recoverable from a model's internal activations and whether that recovery survives a shift to unfamiliar families, which tests understanding rather than output correlation. a portable audit wraps any score, runs bounded search against it, and reports where the score and the actual quality first separate, so the audit travels across domains rather than being tuned to one.
 
 ## the biosecurity corollary
 
@@ -92,7 +92,7 @@ safety benchmarks inherit every one of these failures, and the stakes are higher
 
 ![Longest-answer rule 46.5 percent and question-blind classifier 34.6 percent against 25 percent chance](/assets/images/wmdp-bio-audit/option-only.png)
 
-**Figure 8.** two rules that never read the question still beat chance on a safety benchmark. the consequence is specific: a model's score is an upper bound on what it knows until the artifact share is subtracted, and a drop in that score under an intervention is not by itself evidence that knowledge was removed. an evaluation meant to gate real decisions has to measure the artifact before it measures the knowledge, and it should report aggregates rather than a recipe for exploiting the gap.
+**Figure 8.** two rules that never read the question still beat chance on a safety benchmark. the consequence is specific: a model's score is an upper bound on what it knows until the artifact share is subtracted, and a drop in that score under an intervention is not by itself evidence that knowledge was removed. an evaluation meant to gate deployment decisions has to measure the artifact before it measures the knowledge, and it should report aggregates rather than a recipe for exploiting the gap.
 
 ## what to do, and what this does not show
 

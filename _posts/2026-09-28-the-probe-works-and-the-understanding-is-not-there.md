@@ -11,7 +11,7 @@ excerpt: "A probe hit AUC 0.94, then collapsed on held-out mechanisms."
 
 *A probe hit AUC 0.94, then collapsed on held-out mechanisms. By Saanvi S. Subramanian.*
 
-I built a recommender that reads a protein embedding shift and ranks which mutational signature produced it. Scoring a real transition against sampled alternatives, it reached an AUC of 0.94. That number looked like a result. Then I held entire signatures out of training and asked it to name them among all 78. Top-1 accuracy was 0.8%, below the 1.28% a uniform guess would get.
+I built a recommender that reads a protein embedding shift and ranks which mutational signature produced it. Scoring a measured transition against sampled alternatives, it reached an AUC of 0.94. That number looked like a result. Then I held entire signatures out of training and asked it to name them among all 78. Top-1 accuracy was 0.8%, below the 1.28% a uniform guess would get.
 
 The probe worked, and the understanding was not there.
 
@@ -23,7 +23,7 @@ The pipeline simulates all 78 COSMIC single-base-substitution signatures on prot
 
 But "the embeddings move" is only a geometric observation. It does not yet tell me why they move, whether the direction corresponds to a biological mechanism, or whether a model can recognize the same kind of shift when the surface pattern changes. The inverse classifier gave me a way to make one of those assumptions testable.
 
-Those two numbers come from two different tasks, and the gap between the tasks is part of the lesson. AUC 0.94 is a binary discrimination: given a real transition and a sampled alternative, the model tells them apart, on signatures it saw in training. The 0.8% is a 78-way identification of signatures held out of training entirely. The first asks whether information is present in familiar data. The second asks whether it is organized into something that transfers to a mechanism the model has never seen. On the second question the model does worse than guessing.
+Those two numbers come from two different tasks, and the gap between the tasks is part of the lesson. AUC 0.94 is a binary discrimination: given a measured transition and a sampled alternative, the model tells them apart, on signatures it saw in training. The 0.8% is a 78-way identification of signatures held out of training entirely. The first asks whether information is present in familiar data. The second asks whether it is organized into something that transfers to a mechanism the model has never seen. On the second question the model does worse than guessing.
 
 That is why I reserve "understood" for representations that survive transfer, intervention, and selection. A probe can be right for the wrong reason. Even worse, the aggregate score can make that wrong reason look robust.
 

@@ -1,6 +1,6 @@
 ---
 layout: project
-title: "Clinical machine learning, evaluated honestly"
+title: "Clinical machine learning, evaluated plainly"
 permalink: /projects/clinical-ml/
 authors: "Saanvi S. Subramanian"
 affiliation: "California Institute of Technology"
@@ -42,13 +42,13 @@ video: "[TODO: Saanvi to add explainer video]"
 <div class="concept-card">
   <span class="cc-term">oracle localization</span>
   <span class="cc-gloss">a result reported under the assumption that the correct region is already known.</span>
-  <p>when a method is told which lobe to search, its recovery numbers are an upper bound on what a real pipeline could achieve, because a real pipeline has to find the region first. reporting the oracle number is useful, as long as it is never mistaken for the achievable one.</p>
+  <p>when a method is told which lobe to search, its recovery numbers are an upper bound on what a deployable pipeline could achieve, because a deployable pipeline has to find the region first. reporting the oracle number is useful, as long as it is never mistaken for the achievable one.</p>
 </div>
 
 <p class="pp-section-num">02 &middot; The Approach</p>
 <h2 class="pp-section-title">report the achievable number, and label the assumptions</h2>
 
-<p>i separate what a method could do under ideal information from what it could do in practice, and i say which is which every time a number appears. where a result depends on a region being known in advance, i report it as an upper bound under oracle localization, and i put the honest failure cases next to the gains instead of burying them. the standard is the same across all three threads. a number is only as trustworthy as the assumption printed beside it.</p>
+<p>i separate what a method could do under ideal information from what it could do in practice, and i say which is which every time a number appears. where a result depends on a region being known in advance, i report it as an upper bound under oracle localization, and i put the failure cases next to the gains instead of burying them. the standard is the same across all three threads. a number is only as trustworthy as the assumption printed beside it.</p>
 
 <p class="pp-section-num">03 &middot; Results</p>
 <h2 class="pp-section-title">three threads, one standard of evidence</h2>
@@ -60,12 +60,12 @@ video: "[TODO: Saanvi to add explainer video]"
   <p><span class="venue-badge">ECCV AI4M3D 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
   <p class="bm-links"><a href="https://openreview.net/forum?id=8EdNGJbsTq" target="_blank" rel="noopener">Paper</a></p>
 
-  <p>i wanted to know whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. the intuition is simple. a detector that scores every voxel with one global threshold either sets the bar high and loses faint real lesions, or sets it low and fills up with false positives. if you already suspect which lobe the lesion is in, you can lower the bar there and raise it everywhere else, so a faint lesion in the right place survives while noise elsewhere is suppressed. the method does that, and then searches for several candidate peaks inside the restricted region rather than trusting a single maximum. the recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
+  <p>i wanted to know whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. the intuition is simple. a detector that scores every voxel with one global threshold either sets the bar high and loses faint lesions, or sets it low and fills up with false positives. if you already suspect which lobe the lesion is in, you can lower the bar there and raise it everywhere else, so a faint lesion in the right place survives while noise elsewhere is suppressed. the method does that, and then searches for several candidate peaks inside the restricted region rather than trusting a single maximum. the recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
 
   <div class="concept-card">
     <span class="cc-term">what the pipeline uses</span>
     <span class="cc-gloss">annotated localization zones, not a raw EEG signal.</span>
-    <p>the zones come from clinical annotations and anatomical parcels, so the pipeline is told where to look. it does not read an EEG trace, which is why every recovery number here is an upper bound rather than an achievable EEG-guided result. naming that gap is the honest part of the result.</p>
+    <p>the zones come from clinical annotations and anatomical parcels, so the pipeline is told where to look. it does not read an EEG trace, which is why every recovery number here is an upper bound rather than an achievable EEG-guided result. naming that gap is the part that matters.</p>
   </div>
 
   <ol class="howto">
@@ -84,7 +84,10 @@ video: "[TODO: Saanvi to add explainer video]"
   <div class="stat-callout"><div class="sc-num">14 of 24</div><div class="sc-lab">missed lesions recovered (58%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left, baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right, the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
+    <picture>
+      <source media="(max-width: 600px)" srcset="{{ '/assets/images/projects/clinical/fcd-detection-recovery-stacked.png' | relative_url }}">
+      <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left, baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right, the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
+    </picture>
     <figcaption><strong>figure 1. detection, then recovery.</strong> left, the baseline T2-FLAIR nnU-Net detects 86.3% of lesions across the four cohorts, 151 of 175, missing 24. of those misses 17 are silent, meaning the model produced no suprathreshold output at all, and 7 are mislocalized, meaning it made a confident prediction 34 to 139 mm from the lesion. right, restricting a multi-peak search to the lesion lobe recovers 14 of the 24 misses, 58%, split into 10 of 17 silent and 4 of 7 mislocalized, well above the 1.4 expected from a spatially uninformative search (P &lt; 0.001). every recovery appears within the top four candidate peaks. the lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling, not an achievable EEG-guided number.</figcaption>
   </figure>
 
@@ -100,7 +103,7 @@ video: "[TODO: Saanvi to add explainer video]"
 
   <div class="finding">
     <div class="fn-label">Finding 3</div>
-    <p>the honest failure case is a wrong prior. pointing the search at the opposite-side lobe drops recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions rather than just failing to help. tightening the zone also costs, since the subregional zone dropped two cases the lobe had recovered. the prior has to be right, and no finer than the lobe.</p>
+    <p>the failure case worth stating is a wrong prior. pointing the search at the opposite-side lobe drops recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions rather than just failing to help. tightening the zone also costs, since the subregional zone dropped two cases the lobe had recovered. the prior has to be right, and no finer than the lobe.</p>
   </div>
 
   <div class="why-box">
@@ -108,10 +111,10 @@ video: "[TODO: Saanvi to add explainer video]"
     <p>because the recovery of 14 of 24 assumes the correct lobe is already known. a deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number. that is why i report it as an upper bound every time it appears, and why the next step is removing the assumption rather than tuning it.</p>
   </div>
 
-  <p class="why-box" style="background:none;border:none;padding-left:0;">this matters because the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a real pipeline can supply the lobe without being told it. the oracle number shows the ceiling is high enough to aim for. it does not show the floor has been reached.</p>
+  <p class="why-box" style="background:none;border:none;padding-left:0;">this matters because the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a deployable pipeline can supply the lobe without being told it. the oracle number shows the ceiling is high enough to aim for. it does not show the floor has been reached.</p>
 
   <div class="limitations">
-    <p><strong>Limitations.</strong> the localization zone is simulated from the confirmed lesion lobe, not from a real EEG report or raw signal, so every recovery number is a ceiling a real prior would approach rather than reach. the recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 24 across a sweep of them, but they were set on this cohort with no held-out split and there is no external test set yet. the recovery step has not been checked for specificity on healthy controls. the next step is a pipeline that takes localization from real EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
+    <p><strong>Limitations.</strong> the localization zone is simulated from the confirmed lesion lobe, not from a measured EEG report or raw signal, so every recovery number is a ceiling a measured prior would approach rather than reach. the recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 24 across a sweep of them, but they were set on this cohort with no held-out split and there is no external test set yet. the recovery step has not been checked for specificity on healthy controls. the next step is a pipeline that takes localization from measured EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
   </div>
 </section>
 
@@ -127,8 +130,11 @@ video: "[TODO: Saanvi to add explainer video]"
   <p>what surprised me is that the signal that knows when to answer is not the model's own confidence. at 40% coverage, a policy that routes on cross-segment self-agreement, how often the separate segments point to the same hemisphere, answers its patients at 88.4% accuracy, against 70.0% for the model's own confidence, 67.3% for random routing, and 68.7% for answering every patient. the bootstrap gap between self-agreement and confidence is 18.7 points [95% CI +7.3, +30.6] over 4,000 resamples. the sequential policy reaches that accuracy on about 7.9 segments per answered patient, and reading all of a patient's segments before deciding gains almost nothing, 89.0%, while spending about three times as many observations. the tradeoff holds across segment orderings and observation budgets.</p>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/clinical/haic-routing.png' | relative_url }}" alt="Left, at 40% coverage self-agreement answers at 88.4% versus 70.0% for confidence and 67.3% random. Right, a risk-coverage curve where only self-agreement rises as coverage falls.">
-    <figcaption><strong>figure 2. who to answer, and when.</strong> left, accuracy on the answered patients at 40% coverage. a policy that routes on cross-segment self-agreement reaches 88.4%, while the model's own confidence (70.0%) and random routing (67.3%) barely beat answering every patient (68.7%, dashed). right, the risk-coverage trade-off. as the policy answers fewer patients, self-agreement accuracy climbs along a real curve, from 68.7% at full coverage to 94.3% at 20%, while confidence stays flat near 63 to 71% at every coverage, so it never isolates the patients it should answer. 166 patients, one 10-second EEG segment per observation.</figcaption>
+    <picture>
+      <source media="(max-width: 600px)" srcset="{{ '/assets/images/projects/clinical/haic-routing-stacked.png' | relative_url }}">
+      <img src="{{ '/assets/images/projects/clinical/haic-routing.png' | relative_url }}" alt="Left, at 40% coverage self-agreement answers at 88.4% versus 70.0% for confidence and 67.3% random. Right, a risk-coverage curve where only self-agreement rises as coverage falls.">
+    </picture>
+    <figcaption><strong>figure 2. who to answer, and when.</strong> left, accuracy on the answered patients at 40% coverage. a policy that routes on cross-segment self-agreement reaches 88.4%, while the model's own confidence (70.0%) and random routing (67.3%) barely beat answering every patient (68.7%, dashed). right, the risk-coverage trade-off. as the policy answers fewer patients, self-agreement accuracy climbs along a smooth curve, from 68.7% at full coverage to 94.3% at 20%, while confidence stays flat near 63 to 71% at every coverage, so it never isolates the patients it should answer. 166 patients, one 10-second EEG segment per observation.</figcaption>
   </figure>
 
   <div class="finding"><div class="fn-label">Finding 4</div><p>at 40% coverage, routing on cross-segment self-agreement answers patients at 88.4% accuracy against 70.0% for the model's own confidence and 68.7% for answering everyone, a bootstrap gap of 18.7 points [CI +7.3, +30.6], so the signal that knows when to answer is agreement across segments, not confidence.</p></div>
@@ -238,3 +244,4 @@ video: "[TODO: Saanvi to add explainer video]"
   year      = {2026},
   url       = {https://openreview.net/forum?id=k7zEEtF1V8}
 }
+</div>

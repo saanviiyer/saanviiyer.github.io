@@ -29,7 +29,7 @@ Two notes on the model size, because they bound what the pipeline can say. The t
 
 ## SBS17a ranks first toward PF17041 in both clans
 
-On the raw geometry, SBS17a is the top-ranked signature of 78 for directing sequences toward the Pfam family PF17041, and it holds that rank in both CL0023 and CL0072. The same direction appearing in two protein contexts is what a real effect would produce rather than a single coincidence.
+On the raw geometry, SBS17a is the top-ranked signature of 78 for directing sequences toward the Pfam family PF17041, and it holds that rank in both CL0023 and CL0072. The same direction appearing in two protein contexts is what a genuine effect would produce rather than a single coincidence.
 
 The corrected rerun changes how much that recurrence is worth. The legacy pipeline translated each mutant to the first stop codon. Mapping stop codons to X and continuing translation removes nearly all of the between-signature length variance, and SBS17a stays first in both clans, with concentration rising from 31.6% to 71.7% in CL0023 and from 68.3% to 100.0% in CL0072. But PF17041 attracts more signatures overall under read-through, CL0072 hubness rises from 1.13% to 5.35%, and enrichment falls from 60.7 times to 18.7 times. Six signatures select PF17041 as their modal CL0072 target, and other pairs also reach 100% concentration. The rerun keeps the association and removes the earlier claim that SBS17a was unique in it.
 
@@ -51,27 +51,27 @@ Fitting mean absolute displacement on log translated length, one point per signa
 
 ## A composition-matched scramble reproduces 72% of the steering, on one readout
 
-The steering arm adds a norm-matched direction vector at hidden layer 5 to held-out wild-type embeddings and measures how far that moves them toward the PF17041 centroid. The real SBS17a direction reduces cosine distance by 0.0425. A context-scrambled direction, which preserves composition and destroys the signature's trinucleotide structure, reduces it by 0.0306. The ratio is 72% over five seeds, which is why I read this effect as predominantly compositional.
+The steering arm adds a norm-matched direction vector at hidden layer 5 to held-out wild-type embeddings and measures how far that moves them toward the PF17041 centroid. The measured SBS17a direction reduces cosine distance by 0.0425. A context-scrambled direction, which preserves composition and destroys the signature's trinucleotide structure, reduces it by 0.0306. The ratio is 72% over five seeds, which is why I read this effect as predominantly compositional.
 
-That 72% belongs to that readout and does not generalize across the project. On the trajectory readout the same scramble control retains only about 34% of the excess above uniform, with real, scrambled and uniform concentrations at 0.4923, 0.1900 and 0.0360. Two controls of the same name give different answers depending on what they are measuring, so I report the readout alongside the ratio.
+That 72% belongs to that readout and does not generalize across the project. On the trajectory readout the same scramble control retains only about 34% of the excess above uniform, with measured, scrambled and uniform concentrations at 0.4923, 0.1900 and 0.0360. Two controls of the same name give different answers depending on what they are measuring, so I report the readout alongside the ratio.
 
 A composition follow-up narrows this further. Amino-acid frequencies alone predict cosine distance to the PF17041 centroid at grouped cross-validated R-squared 0.339. On the change in distance rather than the level, that falls to 0.0966, so composition explains about a tenth of the movement itself. The closed-loop design arm found signature-guided minus composition-matched at -0.0027, p = 0.875.
 
 ![The signature direction moves held-out embeddings toward PF17041, and a context-scrambled direction keeps 72% of that movement](/assets/images/prism-signature-steering/scramble.png)
 
-**Figure 4.** The real SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, and a context-scrambled direction that preserves composition keeps 72% of that movement. The right panel shows the context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014.
+**Figure 4.** The measured SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, and a context-scrambled direction that preserves composition keeps 72% of that movement. The right panel shows the context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014.
 
 ## The recommender: two evaluations, not one
 
 The inverse-design recommender ranks signatures for a requested Pfam-to-Pfam transition. A random forest reads the origin centroid, the target centroid, their difference, and each signature's 96-channel COSMIC profile, over 35,403 positive-attraction transitions spanning 75 proteins.
 
-It gets scored two ways, and the two are different tasks. The archived in-distribution run reports AUC 0.94, a binary discrimination between a real transition and sampled negative signatures on a protein-grouped split. The leave-signatures-out run is a 78-way identification with whole signatures held out as both positives and negatives across five folds, and there top-1 accuracy is 0.775% and top-5 is 7.125%. Top-1 sits below the 1.28% a uniform guess over 78 classes would give. With SBS17a excluded from training, the model ranks it first in none of 158 test cases. A separate archived run gives top-1 0.725% and top-5 7.975%, which is the source of an earlier 0.7% in my own prose; the canonical values are the 0.775% ones.
+It gets scored two ways, and the two are different tasks. The archived in-distribution run reports AUC 0.94, a binary discrimination between a measured transition and sampled negative signatures on a protein-grouped split. The leave-signatures-out run is a 78-way identification with whole signatures held out as both positives and negatives across five folds, and there top-1 accuracy is 0.775% and top-5 is 7.125%. Top-1 sits below the 1.28% a uniform guess over 78 classes would give. With SBS17a excluded from training, the model ranks it first in none of 158 test cases. A separate archived run gives top-1 0.725% and top-5 7.975%, which is the source of an earlier 0.7% in my own prose; the canonical values are the 0.775% ones.
 
 AUC measures discrimination over score thresholds on familiar mechanisms. Top-k measures whether the right signature surfaces for a mechanism never seen. Reporting only the first would describe a recommender that does not work out of distribution as one that works.
 
 ![Transfer to unseen signatures: leave-signatures-out top-1 accuracy is 0.8 percent, below the 1.3 percent uniform line, and 0.0 percent with SBS17a withheld](/assets/images/prism-signature-steering/loso.png)
 
-**Figure 5.** Transfer to unseen signatures. Leave-signatures-out top-1 accuracy is 0.8%, below the 1.3% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld.
+**Figure 5.** Transfer to unseen signatures. Leave-signatures-out top-1 accuracy is 0.775%, plotted rounded to 0.8%, below the 1.28% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld.
 
 ## What is not here
 
