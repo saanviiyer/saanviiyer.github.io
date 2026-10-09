@@ -16,9 +16,13 @@
 
 # ─── INVITED TALKS & ORAL PRESENTATIONS ───
 - title: "Lightning Talk & Poster, RoBoWoMo 2026 at IEEE IROS"
-  detail: '"A Faithful Heading Variable Emerges in Predictive World Models Only Under Partial Observability" accepted for both a lightning talk and a poster at the Robot World Models workshop (RoBoWoMo) at IEEE IROS 2026.'
+  detail: '"A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability" accepted for both a lightning talk and a poster at the Robot World Models workshop (RoBoWoMo) at IEEE IROS 2026.'
   year: "2026"
   category: "talk"
+- title: "Poster, Robotics World Modeling workshop at NeurIPS 2026"
+  detail: '"Which Latent Coordinates Drive World-Model Dynamics?" accepted as a poster at the Robotics World Modeling workshop at NeurIPS 2026.'
+  year: "2026"
+  category: "poster"
 
 - title: "Oral Presentation, ECCV Artificial Intelligence for Medical 3D Vision Workshop"
   detail: 'CortSeer accepted for an oral presentation at the <a href="https://ai4m3d.github.io/#schedule" target="_blank" rel="noopener">Artificial Intelligence for Medical 3D Vision workshop</a> at ECCV.'

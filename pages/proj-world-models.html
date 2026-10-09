@@ -5,18 +5,18 @@ permalink: /projects/world-models/
 authors: "Saanvi S. Subramanian"
 affiliation: "California Institute of Technology"
 hook: "A model that predicts its next observation has to carry an internal state, and i study when that state becomes a usable variable and when continued training quietly erases what it already learned."
-thesis: "A world model builds a faithful internal variable only when the task forces it to, and the same training that adds new skill is what takes old skill away."
+thesis: "A world model builds a usable internal variable only when the task forces it to, and the same training that adds new skill is what takes old skill away."
 ---
 
 <p class="pp-question">what makes a predictive model build a usable internal variable, and what makes it keep one?</p>
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p>most of my work asks whether a model's score means what it claims. here i ask the same question one level down, about the variable a model builds inside itself. a world model is a model that predicts what it will observe next, and to do that it has to hold an internal state. two questions follow. first, when does that state become a variable you can actually read and steer, rather than a tangle. i train action-conditioned world models on a robot's range sensors with no access to its heading, and a faithful heading variable appears only under partial observability. a blackout-trained model tracks true heading at a fidelity of 0.99 against 0.58 for an always-on model, and the variable behaves like a continuous attractor and can be steered causally. second, what happens to an old skill when a model keeps training. i compare biologically inspired learning rules against backpropagation at matched learning, and once the comparison is fair the retention advantage of locality is under a third of a point, while replay adds about ten. both halves are about the same thing. an internal representation is only as good as the pressure that shaped it.</p>
+  <p>most of my work asks whether a model's score means what it claims. here i ask the same question one level down, about the variable a model builds inside itself. a world model is a model that predicts what it will observe next, and to do that it has to hold an internal state. two questions follow. first, when does that state become a variable you can actually read, steer, and that the model's own dynamics use, rather than a tangle. i train action-conditioned world models on a robot's range sensors with no access to its heading, and a steerable heading variable appears only under partial observability. a blackout-trained model tracks true heading at a ring-coordinate fidelity of 0.99 while the best always-on control reaches only 0.61, so the two groups separate with no overlap, and the variable behaves like a continuous attractor that is steered causally. a companion study pushes the same question further, showing that a probe can read a coordinate out of the latent state that the dynamics never use, and that the coordinates the dynamics do use are set by what the observation makes separable. second, what happens to an old skill when a model keeps training. i compare biologically inspired learning rules against backpropagation at matched learning, and once the comparison is fair the retention advantage of locality is under a third of a point, while replay adds about ten. both halves are about the same thing. an internal representation is only as good as the pressure that shaped it.</p>
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="n">0.99 vs 0.58</div><div class="l">heading fidelity, blackout-trained against always-on, with no pose supervision</div></div>
+  <div class="stat"><div class="n">0.99 vs 0.61</div><div class="l">ring-coordinate fidelity, lowest blackout against highest always-on, no overlap</div></div>
   <div class="stat"><div class="n">continuous attractor</div><div class="l">off-ring perturbations decay while a phase shift along the ring persists</div></div>
   <div class="stat"><div class="n">+0.21 pts</div><div class="l">retention edge of the best local rule at matched learning, 95% CI [+0.11, +0.31]</div></div>
   <div class="stat"><div class="n">+10.6 pts</div><div class="l">retention from replay, about fifty times the local-rule effect</div></div>
@@ -35,29 +35,40 @@ thesis: "A world model builds a faithful internal variable only when the task fo
 <p>both studies ask what shapes the variable a model carries, so i hold the measurement to one standard in the same way each time. in the heading study i never give the model pose and i never put a pose term in the loss, so any heading variable has to emerge on its own, and i measure fidelity only at the steps where the model must integrate, deep inside a blackout with no observation. in the continual-learning study i never let a fancy rule compete against a weak baseline, so i match the learning accuracy of every method before i compare how much it forgets. in both, the control is the point. a ring that appears in every model is not evidence until fidelity separates the conditions, and a retention gain is not evidence until the baseline is tuned as hard as the rule.</p>
 
 <p class="pp-section-num">03 &middot; Results</p>
-<h2 class="pp-section-title">two findings</h2>
+<h2 class="pp-section-title">three findings</h2>
 
 <section class="pp-thread" id="faithful-heading">
-  <h3 class="pp-thread-title">a faithful heading variable emerges only under partial observability</h3>
+  <h3 class="pp-thread-title">a steerable heading variable emerges only under partial observability</h3>
   <p><span class="venue-badge">RoBoWoMo @ IEEE IROS 2026</span><span class="venue-badge">Lightning talk and poster</span></p>
 
-  <p>i train action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. hidden states form a ring in nearly every condition, including control models that cannot integrate heading, so ring shape alone is not evidence. the deciding test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. blackout training, where observations are withheld for stretches, produces a ring that tracks heading at a fidelity of 0.99, against 0.58 for an always-on model, so the faithful variable only appears when the task forces the model to hold it.</p>
+  <p>i train 36 action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. hidden states form a ring in nearly every condition, and in the recurrent backbones persistent homology finds one in 7 of 8 always-observed models and 7 of 8 shuffled-action controls that cannot integrate heading, so ring shape alone is not evidence. the deciding test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. withholding observations during training lifts that fidelity by 0.421 over a matched shuffled-action null, with all 12 paired differences positive, and the lowest-fidelity blackout model, at 0.99, still beats the highest-fidelity always-on control, at 0.61, so the 36 models separate with no overlap. the steerable variable only appears when the task forces the model to hold it.</p>
 
   <figure class="pp-fig">
-    <img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Blackout-trained ring tracks heading at 0.99, always-on at 0.58">
-    <figcaption><strong>figure 1.</strong> hidden states projected to their first two components, colored by true heading. the blackout-trained model keeps a clean ring whose coordinate tracks heading at a fidelity of 0.99, while the always-on model's ring is scrambled during a blackout and tracks heading at only 0.58.</figcaption>
+    <img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Blackout-trained ring tracks heading at 0.99, always-on ring scrambled during a blackout">
+    <figcaption><strong>figure 1.</strong> hidden states projected to their first two components, colored by true heading. the blackout-trained model keeps a clean ring whose coordinate tracks heading at a fidelity of 0.99, while the always-on model's ring is scrambled during a blackout and loses heading fidelity. across the 36 models the lowest blackout fidelity (0.99) stays above the highest always-on (0.61), with no overlap.</figcaption>
   </figure>
 
-  <p>the faithful ring behaves like a continuous attractor, which is the structure neuroscience proposes for head-direction cells. a perturbation off the ring decays back to it, while a shift in position along the ring is held rather than erased. rotating the ring plane changes the model's predicted observation to the one for the rotated heading, so the variable is used causally and not just correlated with heading.</p>
+  <p>the steerable ring behaves like a continuous attractor, which is the structure neuroscience proposes for head-direction cells. a perturbation off the ring decays back to it, while a shift in position along the ring is held rather than erased. rotating the ring plane changes the model's predicted observation to the one for the rotated heading, at a gain of 0.897 and an R-squared of 0.998, so the variable is used causally and not just correlated with heading. the shuffled-action null also steers, at a gain of 0.735, so the separation between the conditions rests on fidelity rather than on steering alone.</p>
 
   <p>this matters because a ring shows up in almost every one of these models, so anyone reading structure off a hidden state could point at it and call it a heading representation. the fidelity test under blackout and the causal rotation are what separate a variable the model actually integrates and uses from one that only looks right, and only the partial-observability condition produces the genuine one.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/wm/faithful-attractor.png' | relative_url }}" alt="Perturbations decay, state returns to the manifold, and the phase offset persists for the blackout-trained model">
-    <figcaption><strong>figure 2.</strong> after a perturbation during a blackout, the off-ring component decays and the state returns to its manifold, while the induced phase offset along the ring persists for the blackout-trained model near 0.9 and decays for the always-on model toward 0.4. that pattern, decay off the ring and memory along it, is the continuous-attractor signature.</figcaption>
+    <figcaption><strong>figure 2.</strong> after a perturbation during a blackout, the off-ring component decays and the state returns to its manifold, while the induced phase offset along the ring persists for the blackout-trained model at 0.83 rad of a 1.0 rad rotation after 30 dark steps and decays for the always-on model to 0.37. that pattern, decay off the ring and memory along it, is the continuous-attractor signature.</figcaption>
   </figure>
 
-  <div class="finding"><div class="fn-label">Finding 1</div><p>with no pose supervision, a predictive world model builds a heading variable that tracks true heading at a fidelity of 0.99 only under partial observability, against 0.58 when trained always-on, and the variable is a causally steerable continuous attractor.</p></div>
+  <div class="finding"><div class="fn-label">Finding 1</div><p>with no pose supervision, a predictive world model builds a heading variable that tracks true heading at a fidelity of 0.99 only under partial observability, while the best always-on control reaches 0.61 and the 36 models separate with no overlap, and the variable is a causally steerable continuous attractor.</p></div>
+</section>
+
+<section class="pp-thread" id="used-coordinates">
+  <h3 class="pp-thread-title">a probe can decode a coordinate the dynamics never use</h3>
+  <p><span class="venue-badge">Robotics World Modeling @ NeurIPS 2026</span><span class="venue-badge">Poster</span></p>
+
+  <p>the heading result raised a sharper question. a probe can read a variable out of a model's latent state even when the model's own transition dynamics never act on it, so decoding and use are different properties. to tell them apart i built a label-free test that uses only actions and the frozen model's own predictions. a candidate coordinate is a plane in the latent space, and the test asks whether rotating the state inside that plane reproduces the effect of an extra action, judged against a variance-matched null. in the shuffled-action control from the heading study, heading decodes to within 20 to 24 degrees, yet the conjugate plane sits 69 to 83 degrees away, so the variable is present in a decaying trace of the last observation while the dynamics do not act on it.</p>
+
+  <p>which coordinates a model builds is decided by the observation, not the actuators. i trained the same model on three two-joint arms that differ only in how the image depends on the joints, with dynamics, actions, and training budget held fixed. the coordinates follow what the image makes separable. a serial arm, where the image depends on one combination of the joints, gives one coordinate at (1,0). a parity arm, where the image depends on the sum, gives one at (1,1). a decoupled arm, where the image depends on both joints separately, gives two, at (1,0) and (0,1). both joint angles decode in every case, but the proximal joint's conjugacy margin is six times the distal joint's, so extra actuators do not buy extra coordinates.</p>
+
+  <div class="finding"><div class="fn-label">Finding</div><p>decoding and use come apart. a coordinate can be read from a world model's latent state while its dynamics ignore it, and the coordinates the dynamics do use are set by what the observation makes separable, not by the number of actuators. this is shown in small synthetic settings with planar rotations, not on physical robots or video.</p></div>
 </section>
 
 <section class="pp-thread" id="engram">
@@ -86,7 +97,7 @@ thesis: "A world model builds a faithful internal variable only when the task fo
 <h2 class="pp-section-title">what both studies share</h2>
 
 <div class="takeaways">
-  <div class="takeaway"><div class="tk-h">pressure builds the variable</div>a faithful heading variable appears at fidelity 0.99 only when a blackout forces the model to integrate.</div>
+  <div class="takeaway"><div class="tk-h">pressure builds the variable</div>a steerable heading variable appears at fidelity 0.99 only when a blackout forces the model to integrate.</div>
   <div class="takeaway"><div class="tk-h">it is a genuine attractor</div>off-ring perturbations decay, a phase shift along the ring persists, and rotation is causal.</div>
   <div class="takeaway"><div class="tk-h">a fair baseline is everything</div>matched learning erases the local-rule retention edge, leaving under a third of a point.</div>
   <div class="takeaway"><div class="tk-h">forgetting is an alignment problem</div>continued training erases old behavior the same way it erases an old task.</div>
@@ -100,7 +111,7 @@ thesis: "A world model builds a faithful internal variable only when the task fo
 <p class="pp-section-num" id="cite">Cite</p>
 <div class="bibtex">@inproceedings{subramanian2026heading,
   author    = {Saanvi S. Subramanian},
-  title     = {A Faithful Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
+  title     = {A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
   booktitle = {Robot World Models Workshop (RoBoWoMo), IEEE IROS},
   year      = {2026}
 }

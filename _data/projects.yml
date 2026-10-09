@@ -3,16 +3,20 @@
 # "status" is a short current-progress note shown under the title.
 # "cats" color-codes the project: neuro | ai | compbio | eng
 
-- title: "Faithful Heading in Predictive World Models"
+- title: "A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability"
   featured: true
   theme: "neuro"
-  tags: "Python · RL · World Models"
-  status: "Lightning talk + poster, RoBoWoMo 2026 at IEEE IROS."
-  link: ""
+  tags: "Python · World Models · Topology"
+  status: "Under review, ICLR 2027. Lightning talk and poster, RoBoWoMo 2026 at IEEE IROS. Also a poster at the Robotics World Modeling workshop at NeurIPS 2026. Code public, MIT licensed."
+  link: "https://github.com/saanviiyer/robowomo-attractors"
   cats: ["ai", "neuro"]
   bullets:
-    - "Predictive world models trained from pixels alone recover a faithful heading variable and spatial structure with no pose supervision."
-    - "The heading representation emerges only under partial observability: withholding visual input during stretches of training markedly lowers heading error, and the learned structure transfers to unseen arenas."
+    - "36 action-conditioned world models trained on egocentric range observations, with no pose in the input and no pose term in the loss."
+    - "In the recurrent backbones, persistent homology finds a ring in 7 of 8 always-observed models and 7 of 8 temporally shuffled-action controls, which cannot integrate heading. Ring topology is therefore not evidence that a recurrent model learned a heading variable. The transformer differs: the same rule fires on 1 of 4 always-observed and 0 of 4 shuffled models, so there the topological statistic does discriminate."
+    - "What separates the conditions is fidelity: how closely the coordinate around the ring tracks physical heading at the steps where the model has no observation and must integrate. Withholding observations during training raises fidelity by 0.421 over the matched shuffled-action null, with all 12 paired differences positive across all three architectures, and fidelity separates all 36 models with no overlap."
+    - "The ring behaves like an attractor: off-manifold displacement decays and an induced phase offset persists. Rotating the ring's plane moves the predicted observation toward the rotated heading, though the shuffled-action null also steers, at gain 0.735 against 0.897, so the separation between conditions rests on fidelity rather than on steering."
+    - "Curved-arena training reproduces the effect. Pixel-observation training reproduces it on training visuals but not on held-out ones, where absolute fidelity falls to 0.295, below the always-observed range-sensor control."
+    - "A companion study, Which Latent Coordinates Drive World-Model Dynamics? (poster, Robotics World Modeling at NeurIPS 2026), separates decoding from use: a label-free test shows a probe can read a coordinate the model's dynamics never act on, and the coordinates the dynamics do use follow what the observation makes separable, giving one coordinate for a serial arm, one for a parity arm, and two for a decoupled arm."
 
 - title: "plimsoll"
   featured: true
