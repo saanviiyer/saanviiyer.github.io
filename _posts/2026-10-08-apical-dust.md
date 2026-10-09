@@ -150,4 +150,4 @@ The more general lesson is about how to evaluate gradient estimators. Per-step c
 
 ## Code
 
-The code is at [github.com/saanviiyer/saanviiyer.github.io/tree/main/code/apical-dust](https://github.com/saanviiyer/saanviiyer.github.io/tree/main/code/apical-dust): apical.py (training), probe.py (Figure 1), bias.py (Figure 2), and sweep.py (Figures 3 and 4). This is independent research and a follow-up to Dust, not affiliated with Q Labs.
+This is independent research and a follow-up to Dust, not affiliated with Q Labs.
