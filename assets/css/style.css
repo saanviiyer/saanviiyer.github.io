@@ -588,6 +588,7 @@ nav {
 .rp-body blockquote { border-left: 2px solid var(--accent); color: var(--muted); margin: 28px 0; padding-left: 22px; }
 .rp-body hr { border: none; border-top: 1px solid var(--accent-soft); margin: 44px 0; }
 .rp-body img { max-width: 100%; height: auto; }
+.rp-body pre { max-width: 100%; overflow-x: auto; }
 /* figures authored as an image paragraph followed by a bold caption paragraph */
 .rp-body p:has(> img) { text-align: center; margin: 48px 0 12px; }
 .rp-body p:has(> img) > img { width: 100%; border-radius: 8px; }
