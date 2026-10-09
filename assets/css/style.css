@@ -754,6 +754,27 @@ footer a:hover { text-decoration: underline; }
 .home sup { font-size: 0.62em; line-height: 0; }
 .home sup a { text-decoration: none; padding: 0 1px; }
 
+.home-cta {
+  display: inline-block;
+  margin: 0.2rem 0 1.6rem;
+  padding: 0.62rem 1.15rem;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.home a.home-cta { color: var(--accent); text-decoration: none; }
+.home a.home-cta:hover { background: var(--accent); color: var(--paper); }
+
+.statement p { font-size: 1.14rem; line-height: 1.62; margin: 0 0 1.45rem; }
+.statement p:first-of-type { margin-top: 0; }
+.statement a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; text-decoration-color: var(--accent); }
+.statement a:hover { color: var(--accent); }
+.statement sup { font-size: 0.62em; line-height: 0; }
+.statement sup a { text-decoration: none; padding: 0 1px; color: var(--accent); }
+
 .home-foot {
   margin-top: 3.2rem;
   padding-top: 1.5rem;
