@@ -6,7 +6,7 @@ tag: "Research"
 section: technical
 permalink: /thinking/apical-dust/
 thumb: /assets/images/apical-dust/thumb.png
-excerpt: "I added a learned top-down feedback pathway to Q Labs' Dust, a rule that trains transformers with noise instead of a backward pass. As an unbiased control variate it lowers test loss at small populations at about the same compute, and the gain fades by K=256."
+excerpt: "I added a learned top-down feedback pathway to Q Labs' Dust, a rule that trains transformers with noise instead of a backward pass. As an unbiased control variate it lowers test loss at small populations at about the same compute. Fixing how Dust credits its embeddings and attention then removed much of its remaining bias, and on that fixed baseline the feedback gain at K=16 grew to 0.020."
 ---
 
 I was interested in Q Labs' new research on Dust because it is the first zeroth-order method competitive with backpropagation at pretraining transformers, and because at heart it is a biologically flavored learning rule. Noise in the activations, a reward signal, and a local update are the same three ingredients as three-factor plasticity in the brain. My own recent work asks a skeptical question about rules like this: what do biologically constrained learning algorithms actually buy once the comparisons are fair? In my post on [brain-inspired algorithms](/thinking/brain-inspired-algorithms/), the prequel to this one, the answer was less than reported, because a fair baseline erased the advantage locality was supposed to give. Dust made me want to ask the constructive version. If I add one more piece of cortical machinery, top-down feedback onto apical dendrites, does training get better at the same population, and does the gain survive the same scrutiny? This is my independent follow-up to Q Labs' Dust paper, and it is not affiliated with Q Labs.
@@ -18,7 +18,9 @@ I was interested in Q Labs' new research on Dust because it is the first zeroth-
 - At K=16 that gain is what log-linear interpolation puts at Dust with about 33 draws, roughly twice the population.
 - The gain fades as the population grows. At K=256 the paired difference is -0.001, a tie. Dust's own ladder flattens there too, still 0.079 above backprop, which points to bias that no variance reduction can remove.
 - Trusting the feedback more is a trap. A precision-weighted version roughly triples per-step cosine to backprop, from 0.26 to 0.78 on the MLP at K=16, yet trains worse (+0.044 at K=16). Its estimate is biased, and momentum accumulates bias while it averages away noise.
-- Backprop is still ahead at this scale: 2.394 against 2.473 for Apical at K=256.
+- Most of the remaining gap was bias in my Dust's credit assignment. Crediting embeddings for future tokens and adopting the Dust paper's attention-output credit lowers test loss by 0.036 at K=64 and 0.030 at K=256 (3 of 3 seeds each).
+- On the fixed Dust, the feedback gain at K=16 grows to -0.020 (3 of 3 seeds). The full method at K=16 reaches 2.489, level with the original Dust at K=64 (2.488), with a quarter of the draws.
+- Backprop is still ahead at this scale: 2.394 against 2.443 for the fixed Dust at K=256.
 
 ## Where Dust leaves room
 
@@ -124,15 +126,41 @@ With that waste removed, the median step time of Apical relative to Dust, over t
 
 At K=16 the unbiased feedback pathway closes about 53% of the gap between Dust at K=16 and Dust at K=64. The benefit shrinks as Dust's own noise falls: -0.012, then -0.010, then -0.001 at K=256. That is what a control variate should do. It removes variance, and once variance is small there is little left for it to remove.
 
-What remains is bias, and no control variate removes it. Dust's own ladder flattens between K=64 and K=256 at about 2.473, still 0.079 above backprop. The averaging test behind Figure 2 shows where that bias sits: even with 256 estimates averaged, the embedding layers stay near cosine 0.7 for every method, because this Dust credits most layers only for their own token's loss and gives keys and values just a discounted share of the future. The Dust paper approaches backprop at populations in the thousands, with a better credit rule for attention than mine. A better feedback pathway cannot fix bias in the estimator it corrects.
+What remains is bias, and no control variate removes it. Dust's own ladder flattens between K=64 and K=256 at about 2.473, still 0.079 above backprop. The next section goes after that bias directly.
 
 The more general lesson is about how to evaluate gradient estimators. Per-step cosine to backprop, the natural diagnostic, ranked these methods almost exactly backwards. An estimator can align better on every step and still train worse when its error is systematic. Any biologically inspired shortcut that trades noise for structure should be checked by averaging, as in Figure 2, before it is trusted in training.
+
+## Result 4: fixing Dust's credit, then adding feedback again
+
+The averaging test locates the bias. With 1024 independent estimates averaged on one batch, the original Dust reaches cosine 0.98 on queries, attention outputs and the MLP, but only 0.88 on keys and values and 0.71 on the token embedding. Two credit rules explain it. My Dust credited keys and values through a discounted sum of downstream token losses, which is cruder than the Dust paper's rule. And it credited each embedding only for its own token's loss, although an embedding at token t also shapes every later token through attention.
+
+I made two changes. For attention internals I implemented the Dust paper's rule: jitter queries, keys or values, recompute only that block's attention output from cached activations, and score each jitter per head by its alignment with the estimated error at the attention output, with keys and values also credited for later tokens (γ = 0.97). For embeddings I added the same kind of future-token credit (γ = 0.9). In the averaging test, keys rise from 0.88 to 0.95 and the token embedding from 0.71 to 0.78, still climbing at 1024 estimates. Values stay near 0.87, so some bias remains there.
+
+Both changes make each single estimate noisier, so training decides. The embedding credit carries most of the gain. The attention rule alone hurts at K=16, where its extra noise costs more than the bias it removes, and helps once combined with the embedding credit at larger populations.
+
+| Test loss, nats/char | K = 16 | K = 64 | K = 256 |
+| --- | --- | --- | --- |
+| Original Dust | 2.510 ± 0.006 | 2.488 ± 0.010 | 2.473 ± 0.001 |
+| + attention credit | 2.529 ± 0.005 | 2.484 ± 0.006 | not run |
+| + embedding credit | 2.502 ± 0.006 | 2.464 ± 0.003 | 2.446 ± 0.006 |
+| **+ both (fixed Dust)** | **2.509 ± 0.001** | **2.452 ± 0.016** | **2.443 ± 0.006** |
+| Fixed − original, paired | -0.001 (1 of 3) | -0.036 (3 of 3) | -0.030 (3 of 3) |
+| **Apical on fixed Dust** | **2.489 ± 0.004** | **2.444 ± 0.014** | not run |
+| Apical − fixed Dust, paired | -0.020 (3 of 3) | -0.008 (1 of 3) | not run |
+| Backprop | 2.394 ± 0.007 | | |
+
+Learning rates were tuned on seed 0 over {0.01, 0.03} at K=16 and 64. At K=256 the fixed variants use 0.03, the rate that won for them at K=64 and for the original Dust at K=256, without a separate tune.
+
+Fixing the credit lowers test loss by 0.036 at K=64 and 0.030 at K=256, and closes about 38% of the K=256 gap to backprop. The fixed Dust at K=64 already beats the original at K=256. Its ladder still flattens, gaining only 0.009 from K=64 to K=256, so bias still sets the floor.
+
+On the fixed Dust, the feedback pathway matters more where it can. At K=16 Apical lowers loss by 0.020 in all three seed pairs, against 0.012 on the original. That fits the averaging test: the fixed estimator is less biased but noisier per step, and noise is what a control variate removes. At K=64 the difference is -0.008 with one of three pairs better, which is inconclusive. Combined, Apical on the fixed Dust reaches 2.489 at K=16, level with the original Dust at four times the population.
 
 ## Limits
 
 - One small model, one character-level dataset, 512k training tokens and SGD only. The Dust paper's effects appear at much larger scale, and these may not carry over.
 - Three seeds per cell. The improvement at K=16 and 64 is consistent (6 of 6 pairs) but small, between -0.001 and -0.020 per pair.
-- Populations of 16, 64 and 256. The Dust paper's ladder runs from 64 to 16k, so I only cover its low end, and the gain is already gone by 256.
+- Populations of 16, 64 and 256. The Dust paper's ladder runs from 64 to 16k, so I only cover its low end. The original Apical gain is gone by 256, and Apical on the fixed Dust was not run at 256.
+- The credit decays (γ = 0.97 for keys and values, 0.9 for embeddings) were chosen from gradient cosines on one batch, not tuned in training.
 - Timings come from a shared laptop GPU and are accurate to about 20%. The trained results use the first implementation; the optimized one was checked on one seed only.
 - The feedback map is linear in the current token's output error. A richer pathway, for example one that also sees future errors for keys and values, could predict more of the gradient. The control variate keeps it safe to try.
 
@@ -148,6 +176,3 @@ The more general lesson is about how to evaluate gradient estimators. Per-step c
 8. Feldman and Friston. Attention, uncertainty, and free-energy. Frontiers in Human Neuroscience, 2010.
 9. Werfel, Xie and Seung. Learning curves for stochastic gradient descent in linear feedforward networks. NeurIPS, 2003.
 
-## Code
-
-This is independent research and a follow-up to Dust, not affiliated with Q Labs.
