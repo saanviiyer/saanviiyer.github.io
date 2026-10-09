@@ -556,14 +556,14 @@ nav {
 .post-card:hover h3 { color: var(--accent); }
 .post-list-archive .post-card h3 { font-size: 1.18rem; }
 
-/* Research post, centered reading column (Goodfire-style) */
+/* Research post: wide article, readable left-aligned text column, full-width figures */
 .research-post {
-  max-width: 1240px;
+  max-width: 1360px;
   margin: 0 auto;
   background: var(--read-card);
   border: 1px solid var(--read-card-edge);
   border-radius: 28px;
-  padding: clamp(30px, 6vw, 88px) clamp(24px, 5vw, 100px);
+  padding: clamp(30px, 5vw, 76px) clamp(26px, 4vw, 60px);
   box-shadow: 0 16px 46px rgba(23, 9, 15, 0.08);
 }
 .rp-head { margin-bottom: 64px; }
@@ -592,7 +592,11 @@ nav {
 /* figures authored as an image paragraph followed by a bold caption paragraph */
 .rp-body p:has(> img) { text-align: center; margin: 48px 0 12px; }
 .rp-body p:has(> img) > img { width: 100%; border-radius: 8px; }
-.rp-body p:has(> img) + p { font-family: var(--mono); font-size: 0.78rem; line-height: 1.65; color: var(--muted); margin: 0 0 44px; }
+.rp-body p:has(> img) + p { font-family: var(--mono); font-size: 0.78rem; line-height: 1.65; color: var(--muted); margin: 0 0 44px; max-width: 86ch; }
+/* Wide article layout: text keeps a readable measure, figures and code break out wider */
+.rp-body > p, .rp-body > ul, .rp-body > ol, .rp-body > blockquote,
+.rp-body > h2, .rp-body > h3 { max-width: 82ch; margin-right: auto; }
+.rp-body > p:has(> img), .rp-body > figure, .rp-body > pre, .rp-body > table { max-width: none; }
 
 .post-back { margin-top: 56px; }
 .post-back a { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.06em; }
