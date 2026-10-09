@@ -7,6 +7,13 @@ permalink: /pages/portfolio/
 
 <section id="experiences" class="pf-section">
   <h2 class="pf-heading">experiences</h2>
+<div class="exp-scroller">
+  <div class="exp-controls">
+    <span class="exp-hint">scroll sideways to see more</span>
+    <button type="button" class="exp-nav" id="exp-prev" aria-label="Previous experiences">&larr;</button>
+    <button type="button" class="exp-nav" id="exp-next" aria-label="Next experiences">&rarr;</button>
+  </div>
+  <div class="exp-track" id="exp-track" tabindex="0" role="region" aria-label="Experiences, scroll horizontally">
 <section class="exp-group">
   <h2 class="exp-group-title">ai for radiologists</h2>
   <div class="exp-cards">
@@ -120,6 +127,17 @@ permalink: /pages/portfolio/
     </article>
   </div>
 </section>
+  </div>
+</div>
+<script>
+(function () {
+  var track = document.getElementById('exp-track');
+  if (!track) return;
+  function step(dir) { track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: 'smooth' }); }
+  document.getElementById('exp-prev').addEventListener('click', function () { step(-1); });
+  document.getElementById('exp-next').addEventListener('click', function () { step(1); });
+})();
+</script>
 
 </section>
 
