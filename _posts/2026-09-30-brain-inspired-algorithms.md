@@ -37,6 +37,8 @@ Within each seed, backward transfer, the change in accuracy on earlier tasks aft
 
 ![Backward transfer against learning accuracy on Split-CIFAR-10 and Split-CIFAR-100, where local rules sit on the backpropagation curve and replay sits above it](/assets/images/engram-continual-learning/locality.png)
 
+**Figure 1.** Backward transfer against learning accuracy on Split-CIFAR-10 and Split-CIFAR-100. The backpropagation ladder traces the trade-off between learning a new task and forgetting earlier ones, so local rules that fall on the curve forget about as much as backpropagation at a matched learning accuracy, and only replay sits above it.
+
 In the figure above, the backpropagation ladder traces a curve. As a run learns the new task better it forgets the old ones more, and that trade-off is what the ladder captures. What matters is where each rule falls against that curve. The local rules sit right on it, so at a given learning accuracy they forget about as much as backpropagation does, and only replay sits above. Locality does not move the trade-off, it just moves you along it.
 
 ## What the rules do once the comparison is fair
@@ -44,6 +46,8 @@ In the figure above, the backpropagation ladder traces a curve. As a run learns 
 Now I can read off the numbers. Under matched learning accuracy, feedback alignment differed from backpropagation by -0.08 points, with a 95% interval of [-0.21, +0.05], and direct feedback alignment by -0.11, [-0.28, +0.06]. Both intervals contain zero, so neither rule forgets less once the baseline is tuned fairly. Predictive coding retained 0.21 points more, [+0.11, +0.31], p = 0.001. I had said ahead of time that a local rule retaining better at matched learning would refute my hypothesis, so I report predictive coding as a refutation rather than burying it, while noting that 0.21 points is about a fifth of the instrument's own error and that its sign flips without the gap correction. Replay, which I added as a positive control, improved retention by 10.6 points, [+10.0, +11.1], about fifty times the predictive-coding effect.
 
 ![Departure from the null for each learning rule, with and without replay, where the rules sit within the null band and every replay arm is about ten points above it](/assets/images/engram-continual-learning/neurreps.png)
+
+**Figure 2.** Departure from the null for each learning rule, with and without replay. Each credit-assignment rule sits inside the null band, the scatter expected from rules that do nothing special for retention, while adding replay lifts every arm about ten points above it. The left panel shows the representational geometry differs between rules, but that difference does not become a difference in forgetting.
 
 The second figure says the same thing another way. Each credit-assignment rule sits inside the null band, the scatter I would expect from rules that do nothing special for retention, and adding replay lifts every one of them about ten points above it. The representational geometry does differ between rules, shown in the left panel, but that difference does not turn into a difference in forgetting.
 
