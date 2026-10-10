@@ -7,7 +7,7 @@ affiliation: "California Institute of Technology, with AITHYRA"
 venues:
   - "oral, IEEE CIBCB 2026"
   - "sole author"
-  - "accepted for additional venues [TODO]"
+  # TODO: Saanvi to name the additional accepted venues, then add them here
 links:
   - label: "Code"
     url: "https://github.com/saanviiyer/PRISM"
@@ -78,7 +78,7 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
   <div class="pp-thread-tag">RQ1</div>
   <h3 class="pp-thread-title">one signature moves proteins toward one family, in two independent groups</h3>
 
-  <p>the first question is whether any signature has a consistent destination. of the 78 signatures, SBS17a is the one that most moves sequences toward the Pfam family PF17041, the SasG_E domain, and it ranks first on that family in two independent Pfam clans, where a clan is a group of related families. I focused on the two-clan result because a direction that shows up once could be noise, while a direction that shows up in two unrelated groups of proteins is more likely to come from a genuine mechanism, so it is the one I put through the controls that follow.</p>
+  <p>the first question is whether any signature has a consistent destination. of the 78 signatures, SBS17a is the one that most moves sequences toward the Pfam family PF17041, the SasG_E domain, and it ranks first on that family in two independent Pfam clans, where a clan is a group of related families. i focused on the two-clan result because a direction that shows up once could be noise, while a direction that shows up in two unrelated groups of proteins is more likely to come from a genuine mechanism, so it is the one i put through the controls that follow.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="SBS17a ranks first of 78 toward PF17041 in both clans">
@@ -124,7 +124,7 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
 
   <p>this matters because decodability is the evidence people cite most often for a model understanding a concept, and here it is fully present while the model has learned nothing that carries to a new case. a probe that works on familiar examples and fails on unseen ones has memorized a fingerprint, not a mechanism, and only the held-out test tells the two apart.</p>
 
-  <div class="finding"><div class="fn-label">Finding 3</div><p><span class="todo-note">[TODO: the 0.94 rounds up from 0.9369 and is the uncorrected translation variant; the corrected read-through gives 0.991. decide which to report, and note that 0.991 makes the transfer collapse starker, not weaker.]</span> the probe reaches an AUC of 0.94 on seen signatures and 0.775% top-1 accuracy on held-out ones, so a decodable signal is not evidence of a portable understanding.</p></div>
+  <div class="finding"><div class="fn-label">Finding 3</div><p><!-- TODO: the 0.94 rounds up from 0.9369 and is the uncorrected translation variant; the corrected read-through gives 0.991. Decide which to report; 0.991 makes the transfer collapse starker, not weaker. --> the probe reaches an AUC of 0.94 on seen signatures and 0.775% top-1 accuracy on held-out ones, so a decodable signal is not evidence of a portable understanding.</p></div>
 </section>
 
 <p class="pp-section-num" id="takeaways">Takeaways</p>
@@ -143,5 +143,5 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
 
 <p class="pp-section-num" id="cite">Cite</p>
 <div class="bibtex">% PRISM was presented as an oral at IEEE CIBCB 2026.
-% [TODO: Saanvi to add the citation, with the additional venues once confirmed.]
+<!-- TODO: Saanvi to add the citation, with the additional venues once confirmed. -->
 </div>

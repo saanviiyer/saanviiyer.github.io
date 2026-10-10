@@ -6,7 +6,7 @@ authors: "Saanvi S. Subramanian"
 affiliation: "California Institute of Technology"
 hook: "A clinical model can post a strong number and still be wrong about what matters at the bedside, so the evaluation has to match how the model would actually be used."
 thesis: "A clinical model is only as trustworthy as the assumption printed beside its headline number."
-video: "[TODO: Saanvi to add explainer video]"
+video: ""  # TODO: Saanvi to add explainer video
 ---
 
 <p class="pp-question">when a clinical model reports a gain, is it a gain a clinician could obtain in practice, or one that exists only because the evaluation already assumed part of the answer?</p>
@@ -26,7 +26,7 @@ video: "[TODO: Saanvi to add explainer video]"
 <p class="pp-section-num">01 &middot; The Challenge</p>
 <h2 class="pp-section-title">the number on the slide is not the number at the bedside</h2>
 
-<p>a clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. a detector can look strong on average and still miss the hard cases a clinician actually needs help with, and a result that quietly assumes the answer is already known can read as if the model found it. what i am doing in this work is measuring a clinical model against the decision it would really support, and saying out loud which assumptions each number rests on.</p>
+<p>a clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. a detector can look strong on average and still miss the hard cases a clinician actually needs help with, and a result that quietly assumes the answer is already known can read as if the model found it. in this work i measure a clinical model against the decision it would really support, and say out loud which assumptions each number rests on.</p>
 
 <div class="callout-q">
   <div class="cq-label">The central question</div>
@@ -123,7 +123,7 @@ video: "[TODO: Saanvi to add explainer video]"
   <h3 class="pp-thread-title">routing EEG localization decisions</h3>
   <p class="pp-thread-sub">wait, predict, or defer? evaluating an offline sequential routing policy for EEG localization</p>
   <p><span class="venue-badge">NeurIPS HAIC 2026</span><span class="venue-badge">Sole author</span></p>
-  <p class="todo-note">[TODO: Saanvi to add the HAIC OpenReview link.]</p>
+  <!-- TODO: Saanvi to add the HAIC OpenReview link. -->
 
   <p>a model forced to answer every patient will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. so i evaluated a different design on 166 patients. instead of always predicting, a policy watches the localizer's output as 10-second EEG segments arrive and decides, at each step, whether to report the current hemisphere, wait for another segment, or defer the patient after a fixed observation budget. nothing is retrained, the policy replays held-out predictions, and i choose every threshold on training patients only. the policies are compared at 40% coverage, which means each answers the 40% of patients it is most willing to commit to and defers the rest.</p>
 
