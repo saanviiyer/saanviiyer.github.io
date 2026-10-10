@@ -35,5 +35,5 @@ I fix the safety boundary before any experiment runs, so the design cannot drift
 
 ## What would falsify the idea
 
-The proposal is falsifiable in a plain way, since if probes recover assay properties just as well on held-out families as on seen ones for a model whose output score is known to shortcut, then the white-box test is not adding information beyond the output correlation. I would report that limit directly, because the point of the evaluation is to detect shortcut scoring, and a version that cannot separate the two cases has failed its own test.
+The proposal is falsifiable: if probes recover assay properties just as well on held-out families as on seen ones for a model whose output score is known to shortcut, then the white-box test adds nothing beyond the output correlation. I would report that limit directly, because the point of the evaluation is to detect shortcut scoring, and a version that cannot separate the two cases has failed its own test.
 

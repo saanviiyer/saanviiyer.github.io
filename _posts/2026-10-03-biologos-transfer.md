@@ -31,7 +31,7 @@ So a genomic model at Evo 2 scale does acquire protein-fitness signal, and the c
 
 The corrections are the point, so I list them before anyone leans on the headline.
 
-I retracted a reading-frame result. A genomic model appeared unable to tell a gene from the same gene read one nucleotide out of frame, but the frameshift was a rotation, which apart from one wrap junction is actual genomic sequence read one base later. Once I rank the four conditions by whether they produce a actual genomic string, the whole table reproduces with no appeal to reading frame.
+I retracted a reading-frame result. A genomic model appeared unable to tell a gene from the same gene read one nucleotide out of frame, but the frameshift was a rotation, which apart from one wrap junction is actual genomic sequence read one base later. Once I rank the four conditions by whether they produce an actual genomic string, the whole table reproduces with no appeal to reading frame.
 
 I falsified a representation-transfer claim with its own control. A probe on genomic embeddings scored +0.141 on unseen residues, which read as weak transfer, and then it scored +0.143 after frameshifting and +0.129 on the reverse complement. A representation that is invariant to destroying the reading frame is not protein-level, because under any encoding the codon determines the amino acid, so the nucleotides at a varying site already are residue identity.
 

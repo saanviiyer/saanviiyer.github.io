@@ -17,7 +17,7 @@ WMDP-Bio is a multiple-choice benchmark meant to measure hazardous biology knowl
 
 ## Always choosing the longest answer scores 46.5%
 
-Random guessing on four options scores 25%. Always choosing the longest answer scores 46.5%, which is 21.5 points above chance from a rule that uses no biology. A cluster bootstrap over 1,195 question-similarity groups puts the guessing-corrected solvable fraction at 0.287 [0.249, 0.324], and the interval for the longest-answer rule itself excludes chance. The mirror case confirms the mechanism, because always choosing the shortest option scores 0.153, below chance, since correct answers here are systematically longer.
+Random guessing on four options scores 25%. Always choosing the longest answer scores 46.5%, which is 21.5 points above chance from a rule that uses no biology. A cluster bootstrap over 1,195 question-similarity groups puts the guessing-corrected solvable fraction at 0.287 [0.249, 0.324], and the interval for the longest-answer rule itself excludes chance. The mirror case confirms the mechanism: always choosing the shortest option scores 0.153, below chance, because correct answers here are systematically longer.
 
 ![Accuracy without the question: the longest-answer rule scores 0.465 and the question-blind classifier 0.346, both above the 0.25 chance line](/assets/images/wmdp-bio-audit/option-only.png)
 

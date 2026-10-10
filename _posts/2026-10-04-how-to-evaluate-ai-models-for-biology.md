@@ -44,7 +44,7 @@ the practical consequence is that the number benchmarks report, a bulk correlati
 
 ## a score has to beat a trivial baseline and survive a confound
 
-before you credit a score with understanding, make it clear two low bars. it has to beat a trivial baseline, and the part of it that looks like signal has to survive a control for the obvious confounds. both bars are easy to state and often failed. on 504 measured PET-hydrolase variants, a zero-shot protein model ranks activity at a Spearman of 0.01 while a plain count of mutations reaches 0.25, so the expensive score adds nothing over counting.
+before you credit a score with understanding, it has to clear two low bars: it has to beat a trivial baseline, and the part that looks like signal has to survive a control for the obvious confounds. both bars are easy to state and often failed. on 504 measured PET-hydrolase variants, a zero-shot protein model ranks activity at a Spearman of 0.01 while a plain count of mutations reaches 0.25, so the expensive score adds nothing over counting.
 
 ![Zero-shot ESM-2 ranks PETase activity near zero while a mutation count reaches 0.25](/assets/images/projects/eval/gauntlet-proxy-audit.png)
 
@@ -74,7 +74,7 @@ the same caution applies to claims that a model has transferred knowledge or tha
 
 ## when the evaluator is the attack surface
 
-so far the model was the thing being measured. but in an agent loop the evaluator is itself a component, and a component can be gamed. i red-teamed a verifier, the part that decides which of an agent's proposals to keep, in a setting where ground truth exists so the actual quality of what it keeps can be measured. a fully leaked scorer reached an AUROC of 0.991 and added only 0.028 good candidates per batch over random, against 1.082 for an truthful scorer. worse, a probe that spot-checks a quarter of decisions detects 99.2% of attacks but recovers only about 10% of the lost value when its fallback is random selection, so catching an attack is not the same as undoing it. getting to 17% needs a second source of capability the attacker does not control, a model trained on the campaign's own measurements, which is a different fix from the detector.
+so far the model was the thing being measured. but in an agent loop the evaluator is itself a component, and a component can be gamed. i red-teamed a verifier, the part that decides which of an agent's proposals to keep, in a setting where ground truth exists so the actual quality of what it keeps can be measured. a fully leaked scorer reached an AUROC of 0.991 and added only 0.028 good candidates per batch over random, against 1.082 for a truthful scorer. worse, a probe that spot-checks a quarter of decisions detects 99.2% of attacks but recovers only about 10% of the lost value when its fallback is random selection, so catching an attack is not the same as undoing it. getting to 17% needs a second source of capability the attacker does not control, a model trained on the campaign's own measurements, which is a different fix from the detector.
 
 ![Good candidates over random fall as more of the batch is audited, for the truthful scorer](/assets/images/projects/plm/rq4/audit-sweep.png)
 

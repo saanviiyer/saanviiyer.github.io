@@ -13,7 +13,7 @@ excerpt: "The lab report for PRISM: how the pipeline works, what each control me
 
 ## The pipeline
 
-A mutational signature is the characteristic pattern of DNA base substitutions a mutational process leaves behind, and the COSMIC catalog lists 78 single-base-substitution signatures, each a probability distribution over base changes in their trinucleotide context. PRISM asks whether those processes move the proteins they alter toward particular regions of a protein model's representation.
+A mutational signature is the characteristic pattern of DNA base substitutions a mutational process leaves behind, and the COSMIC catalog lists 78 single-base-substitution signatures, each a probability distribution over base changes in its trinucleotide context. PRISM asks whether those processes move the proteins they alter toward particular regions of a protein model's representation.
 
 For each signature, the operator walks a coding sequence and samples substitutions from that signature's channel weights for the local trinucleotide. It writes edits in place, so a substitution can change the context for the next position, which is rare at per-position probabilities of order ten to the minus two. The current configuration generates ten mutants per protein and signature condition. Reverse-complement substitutions are omitted.
 
@@ -29,7 +29,7 @@ Two notes on the model size, because they bound what the pipeline can say. The t
 
 ## SBS17a ranks first toward PF17041 in both clans
 
-On the raw geometry, SBS17a is the top-ranked signature of 78 for directing sequences toward the Pfam family PF17041, and it holds that rank in both CL0023 and CL0072. The same direction appearing in two protein contexts is what a genuine effect would produce rather than a single coincidence.
+On the raw geometry, SBS17a is the top-ranked signature of 78 for directing sequences toward the Pfam family PF17041, and it holds that rank in both CL0023 and CL0072. The same direction in two protein contexts is what a genuine effect would produce, not a single coincidence.
 
 The corrected rerun changes how much that recurrence is worth. The legacy pipeline translated each mutant to the first stop codon. Mapping stop codons to X and continuing translation removes nearly all of the between-signature length variance, and SBS17a stays first in both clans, with concentration rising from 31.6% to 71.7% in CL0023 and from 68.3% to 100.0% in CL0072. But PF17041 attracts more signatures overall under read-through, CL0072 hubness rises from 1.13% to 5.35%, and enrichment falls from 60.7 times to 18.7 times. Six signatures select PF17041 as their modal CL0072 target, and other pairs also reach 100% concentration. The rerun keeps the association and removes the earlier claim that SBS17a was unique in it.
 
@@ -41,7 +41,7 @@ One more bound on this arm: the PF17041 centroid is built from four seed sequenc
 
 ## Length explains most of the displacement magnitude
 
-Premature stops tie signature identity to protein length. Signatures differ in stop-codon probability, mean-pooled embeddings depend on the translated sequence, so length offers an explanation for displacement that needs no functional shift.
+Premature stops tie signature identity to protein length. Signatures differ in stop-codon probability, and mean-pooled embeddings depend on the translated sequence, so length offers an explanation for displacement that needs no functional shift.
 
 Fitting mean absolute displacement on log translated length, one point per signature across all 78, gives R-squared 0.941 within CL0023. That is an ordinary least-squares fit on log length, and the fraction of variance it accounts for is the fraction of a per-signature summary, not of per-protein movement. Two provenance notes: the original analysis reported R-squared 0.925 for the same relationship but I found no code or saved output that produces it, and the archived re-derivation that gives 0.941 used 68 source sequences where the retained trajectory panel has 65, so it is not a re-analysis of exactly the same panel. The pairwise arm shows a weaker length association at R-squared 0.53.
 
