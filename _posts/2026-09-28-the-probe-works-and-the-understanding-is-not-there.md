@@ -17,13 +17,17 @@ The probe worked, and the understanding was not there.
 
 That gap changed how I think about claims that a model "represents" a concept. A probe can recover information from an activation without showing that the model has learned a portable abstraction. It may be reading a signature-specific fingerprint, a confound, or a feature that only exists inside the original data distribution. If the representation is supposed to support prediction, planning, or design, treat decodability as the start of the evaluation.
 
-This result came out of PRISM, a pipeline I built to study whether mutational processes leave directional traces in protein representation space. The starting point was biological. Cancer mutational signatures describe characteristic patterns of nucleotide substitutions. I wanted to know whether those processes could systematically move the proteins they alter toward different functional regions, rather than looking like undirected noise once translated into amino acids.
+This result came out of PRISM, a pipeline I built to test whether mutational processes leave directional traces in protein representation space. Cancer mutational signatures are characteristic patterns of nucleotide substitutions, and I wanted to know whether those processes systematically move the proteins they alter toward different functional regions rather than looking like undirected noise once translated into amino acids.
 
-The pipeline simulates all 78 COSMIC single-base-substitution signatures on protein-coding sequences, translates the resulting sequences, embeds wild-type and mutant proteins with ESM-2 8M, and compares each mutant cloud against a 320-dimensional library of Pfam domain centroids. In one result, SBS17a repeatedly moved sequences toward PF17041 across two independent Pfam clan runs. That was interesting because the same direction appeared in separate protein contexts.
+The pipeline simulates all 78 COSMIC single-base-substitution signatures on protein-coding sequences, translates the resulting sequences, embeds wild-type and mutant proteins with ESM-2 8M, and compares each mutant cloud against a 320-dimensional library of Pfam domain centroids. In one result, SBS17a repeatedly moved sequences toward PF17041 across two independent Pfam clan runs, so the same direction held across separate protein contexts.
 
 But "the embeddings move" is only a geometric observation. It does not yet tell me why they move, whether the direction corresponds to a biological mechanism, or whether a model can recognize the same kind of shift when the surface pattern changes. The inverse classifier gave me a way to make one of those assumptions testable.
 
 Those two numbers come from two different tasks, and the gap between the tasks is part of the lesson. AUC 0.94 is a binary discrimination: given a measured transition and a sampled alternative, the model tells them apart, on signatures it saw in training. The 0.8% is a 78-way identification of signatures held out of training entirely. The first asks whether information is present in familiar data. The second asks whether it is organized into something that transfers to a mechanism the model has never seen. On the second question the model does worse than guessing.
+
+![Leave-signatures-out top-1 accuracy is 0.775 percent, below the 1.28 percent uniform line, and 0.0 percent with SBS17a withheld](/assets/images/prism-signature-steering/loso.png)
+
+**Figure 1.** Transfer to unseen signatures. Leave-signatures-out top-1 accuracy is 0.775%, rounded to 0.8% here, below the 1.28% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld. The probe names the signatures it trained on and fails on the ones it did not.
 
 That is why I reserve "understood" for representations that survive transfer, intervention, and selection. A probe can be right for the wrong reason. Even worse, the aggregate score can make that wrong reason look robust.
 
@@ -31,7 +35,7 @@ The held-out collapse was not the only warning. A composition-matched control re
 
 The baselines changed the question I was asking. After the composition and length controls, the useful question is no longer "does SBS17a move embeddings?" It becomes "what residual movement remains after simple sequence properties are removed, does it recur across families, and which residues causally carry it?"
 
-The same pattern appears when a representation becomes a target rather than a measurement. In a separate stress test, learned fitness proxies looked respectable across the full dataset, with Spearman correlation around 0.53. Among the top-ranked variants, where a design system would actually concentrate its effort, utility fell to about 0.15. An unconstrained optimizer drove the proxy well past the range spanned by natural proteins while producing sequences that were not credible proteins.
+The same pattern appears when a representation becomes a target rather than a measurement. In a separate stress test, learned fitness proxies looked respectable across the full dataset, with Spearman correlation around 0.53. Among the top-ranked variants, where a design system would concentrate its effort, utility fell to about 0.15. An unconstrained optimizer drove the proxy well past the range spanned by natural proteins while producing sequences that were not credible proteins.
 
 Average predictive performance and decision quality are different objects. A model can preserve a broad ranking over ordinary examples while giving its largest rewards to pathological ones. Selection pressure turns small blind spots into the entire output distribution.
 
