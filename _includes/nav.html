@@ -1,14 +1,11 @@
 <nav>
   <a href="{{ '/' | relative_url }}" class="nav-name">
-    <span>saanvi s. subramanian</span>
-    <small>Caltech CNS</small>
+    <span>saanvi iyer.</span>
+    <small>officially saanvi s. subramanian</small>
   </a>
   <ul class="nav-links">
-    <li><a{% if page.url == '/' %} class="active" aria-current="page"{% endif %} href="{{ '/' | relative_url }}">home</a></li>
-    <li><a href="{{ '/pages/portfolio/' | relative_url }}#experiences">experiences</a></li>
-    <li><a{% if page.url == '/projects/' %} class="active" aria-current="page"{% endif %} href="{{ '/projects/' | relative_url }}">projects</a></li>
-    <li><a{% if page.url == '/pages/writing/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/writing/' | relative_url }}">writing</a></li>
-    <li><a{% if page.url == '/pages/research/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/research/' | relative_url }}">research</a></li>
-    <li><a href="{{ '/pages/portfolio/' | relative_url }}#portfolio">portfolio</a></li>
+    <li><a{% if page.url == '/projects/' %} class="active" aria-current="page"{% endif %} href="{{ '/projects/' | relative_url }}">project pages</a></li>
+    <li><a{% if page.url == '/pages/writing/' %} class="active" aria-current="page"{% endif %} href="{{ '/pages/writing/' | relative_url }}">technical writing</a></li>
+    <li><a{% if page.url == '/more-me/' %} class="active" aria-current="page"{% endif %} href="{{ '/more-me/' | relative_url }}">more me</a></li>
   </ul>
 </nav>
