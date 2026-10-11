@@ -1,13 +1,116 @@
 ---
-title: action identifiability · Saanvi S. Subramanian
+layout: project
+title: "Action Identifiability in Protein-Design Agents"
 permalink: /pages/projects/action-identifiability/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+venues:
+  - "poster, AgenticLS @ NeurIPS 2026"
+  - "MoML 2026 (MIT)"
+  - "sole author"
+links:
+  - label: "Paper"
+    url: "https://openreview.net/forum?id=GhNJ7TTUyi"
+hook: "A protein-design agent proposes a biological action, enacts it as a displacement in a protein model's representation, and scores the result in that same representation. This only works if the representation keeps distinct actions apart, so I measured whether it does."
+thesis: "An agent can only separate actions its representation keeps apart, and in ESM-2 biologically distinct mutational processes often reach the same destination, with the separation that remains tracking substitution composition rather than the signature that defines the process."
 ---
 
-<div class="page-header">
-  <h1>action identifiability in protein-design agents</h1>
+<style>
+  .aid { --pink: #cf4d87; --red: #a8324a; }
+  .aid .pp-thread-title, .aid .bm-hook { color: var(--ink); }
+  .aid .fn-label { background: var(--red); color: #fff; }
+  .aid .finding { border-left: 3px solid var(--red); }
+  .aid .concept-card { border-left: 3px solid var(--pink); }
+  .aid .why-box { border-left: 3px solid var(--pink); }
+  .aid .pp-fig figcaption strong { color: var(--red); }
+  .aid .stat .n { color: var(--red); }
+  .aid .cc-term { color: var(--pink); }
+</style>
+
+<div class="aid">
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>a protein-design agent proposes a biological action, enacts it as a displacement in a protein model's representation, and scores the result in that same representation. this works only if the representation keeps distinct actions apart. i test whether it does, with ESM-2 and the 78 COSMIC somatic mutational signatures as the action space. across all 3,003 signature pairs, biologically distinct processes often reach the same ESM-2 destination, and the separation that remains tracks broad substitution composition rather than the trinucleotide context that defines a signature. a probe can still decode which process produced a displacement at 66% against 20% chance, but its errors merge processes the catalogue holds apart, and the design objective shares the representation it is scored in. on this evidence the agent should return the compatible set or abstain, not name one process.</p>
 </div>
 
-<p class="proj-blurb">This project asks whether an agent's apparent success identifies the biological action that caused it. The goal is to separate good outcomes from justified decisions, so a design agent is credited for the right reason rather than a lucky one.</p>
-<p class="proj-blurb">Presented at MoML 2026 at MIT.</p>
+<div class="stat-row">
+  <div class="stat"><div class="n">3,003</div><div class="l">signature pairs tested across the 78-process action space</div></div>
+  <div class="stat"><div class="n">R&sup2; 0.870</div><div class="l">of pairwise distance explained by a translation artifact at 650M</div></div>
+  <div class="stat"><div class="n">66%</div><div class="l">five-way decoding of the enacting process, against 20% chance</div></div>
+  <div class="stat"><div class="n">5.0 sd</div><div class="l">an unconstrained optimizer pushes past the natural-protein band</div></div>
+</div>
 
-<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; all projects</a></p>
+<h2 class="pp-section-title">the setup</h2>
+
+<section class="pp-thread">
+  <p>the testbed is a hypothesise-simulate-validate loop for mutational-driver discovery. the agent proposes a mutational process, enacts its mean hidden-state displacement by activation steering, and compares the enacted direction against the displacement the measured mutation caused. a mutational signature is a process's characteristic pattern of base substitutions in its local three-letter context, and COSMIC catalogues 78 of them. the action space is these 78 processes, and the question is whether the representation the agent acts through can tell them apart. if two processes reach the same destination, no amount of calibration recovers the difference.</p>
+
+  <h3 class="pp-thread-title">distinct processes reach the same place</h3>
+
+  <p>three biologically distinct processes, SBS1 (clock-like), SBS7a (UV) and SBS2 (APOBEC), land at pairwise cosine distance at or below 0.011, while SBS17a sits out at 0.04 to 0.08. the collapse is not just the catalogue's own structure. SBS2 and SBS7a do have similar spectra, at cosine 0.71, but SBS2 and SBS1 are near-orthogonal in COSMIC at cosine 0.02 and still merge in ESM-2. the representation is collapsing a distinction the catalogue makes.</p>
+
+  <div class="concept-card">
+    <span class="cc-term">what the composition control shows</span>
+    <span class="cc-gloss">ESM-2 separates marginal substitution composition more strongly than trinucleotide context.</span>
+    <p>scrambling trinucleotide context while preserving each substitution type's marginal probability moves the destination by 0.0081 &plusmn; 0.0016, against a seed-to-seed floor of 0.0014 &plusmn; 0.0005. context does register, 5.8&times; above the sampling floor, but the effect is 3.6 to 7.3&times; smaller than the separation between signatures with different substitution composition. the three collapsed processes are all C&gt;T dominated and SBS17a is T&gt;C dominated, which is the composition axis, not the biology.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>across all 3,003 pairs of the 78 COSMIC signatures, biologically distinct mutational processes often reach similar ESM-2 destinations, and the separation that does exist tracks broad substitution composition rather than the trinucleotide context that defines the signatures. an agent in this representation should return the compatible set or abstain, not name one process.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>the measurement procedure did much of the work. stop-at-first-stop translation turns 524 of 2,028 simulated mutants, 25.8%, into one-residue placeholders, and per-signature placeholder count alone explains R&sup2; = 0.683 of pairwise destination distance at 8M and 0.870 at 650M. a length control removes the artifact, but the binary collapse rate is then strongly scale-dependent, 23.8% of pairs at or below the 0.011 threshold at 8M against 72.5% at 650M. i report both and do not pick one as a catalogue-wide rate.</p>
+  </div>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/identifiability-signatures.png' | relative_url }}" alt="Left, enacting each mutational process moves held-out proteins toward its outcome region, with SBS1, SBS7a and SBS2 overlapping at the 0.011 threshold while SBS17a lies farther out. Right, pairwise destination distances show the same pattern.">
+    <figcaption><strong>figure 1. action-space identifiability in ESM-2 8M.</strong> left, the steering cross-matrix: enacting each mutational process moves held-out proteins toward its own outcome region, with SBS1, SBS7a and SBS2 overlapping while SBS17a sits farther out. right, the same pattern in pairwise destination distance. the 0.011 line is inherited from the original four-signature experiment, and it does not mean the same thing across all four model-by-readout conditions, so read it as a reference rather than a verdict.</figcaption>
+  </figure>
+
+  <h3 class="pp-thread-title">what the representation can and cannot decode</h3>
+
+  <p>the representation is not empty. a probe that reads an ESM-2 displacement and names which of five processes produced it reaches 66% five-way accuracy against 20% chance, and 89% on SBS17a. the structure of the errors is the finding. the confusions are not random, and SBS1 is confused with SBS2 even though their COSMIC spectra are near-orthogonal at cosine 0.02. the representation decodes a real signal and still merges processes the catalogue separates.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/agentevals/identifiability-decoding.png' | relative_url }}" alt="Confusion matrix for a probe decoding which of five mutational processes produced an ESM-2 displacement.">
+    <figcaption><strong>figure 2. what the representation can and cannot decode.</strong> a probe decoding which of five mutational processes produced a displacement reaches 66% five-way accuracy against 20% chance, and 89% on SBS17a, so the representation carries signal. the off-diagonal is the point: SBS1 is confused with SBS2 despite near-orthogonal COSMIC spectra, so the errors follow composition rather than the catalogue.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 3</div>
+    <p>the embedding-proximity objective is exploitable, and the validation check shares its representation. an agent making unconstrained single-residue edits drives cosine distance to the PF17041 centroid from 0.26 to 0.009 over 200 edits, landing 5.0 standard deviations below the natural-protein reference mean of 0.194 &plusmn; 0.037 across 25 measured proteins, while ESM-2 naturalness falls from &minus;0.41 to &minus;0.50, 2.2 sd below the natural band. the removed plausibility signal does detect the departure, but because both the objective and the causal self-validation score live in ESM-2, validation in the same representation is not independent evidence against this failure.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">why does the 0.011 threshold need this much hedging?</div>
+    <p>because it was defined from the SBS1 to SBS7a distance in the original four-signature 8M uncontrolled experiment, and it does not carry the same meaning elsewhere. it contains the SBS1, SBS7a and SBS2 reference cluster in two of the four model-by-readout conditions and splits it in the other two. picking the condition where it behaves after seeing the result would overstate collapse, so the catalogue-wide conclusion rests on continuous distances and within-process spread instead.</p>
+  </div>
+</section>
+
+<h2 class="pp-section-title">what it adds up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">decoding is not identifiability</div>a probe reads the enacting process at 66%, yet the dynamics merge processes the catalogue holds apart, so a readable signal is not a separable action.</div>
+  <div class="takeaway"><div class="tk-h">the separation is composition</div>what little distance remains tracks C&gt;T versus T&gt;C substitution composition, not the trinucleotide context that names a signature.</div>
+  <div class="takeaway"><div class="tk-h">measure the representation, not the agent</div>a translation artifact alone explains up to R&sup2; 0.870 of the apparent distance, so the honest unit of analysis is the representation's separability, not the agent's hit rate.</div>
+  <div class="takeaway"><div class="tk-h">same-representation validation is not independent</div>the objective and its self-check both live in ESM-2, so passing the check is not evidence the action was the right one.</div>
+</div>
+
+<div class="limitations">
+  <p><strong>Limitations.</strong> the steering and decoding experiments cover a subset of signatures while the destination analysis covers all 78, so catalogue-wide overlap is established and per-signature steering specificity is not. ESM-2 8M and 650M share training data and tokenisation, so the scale comparison is not an independent-model replication. the unconstrained optimisation result shows this objective can be exploited under single-residue search, not that every constrained design objective fails the same way. a matched-compute control also erases the apparent agency gain: at 100 scorer calls, fixed and random search reach final centroid distances of 0.1586 and 0.1585 against 0.1625 for the adaptive policy, so the adaptive policy has no measured advantage on those 20 protein-goal tasks. that control does not touch the identifiability result, but it is why this poster reports position only.</p>
+</div>
+
+<p class="pp-section-num" id="cite">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026identifiability,
+  author    = {Saanvi S. Subramanian},
+  title     = {Representational Identifiability Limits Action Selection in a Protein-Design Agent},
+  booktitle = {NeurIPS Agentic Life Sciences Workshop (AgenticLS); MoML},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=GhNJ7TTUyi}
+}</div>
+
+</div>
