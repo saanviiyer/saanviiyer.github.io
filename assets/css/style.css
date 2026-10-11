@@ -18,7 +18,7 @@
   --card-ink: #fdeaf7;
   --card-sub: #f2b9e0;
   --serif: 'Newsreader', Georgia, serif;
-  --sans: 'DM Sans', Arial, sans-serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   --mono: 'DM Mono', monospace;
 }
 
