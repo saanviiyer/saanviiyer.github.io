@@ -1,0 +1,96 @@
+---
+layout: project
+title: "Which Latent Coordinates Drive World-Model Dynamics?"
+permalink: /pages/projects/latent-coordinates/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+venues:
+  - "poster, Robotics World Modeling @ NeurIPS 2026"
+  - "sole author"
+links:
+  - label: "Code"
+    url: "https://github.com/saanviiyer/used_coordinates"
+hook: "A probe can read a variable out of a world model's latent state even when the model's own dynamics never act on it. I separate decoding from use, and ask what decides which coordinates a world model actually builds."
+thesis: "A predictive world model acquires an action-conjugate coordinate for a degree of freedom only when the observation makes that degree of freedom separable, and a probe can read a coordinate the dynamics never use."
+---
+
+<style>
+  .aid { --pink: #cf4d87; --red: #a8324a; }
+  .aid .fn-label { background: var(--red); color: #fff; }
+  .aid .finding { border-left: 3px solid var(--red); }
+  .aid .why-box { border-left: 3px solid var(--pink); }
+  .aid .pp-fig figcaption strong { color: var(--red); }
+  .aid .stat .n { color: var(--red); }
+  .aid table.armtab { width: 100%; border-collapse: collapse; margin: 18px 0 6px; font-size: 0.95rem; }
+  .aid table.armtab th, .aid table.armtab td { text-align: left; padding: 9px 12px; border-bottom: 0.5px solid var(--border); }
+  .aid table.armtab th { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--red); }
+  .aid table.armtab code { color: var(--pink); }
+</style>
+
+<div class="aid">
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>a world model predicts what it will observe next, and to do that it holds an internal state. people read variables out of that state with a probe and treat a readable variable as one the model uses. those are different properties. i build a label-free test that uses only actions and the frozen model's own next-observation predictions: a candidate coordinate is a plane in the latent space, and the test asks whether rotating the state inside that plane reproduces the effect of an extra action. a coordinate that passes is one the dynamics use; a coordinate that is only decodable can fail. across three two-joint arms that differ only in how the image depends on the joints, the coordinates a model builds follow what the observation makes separable, not the number of actuators.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">20&ndash;24&deg;</div><div class="l">how well heading decodes in a control, while the conjugate plane the dynamics use sits 69&ndash;83&deg; away</div></div>
+  <div class="stat"><div class="n">6&times;</div><div class="l">the proximal joint's conjugacy margin over the distal joint's, set by the image, not the actuators</div></div>
+  <div class="stat"><div class="n">8 &times; 2</div><div class="l">seeds and architectures, with matched-variance nulls and lit and shuffled-action controls</div></div>
+</div>
+
+<h2 class="pp-section-title">decoding is not use</h2>
+
+<section class="pp-thread">
+  <p>the criterion discovers coordinates from actions and the frozen model's own predictions alone, with no pose labels, supervised decoder, or other ground truth entering before scoring. a candidate coordinate is a plane in latent space. the test rotates the state inside that plane and asks whether the rotation imitates an extra action, judged by the model's next-observation predictions. a coordinate the dynamics use passes; a coordinate that is only decodable can fail.</p>
+
+  <p>the two questions give different answers. in the parent project's shuffled-action control, heading decodes to within 20 to 24 degrees, but the conjugate plane sits 69 to 83 degrees away. the variable is present, held in a decaying trace of the last visible observation, and the dynamics do not act on it.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/latent/criterion.png' | relative_url }}" alt="The label-free criterion: a plane in latent space is rotated and scored by whether the rotation reproduces an action, with decodable-but-unused coordinates separated from the ones the dynamics use.">
+    <figcaption><strong>figure 1. the criterion separates decoding from use.</strong> a candidate coordinate is a plane in latent space; rotating the state inside it is scored by how well it reproduces an action in the model's own next-observation predictions, against a variance-matched null. a coordinate the dynamics use clears the null, while one that is only decodable does not.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>decoding and use come apart. a probe can read a coordinate out of a world model's latent state while the dynamics do not treat it as a coordinate, and the gap is measurable: in the shuffled-action control, heading decodes to 20 to 24 degrees while the plane the dynamics use sits 69 to 83 degrees away.</p>
+  </div>
+
+  <h2 class="pp-section-title">the observation decides which coordinates get built</h2>
+
+  <p>i trained the same model on three two-joint arms that differ only in how the image depends on the joints, with dynamics, action space, image size, sensor noise, architecture, training budget, and the estimator held fixed. the coordinate the model builds follows what the image makes separable.</p>
+
+  <table class="armtab">
+    <thead><tr><th>environment</th><th>what the image depends on</th><th>coordinates built</th></tr></thead>
+    <tbody>
+      <tr><td>serial arm</td><td>q1 and q1+q2, proximal dominant</td><td>one, at <code>(1,0)</code></td></tr>
+      <tr><td>parity arm</td><td>q1+q2 only</td><td>one, at <code>(1,1)</code></td></tr>
+      <tr><td>decoupled arm</td><td>q1 and q2 separately</td><td>two, at <code>(1,0)</code> and <code>(0,1)</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="finding">
+    <div class="fn-label">Finding 2</div>
+    <p>which coordinates a model builds is set by the observation, not the actuators. the coordinate tracks what the image makes separable: a serial arm gives one coordinate, a parity arm one, and a decoupled arm two. both joint angles decode in every case, but the proximal joint's conjugacy margin is six times the distal joint's, so extra actuators do not buy extra coordinates. a serial chain cannot be made distal-dominant, which is a fact about kinematics, not about learning.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">why is this about world models in general, not just heading?</div>
+    <p>the parent projects asked whether partial observability is enough to produce a persistent heading coordinate, and found that it is. that is a claim about one variable in one setting. the criterion those projects built to make the heading claim safe turns out to be more general: it separates a coordinate the dynamics use from one that is merely decodable, for any planar rotation. this project owns that criterion and the causal account of what the observation has to make separable before a coordinate appears.</p>
+  </div>
+</section>
+
+<h2 class="pp-section-title">what it adds up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">readable is not used</div>a probe reads heading to 20 degrees while the dynamics ignore it, so decodability is the start of the test, not the end.</div>
+  <div class="takeaway"><div class="tk-h">the image writes the coordinates</div>serial, parity, and decoupled arms build (1,0), (1,1), and both, following the observation rather than the actuator count.</div>
+  <div class="takeaway"><div class="tk-h">a label-free criterion</div>the test uses only actions and the model's own predictions, so it needs no pose labels or supervised decoder.</div>
+</div>
+
+<div class="limitations">
+  <p><strong>Limitations.</strong> established in this setting: the dissociation between decoding and use, and the dependence of which coordinates appear on observation separability. not established, and not written as if it were: anything beyond 16x32 synthetic RGB, small convolutional GRUs, and two degrees of freedom; anything about non-circular coordinates, since the criterion as implemented tests a planar rotation, one group action among many; any comparison with the probing, disentanglement, or activation-patching literature, so "probes overstate what is used" stays a hypothesis until those baselines are run; and anything about real robots or real video.</p>
+</div>
+
+</div>
