@@ -76,7 +76,7 @@ My Dust is a faithful but simplified reimplementation. Attention keys and values
 
 ## Result 1: feedback makes every step look much better
 
-I first measured the per-step cosine between each estimate and the backprop gradient on the same batch, at a partly trained checkpoint, as in the Dust paper's alignment analysis. By that measure the feedback is a huge win. At K=16 the precision-weighted estimate on the MLP input layer reaches 0.78, higher than Dust reaches at K=256. Feedback alone does almost as well on most layers. The unbiased control variate sits in between.
+I first measured the per-step cosine between each estimate and the backprop gradient on the same batch, at a partly trained checkpoint, as in the Dust paper's alignment analysis. By that measure the feedback is a clear win. At K=16 the precision-weighted estimate on the MLP input layer reaches 0.78, higher than Dust reaches at K=256. Feedback alone does almost as well on most layers. The unbiased control variate sits in between.
 
 <p class="fig-legend"><span style="color:#7059AE">&#9679;</span> Dust &nbsp; <span style="color:#2D5C9E">&#9679;</span> Apical (unbiased) &nbsp; <span style="color:#B8433B">&#9679;</span> Precision-weighted &nbsp; <span style="color:#9A7516">&#9679;</span> Feedback only</p>
 
