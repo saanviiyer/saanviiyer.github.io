@@ -1,0 +1,72 @@
+---
+layout: project
+title: "Gauntlet: Stress-Testing Protein Fitness Proxies"
+permalink: /pages/projects/fitness-proxies/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+venues:
+  - "poster, AI for Science @ NeurIPS 2026"
+  - "sole author"
+links:
+  - label: "Code"
+    url: "https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet"
+hook: "Labs rank candidate proteins by a computable score because measurement is slow. The score only helps if it tracks the property it stands in for, so I checked whether a zero-shot protein model does, on measured data."
+thesis: "On measured PET-hydrolase activity, an ESM-2 650M zero-shot score ranks variants at a within-study Spearman of 0.01, below a hydropathy feature and well below a plain mutation count at 0.25, so it adds nothing over counting on the task it is used for."
+---
+
+<style>
+  .aid { --pink: #cf4d87; --red: #a8324a; }
+  .aid .fn-label { background: var(--red); color: #fff; }
+  .aid .finding { border-left: 3px solid var(--red); }
+  .aid .why-box { border-left: 3px solid var(--pink); }
+  .aid .pp-fig figcaption strong { color: var(--red); }
+  .aid .stat .n { color: var(--red); }
+</style>
+
+<div class="aid">
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>a protein fitness proxy is a computable stand-in for a slow wet-lab measurement, and a design campaign ranks thousands of candidates by it and tests the top ones. gauntlet stress-tests a proxy before anyone ranks designs with it, by asking whether it beats a trivial baseline on measured outcomes, stays useful in the top-ranked region a search actually selects, and resists being driven to pathological inputs. on 504 measured PET-hydrolase variants across 25 studies, an ESM-2 650M zero-shot score ranks activity at a within-study Spearman of 0.01, a substitution matrix is negative, and a plain count of mutations reaches 0.25. a score that cannot beat counting edits is not measuring function on the task it is sold for.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">0.01</div><div class="l">within-study Spearman of an ESM-2 650M zero-shot score on PET-hydrolase activity</div></div>
+  <div class="stat"><div class="n">0.25</div><div class="l">Spearman of a plain mutation count on the same variants, the trivial baseline it fails to beat</div></div>
+  <div class="stat"><div class="n">504 / 25</div><div class="l">measured PET-hydrolase variants across studies; a second axis adds 376 melting-temperature variants over 15 studies</div></div>
+</div>
+
+<h2 class="pp-section-title">a score that cannot beat counting</h2>
+
+<section class="pp-thread">
+  <p>the simplest bar a proxy has to clear is a trivial baseline, and the clearest trivial baseline for a mutant is how many mutations it carries. on PET-hydrolytic activity, a zero-shot ESM-2 650M log-likelihood score ranks variants at a within-study Spearman of 0.01, a substitution matrix scores below zero, a hydropathy feature does better, and a plain mutation count reaches 0.25. the expensive model is the weakest of the four scorers on the property a design campaign would use it for.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/eval/gauntlet-proxy-audit.png' | relative_url }}" alt="Within-study rank correlation with measured outcomes for four scorers, on PET-hydrolytic activity and melting temperature. The ESM-2 650M zero-shot score sits near zero on activity, below a hydropathy feature and well below a mutation count.">
+    <figcaption><strong>figure 1. within-study rank correlation with measured outcomes for four scorers.</strong> on PET-hydrolytic activity (504 variants, 25 studies) and melting temperature (376 variants, 15 studies). the ESM-2 650M zero-shot score sits near zero on activity, below a hydropathy feature and well below a mutation count at 0.25. the comparison is within study, so it is not confounded by between-study offsets.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <div class="fn-label">Finding 1</div>
+    <p>a zero-shot protein language model ranks measured PETase activity at a within-study Spearman of 0.01, worse than a mutation count at 0.25, so it adds nothing over a trivial baseline on the task it is used for. a proxy that cannot clear counting is not evidence about function, whatever its benchmark correlation elsewhere.</p>
+  </div>
+
+  <div class="why-box">
+    <div class="wb-q">why run the audit before the campaign, not after?</div>
+    <p>because the proxy is the score people reach for first when they rank designs without measuring them, and the moment a search starts choosing the candidates it likes best, the proxy is steering the campaign rather than describing it. the three gauntlet checks, beat a trivial baseline, stay useful in the top-ranked tail, and resist an optimizer, are the questions whose answers decide whether the first ranked batch is worth synthesizing. this axis reports the first check; the others are in the broader evaluations program.</p>
+  </div>
+</section>
+
+<h2 class="pp-section-title">what it adds up to</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">counting is the bar</div>a mutation count ranks measured activity at 0.25; a zero-shot protein score reaches 0.01, so it has to earn its cost against counting first.</div>
+  <div class="takeaway"><div class="tk-h">within study, not across</div>the comparison is inside each study, so the gap is not an artifact of pooling incomparable assays.</div>
+  <div class="takeaway"><div class="tk-h">audit before you rank</div>a proxy becomes an objective the moment a search uses it, so the check belongs before the first batch, not after.</div>
+</div>
+
+<div class="limitations">
+  <p><strong>Limitations.</strong> this axis reports one property, PET-hydrolytic activity, with a second on melting temperature, drawn from published measured variants; it is a statement about these assays and these scorers, not a universal ranking of protein models. zero-shot log-likelihood is one way to score a model, and a supervised or embedding-based readout can do better. the top-tail and reward-hacking checks that complete the gauntlet battery live in the broader evaluations work and are not re-reported here.</p>
+</div>
+
+</div>
