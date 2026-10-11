@@ -5,6 +5,7 @@ date: 2026-10-08
 tag: "Research"
 section: technical
 permalink: /thinking/apical-dust/
+math: true
 thumb: /assets/images/apical-dust/thumb.png
 excerpt: "I added a learned top-down feedback pathway to Q Labs' Dust, a rule that trains transformers with noise instead of a backward pass. As an unbiased control variate it lowers test loss at small populations at about the same compute. Fixing how Dust credits its embeddings and attention then removed much of its remaining bias, and on that fixed baseline the feedback gain at K=16 grew to 0.020."
 ---
@@ -32,29 +33,33 @@ The cost is variance. With K draws and a d-dimensional layer output, the per-tok
 
 Cortical pyramidal neurons receive bottom-up input on their basal dendrites and top-down feedback on a separate apical dendrite. Several models of cortical learning treat the apical signal as a local, approximate error that tells each neuron which way to change (Guerguiev, Lillicrap and Richards, 2017). That signal is never exact. Lansdell, Prakash and Kording (2020) proposed that the brain could learn its feedback weights from noise. Neurons jitter, a neuromodulatory reward reports the outcome, and the correlation trains the feedback pathway. Dust already has the noise and the reward. It is missing the pathway.
 
-Apical adds it. For every module m I keep a feedback matrix `B_m` that maps the network's output error at a token, `e_t`, to a predicted error at that module's output.
+Apical adds it. For every module $$m$$ I keep a feedback matrix $$B_m$$ that maps the network's output error at a token, $$e_t$$, to a predicted error at that module's output.
 
-```
-g_pred(t)  =  B_m · e_t
-e_t        =  Dust estimate of dLoss/dlogits at token t   (jitter the cached logits; no derivatives)
-B_m        =  EMA ridge regression of Dust's estimates g(t) on e_t
-```
+$$
+\begin{aligned}
+\hat g_{\text{pred}}(t) &= B_m\, e_t \\
+e_t &= \text{Dust estimate of } \partial \mathcal{L} / \partial\, \text{logits}_t \quad \text{(jitter the cached logits; no derivatives)} \\
+B_m &= \text{EMA ridge regression of Dust's estimates } \hat g(t) \text{ on } e_t
+\end{aligned}
+$$
 
-Everything stays zeroth-order. The output error is itself estimated by perturbing the logits, which costs only a cross-entropy re-evaluation. The feedback weights are fit by regressing Dust's noisy estimates on `e_t`. Because the noise in those estimates is independent of `e_t`, it averages out of the fit.
+Everything stays zeroth-order. The output error is itself estimated by perturbing the logits, which costs only a cross-entropy re-evaluation. The feedback weights are fit by regressing Dust's noisy estimates on $$e_t$$. Because the noise in those estimates is independent of $$e_t$$, it averages out of the fit.
 
 ## Three ways to use the feedback
 
 A prediction of the gradient can enter the update in three ways. They differ in how far they trust it.
 
-1. **Feedback only.** Update with `B_m e_t` alone, as in learned feedback alignment. Noise trains the pathway but never touches the weights directly. Low variance, but biased wherever a linear map from the output error cannot express the true gradient.
+1. **Feedback only.** Update with $$B_m e_t$$ alone, as in learned feedback alignment. Noise trains the pathway but never touches the weights directly. Low variance, but biased wherever a linear map from the output error cannot express the true gradient.
 2. **Control variate (Apical).** Subtract the part of each reward that the feedback already explains, estimate only the residual from noise, then add the prediction back.
 
-   ```
-   r'(t)  =  r(t) + sigma · <g_pred(t), a(t)>
-   g(t)   =  g_pred(t) − (1/K·sigma) Sum_draws r'(t) a(t)
-   ```
+   $$
+   \begin{aligned}
+   r'(t) &= r(t) + \sigma \, \big\langle \hat g_{\text{pred}}(t),\, a(t) \big\rangle \\
+   \hat g(t) &= \hat g_{\text{pred}}(t) - \frac{1}{K\sigma} \sum_{k=1}^{K} r'_k(t)\, a_k(t)
+   \end{aligned}
+   $$
 
-   The expected correction cancels the prediction exactly, so the estimate stays unbiased whatever `B_m` is. Its noise now scales with the size of the residual `g − g_pred`, not with `g`.
+   The expected correction cancels the prediction exactly, so the estimate stays unbiased whatever $$B_m$$ is. Its noise now scales with the size of the residual $$g - \hat g_{\text{pred}}$$, not with $$g$$.
 3. **Precision-weighted.** Shrink the residual toward the prediction by its estimated reliability, the way predictive-coding models weigh prediction errors by precision (Feldman and Friston, 2010). The reliability comes online from the agreement between the two halves of the population.
 
 ## Setup
