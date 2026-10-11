@@ -1064,6 +1064,29 @@ footer a:hover { text-decoration: underline; }
 .work-desc { display: block; margin-top: 6px; line-height: 1.6; color: var(--muted); max-width: 90ch; }
 .work-desc em { font-style: italic; color: var(--ink); }
 
+/* Publication-row list (thumbnail + title + venue + one-line + links + year) */
+.pub-sec { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin: 44px 0 8px; }
+.pub-list { margin: 0 0 18px; }
+.pub-row { display: grid; grid-template-columns: 84px 1fr auto; gap: 22px; padding: 22px 0; border-top: 0.5px solid var(--border); align-items: start; }
+.pub-row:first-child { border-top: none; }
+.pub-thumb { display: block; }
+.pub-thumb img { width: 84px; height: 84px; object-fit: cover; border: 0.5px solid var(--border); border-radius: 6px; background: #fff; display: block; }
+.pub-main { min-width: 0; }
+.pub-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 500; line-height: 1.2; margin: 0 0 3px; }
+.pub-title a { color: var(--ink); text-decoration: none; }
+.pub-title a:hover { text-decoration: underline; text-decoration-color: var(--pink); text-underline-offset: 3px; }
+.pub-venue { color: var(--muted); font-size: 0.92rem; margin-bottom: 6px; }
+.pub-desc { line-height: 1.55; color: var(--ink); margin-bottom: 8px; max-width: 82ch; }
+.pub-links { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.pub-links a { color: var(--pink); text-decoration: none; }
+.pub-links a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.pub-year { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; padding-top: 4px; }
+@media (max-width: 620px) {
+  .pub-row { grid-template-columns: 58px 1fr; }
+  .pub-thumb img { width: 58px; height: 58px; }
+  .pub-year { grid-column: 2; padding-top: 0; }
+}
+
 .bm { max-width: 1180px; margin: 0 auto; background: var(--read-card); border: 1px solid var(--read-card-edge); border-radius: 24px; padding: clamp(28px,5vw,64px); box-shadow: 0 16px 46px rgba(23,9,15,0.08); }
 .bm-eyebrow { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
 .bm-eyebrow a { color: var(--accent); text-decoration: none; }
