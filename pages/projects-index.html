@@ -4,74 +4,44 @@ permalink: /projects/
 ---
 
 <section class="pf-section">
-  <h2 class="pf-heading">projects</h2>
-  <p class="proj-intro">Research in three lanes: evaluations that survive optimizers, world models for biology and the brain, and clinical machine learning evaluated honestly. The question across all of it is whether a measurement still means what it claims once a model is used to choose, design, or diagnose.</p>
+  <h2 class="pf-heading">selected work</h2>
+  <p class="proj-intro">Research in three lanes: evaluations that survive optimizers, world models for biology and the brain, and clinical machine learning evaluated honestly. The question across all of it is whether a measurement still means what it claims once a model is used to choose, design, or diagnose. Each entry links to its full report.</p>
 
   <p class="w-sec-label">evaluations that survive optimizers</p>
-  <div class="proj-cards">
-    <a class="proj-card" href="{{ '/projects/evaluations/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/projects/cover-protein.png' | relative_url }}" alt="Evaluations that survive optimizers">
-      <div class="pc-body">
-        <div class="pc-tag">Flagship</div>
-        <div class="pc-title">Evaluations that survive optimizers</div>
-        <div class="pc-venue">NeurIPS 2026 workshops, including AgenticLS and AI for Science</div>
-        <div class="pc-desc">Six evaluations testing whether a score keeps its meaning under pressure: <em>fitness proxies</em>, <em>benchmark-to-selection</em>, <em>representational identifiability</em>, <em>verifier red-teaming</em>, <em>genomic-to-protein transfer</em>, and a <em>safety benchmark</em> that leaks.</div>
-      </div>
+  <div class="work-list">
+    <a class="work-row" href="{{ '/projects/evaluations/' | relative_url }}">
+      <span class="work-head"><span class="work-title">Evaluations that survive optimizers</span><span class="work-meta">NeurIPS 2026 workshops &middot; 2026</span></span>
+      <span class="work-desc">Six evaluations testing whether a score keeps its meaning under pressure: <em>fitness proxies</em>, <em>benchmark-to-selection</em>, <em>representational identifiability</em>, <em>verifier red-teaming</em>, <em>genomic-to-protein transfer</em>, and a <em>safety benchmark</em> that leaks.</span>
     </a>
-    <a class="proj-card" href="{{ '/projects/agent-evals-life-sciences/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/projects/agentevals/selection-decay.png' | relative_url }}" alt="AI evals and agents in life sciences">
-      <div class="pc-body">
-        <div class="pc-tag">Draft in progress</div>
-        <div class="pc-title">AI evals and agents in life sciences</div>
-        <div class="pc-venue">three NeurIPS 2026 workshop posters: Verify-Agents, AgenticLS, Trust-AI-Eval and GEM-Bio</div>
-        <div class="pc-desc">One question at three heights: a <em>verifier</em> that certifies a scorer which memorized the answers, a <em>representation</em> that cannot tell distinct biology apart, and a <em>benchmark metric</em> that stops predicting the decision made from it.</div>
-      </div>
+    <a class="work-row" href="{{ '/projects/prism/' | relative_url }}">
+      <span class="work-head"><span class="work-title">PRISM</span><span class="work-meta">oral, IEEE CIBCB 2026 &middot; 2026</span></span>
+      <span class="work-desc">Every cancer mutational signature applied to proteins, and the controls that decide whether a repeatable <em>embedding movement</em> is biology or an artifact.</span>
     </a>
-    <a class="proj-card" href="{{ '/projects/prism/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="PRISM">
-      <div class="pc-body">
-        <div class="pc-tag">Oral, IEEE CIBCB 2026</div>
-        <div class="pc-title">PRISM</div>
-        <div class="pc-venue">sole author, accepted for additional venues</div>
-        <div class="pc-desc">The flagship audit: every cancer mutational signature applied to proteins, and the controls that decide whether a repeatable <em>embedding movement</em> is biology or an artifact.</div>
-      </div>
+    <a class="work-row" href="{{ '/projects/agent-evals-life-sciences/' | relative_url }}">
+      <span class="work-head"><span class="work-title">AI evals and agents in life sciences</span><span class="work-meta">3 NeurIPS 2026 posters &middot; 2026</span></span>
+      <span class="work-desc">One question at three heights: a <em>verifier</em> that certifies a scorer which memorized the answers, a <em>representation</em> that cannot tell distinct biology apart, and a <em>benchmark metric</em> that stops predicting the decision made from it.</span>
     </a>
-    <a class="proj-card" href="{{ '/projects/proposals/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/white-box-protein-eval/eval-schematic.png' | relative_url }}" alt="Proposals">
-      <div class="pc-body">
-        <div class="pc-tag">Proposals</div>
-        <div class="pc-title">Proposals</div>
-        <div class="pc-venue">no results, by design</div>
-        <div class="pc-desc">Two evaluations i want to run: a <em>white-box</em> probe of what a protein model's representation carries, and a <em>portable audit</em> that stress-tests any score under search.</div>
-      </div>
+    <a class="work-row" href="{{ '/projects/proposals/' | relative_url }}">
+      <span class="work-head"><span class="work-title">Proposals</span><span class="work-meta">no results, by design &middot; 2026</span></span>
+      <span class="work-desc">Two evaluations i want to run: a <em>white-box</em> probe of what a protein model's representation carries, and a <em>portable audit</em> that stress-tests any score under search.</span>
     </a>
   </div>
 
   <p class="w-sec-label">world models for biology and the brain</p>
-  <div class="proj-cards">
-    <a class="proj-card" href="{{ '/projects/world-models/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="World models for biology and the brain">
-      <div class="pc-body">
-        <div class="pc-tag">World models</div>
-        <div class="pc-title">World models for biology and the brain</div>
-        <div class="pc-venue">RoBoWoMo @ IEEE IROS 2026</div>
-        <div class="pc-desc">When a predictive model builds a usable internal variable and when continued training erases one: a <em>steerable heading variable</em> that emerges only under partial observability, and <em>continual learning</em> where a fair baseline erases the advantage of local rules.</div>
-      </div>
+  <div class="work-list">
+    <a class="work-row" href="{{ '/projects/world-models/' | relative_url }}">
+      <span class="work-head"><span class="work-title">World models for biology and the brain</span><span class="work-meta">RoBoWoMo @ IEEE IROS 2026 &middot; 2026</span></span>
+      <span class="work-desc">When a predictive model builds a usable internal variable and when continued training erases one: a <em>steerable heading variable</em> that emerges only under partial observability, and <em>continual learning</em> where a fair baseline erases the advantage of local rules.</span>
     </a>
   </div>
 
   <p class="w-sec-label">clinical machine learning, evaluated honestly</p>
-  <div class="proj-cards">
-    <a class="proj-card" href="{{ '/projects/clinical-ml/' | relative_url }}">
-      <img class="pc-cover" src="{{ '/assets/images/projects/cover-clinical.png' | relative_url }}" alt="Clinical machine learning, evaluated honestly">
-      <div class="pc-body">
-        <div class="pc-tag">Clinical ML</div>
-        <div class="pc-title">Clinical machine learning, evaluated honestly</div>
-        <div class="pc-venue">ECCV AI4M3D (oral), NeurIPS RCMLR (oral), NeurIPS HAIC</div>
-        <div class="pc-desc">Building and evaluating clinical models against what matters in practice: <em>epileptogenic lesion detection</em>, a <em>sequential routing policy</em>, and <em>seven failure modes</em> in clinical ML evaluation.</div>
-      </div>
+  <div class="work-list">
+    <a class="work-row" href="{{ '/projects/clinical-ml/' | relative_url }}">
+      <span class="work-head"><span class="work-title">Clinical machine learning, evaluated honestly</span><span class="work-meta">ECCV AI4M3D &middot; NeurIPS RCMLR &middot; HAIC &middot; 2026</span></span>
+      <span class="work-desc">Building and evaluating clinical models against what matters in practice: <em>epileptogenic lesion detection</em>, a <em>sequential routing policy</em>, and <em>seven failure modes</em> in clinical ML evaluation.</span>
     </a>
   </div>
 
-  <p class="proj-intro" style="font-size:1rem;">Tools, apps, and earlier projects live on the <a href="{{ '/pages/portfolio/' | relative_url }}#projects">portfolio page</a>.</p>
+  <p class="proj-intro" style="font-size:1rem;">Essays and write-ups are on the <a href="{{ '/pages/writing/' | relative_url }}">writing</a> page. Tools, apps, and earlier projects are on the <a href="{{ '/pages/portfolio/' | relative_url }}#projects">portfolio</a> page.</p>
 </section>
