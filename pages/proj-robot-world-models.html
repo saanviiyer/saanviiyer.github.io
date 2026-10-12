@@ -24,6 +24,11 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
   .aid table.armtab th, .aid table.armtab td { text-align: left; padding: 9px 12px; border-bottom: 0.5px solid var(--border); }
   .aid table.armtab th { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--red); }
   .aid table.armtab code { color: var(--pink); }
+  .hr-anim .hr-wrap { width: 100%; aspect-ratio: 16 / 8; background: var(--read-card, #fffdf7); border: 1px solid var(--read-card-edge, #efe7d7); border-radius: 12px; }
+  .hr-anim .hr-wrap canvas { width: 100%; height: 100%; display: block; }
+  .hr-anim .hr-controls { display: flex; align-items: center; gap: 14px; margin-top: 10px; font-family: var(--sans); font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; }
+  .hr-anim .hr-controls button { font-family: var(--sans); font-size: 0.76rem; border: 1px solid var(--pink); color: var(--pink); background: transparent; border-radius: 999px; padding: 4px 15px; cursor: pointer; }
+  .hr-anim .hr-readout { font-weight: 500; }
 </style>
 
 <div class="aid">
@@ -52,6 +57,15 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
   <p><span class="venue-badge">RoBoWoMo @ IEEE IROS 2026</span><span class="venue-badge">Lightning talk and poster</span></p>
 
   <p>I train 36 action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. Hidden states form a ring in nearly every condition, and persistent homology finds one in 7 of 8 always-observed models and 7 of 8 shuffled-action controls, which have no way to integrate heading, so ring shape alone leaves the question open. The deciding test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. Withholding observations during training lifts that fidelity by 0.421 on average over a matched shuffled-action null, with all 12 paired differences positive and the smallest of them 0.293, and the lowest-fidelity blackout model, at 0.860, still beats the highest-fidelity control, at 0.613, so the 36 models separate with no overlap.</p>
+
+  <figure class="pp-fig hr-anim">
+    <div class="hr-wrap"><canvas id="hr-ring"></canvas></div>
+    <div class="hr-controls">
+      <button id="hr-play" type="button">pause</button>
+      <span class="hr-readout" id="hr-status">observing</span>
+    </div>
+    <figcaption><strong>Interactive. The ring holds only when the task forces it.</strong> The agent turns steadily and each model carries a ring whose coordinate should track true heading (the outer tick). When observations cut out during a blackout, the model trained under partial observability keeps its coordinate locked to true heading, while the always-observed control's ring scrambles because it never had to integrate. Fidelity shown is a live schematic; across 36 models the lowest blackout fidelity (0.860) stays above the highest control (0.613).</figcaption>
+  </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Blackout-trained ring tracks heading at 0.99, always-on ring scrambled during a blackout">
@@ -124,3 +138,47 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
 }</div>
 
 </div>
+
+<script>
+(function(){
+  var cv=document.getElementById('hr-ring'); if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'); var DPR=Math.min(2,window.devicePixelRatio||1);
+  function col(v,f){try{var c=getComputedStyle(document.documentElement).getPropertyValue(v).trim();return c||f;}catch(e){return f;}}
+  var trueH=0, trained=0, ctrl=0, phase=0, playing=true;
+  var status=document.getElementById('hr-status'), btn=document.getElementById('hr-play');
+  function resize(){var w=cv.clientWidth,h=cv.clientHeight;cv.width=Math.max(1,w*DPR);cv.height=Math.max(1,h*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);}
+  function ring(cx,cy,R,estH,label,isTrained,blackout){
+    var pink=col('--pink','#cf4d87'), red=col('--red','#a8324a'), mut='#9a9183';
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.strokeStyle=blackout?'#ddd3c4':'#cbbfab'; ctx.lineWidth=2; ctx.stroke();
+    var ox=cx+Math.cos(trueH)*R, oy=cy+Math.sin(trueH)*R;
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(cx+Math.cos(trueH)*(R+12),cy+Math.sin(trueH)*(R+12)); ctx.strokeStyle=mut; ctx.lineWidth=2; ctx.stroke();
+    var ex=cx+Math.cos(estH)*R, ey=cy+Math.sin(estH)*R;
+    ctx.beginPath(); ctx.arc(ex,ey,6.5,0,7); ctx.fillStyle=isTrained?red:pink; ctx.fill();
+    ctx.fillStyle=mut; ctx.font='11px Inter,system-ui,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(label, cx, cy+R+28);
+    var fid=(Math.cos(estH-trueH)+1)/2;
+    ctx.fillStyle=isTrained?red:'#8f877a'; ctx.font='600 13px Inter,system-ui,sans-serif';
+    ctx.fillText('fidelity '+fid.toFixed(2), cx, cy-R-16);
+    if(blackout){ ctx.fillStyle='rgba(168,50,74,0.45)'; ctx.font='10px Inter,system-ui,sans-serif'; ctx.fillText('dark', cx, cy+4); }
+  }
+  function draw(){
+    var w=cv.clientWidth,h=cv.clientHeight; ctx.clearRect(0,0,w,h);
+    var R=Math.min(w/4.6,h/3.1), cy=h/2+4;
+    var blackout=(phase%300)>170;
+    ring(w*0.29, cy, R, trained, 'trained with blackouts', true, blackout);
+    ring(w*0.71, cy, R, ctrl, 'always observed (control)', false, blackout);
+    if(status) status.textContent = blackout?'blackout: observations withheld':'observing';
+  }
+  function loop(){
+    if(playing){
+      phase++; trueH+=0.018;
+      var blackout=(phase%300)>170;
+      if(!blackout){ trained=trueH; ctrl=trueH; }
+      else { trained=trueH+Math.sin(phase*0.11)*0.045; ctrl+=0.018+(Math.random()-0.5)*0.38; }
+    }
+    draw(); requestAnimationFrame(loop);
+  }
+  if(btn) btn.addEventListener('click',function(){playing=!playing;btn.textContent=playing?'pause':'play';});
+  window.addEventListener('resize',resize); resize(); loop();
+})();
+</script>
