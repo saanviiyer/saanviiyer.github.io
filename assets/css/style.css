@@ -1373,3 +1373,7 @@ footer a,
 .finding, .why-box, .concept-card, .callout-q { margin-top: 34px; margin-bottom: 34px; }
 .pp-abstract { padding: 24px 26px; margin: 26px 0 12px; }
 .takeaways { margin-top: 32px; gap: 20px; }
+
+/* ============ responsive display math: scroll wide equations on mobile ============ */
+mjx-container { max-width: 100%; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
