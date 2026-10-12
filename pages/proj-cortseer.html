@@ -1,17 +1,55 @@
 ---
 title: CortSeer · Saanvi S. Subramanian
-permalink: /pages/projects/cortseer/
+permalink: /projects/cortseer/
 ---
 
-<div class="page-header">
-  <h1>CortSeer</h1>
+<style>
+  .doc { max-width: 820px; margin: 0 auto; }
+  .doc h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 2.7rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 10px; }
+  .doc .doc-meta { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); margin: 0 0 2px; }
+  .doc .doc-lead { font-family: var(--serif); font-size: 1.18rem; line-height: 1.55; color: var(--muted); margin: 20px 0 0; max-width: 70ch; }
+  .doc ul.doc-nav { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--sans); font-size: 0.85rem; }
+  .doc ul.doc-nav a { color: var(--muted); text-decoration: none; }
+  .doc ul.doc-nav a:hover { color: var(--accent); }
+  .doc h2 { font-family: var(--sans); font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin: 60px 0 14px; }
+  .doc p { font-family: var(--serif); font-size: 1.08rem; line-height: 1.75; margin: 0 0 18px; max-width: 72ch; }
+  .doc .key { font-weight: 600; }
+  .doc figure { margin: 26px 0; }
+  .doc figure img { width: 100%; height: auto; display: block; }
+  .doc figcaption { font-family: var(--sans); font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-top: 10px; max-width: 72ch; }
+  .doc .fig-todo { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); border-left: 2px solid var(--accent-soft); padding-left: 14px; margin: 26px 0; }
+  .doc .doc-back { font-family: var(--sans); font-size: 0.85rem; margin-top: 60px; }
+  .doc a { color: var(--accent); }
+</style>
+
+<div class="doc">
+  <h1>CortSeer: an anatomical prior recovers FCD lesions MRI misses</h1>
+  <p class="doc-meta">Saanvi S. Subramanian &middot; Caltech SURF, with the LENS lab (Lab for Early-Age Neuroimaging at Stanford)</p>
+  <p class="doc-meta">oral, ECCV AI for Medical 3D Vision workshop (AI4M3D), September 2026</p>
+  <!-- TODO (venue): the CortSeer repo itself does not contain the ECCV / AI4M3D / oral / Sept-2026 claim; it is stated on the existing clinical-ml page and listed in PROJECT_INVENTORY as "accepted, oral, ai4m3d.github.io schedule". Confirm against the official program listing or acceptance email before relying on this. -->
+  <p class="doc-lead">Focal cortical dysplasia is a surgically treatable cause of drug-resistant epilepsy, and many confirmed lesions are missed on conventional MRI. CortSeer asks whether restricting a trained 3D segmentation to an anatomical localization zone, a stand-in for the region an EEG-guided workup would indicate, can recover the lesions an image-only model misses.</p>
+
+  <ul class="doc-nav">
+    <li><a href="#method">Method</a></li>
+    <li><a href="#result">Result</a></li>
+    <li><a href="#bound">Why it is an upper bound</a></li>
+    <li><a href="#limits">Limitations</a></li>
+  </ul>
+
+  <h2 id="method">Method: zone-restricted recovery over a trained detector</h2>
+  <p>The detector is a 3D nnU-Net trained on FLAIR volumes with five-fold cross-validation. On top of its output, the recovery stage adds no training: SynthSeg parcellation defines anatomical zones, the search is restricted to the suspected zone, and a multi-peak search looks for several candidate peaks there rather than trusting a single maximum. Two null baselines calibrate the recovery: shuffling the detector's probabilities inside each zone, and drawing a random connected cluster of matched size inside the zone.</p>
+
+  <h2 id="result">A localization zone recovers 14 of 25 missed lesions</h2>
+  <p>On <span class="key">175 confirmed-FCD scans</span>, the baseline detects 150 (<span class="key">85.7%</span>) and misses 25 completely, where a complete miss means no voxel above threshold inside the lesion. Restricting the multi-peak search to the correct lobe recovers <span class="key">14 of those 25</span>, with every recovery appearing within the top four candidate peaks. The null baselines recover 1.4 (probability shuffle) and 4.0 (random in-zone cluster), so the recovery clears chance at P below 1e-4 against both.</p>
+  <p>The recovery leans on the zone restriction rather than on raw detector confidence: only <span class="key">8 of the 14</span> recovered lesions clear the per-case detection threshold on their own. Of the 25 misses, 24 are frontal or temporal.</p>
+
+  <div class="fig-todo">Figure TODO. The repo figure that breaks recovery down by localization granularity (fig8) reports percentages on a broader 231-case cohort, not the 14/25 framing on 175 confirmed-FCD scans, so pairing it here would mix two cohort definitions. A clean figure for this page should plot the 14/25 recovery against the 1.4 and 4.0 nulls on the 175-case cohort. Tell me if you want me to generate that from the locked numbers.</div>
+
+  <h2 id="bound">The 14 of 25 is an upper bound, not an EEG result</h2>
+  <p>The localization zone is derived from each case's own confirmed lesion lobe, used as a proxy for the region an EEG workup would indicate. No EEG signal or EEG report is processed anywhere in the pipeline, so this recovery is a best-case, idealized-localization ceiling rather than an achievable EEG-guided number. A companion analysis on the fusion side shows that a realistically accurate prior applied after segmentation transfers almost no benefit, with a break-even near chance, so the gap between this ceiling and a deployable result is the open problem, not a solved one.</p>
+
+  <h2 id="limits">Limitations</h2>
+  <p>The localization zone is simulated from the confirmed lesion lobe, not from a measured EEG report or raw signal, so every recovery number is a ceiling a measured prior would approach. The recovery stage has no held-out split or external test set yet, and a documented-only, FCD-only retrain of the detector has not been run, since 18 of the confirmed-FCD cases were in the detector's training data. The numbers on this page are the 14-of-25 framing on the 175-case confirmed-FCD cohort; a separate journal manuscript frames the same work on a 231-case all-comers cohort with different denominators, and the two should not be mixed.</p>
+
+  <p class="doc-back"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
 </div>
-
-<p class="proj-blurb">CortSeer maps EEG-identified seizure onset zones to anatomy on a multimodal MRI and EEG foundation model, and is submitted to Brain Informatics.</p>
-<p class="proj-blurb">It was accepted for an oral at the ECCV AI for Medical 3D Vision workshop.</p>
-
-<p class="preprint-links">
-  <a href="https://ai4m3d.github.io/#schedule" target="_blank" rel="noopener">Workshop</a>
-</p>
-
-<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; all projects</a></p>
