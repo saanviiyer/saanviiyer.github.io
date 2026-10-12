@@ -5,19 +5,22 @@ permalink: /writing/
 
 <section class="pf-section">
   <h2 class="pf-heading">technical writing</h2>
-  <p class="proj-intro">longer-form notes where i work a question out in full: the method, what it buys, and where it breaks. each follows the same format as the project pages.</p>
+  <p class="proj-intro">longer-form notes where i work a question out in full: the method, what it buys, and where it breaks. same format as the project pages.</p>
 
   <div class="pub-list">
 
+    {% assign tech = site.posts | where: "section", "technical" %}
+    {% for post in tech %}
     <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/thinking/apical-dust/' | relative_url }}"><img src="{{ '/assets/images/apical-dust/thumb.png' | relative_url }}" alt="Apical Dust"></a>
+      <a class="pub-thumb" href="{{ post.url | relative_url }}">{% if post.thumb %}<img src="{{ post.thumb | relative_url }}" alt="{{ post.title }}">{% endif %}</a>
       <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/thinking/apical-dust/' | relative_url }}">Apical Dust: cortical feedback for a backprop-free learning rule</a></h3>
+        <h3 class="pub-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
         <div class="pub-venue">essay &middot; personal site</div>
-        <div class="pub-links"><a href="{{ '/thinking/apical-dust/' | relative_url }}">read</a></div>
+        <div class="pub-links"><a href="{{ post.url | relative_url }}">read</a></div>
       </div>
-      <div class="pub-year">2026</div>
+      <div class="pub-year">{{ post.date | date: "%Y" }}</div>
     </div>
+    {% endfor %}
 
     <div class="pub-row">
       <span class="pub-thumb" aria-hidden="true"></span>
