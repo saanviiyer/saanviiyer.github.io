@@ -21,6 +21,40 @@ layout: default
   <p class="post-back"><a href="{{ '/writing/' | relative_url }}">&larr; all writing</a></p>
 </article>
 
+
+<script>
+/* Additive scroll reveals for research posts.
+
+   Content is visible without this script: nothing here un-hides anything, it
+   only replays a short fade-and-lift as blocks come into view. If
+   IntersectionObserver is missing, the user prefers reduced motion, or the
+   script simply never runs, the post reads normally. */
+(function () {
+  var root = document.querySelector('.research-post .rp-body');
+  if (!root) return;
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var blocks = root.querySelectorAll(
+    ':scope > h2, :scope > p, :scope > ul, :scope > ol, :scope > blockquote, :scope > table');
+  if (!blocks.length) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    var n = 0;
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      if (el.tagName === 'H2') el.classList.add('rp-h2');
+      el.style.animationDelay = (Math.min(n++, 3) * 60) + 'ms';
+      el.classList.add('rp-reveal');
+      io.unobserve(el);
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+  blocks.forEach(function (el) { io.observe(el); });
+})();
+</script>
+
 {% if page.math %}
 <script>
   window.MathJax = { tex: { displayMath: [['$$', '$$'], ['\\[', '\\]']], inlineMath: [['\\(', '\\)']] } };
