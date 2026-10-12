@@ -5,7 +5,7 @@ permalink: /projects/
 
 <section class="pf-section">
   <h2 class="pf-heading">research</h2>
-  <p class="proj-intro">Whether a measurement still means what it claims once a model is used to choose, design, or diagnose. Three lanes: evaluations that survive optimizers, world models for biology and the brain, and clinical machine learning evaluated honestly. Each entry links to its full project page.</p>
+  <p class="proj-intro">whether a measurement still means what it claims once a model is used to choose, design, or diagnose. the work groups into evaluations of biological design agents, world models for the brain and continual learning, and clinical machine learning evaluated honestly. each entry links to its full project page.</p>
 
   <p class="pub-sec">evaluations that survive optimizers</p>
   <div class="pub-list">
@@ -22,34 +22,12 @@ permalink: /projects/
     </div>
 
     <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/verify-agents/' | relative_url }}"><img src="{{ '/assets/images/projects/agentevals/verifier-attack.png' | relative_url }}" alt="When the verifier is wrong"></a>
+      <a class="pub-thumb" href="{{ '/evaluating-biological-agents/' | relative_url }}"><img src="{{ '/assets/images/projects/eval/gauntlet-proxy-audit.png' | relative_url }}" alt="Evaluating biological agents"></a>
       <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/verify-agents/' | relative_url }}">When the verifier is wrong</a></h3>
-        <div class="pub-venue">Verify-Agents @ NeurIPS 2026</div>
-        <div class="pub-desc">red-teaming a design agent's trust gate: an in-sample gate certifies a scorer that memorized the answers at AUROC 0.991, and catching the attack is not recovering its cost.</div>
-        <div class="pub-links"><a href="{{ '/verify-agents/' | relative_url }}">project page</a> &middot; <a href="https://openreview.net/forum?id=RyzGAFDM8S" target="_blank" rel="noopener">paper</a></div>
-      </div>
-      <div class="pub-year">2026</div>
-    </div>
-
-    <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/benchmark-selection/' | relative_url }}"><img src="{{ '/assets/images/projects/agentevals/selection-decay.png' | relative_url }}" alt="Benchmark correlation vs selection"></a>
-      <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/benchmark-selection/' | relative_url }}">Does benchmark correlation predict selection quality?</a></h3>
-        <div class="pub-venue">Trust-AI-Eval &middot; GEM-Bio @ NeurIPS 2026</div>
-        <div class="pub-desc">reported correlation explains half the variance in top-10% selection value and 16% at top-1%, and means different things across benchmark families.</div>
-        <div class="pub-links"><a href="{{ '/benchmark-selection/' | relative_url }}">project page</a> &middot; <a href="https://openreview.net/forum?id=KxSFpyRXzp" target="_blank" rel="noopener">paper</a></div>
-      </div>
-      <div class="pub-year">2026</div>
-    </div>
-
-    <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/fitness-proxies/' | relative_url }}"><img src="{{ '/assets/images/projects/eval/gauntlet-proxy-audit.png' | relative_url }}" alt="Gauntlet fitness proxies"></a>
-      <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/fitness-proxies/' | relative_url }}">Gauntlet: stress-testing protein fitness proxies</a></h3>
-        <div class="pub-venue">AI for Science @ NeurIPS 2026</div>
-        <div class="pub-desc">a zero-shot protein score ranks measured PETase activity at 0.01, below a plain mutation count at 0.25, so it adds nothing over counting on the task it is used for.</div>
-        <div class="pub-links"><a href="{{ '/fitness-proxies/' | relative_url }}">project page</a> &middot; <a href="https://github.com/saanviiyer/protein-lm-audits/tree/main/gauntlet" target="_blank" rel="noopener">code</a></div>
+        <h3 class="pub-title"><a href="{{ '/evaluating-biological-agents/' | relative_url }}">Evaluating biological agents</a></h3>
+        <div class="pub-venue">AI for Science &middot; Trust-AI-Eval &middot; GEM-Bio &middot; Verify-Agents @ NeurIPS 2026</div>
+        <div class="pub-desc">three swappable parts of a design agent, a proxy, a benchmark, and a verifier, each a measurement that fails once an optimizer selects on it: a zero-shot score loses to counting, correlation decays where campaigns act, and a trust gate certifies memorization.</div>
+        <div class="pub-links"><a href="{{ '/evaluating-biological-agents/' | relative_url }}">project page</a> &middot; <a href="https://openreview.net/forum?id=KxSFpyRXzp" target="_blank" rel="noopener">benchmark paper</a> &middot; <a href="https://openreview.net/forum?id=RyzGAFDM8S" target="_blank" rel="noopener">verifier paper</a></div>
       </div>
       <div class="pub-year">2026</div>
     </div>
@@ -67,27 +45,27 @@ permalink: /projects/
 
   </div>
 
-  <p class="pub-sec">world models for biology and the brain</p>
+  <p class="pub-sec">world models for the brain and continual learning</p>
   <div class="pub-list">
 
     <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/latent-coordinates/' | relative_url }}"><img src="{{ '/assets/images/projects/latent/criterion.png' | relative_url }}" alt="Latent coordinates"></a>
+      <a class="pub-thumb" href="{{ '/robot-world-models/' | relative_url }}"><img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Recurrent learning in robot world models"></a>
       <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/latent-coordinates/' | relative_url }}">Which latent coordinates drive world-model dynamics?</a></h3>
-        <div class="pub-venue">Robotics World Modeling @ NeurIPS 2026</div>
-        <div class="pub-desc">a probe can read a coordinate a world model's dynamics never use, and which coordinates it builds is set by what the observation makes separable, not the actuator count.</div>
-        <div class="pub-links"><a href="{{ '/latent-coordinates/' | relative_url }}">project page</a> &middot; <a href="https://github.com/saanviiyer/used_coordinates" target="_blank" rel="noopener">code</a></div>
+        <h3 class="pub-title"><a href="{{ '/robot-world-models/' | relative_url }}">Recurrent learning in robot world models</a></h3>
+        <div class="pub-venue">RoBoWoMo @ IEEE IROS 2026 &middot; Robotics World Modeling @ NeurIPS 2026</div>
+        <div class="pub-desc">a steerable heading variable that emerges only under partial observability, and a label-free test for which latent coordinates a world model's dynamics actually use rather than merely encode.</div>
+        <div class="pub-links"><a href="{{ '/robot-world-models/' | relative_url }}">project page</a> &middot; <a href="https://github.com/saanviiyer/used_coordinates" target="_blank" rel="noopener">code</a></div>
       </div>
       <div class="pub-year">2026</div>
     </div>
 
     <div class="pub-row">
-      <a class="pub-thumb" href="{{ '/projects/world-models/' | relative_url }}"><img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Steerable heading"></a>
+      <a class="pub-thumb" href="{{ '/continual-learners/' | relative_url }}"><img src="{{ '/assets/images/engram-continual-learning/locality.png' | relative_url }}" alt="Information over time in continual learners"></a>
       <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/projects/world-models/' | relative_url }}">A steerable heading variable, and continual learning</a></h3>
-        <div class="pub-venue">RoBoWoMo @ IEEE IROS 2026</div>
-        <div class="pub-desc">a steerable heading variable that emerges only under partial observability, and continual learning where a fair baseline erases the advantage of local rules.</div>
-        <div class="pub-links"><a href="{{ '/projects/world-models/' | relative_url }}">project page</a></div>
+        <h3 class="pub-title"><a href="{{ '/continual-learners/' | relative_url }}">Information over time in continual learners</a></h3>
+        <div class="pub-venue">NeurReps &middot; DevAI @ NeurIPS 2026</div>
+        <div class="pub-desc">biologically inspired learning rules are said to forget less than backpropagation; at matched learning the advantage is under a third of a point, while an explicit replay buffer adds ten.</div>
+        <div class="pub-links"><a href="{{ '/continual-learners/' | relative_url }}">project page</a> &middot; <a href="{{ '/thinking/brain-inspired-algorithms/' | relative_url }}">blog</a></div>
       </div>
       <div class="pub-year">2026</div>
     </div>

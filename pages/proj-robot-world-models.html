@@ -1,0 +1,127 @@
+---
+layout: project
+title: "Recurrent Learning in Robot World Models"
+permalink: /robot-world-models/
+authors: "Saanvi S. Subramanian"
+affiliation: "California Institute of Technology"
+venues:
+  - "lightning talk and poster, RoBoWoMo @ IEEE IROS 2026"
+  - "poster, Robotics World Modeling @ NeurIPS 2026"
+links:
+  - label: "Coordinates code"
+    url: "https://github.com/saanviiyer/used_coordinates"
+hook: "A recurrent world model trained to predict a robot's next observation has to carry an internal state. I study when that state becomes a variable you can read, steer, and that the model's own dynamics actually use, and when a probe is reading something the dynamics ignore."
+thesis: "A predictive world model builds a usable internal coordinate only when the task forces it to: a steerable heading variable appears only under partial observability, and which coordinates the dynamics use is set by what the observation makes separable, not by the actuator count. a probe can read a coordinate the dynamics never touch."
+---
+
+<style>
+  .aid { --pink: #cf4d87; --red: #a8324a; }
+  .aid .fn-label { background: var(--red); color: #fff; }
+  .aid .finding { border-left: 3px solid var(--red); }
+  .aid .why-box { border-left: 3px solid var(--pink); }
+  .aid .pp-fig figcaption strong { color: var(--red); }
+  .aid .stat .n { color: var(--red); }
+  .aid table.armtab { width: 100%; border-collapse: collapse; margin: 18px 0 6px; font-size: 0.95rem; }
+  .aid table.armtab th, .aid table.armtab td { text-align: left; padding: 9px 12px; border-bottom: 0.5px solid var(--border); }
+  .aid table.armtab th { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--red); }
+  .aid table.armtab code { color: var(--pink); }
+</style>
+
+<div class="aid">
+
+<div class="pp-abstract">
+  <div class="pp-ab-label">Abstract</div>
+  <p>a world model is a recurrent model trained to predict its own next observation, and to predict well when the world is partly hidden it has to hold an internal state. the interesting question is what that state becomes. if it becomes a clean variable that lines up with something concrete, like which way the agent is facing, you can read it, trust it, and steer it. if it stays a tangle, the model can still predict while carrying nothing you can use. i train action-conditioned world models on a robot's range sensors with no access to its heading, and a steerable heading variable appears only under partial observability: the lowest-fidelity blackout model tracks true heading at a ring-coordinate fidelity of 0.860 while the best control reaches only 0.613, so the two groups separate with no overlap, and the variable behaves like a continuous attractor that is steered causally. a companion study pushes the same question further, showing that a probe can read a coordinate out of the latent state that the dynamics never use, and that the coordinates the dynamics do use are set by what the observation makes separable, not by the number of actuators.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="n">0.860 vs 0.613</div><div class="l">ring-coordinate fidelity, lowest blackout against highest control, no overlap across 36 models</div></div>
+  <div class="stat"><div class="n">continuous attractor</div><div class="l">off-ring perturbations decay while a phase shift along the ring persists, steered causally</div></div>
+  <div class="stat"><div class="n">6&times;</div><div class="l">the proximal joint's conjugacy margin over the distal joint's, set by the image, not the actuators</div></div>
+</div>
+
+<p class="pp-section-num">01 &middot; The Challenge</p>
+<h2 class="pp-section-title">why an internal variable is the thing to measure</h2>
+
+<p>most work reads structure off a hidden state and calls it understanding, but structure is cheap. a ring can appear in a model that cannot actually track heading, so the shape alone proves nothing. the deciding test is whether the model's own dynamics use the variable, and whether that variable stays faithful at the steps where the model has to integrate without seeing anything. both studies here hold the measurement to one standard: a ring that appears in every model is not evidence until fidelity separates the conditions, and a decodable variable is not a used one until the dynamics act on it.</p>
+
+<p class="pp-section-num">02 &middot; Results</p>
+<h2 class="pp-section-title">two findings</h2>
+
+<section class="pp-thread" id="faithful-heading">
+  <h3 class="pp-thread-title">a steerable heading variable emerges only under partial observability</h3>
+  <p><span class="venue-badge">RoBoWoMo @ IEEE IROS 2026</span><span class="venue-badge">Lightning talk and poster</span></p>
+
+  <p>i train 36 action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. hidden states form a ring in nearly every condition, and persistent homology finds one in 7 of 8 always-observed models and 7 of 8 shuffled-action controls that cannot integrate heading, so ring shape alone is not evidence. the deciding test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. withholding observations during training lifts that fidelity by 0.421 on average over a matched shuffled-action null, with all 12 paired differences positive and the smallest of them 0.293, and the lowest-fidelity blackout model, at 0.860, still beats the highest-fidelity control, at 0.613, so the 36 models separate with no overlap.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/wm/faithful-ring.png' | relative_url }}" alt="Blackout-trained ring tracks heading at 0.99, always-on ring scrambled during a blackout">
+    <figcaption><strong>figure 1.</strong> hidden states projected to their first two components, colored by true heading. the blackout-trained model keeps a clean ring whose coordinate tracks heading at a fidelity of 0.99, while the always-on model's ring is scrambled during a blackout and loses heading fidelity. the two panels are one example model pair and not the aggregate. across the 36 models the lowest blackout fidelity (0.860) stays above the highest control (0.613), with no overlap.</figcaption>
+  </figure>
+
+  <p>the steerable ring behaves like a continuous attractor, which is the structure neuroscience proposes for head-direction cells. a perturbation off the ring decays back to it, while a shift in position along the ring is held rather than erased. rotating the ring plane changes the model's predicted observation to the one for the rotated heading, at a gain of 0.897 and an R-squared of 0.998, so the variable is used causally and not just correlated with heading. the shuffled-action null also steers, at a gain of 0.735, so the separation between the conditions rests on fidelity rather than on steering alone.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/wm/faithful-attractor.png' | relative_url }}" alt="Perturbations decay, state returns to the manifold, and the phase offset persists for the blackout-trained model">
+    <figcaption><strong>figure 2.</strong> after a perturbation during a blackout, the off-ring component decays and the state returns to its manifold, while the induced phase offset along the ring persists for the blackout-trained model at 0.83 rad of a 1.0 rad rotation after 30 dark steps and decays for the always-on model to 0.37. that pattern, decay off the ring and memory along it, is the continuous-attractor signature.</figcaption>
+  </figure>
+
+  <div class="finding"><div class="fn-label">Finding 1</div><p>with no pose supervision, a predictive world model builds a heading variable that tracks true heading only under partial observability, where the lowest blackout model reaches 0.860 against 0.613 for the best control and the 36 models separate with no overlap, and the variable is a causally steerable continuous attractor.</p></div>
+</section>
+
+<section class="pp-thread" id="used-coordinates">
+  <h3 class="pp-thread-title">a probe can decode a coordinate the dynamics never use</h3>
+  <p><span class="venue-badge">Robotics World Modeling @ NeurIPS 2026</span><span class="venue-badge">Poster</span></p>
+
+  <p>the heading result raised a sharper question. a probe can read a variable out of a model's latent state even when the model's own transition dynamics never act on it, so decoding and use are different properties. to tell them apart i built a label-free test that uses only actions and the frozen model's own predictions: a candidate coordinate is a plane in the latent space, and the test asks whether rotating the state inside that plane reproduces the effect of an extra action, judged against a variance-matched null. a coordinate the dynamics use passes; a coordinate that is only decodable can fail. in the shuffled-action control from the heading study, heading decodes to within 20 to 24 degrees, yet the conjugate plane sits 69 to 83 degrees away, so the variable is present in a decaying trace of the last observation while the dynamics do not act on it.</p>
+
+  <figure class="pp-fig">
+    <img src="{{ '/assets/images/projects/latent/criterion.png' | relative_url }}" alt="The label-free criterion: a plane in latent space is rotated and scored by whether the rotation reproduces an action, with decodable-but-unused coordinates separated from the ones the dynamics use.">
+    <figcaption><strong>figure 3. the criterion separates decoding from use.</strong> a candidate coordinate is a plane in latent space; rotating the state inside it is scored by how well it reproduces an action in the model's own next-observation predictions, against a variance-matched null. a coordinate the dynamics use clears the null, while one that is only decodable does not.</figcaption>
+  </figure>
+
+  <p>which coordinates a model builds is decided by the observation, not the actuators. i trained the same model on three two-joint arms that differ only in how the image depends on the joints, with dynamics, action space, image size, sensor noise, architecture, training budget, and the estimator held fixed. the coordinate the model builds follows what the image makes separable.</p>
+
+  <table class="armtab">
+    <thead><tr><th>environment</th><th>what the image depends on</th><th>coordinates built</th></tr></thead>
+    <tbody>
+      <tr><td>serial arm</td><td>q1 and q1+q2, proximal dominant</td><td>one, at <code>(1,0)</code></td></tr>
+      <tr><td>parity arm</td><td>q1+q2 only</td><td>one, at <code>(1,1)</code></td></tr>
+      <tr><td>decoupled arm</td><td>q1 and q2 separately</td><td>two, at <code>(1,0)</code> and <code>(0,1)</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="finding"><div class="fn-label">Finding 2</div><p>decoding and use come apart. a coordinate can be read from a world model's latent state while its dynamics ignore it, and the coordinates the dynamics do use are set by what the observation makes separable: a serial arm gives one coordinate, a parity arm one, and a decoupled arm two. both joint angles decode in every case, but the proximal joint's conjugacy margin is six times the distal joint's, so extra actuators do not buy extra coordinates.</p></div>
+</section>
+
+<p class="pp-section-num" id="takeaways">Takeaways</p>
+<h2 class="pp-section-title">what both studies share</h2>
+
+<div class="takeaways">
+  <div class="takeaway"><div class="tk-h">pressure builds the variable</div>a steerable heading variable appears at fidelity 0.99 only when a blackout forces the model to integrate.</div>
+  <div class="takeaway"><div class="tk-h">it is a genuine attractor</div>off-ring perturbations decay, a phase shift along the ring persists, and rotation is causal.</div>
+  <div class="takeaway"><div class="tk-h">readable is not used</div>a probe reads heading to 20 degrees while the dynamics ignore it, so decodability is the start of the test, not the end.</div>
+  <div class="takeaway"><div class="tk-h">the image writes the coordinates</div>serial, parity, and decoupled arms build (1,0), (1,1), and both, following the observation rather than the actuator count.</div>
+</div>
+
+<p class="pp-section-num">Limitations</p>
+<div class="limitations">
+  <p>the heading study is in simulation on a planar robot with range sensors, so whether the same faithful variable appears from richer sensing or on hardware is untested here. the coordinates study is established for 16x32 synthetic RGB, small convolutional GRUs, and two degrees of freedom, and the criterion as implemented tests a planar rotation, one group action among many, so anything about non-circular coordinates, a comparison with the probing or activation-patching literature, or real robots and real video stays out of scope.</p>
+</div>
+
+<p class="pp-section-num" id="cite">Cite</p>
+<div class="bibtex">@inproceedings{subramanian2026heading,
+  author    = {Saanvi S. Subramanian},
+  title     = {A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
+  booktitle = {Robot World Models Workshop (RoBoWoMo), IEEE IROS},
+  year      = {2026}
+}
+
+@inproceedings{subramanian2026coordinates,
+  author    = {Saanvi S. Subramanian},
+  title     = {Which Latent Coordinates Drive World-Model Dynamics?},
+  booktitle = {Robotics World Modeling Workshop, NeurIPS},
+  year      = {2026}
+}</div>
+
+</div>

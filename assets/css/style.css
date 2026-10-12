@@ -1163,6 +1163,16 @@ figure.pp-fig figcaption { font-family: var(--mono); font-size: 0.72rem; line-he
 @media (max-width: 780px) { .pp-toc { position: static; } }
 
 .pp-wrap .pp-body { max-width: none; margin: 0; }
+/* keep running prose at a comfortable measure while figures, tables and callout
+   boxes still span the full card width */
+.pp-wrap .pp-body p { max-width: 76ch; }
+.pp-wrap .pp-body .finding p,
+.pp-wrap .pp-body .why-box p,
+.pp-wrap .pp-body .pp-abstract p,
+.pp-wrap .pp-body .takeaway,
+.pp-wrap .pp-body figcaption,
+.pp-wrap .pp-body table p { max-width: none; }
+.pp-wrap .pp-body figcaption { max-width: 92ch; }
 .pp-wrap .pp-back { max-width: none; }
 .pp-thread { scroll-margin-top: 150px; }
 #top { scroll-margin-top: 90px; }
