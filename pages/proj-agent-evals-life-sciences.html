@@ -15,10 +15,13 @@ venues:
 ---
 
 <div class="draft-banner" style="border:1px solid #c98; background:#fdf6ec; padding:0.85rem 1rem; margin:0 0 1.75rem; border-radius:4px;">
-  <strong>Draft in progress.</strong> this page groups three workshop posters into one line of argument. the per-poster
-  numbers below are taken from the submitted manuscripts, but the synthesis, the figures, and the venue
-  links are not finished. every <span class="todo-note">[TODO]</span> marks a place where i have not yet written the
-  claim rather than a place where a number is missing. nothing here should be quoted outside the individual papers.
+  <strong>Draft in progress.</strong> this page groups three workshop posters into one line of argument. the
+  per-poster numbers below are taken from the submitted manuscripts. as of 8 Oct the synthesis and all eight
+  figure captions are written; what remains is venue links that do not exist yet, and four decisions about
+  scope and page ownership that are marked inline. every remaining
+  <span class="todo-note">[TODO]</span> is one of those, not a missing number. the argument here is still a
+  synthesis of three separate papers and should be read as that rather than as a result in its own right;
+  the closing section says why.
   <br><br>
   <small><strong>Number provenance, and a warning.</strong> every number here was transcribed from the
   <code>conference drafts/review/</code> copies, whose own README says <em>"nothing here is authoritative"</em>.
@@ -30,8 +33,12 @@ venues:
   (17 Aug) still asserts — but those revisions exist only in a copy that <code>make_review.sh</code>
   regenerates, and <code>--check</code> cannot see them because it compares each source against its recorded
   hash and never checks whether a copy was edited.
-  <span class="todo-note">[TODO: promote the 4 Oct verify_agents revisions into the authoritative path before
-  make_review.sh runs again. 21 review copies diverge from their sources; a snapshot is in
+  as of 8 Oct the 4 Oct text is preserved verbatim inside the authoritative directory as
+  <code>main.tex.PENDING-PROMOTION-20261004</code>, beside a <code>PROMOTION_NOTE.md</code> with the
+  commands, so <code>make_review.sh</code> can no longer destroy it. <code>main.tex</code> itself is
+  untouched and still holds the 17 Aug text.
+  <span class="todo-note">[TODO: the promotion itself is still pending and is a judgement call, because it
+  changes which text is authoritative. 21 review copies diverge from their sources; a snapshot is in
   <code>conference drafts/_rescued_review_edits_2026-10-07/</code>.]</span></small>
 </div>
 
@@ -39,11 +46,20 @@ venues:
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p class="todo-note">[TODO: Saanvi to write the megapaper abstract. the three posters are drafted and their
-  numbers are stable, but the single paragraph that makes them one paper rather than three does not exist yet.
-  the raw material is below. what it needs is the claim about where in the evaluation stack each failure sits —
-  the verifier, the representation, the benchmark metric — and why those three are the same problem seen from
-  three heights rather than three unrelated findings.]</p>
+  <p>an evaluation is almost always reported as an average over a dataset and then used to make a decision
+  about a small subset: which candidate to advance, which action to take, which variant to synthesise. those
+  are different quantities, and the gap between them is where these three threads live. the first asks
+  whether the thing that certifies a scorer can be trusted, and finds a gate that rewards a scorer which
+  memorised the answers at AUROC 0.991 while it performs at random where it matters. the second asks whether
+  the representation an agent acts through can tell its own candidate actions apart, and finds that it
+  partly cannot, at a decoding accuracy well above chance but with errors concentrated exactly where the
+  underlying processes are most distinct. the third asks whether the statistic the field reports predicts
+  the decision it is used for, and finds the squared rank association falling from 0.50 at a top-10% cutoff
+  to 0.16 at top-1%, with three assays doing worse than random selection despite positive reported
+  correlations. the common structure is that each failure is invisible to the summary normally reported and
+  only appears at the point where something is chosen. whether that makes them one finding or three
+  applications of one method is argued at the end of this page, and the honest answer is closer to the
+  second.</p>
 </div>
 
 <div class="stat-row">
@@ -98,12 +114,17 @@ line of work is where the same control battery gets applied to single model scor
 <p class="pp-section-num">02 &middot; The Approach</p>
 <h2 class="pp-section-title">attack the signal, not the agent</h2>
 
-<p class="todo-note">[TODO: Saanvi to write the methods throughline. the three posters share a move — take the
-evaluation signal, construct the adversarial or control condition that the signal cannot see, and measure
-against recorded outcomes — but they use that move at different levels and i have not written down why those
-levels are the right decomposition. candidate framing: the verifier (what certifies the scorer), the
-representation (what the agent acts through), the metric (what the field reports). say whether that is a
-stack, a taxonomy, or just three examples.]</p>
+<p>all three threads make the same move: take the signal an evaluation actually runs on, construct the
+adversarial or control condition that signal cannot distinguish, and score both against recorded outcomes
+rather than against each other. what differs is where the move is aimed. the verifier is what certifies a
+scorer; the representation is what an agent acts through; the metric is what the field reports. those three
+sit at decreasing distance from the decision, which is why a failure can pass through all of them
+undetected, and that ordering is the closest thing here to a stack. it is worth being careful about the
+claim, though. three levels chosen after the fact, in one scientific domain, is not a demonstrated
+decomposition of the evaluation pipeline; it is three places the same test was run, which happen to line up.
+the stronger statement is methodological rather than structural: wherever a reported number summarises
+behaviour over a distribution and a decision consumes only its tail, the two can be measured separately,
+and here they came apart every time they were.</p>
 
 <p class="pp-section-num">03 &middot; Results</p>
 <h2 class="pp-section-title">three posters, one standard of evidence</h2>
@@ -157,27 +178,27 @@ stack, a taxonomy, or just three examples.]</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/verifier-attack.png' | relative_url }}" alt="Three panels. Left, gate scores rise with leakage level. Center, only the truthful scorer improves candidate selection. Right, forward validation preserves the truthful scorer while cutting leaked scorers' pass rate.">
-    <figcaption><strong>figure 1. the gate rewards the wrong signal.</strong> <span class="todo-note">[TODO:
-    Saanvi to write the full caption. the panels are: left, gate score against leakage level, with the 25%
-    point slightly below the truthful scorer; center, selection value, where only the truthful scorer helps;
-    right, forward validation holding the truthful scorer while leaked scorers fall to chance. say in the caption
-    that the right panel is the defence and that the next figure is the attack it cannot see.]</span></figcaption>
+    <figcaption><strong>figure 1. the gate rewards the wrong signal.</strong> left, the gate's score rises with leakage, and at a 25% leak it already sits just below the truthful
+    scorer. center, selection value, where only the truthful scorer actually helps: the leaked scorers buy
+    nothing. right, forward validation holds the truthful scorer's value while pushing the leaked scorers to
+    chance. the right panel is the defence that works. the next figure is the attack it cannot see.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/verifier-probe.png' | relative_url }}" alt="Left, probing preserves most truthful-scorer value while pushing the pool-side attacker toward random. Right, truthful-scorer refusals fall mostly on trials where the scorer added little value.">
-    <figcaption><strong>figure 2. top-pick probing across all 41 scans.</strong> <span class="todo-note">[TODO:
-    caption. the point worth making is the false-alarm structure: the probe rejects the truthful scorer in 48%
-    of trials, but those are trials where it would have captured 0.142 good candidates against 1.943 on
-    accepted trials, so the refusals are concentrated where the scorer was not worth trusting anyway.]</span></figcaption>
+    <figcaption><strong>figure 2. top-pick probing across all 41 scans.</strong> left, probing keeps most of the truthful scorer's value while driving the pool-side attacker to random.
+    right, the false-alarm structure, which is the part that matters: the probe rejects the truthful scorer on
+    48% of trials, but those are trials where it would have captured 0.142 good candidates against 1.943 on
+    the trials it accepts. the refusals land almost entirely where the scorer was not worth trusting.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/verifier-crossover.png' | relative_url }}" alt="Left, good candidates per batch for the in-house and supplied scorers as campaign size grows. Right, fraction of tasks where the in-house model wins.">
     <figcaption><strong>figure 3. the supplied scorer loses its advantage as data accumulate.</strong>
-    <span class="todo-note">[TODO: caption. note that the eligible task set shrinks from 41 to 35 at 384
-    measurements because some tasks lack enough data, so the crossover is a within-task comparison at each
-    size and not a single fixed cohort.]</span></figcaption>
+    left, good candidates per batch for the in-house and supplied scorers as the campaign grows; right, the
+    fraction of tasks where the in-house model wins. the eligible task set shrinks from 41 to 35 at 384
+    measurements because some tasks run out of data, so this is a within-task comparison at each size rather
+    than one fixed cohort followed throughout.</figcaption>
   </figure>
 
   <div class="finding">
@@ -217,9 +238,7 @@ stack, a taxonomy, or just three examples.]</p>
   not survive held-out tasks (the incumbent rule moves from second to last across 35 held-out scans), a
   protocol mismatch worth about a fifth of the observed gap, and a gate statistic whose resolution cannot
   support its own threshold (fold enrichment moves in discrete steps and is exactly zero for 34.3% of
-  estimates <span class="todo-note">[TODO: the step size is unresolved in REVISIONS.md — the paper derives
-  48/25 = 1.92 over four attainable values, REVISIONS says six values, and REVIEWS computes steps of 2.0 from
-  5 picks against a decile of 4.8. pick one and fix it in the paper before quoting a step size here.]</span>). a fifth pathology appeared on 13 tasks and disappears across all 41, so it is withdrawn in the
+  estimates in steps of 1.92 over six attainable values, of which five are ever realised). a fifth pathology appeared on 13 tasks and disappears across all 41, so it is withdrawn in the
   appendix.</p>
 
   <div class="limitations">
@@ -229,8 +248,15 @@ stack, a taxonomy, or just three examples.]</p>
     and shows that damage follows the fraction of action selection delegated to the compromised scorer, with
     the gate reading 0.6632 under both conditions and changing its decision in 0 of 1,640 trials. transfer to
     an LLM-driven research agent is untested and the mapping in the limitations section is conceptual.
-    <span class="todo-note">[TODO: resolve the 7 unverified citations flagged in REVISIONS.md before this goes
-    anywhere beyond the workshop.]</span></p>
+    <span class="todo-note">[TODO: partially resolved. <code>CITATION_AUDIT_gauntlet.md</code> (6 Aug)
+    checked all 23 entries against Crossref and publisher pages and found that all 23 works exist, including
+    the seven that REVISIONS.md fenced off, so nothing is fabricated. Two real problems remain and neither is
+    a missing source: six entries carry invented author given names on real papers, and two are attached to
+    sentences they do not support. The one that matters most is the 33-campaign corpus, which has no single
+    source and should be described as an author compilation rather than cited to a homolog screen; the second
+    is the likelihood-manipulation claim, where the source shows likelihood inflated upward by repeated
+    motifs, not driven down. Re-import the five author lists by DOI rather than by hand before this goes
+    beyond the workshop.]</span></p>
   </div>
 </section>
 
@@ -306,20 +332,19 @@ stack, a taxonomy, or just three examples.]</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/identifiability-signatures.png' | relative_url }}" alt="Left, enacting each mutational process moves held-out proteins toward its outcome region, with SBS1, SBS7a and SBS2 overlapping at the 0.011 threshold while SBS17a lies farther out. Right, pairwise destination distances show the same pattern.">
-    <figcaption><strong>figure 4. action-space identifiability in ESM-2 8M.</strong> <span class="todo-note">[TODO:
-    caption. left panel is the steering cross-matrix, right is pairwise destination distance. the caption should
-    say that the 0.011 reference line is the threshold inherited from the original four-signature experiment,
-    and point the reader to the audit for why that line does not mean the same thing in all four
-    model-by-readout conditions.]</span></figcaption>
+    <figcaption><strong>figure 4. action-space identifiability in ESM-2 8M.</strong> left, the steering cross-matrix: enacting each mutational process moves held-out proteins toward its own
+    outcome region, with SBS1, SBS7a and SBS2 overlapping while SBS17a sits farther out. right, the same
+    pattern in pairwise destination distance. the 0.011 line is inherited from the original four-signature
+    experiment, and it does not mean the same thing across all four model-by-readout conditions; the audit
+    gives the reason, and the line should be read as a reference rather than a verdict.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/identifiability-decoding.png' | relative_url }}" alt="Confusion matrix for a probe decoding which of five mutational processes produced an ESM-2 displacement.">
-    <figcaption><strong>figure 5. what the representation can and cannot decode.</strong> <span class="todo-note">[TODO:
-    caption. the probe reaches 66% five-way accuracy against 20% chance with SBS17a at 89%, so the
-    representation is not empty. the caption needs to make the right point from that: the confusions are not
-    random, and the SBS1/SBS2 confusion happens despite near-orthogonal COSMIC spectra at cosine 0.02, which
-    is the cell that matters.]</span></figcaption>
+    <figcaption><strong>figure 5. what the representation can and cannot decode.</strong> a probe decoding which of five mutational processes produced a displacement reaches 66% five-way accuracy
+    against 20% chance, and 89% on SBS17a, so the representation is not empty. the structure of the errors is
+    the finding: the confusions are not random, and SBS1 is confused with SBS2 even though their COSMIC
+    spectra are near-orthogonal at cosine 0.02. that cell is the one to read.</figcaption>
   </figure>
 
   <p class="todo-note">[TODO: Saanvi to decide whether the capability results — 26.2% recommender top-1 against 1.3% for the strongest frequency
@@ -413,27 +438,28 @@ stack, a taxonomy, or just three examples.]</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/selection-decay.png' | relative_url }}" alt="Reported correlation against selection value at two cutoffs. Each point is one assay, library or kinetic axis. The relationship weakens at the sharper cutoff.">
-    <figcaption><strong>figure 6. reported correlation against selection value.</strong> <span class="todo-note">[TODO:
-    caption. each point is one benchmark unit. the caption should name the three ProteinGym assays below zero
-    at top-1% and say that the per-corpus fits have similar slopes with different intercepts, which is the
-    family offset the next figure tests.]</span></figcaption>
+    <figcaption><strong>figure 6. reported correlation against selection value.</strong> each point is one benchmark unit: an assay, a library or a kinetic axis. the relationship weakens sharply
+    at the tighter cutoff, and three ProteinGym assays fall below zero at top-1% despite positive reported
+    correlations, meaning selection on the proxy does worse than picking at random. the per-corpus fits have
+    similar slopes but different intercepts, which is the family offset the next figure tests.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/selection-replicate.png' | relative_url }}" alt="The benchmark-family offset and the cutoff-dependent decay, measured with two independent scorer families.">
-    <figcaption><strong>figure 7. the offset replicates under a second scorer.</strong> <span class="todo-note">[TODO:
-    caption. the two scorers come from different labs and agree at the unit level, correlating at +0.892 on
-    reported correlation and +0.899 on top-1% selection value, which is why the surviving offset is a property
-    of the benchmarks rather than of one model.]</span></figcaption>
+    <figcaption><strong>figure 7. the offset replicates under a second scorer.</strong> the two scorer families come from different laboratories and agree closely at the unit level, correlating
+    at +0.892 on reported correlation and +0.899 on top-1% selection value. because they agree with each other
+    and the offset survives both, the offset is a property of the benchmark families rather than of any one
+    model.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/projects/agentevals/selection-campaign.png' | relative_url }}" alt="Left, mean top-20 percent selection utility per corpus under ESM-2 and ESM-C with the range across units. Right, all 70 units plotted separately.">
     <figcaption><strong>figure 8. selection utility at the cutoff all four corpora support.</strong>
-    <span class="todo-note">[TODO: caption. the plastic-degradation studies sit at approximately zero under
-    both model families while the other three corpora are clearly positive. the caption should resist reading
-    that as a model failure: it is a statement about this collection of campaign-style data, and the power
-    analysis says 10 studies cannot support a precise between-corpus comparison.]</span></figcaption>
+    left, mean top-20% selection utility per corpus under both model families, with the range across units;
+    right, all 70 units separately. the plastic-degradation studies sit near zero under both families while
+    the other three corpora are clearly positive. that is a statement about this collection of campaign-style
+    data, not a verdict on the models: the power analysis puts 10 studies far below what a precise
+    between-corpus comparison would need.</figcaption>
   </figure>
 
   <div class="limitations">
@@ -452,12 +478,23 @@ stack, a taxonomy, or just three examples.]</p>
 <p class="pp-section-num" id="takeaways">Takeaways</p>
 <h2 class="pp-section-title">what the three add up to</h2>
 
-<p class="todo-note">[TODO: Saanvi to write this section properly. the four cards below are placeholders that
-restate each poster's headline. what the section needs instead is the argument the megapaper makes that no
-single poster makes — something about where in the evaluation stack the failures sit and what a reader should
-do differently. the candid version of this section may also have to concede that the three posters share a
-method and a domain more than they share a finding, and that claiming a unified result would be the same kind
-of overreach the posters are about.]</p>
+<p>the argument none of the three posters makes alone is about ordering. a verifier failure, a
+representational failure and a metric failure are usually treated as separate literatures with separate
+remedies, but each was found the same way and each is invisible to the summary its own field reports. that
+suggests the remedy is not three fixes but one habit: report the quantity the decision consumes alongside
+the quantity that summarises the distribution, and show a control that could have failed.</p>
+
+<p>the concession belongs here rather than in a footnote. these three share a method and a domain more
+firmly than they share a finding. one scientific area, one author, one family of techniques, and three
+levels chosen after the results were in. to claim them as a unified result about evaluation in general
+would be the same overreach the posters are each about: a summary statistic asked to carry a decision it
+cannot support. what they do support is narrower and still worth saying, which is that in every place this
+test was run, the reported number and the decision number came apart, and nothing in the standard reporting
+would have shown it.</p>
+
+<p>for a reader the practical consequence is small and concrete: when a number is quoted at you, ask what
+cutoff the decision uses and ask for the number at that cutoff. if the two are the same, nothing here
+applies. if nobody has computed the second one, that is the finding.</p>
 
 <div class="takeaways">
   <div class="takeaway"><div class="tk-h">the verifier is attackable</div>a trust gate certifies a memorizing scorer at AUROC 0.991 and 100% pass rate while the agent loses about 1.05 good candidates per batch, and the defence that fixes it cannot see the next attack.</div>
@@ -483,10 +520,13 @@ of overreach the posters are about.]</p>
 <a href="{{ '/projects/evaluations/' | relative_url }}">evaluations that survive optimizers</a> page. the
 clinical counterpart, where the same standard is applied to a model that would act at a bedside, is
 <a href="{{ '/projects/clinical-ml/' | relative_url }}">clinical machine learning, evaluated plainly</a>.
-<span class="todo-note">[TODO: the evaluations page already carries the 0.991 verifier result and the
-0.50-to-0.16 decay as two of its five stats, and the action-identifiability stub covers thread 2. decide which
-page owns which result before this goes live, or the site will state the same finding three times with three
-different amounts of context.]</span></p>
+<span class="todo-note">[TODO: three pages currently carry overlapping results. the evaluations page
+has the 0.991 verifier result and the 0.50-to-0.16 decay among its five stats, the action-identifiability
+stub covers thread 2, and this page covers all three. the cheapest resolution that does not require
+rewriting anything: let this page own the full argument and the figures, cut the other two down to a
+one-line statement of the result plus a link here. that keeps the number in one place with its context and
+leaves the other pages as entry points. the alternative, splitting by thread, means this page loses its
+reason to exist. decide before it goes live.]</span></p>
 
 <p class="pp-section-num" id="cite">Cite</p>
 <p class="todo-note">[TODO: these three entries are the individual workshop papers. if the megapaper becomes a
