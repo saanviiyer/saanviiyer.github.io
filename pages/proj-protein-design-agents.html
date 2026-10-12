@@ -1,0 +1,69 @@
+---
+title: Evaluating protein-design agents · Saanvi S. Subramanian
+permalink: /projects/protein-design-agents/
+---
+
+<style>
+  .doc { max-width: 820px; margin: 0 auto; }
+  .doc h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 2.7rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 10px; }
+  .doc .doc-meta { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); margin: 0; }
+  .doc .doc-lead { font-family: var(--serif); font-size: 1.18rem; line-height: 1.55; color: var(--muted); margin: 20px 0 0; max-width: 70ch; }
+  .doc ul.doc-nav { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--sans); font-size: 0.85rem; }
+  .doc ul.doc-nav a { color: var(--muted); text-decoration: none; }
+  .doc ul.doc-nav a:hover { color: var(--accent); }
+  .doc h2 { font-family: var(--sans); font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin: 64px 0 6px; }
+  .doc .sec-venue { font-family: var(--sans); font-size: 0.82rem; color: var(--muted); margin: 0 0 16px; }
+  .doc p { font-family: var(--serif); font-size: 1.08rem; line-height: 1.75; margin: 0 0 18px; max-width: 72ch; }
+  .doc .key { font-weight: 600; }
+  .doc figure { margin: 26px 0; }
+  .doc figure img { width: 100%; height: auto; display: block; }
+  .doc figcaption { font-family: var(--sans); font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-top: 10px; max-width: 72ch; }
+  .doc .doc-back { font-family: var(--sans); font-size: 0.85rem; margin-top: 60px; }
+  .doc a { color: var(--accent); }
+</style>
+
+<div class="doc">
+  <h1>Evaluating protein-design agents</h1>
+  <p class="doc-meta">Saanvi S. Subramanian &middot; poster, AgenticLS @ NeurIPS 2026 and AI for Science @ NeurIPS 2026</p>
+  <p class="doc-lead">A protein-design agent ranks thousands of candidates with a learned scorer, trusts that scorer because a benchmark reported a correlation, and keeps a proposal only if a verifier clears it. This page tests three of those components where measured ground truth exists.</p>
+
+  <ul class="doc-nav">
+    <li><a href="#scorer">Scorer resolution</a></li>
+    <li><a href="#verifier">Verifier</a></li>
+    <li><a href="#proxy">In-silico vs measured</a></li>
+  </ul>
+
+  <h2 id="scorer">The scorer compresses 78 distinct actions into one region</h2>
+  <p class="sec-venue">Action identifiability &middot; AgenticLS @ NeurIPS 2026</p>
+  <p>An agent can only choose between actions its scorer keeps apart. Using the 78 COSMIC single-base-substitution signatures as a controlled action space, each action is executed on a coding sequence, embedded with ESM-2, and scored by distance to a target Pfam-domain centroid. Across 3,003 signature pairs, median pairwise distance falls from 0.815 in COSMIC spectrum space to 0.0068 between ESM-2 outcome regions, a <span class="key">120x compression</span>, and a composition-matched control reproduces the destinations.</p>
+  <p>A learned policy trained to name which of the 78 signatures produced a given embedding shift reaches <span class="key">7.55% top-1 accuracy</span> on a protein-grouped split, against 1.28% for uniform chance and 6.12% for a nearest-neighbor baseline. Split-conformal prediction reaches 92.2% coverage only by returning 66.8 of 78 actions on average. The scorer carries a real signal and still cannot single out a specific action.</p>
+
+  <figure>
+    <img src="{{ '/assets/images/projects/agentevals/identifiability-signatures.png' | relative_url }}" alt="Steering cross-matrix: distinct mutational processes move proteins toward overlapping ESM-2 regions, with SBS1, SBS7a and SBS2 merging.">
+    <figcaption>Distinct processes reach the same place. Enacting each process moves held-out proteins toward its own outcome region, but SBS1, SBS7a and SBS2 overlap after scoring, so the representation collapses a distinction the catalogue makes.</figcaption>
+  </figure>
+
+  <h2 id="verifier">A trust gate certifies a scorer that memorized the answers</h2>
+  <p class="sec-venue">Verifier red-teaming</p>
+  <p>A closed-loop agent delegates ranking to a supplied scorer only if a trust gate clears it, and the gate scores the scorer on outcomes collected so far. Across 4,920 trials, a scorer that memorizes the observed outcomes clears the gate at <span class="key">AUROC 0.991</span> and passes every trial, against 0.663 for a truthful scorer worth +1.082. Forward validation closes that surface, and a pool-side attacker that touches only unmeasured candidates still returns identical gate statistics by construction and costs 1.24 good candidates per batch.</p>
+  <p>A probe that spot-checks the scorer's own top picks catches 99.2% of naive attacks yet recovers about 10% of the lost value with a random fallback, because catching an attack and replacing it are different problems. Recovery needs a second source of capability outside the compromised scorer, a model trained on the campaign's own measurements.</p>
+
+  <figure>
+    <img src="{{ '/assets/images/projects/agentevals/verifier-attack.png' | relative_url }}" alt="Three panels: gate scores rise with leakage; only the truthful scorer improves selection; forward validation preserves the truthful scorer while cutting leaked scorers' pass rate.">
+    <figcaption>The gate rewards the wrong signal. Its score rises with leakage, only the truthful scorer improves selection, and forward validation holds the truthful scorer's value while pushing the leaked scorers to chance.</figcaption>
+  </figure>
+
+  <h2 id="proxy">The in-silico proxy ranks below counting mutations</h2>
+  <p class="sec-venue">Gauntlet &middot; AI for Science @ NeurIPS 2026</p>
+  <p>Before an agent ranks designs with a proxy, the proxy has to beat a trivial baseline on measured outcomes. On 504 measured PET-hydrolase variants across 25 studies, a zero-shot ESM-2 650M score ranks activity at a within-study Spearman of <span class="key">0.01</span>, below a hydropathy feature and well below a plain mutation count at <span class="key">0.25</span>. On the property a campaign would use it for, the expensive model is the weakest of four scorers.</p>
+
+  <figure>
+    <img src="{{ '/assets/images/projects/eval/gauntlet-proxy-audit.png' | relative_url }}" alt="Within-study rank correlation for four scorers; the ESM-2 zero-shot score sits near zero on PET-hydrolytic activity, below a mutation count at 0.25.">
+    <figcaption>Within-study rank correlation with measured outcomes for four scorers, on PET-hydrolytic activity (504 variants, 25 studies) and melting temperature (376 variants, 15 studies). The comparison is within study, so it is not confounded by between-study offsets.</figcaption>
+  </figure>
+
+  <h2>What the three share</h2>
+  <p>Each component is a measurement read off a static corpus, and each stops meaning what it claims once an optimizer selects on it. A scorer that cannot resolve the actions, a gate scored in sample, and a proxy that loses to counting all pass their headline check and fail where the agent uses them.</p>
+
+  <p class="doc-back"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
+</div>
