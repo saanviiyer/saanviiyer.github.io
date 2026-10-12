@@ -12,49 +12,49 @@ links:
   - label: "Code"
     url: "https://github.com/saanviiyer/PRISM"
 hook: "PRISM applies every cancer mutational signature to proteins and watches where a protein model's embedding moves, then runs the controls that decide whether that movement is biology or an artifact of how the question was asked."
-thesis: "A protein model's embedding can move in a consistent, repeatable direction that is still explained by amino-acid composition and protein length, so a movement is not a biological finding until it survives those controls."
+thesis: "A protein model's embedding can move in a consistent, repeatable direction that is still explained by amino-acid composition and protein length, so a movement becomes a biological finding only after it survives those controls."
 ---
 
-<p class="pp-question">if a protein model's embedding moves the same way every time you apply a mutational process, does that mean the process changed the protein's biology?</p>
+<p class="pp-question">If a protein model's embedding moves the same way every time you apply a mutational process, does that mean the process changed the protein's biology?</p>
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p>i expected a mutational process to leave a clean trace in a protein model, and the controls taught me the opposite. the lesson, to distrust a clean number until it clears its controls, is the one i carry into everything else. a mutational signature is the fingerprint a mutational process leaves on DNA, a specific pattern of base changes. a protein language model turns a protein sequence into a vector, and a lab can read a lot about a protein off that vector instead of measuring it. PRISM asks whether a mutational process, applied to the DNA that codes for a protein, moves that protein in a consistent direction through the model's vector space, which would be a readout of the functional change the process causes from sequence alone. across all 78 cancer single-base-substitution signatures, one signature, SBS17a, moves proteins toward the same family, PF17041, and ranks first of 78 in two independent groups of families, which looks like a genuine effect. the controls change the reading. a scramble that keeps amino-acid composition but destroys the signature's structure reproduces 72% of the movement, protein length alone explains 94.1% of how far proteins move, and a probe that names signatures at an AUC of 0.94 on familiar ones drops to 0.775% on signatures it never saw. the point is simple. a repeatable movement in a model's representation is a fact about the model, and it becomes a fact about biology only after it clears controls for composition, length, and transfer.</p>
+  <p>I expected a mutational process to leave a clean trace in a protein model, and the controls taught me the opposite: a clean number earns trust only after it clears its controls. A mutational signature is the fingerprint a mutational process leaves on DNA, a specific pattern of base changes. A protein language model turns a protein sequence into a vector, and a lab can read a lot about a protein off that vector instead of measuring it. PRISM asks whether a mutational process, applied to the DNA that codes for a protein, moves that protein in a consistent direction through the model's vector space, which would be a readout of the functional change the process causes from sequence alone. Across all 78 cancer single-base-substitution signatures, one signature, SBS17a, moves proteins toward the same family, PF17041, and ranks first of 78 in two independent groups of families, which looks like a genuine effect. The controls change the reading: a scramble that keeps amino-acid composition but destroys the signature's structure reproduces 72% of the movement, protein length alone explains 94.1% of how far proteins move, and a probe that names signatures at an AUC of 0.94 on familiar ones drops to 0.775% on signatures it never saw. A repeatable movement in a model's representation is a fact about the model, and it becomes a fact about biology only after it clears controls for composition, length, and transfer.</p>
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="n">78</div><div class="l">cancer mutational signatures simulated on proteins</div></div>
-  <div class="stat"><div class="n">72%</div><div class="l">of the steering reproduced by a composition-matched control</div></div>
-  <div class="stat"><div class="n">94.1%</div><div class="l">of the displacement explained by protein length alone, on the archived re-derivation (68 sequences, against 65 in the retained panel)</div></div>
-  <div class="stat"><div class="n">0.94 &rarr; 0.775%</div><div class="l">probe AUC on familiar signatures, top-1 accuracy on held-out ones</div></div>
+  <div class="stat"><div class="n">78</div><div class="l">Cancer mutational signatures simulated on proteins</div></div>
+  <div class="stat"><div class="n">72%</div><div class="l">Of the steering reproduced by a composition-matched control</div></div>
+  <div class="stat"><div class="n">94.1%</div><div class="l">Of the displacement explained by protein length alone, on the archived re-derivation (68 sequences, against 65 in the retained panel)</div></div>
+  <div class="stat"><div class="n">0.94 &rarr; 0.775%</div><div class="l">Probe AUC on familiar signatures, top-1 accuracy on held-out ones</div></div>
 </div>
 
 <p class="pp-section-num">01 &middot; The Challenge</p>
-<h2 class="pp-section-title">why it matters where a model's embedding moves</h2>
+<h2 class="pp-section-title">Why it matters where a model's embedding moves</h2>
 
-<p>most protein machine learning now runs through embeddings. a protein language model is trained on millions of natural protein sequences, and it learns to map any sequence to a vector, called an embedding, that packs in much of what the model knows about proteins. because that vector is so informative, labs increasingly read function, stability, and family membership off it rather than measuring those things in an experiment. that habit raises a tempting question. if you take a biological process that changes DNA, apply it to the gene for a protein, and watch where the protein's embedding moves, does the movement tell you what the process did to the protein?</p>
+<p>Most protein machine learning now runs through embeddings. A protein language model is trained on millions of natural protein sequences, and it learns to map any sequence to a vector, called an embedding, that packs in much of what the model knows about proteins. Because that vector is so informative, labs increasingly read function, stability, and family membership off it rather than measuring those things in an experiment. That habit raises a direct question: if you take a biological process that changes DNA, apply it to the gene for a protein, and watch where the protein's embedding moves, does the movement tell you what the process did to the protein?</p>
 
-<p>a mutational signature is a clean way to ask this. a mutational process, such as a kind of DNA damage or a faulty repair pathway, leaves a characteristic pattern of base changes behind, and the COSMIC catalogue lists 78 of these single-base-substitution signatures. if applying one signature to a gene consistently pushes the protein toward a single family of proteins in the model's space, that would be a readout of functional consequence from sequence alone, with no experiment needed. if it does not, it is a warning that reading biology off the geometry of an embedding is easy to get wrong. the reason to care either way is that the same move, reading a conclusion off where an embedding sits, now sits under a lot of protein and drug design, and it is only as trustworthy as the controls behind it. PRISM runs that test and then runs the controls that decide which of the two it is.</p>
+<p>A mutational signature is a clean way to ask this. A mutational process, such as a kind of DNA damage or a faulty repair pathway, leaves a characteristic pattern of base changes behind, and the COSMIC catalogue lists 78 of these single-base-substitution signatures. If applying one signature to a gene consistently pushes the protein toward a single family of proteins in the model's space, that would be a readout of functional consequence from sequence alone, with no experiment needed. If instead the plainest properties of the sequence reproduce it, that is a warning that reading biology off the geometry of an embedding is easy to get wrong. The reason to care either way is that the same move, reading a conclusion off where an embedding sits, now sits under a lot of protein and drug design, and it is only as trustworthy as the controls behind it. PRISM runs that test and then runs the controls that decide which of the two it is.</p>
 
 <p class="pp-section-num">02 &middot; The Approach</p>
-<h2 class="pp-section-title">the setup, before any result</h2>
+<h2 class="pp-section-title">The setup, before any result</h2>
 
-<p>i want to start with what the pipeline measures, in plain terms, because every claim later depends on it. a mutational signature gives, for each possible base change in its local three-letter context, how likely that change is under some process. for each signature i walk a protein-coding sequence and draw substitutions from those probabilities, which gives a set of mutants that the process would tend to produce. i translate each mutant into protein and embed both the wild type, the original protein, and the mutants with ESM-2, a protein language model that turns a sequence into a fixed vector. i then compare each cloud of mutant vectors against a library of Pfam family centroids, where Pfam is a catalogue of protein families and a centroid is the average vector of a family, so a shift toward a centroid means the mutants look more like that family to the model.</p>
+<p>I want to start with what the pipeline measures, in plain terms, because every claim later depends on it. A mutational signature gives, for each possible base change in its local three-letter context, how likely that change is under some process. For each signature I walk a protein-coding sequence and draw substitutions from those probabilities, which gives a set of mutants that the process would tend to produce. I translate each mutant into protein and embed both the wild type, the original protein, and the mutants with ESM-2, a protein language model that turns a sequence into a fixed vector. I then compare each cloud of mutant vectors against a library of Pfam family centroids, where Pfam is a catalogue of protein families and a centroid is the average vector of a family, so a shift toward a centroid means the mutants look more like that family to the model.</p>
 
-<p>writing it with a little notation keeps the rest disciplined. for a signature and a starting protein, let the mutant embeddings be a cloud whose mean is m, and let the wild-type embedding be w. for a Pfam family with centroid c, the displacement is the reduction in cosine distance from the protein to c when i move from w to m, so a positive displacement means the signature moved the protein toward that family. cosine distance is just a measure of how different two vectors point, so reducing it means the mutant mean points more like the family than the wild type did. a second model, a recommender, reads the origin family, the target family, their difference, and the signature's profile, and predicts which signature produced a requested move. the trajectory work runs on ESM-2 8M against a library of 27,481 Pfam centroids.</p>
+<p>Writing it with a little notation keeps the rest disciplined. For a signature and a starting protein, let the mutant embeddings be a cloud whose mean is m, and let the wild-type embedding be w. For a Pfam family with centroid c, the displacement is the reduction in cosine distance from the protein to c when I move from w to m, so a positive displacement means the signature moved the protein toward that family. Cosine distance is just a measure of how different two vectors point, so reducing it means the mutant mean points more like the family than the wild type did. A second model, a recommender, reads the origin family, the target family, their difference, and the signature's profile, and predicts which signature produced a requested move. The trajectory work runs on ESM-2 8M against a library of 27,481 Pfam centroids.</p>
 
 <figure class="pp-fig">
   <img src="{{ '/assets/images/prism-signature-steering/pipeline-schematic.png' | relative_url }}" alt="Pipeline from a signature to simulated mutations to ESM-2 embeddings to displacement against Pfam centroids">
-  <figcaption><strong>figure 1. the pipeline.</strong> each run starts from one of the 78 signatures, samples coding mutations from its substitution probabilities, embeds the wild-type and mutant proteins with ESM-2, and measures displacement as the change in cosine distance toward a Pfam family centroid. everything downstream is a question asked of this one measurement.</figcaption>
+  <figcaption><strong>Figure 1. The pipeline.</strong> Each run starts from one of the 78 signatures, samples coding mutations from its substitution probabilities, embeds the wild-type and mutant proteins with ESM-2, and measures displacement as the change in cosine distance toward a Pfam family centroid. Everything downstream is a question asked of this one measurement.</figcaption>
 </figure>
 
 <div class="pp-table-wrap">
 <table class="pp-table">
   <caption>Methods</caption>
-  <thead><tr><th>system</th><th>data</th><th>controls and baselines</th><th>metric</th></tr></thead>
+  <thead><tr><th>System</th><th>Data</th><th>Controls and baselines</th><th>Metric</th></tr></thead>
   <tbody>
-    <tr><td>PRISM trajectory pipeline</td><td>protein-coding sequences, 78 COSMIC signatures, 27,481 Pfam centroids</td><td>composition-matched scramble, length regression, uniform null</td><td>cosine displacement toward a Pfam centroid</td></tr>
-    <tr><td>inverse recommender</td><td>35,403 positive transitions over 75 proteins, signature profiles</td><td>leave-signatures-out, uniform guess over 78 classes</td><td>AUC on familiar signatures, top-1 and top-5 on held-out ones</td></tr>
+    <tr><td>PRISM trajectory pipeline</td><td>Protein-coding sequences, 78 COSMIC signatures, 27,481 Pfam centroids</td><td>Composition-matched scramble, length regression, uniform null</td><td>Cosine displacement toward a Pfam centroid</td></tr>
+    <tr><td>Inverse recommender</td><td>35,403 positive transitions over 75 proteins, signature profiles</td><td>Leave-signatures-out, uniform guess over 78 classes</td><td>AUC on familiar signatures, top-1 and top-5 on held-out ones</td></tr>
   </tbody>
 </table>
 </div>
@@ -62,83 +62,83 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
 <div class="pp-table-wrap">
 <table class="pp-table">
   <caption>Controls</caption>
-  <thead><tr><th>confound</th><th>where it appears</th><th>what the control showed</th></tr></thead>
+  <thead><tr><th>Confound</th><th>Where it appears</th><th>What the control showed</th></tr></thead>
   <tbody>
-    <tr><td>amino-acid composition</td><td>the steering movement toward PF17041</td><td>a composition-matched scramble reproduces 72% of it</td></tr>
-    <tr><td>protein length</td><td>the size of the displacement</td><td>log length explains 94.1% of displacement across the 78 signatures</td></tr>
-    <tr><td>familiarity, not understanding</td><td>the inverse probe</td><td>held-out signatures drop top-1 accuracy from an AUC of 0.94 to 0.775%</td></tr>
+    <tr><td>Amino-acid composition</td><td>The steering movement toward PF17041</td><td>A composition-matched scramble reproduces 72% of it</td></tr>
+    <tr><td>Protein length</td><td>The size of the displacement</td><td>Log length explains 94.1% of displacement across the 78 signatures</td></tr>
+    <tr><td>Signal present in-distribution only</td><td>The inverse probe</td><td>Held-out signatures drop top-1 accuracy from an AUC of 0.94 to 0.775%</td></tr>
   </tbody>
 </table>
 </div>
 
 <p class="pp-section-num">03 &middot; Results</p>
-<h2 class="pp-section-title">three questions, asked in order</h2>
+<h2 class="pp-section-title">Three questions, asked in order</h2>
 
 <section class="pp-thread" id="rq1">
   <div class="pp-thread-tag">RQ1</div>
-  <h3 class="pp-thread-title">one signature moves proteins toward one family, in two independent groups</h3>
+  <h3 class="pp-thread-title">One signature moves proteins toward one family, in two independent groups</h3>
 
-  <p>the first question is whether any signature has a consistent destination. of the 78 signatures, SBS17a is the one that most moves sequences toward the Pfam family PF17041, the SasG_E domain, and it ranks first on that family in two independent Pfam clans, where a clan is a group of related families. i focused on the two-clan result because a direction that shows up once could be noise, while a direction that shows up in two unrelated groups of proteins is more likely to come from a genuine mechanism, so it is the one i put through the controls that follow.</p>
+  <p>The first question is whether any signature has a consistent destination. Of the 78 signatures, SBS17a is the one that most moves sequences toward the Pfam family PF17041, the SasG_E domain, and it ranks first on that family in two independent Pfam clans, where a clan is a group of related families. I focused on the two-clan result because a direction that shows up once could be noise, while a direction that shows up in two unrelated groups of proteins is more likely to come from a genuine mechanism, so it is the one I put through the controls that follow.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/prism-signature-steering/sbs17a-ranking.png' | relative_url }}" alt="SBS17a ranks first of 78 toward PF17041 in both clans">
-    <figcaption><strong>figure 2. SBS17a ranks first in both clans.</strong> for each clan, the share of experiments where a signature is the top one moving sequences toward PF17041, with SBS17a marked. it ranks first of 78 in both the CL0023 and CL0072 clans. the bar heights are the counts before a translation fix, which raises the concentrations to 71.7% and 100% while keeping SBS17a first.</figcaption>
+    <figcaption><strong>Figure 2. SBS17a ranks first in both clans.</strong> For each clan, the share of experiments where a signature is the top one moving sequences toward PF17041, with SBS17a marked. It ranks first of 78 in both the CL0023 and CL0072 clans. The bar heights are the counts before a translation fix, which raises the concentrations to 71.7% and 100% while keeping SBS17a first.</figcaption>
   </figure>
 
-  <div class="finding"><div class="fn-label">Finding 1</div><p>SBS17a is the top-ranked signature of 78 for moving proteins toward PF17041, and it holds that rank in two independent clans. the rank survives the read-through rerun, but uniqueness does not. once stop codons are decoded through rather than truncating the sequence, six signatures pick PF17041 as their modal target and hub-corrected enrichment falls from 60.7&times; to 18.7&times;, so SBS17a is first among several rather than the only signature that lands there.</p></div>
+  <div class="finding"><div class="fn-label">Finding 1</div><p>SBS17a is the top-ranked signature of 78 for moving proteins toward PF17041, and it holds that rank in two independent clans. The rank survives the read-through rerun, while uniqueness changes: once stop codons are decoded through rather than truncating the sequence, six signatures pick PF17041 as their modal target and hub-corrected enrichment falls from 60.7&times; to 18.7&times;, so SBS17a is first among several rather than the only signature that lands there.</p></div>
 </section>
 
 <section class="pp-thread" id="rq2">
   <div class="pp-thread-tag">RQ2</div>
-  <h3 class="pp-thread-title">most of that movement is composition and length, not biology</h3>
+  <h3 class="pp-thread-title">Composition and length account for most of that movement</h3>
 
-  <p>a movement is only biological if it needs the signature at all, so i try to reproduce it without one. composition is the first thing to rule out. a protein is a string of amino acids, and the model's embedding depends heavily on which amino acids are present, so two proteins with the same makeup in a different order can land near each other in the model's space for no functional reason. i build a composition-matched scramble, which keeps the amino-acid makeup of the mutants but shuffles away the signature's specific structure, and i measure how much of the steering survives. the measured SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, the scrambled direction keeps 0.0306 of that, and the ratio is 72% over five seeds, so most of the movement needed only the composition.</p>
+  <p>A movement is biological only if it needs the signature at all, so I try to reproduce it without one. Composition is the first thing to rule out. A protein is a string of amino acids, and the model's embedding depends heavily on which amino acids are present, so two proteins with the same makeup in a different order can land near each other in the model's space for no functional reason. I build a composition-matched scramble, which keeps the amino-acid makeup of the mutants but shuffles away the signature's specific structure, and I measure how much of the steering survives. The measured SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, the scrambled direction keeps 0.0306 of that, and the ratio is 72% over five seeds, so most of the movement needed only the composition.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/prism-signature-steering/scramble.png' | relative_url }}" alt="A context-scrambled direction keeps 72 percent of the movement toward PF17041">
-    <figcaption><strong>figure 3. composition keeps most of the steering.</strong> the measured signature direction moves held-out embeddings toward PF17041 by 0.0425, and a composition-matched scramble keeps 72% of that at 0.0306. the right panel shows the remaining context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014, so a small signature-specific residual survives but most of the movement is composition.</figcaption>
+    <figcaption><strong>Figure 3. Composition keeps most of the steering.</strong> The measured signature direction moves held-out embeddings toward PF17041 by 0.0425, and a composition-matched scramble keeps 72% of that at 0.0306. The right panel shows the remaining context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014, so a small signature-specific residual survives while most of the movement is composition.</figcaption>
   </figure>
 
-  <p>length is the second thing to rule out. signatures differ in how often they create a stop codon, which ends translation early and makes a shorter protein, and shorter proteins move differently in the model's space for reasons that have nothing to do with the mutational process. so i fit how far each signature moves proteins against the length of the translated protein, one point per signature across all 78, and length alone explains 94.1% of the variation. between the two controls, the piece of the movement that is specific to the signature, rather than to composition or length, is small.</p>
+  <p>Length is the second thing to rule out. Signatures differ in how often they create a stop codon, which ends translation early and makes a shorter protein, and shorter proteins move differently in the model's space for reasons unrelated to the mutational process. So I fit how far each signature moves proteins against the length of the translated protein, one point per signature across all 78, and length alone explains 94.1% of the variation. Between the two controls, the piece of the movement specific to the signature, rather than to composition or length, is small.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/prism-signature-steering/length-confound.png' | relative_url }}" alt="Mean absolute displacement against log translated length, R-squared 0.941">
-    <figcaption><strong>figure 4. length explains the size of the movement.</strong> mean absolute displacement against log translated length, one point per signature across the 78. the fit explains 94.1% of the variation, so most of how far a signature moves proteins is a length effect rather than a functional one.</figcaption>
+    <figcaption><strong>Figure 4. Length explains the size of the movement.</strong> Mean absolute displacement against log translated length, one point per signature across the 78. The fit explains 94.1% of the variation, so most of how far a signature moves proteins is a length effect rather than a functional one.</figcaption>
   </figure>
 
-  <p>this is the part that matters most. if the plainest properties of a sequence reproduce an effect, the effect is not evidence about the mutational process, and calling it a functional finding is the mistake a reader makes by default when an embedding moves in a clean direction. the controls turn an interesting picture into a bounded claim.</p>
+  <p>When the plainest properties of a sequence reproduce an effect, the effect is not evidence about the mutational process, and calling it a functional finding is the mistake a reader makes by default when an embedding moves in a clean direction. The controls turn an interesting picture into a bounded claim.</p>
 
-  <div class="finding"><div class="fn-label">Finding 2</div><p>a composition-matched control reproduces 72% of the steering on the layer-5 steering readout, and about 34% of the excess over uniform on the trajectory readout, while protein length explains 94.1% of the displacement, so the signature-specific residual is small and SBS17a is not a validated functional driver on this evidence.</p></div>
+  <div class="finding"><div class="fn-label">Finding 2</div><p>A composition-matched control reproduces 72% of the steering on the layer-5 steering readout, and about 34% of the excess over uniform on the trajectory readout, while protein length explains 94.1% of the displacement, so the signature-specific residual is small and on this evidence SBS17a is a candidate rather than a validated functional driver.</p></div>
 </section>
 
 <section class="pp-thread" id="rq3">
   <div class="pp-thread-tag">RQ3</div>
-  <h3 class="pp-thread-title">a probe can decode a signature without understanding it</h3>
+  <h3 class="pp-thread-title">A probe decodes familiar signatures; held-out ones are the real test</h3>
 
-  <p>the last question is about a different kind of claim. a natural way to argue a model understands a signature is to show that you can read the signature back out of its embedding, with a probe, which is a small classifier trained on the model's internal vectors. that argument is weaker than it sounds, and this is where it breaks. i train an inverse probe to read an embedding shift and name the signature that produced it, and on signatures it saw in training it reaches an AUC of 0.94, where AUC near 1 means the shifts are cleanly separable. then i hold out whole signatures and ask the probe to name mechanisms it never saw, and its top-1 accuracy falls to 0.775%, below the 1.28% a blind guess over the classes would give.</p>
+  <p>The last question is about a different kind of claim. A natural way to argue a model understands a signature is to show that you can read the signature back out of its embedding, with a probe, which is a small classifier trained on the model's internal vectors. That argument is weaker than it sounds, and this is where it breaks. I train an inverse probe to read an embedding shift and name the signature that produced it, and on signatures it saw in training it reaches an AUC of 0.94, where AUC near 1 means the shifts are cleanly separable. Then I hold out whole signatures and ask the probe to name mechanisms it never saw, and its top-1 accuracy falls to 0.775%, below the 1.28% a blind guess over the classes would give.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/prism-signature-steering/loso.png' | relative_url }}" alt="Leave-signatures-out transfer, top-1 accuracy 0.8 percent below the 1.3 percent uniform line">
-    <figcaption><strong>figure 5. decodable in-distribution, not transferable.</strong> accuracy on signatures held out of training, where the recommender's top-1 sits at 0.775%, plotted rounded to 0.8%, below the 1.28% uniform-guess line, and 0.0% when SBS17a itself is withheld. the same probe reaches an AUC of 0.94 on signatures it has seen, so the information is present without transferring.</figcaption>
+    <figcaption><strong>Figure 5. Decodable in-distribution.</strong> Accuracy on signatures held out of training, where the recommender's top-1 sits at 0.775%, plotted rounded to 0.8%, below the 1.28% uniform-guess line, and 0.0% when SBS17a itself is withheld. The same probe reaches an AUC of 0.94 on signatures it has seen, so the information is present in-distribution and does not transfer.</figcaption>
   </figure>
 
-  <p>this matters because decodability is the evidence people cite most often for a model understanding a concept, and here it is fully present while the model has learned nothing that carries to a new case. a probe that works on familiar examples and fails on unseen ones has memorized a fingerprint, not a mechanism, and only the held-out test tells the two apart.</p>
+  <p>Decodability is the evidence people cite most often for a model understanding a concept, and here it is fully present while the model has learned nothing that carries to a new case. A probe that works on familiar examples and fails on unseen ones has memorized a fingerprint rather than a mechanism, and only the held-out test tells the two apart.</p>
 
-  <div class="finding"><div class="fn-label">Finding 3</div><p><!-- TODO: the 0.94 rounds up from 0.9369 and is the uncorrected translation variant; the corrected read-through gives 0.991. Decide which to report; 0.991 makes the transfer collapse starker, not weaker. --> the probe reaches an AUC of 0.94 on seen signatures and 0.775% top-1 accuracy on held-out ones, so a decodable signal is not evidence of a portable understanding.</p></div>
+  <div class="finding"><div class="fn-label">Finding 3</div><p><!-- TODO: the 0.94 rounds up from 0.9369 and is the uncorrected translation variant; the corrected read-through gives 0.991. Decide which to report; 0.991 makes the transfer collapse starker, not weaker. --> The probe reaches an AUC of 0.94 on seen signatures and 0.775% top-1 accuracy on held-out ones, so a decodable signal is evidence of in-distribution memorization rather than portable understanding.</p></div>
 </section>
 
 <p class="pp-section-num" id="takeaways">Takeaways</p>
-<h2 class="pp-section-title">what the three findings add up to</h2>
+<h2 class="pp-section-title">What the three findings add up to</h2>
 
 <div class="takeaways">
-  <div class="takeaway"><div class="tk-h">a convincing direction</div>SBS17a ranks first of 78 toward PF17041 in two clans, the kind of recurrence that looks like a result, though the read-through rerun shows five other signatures land there too.</div>
-  <div class="takeaway"><div class="tk-h">that the controls undo</div>composition keeps 72% of the steering movement, and only about 34% on the trajectory readout, while length explains 94.1%, so the biology-specific part is small.</div>
-  <div class="takeaway"><div class="tk-h">decoding is not understanding</div>a probe at AUC 0.94 on seen signatures falls to 0.775% on held-out ones.</div>
+  <div class="takeaway"><div class="tk-h">A convincing direction</div>SBS17a ranks first of 78 toward PF17041 in two clans, the kind of recurrence that looks like a result, though the read-through rerun shows five other signatures land there too.</div>
+  <div class="takeaway"><div class="tk-h">That the controls bound</div>Composition keeps 72% of the steering movement, and about 34% on the trajectory readout, while length explains 94.1%, so the biology-specific part is small.</div>
+  <div class="takeaway"><div class="tk-h">Decoding holds only in-distribution</div>A probe at AUC 0.94 on seen signatures falls to 0.775% on held-out ones.</div>
 </div>
 
 <p class="pp-section-num">Limitations</p>
 <div class="limitations">
-  <p>PRISM measures geometry inside one protein model's representation, so every number here is a statement about the model and not about biological function. the trajectory results run on ESM-2 8M, and a 650M centroid library exists but covers too few clan-restricted families for a catalogue-wide comparison, so i could not test whether the results hold at a larger model scale. the audit is demonstrated on one framework and one signature-domain finding, and its generality to other frameworks and signatures is untested. there is no residue-level attribution yet, so nothing here isolates which positions carry whatever signature-specific residual survives the composition and length controls, and that is the experiment this points at next.</p>
+  <p>PRISM measures geometry inside one protein model's representation, so every number here is a statement about the model rather than about biological function. The trajectory results run on ESM-2 8M, and a 650M centroid library exists but covers too few clan-restricted families for a catalogue-wide comparison, so the results are untested at a larger model scale. The audit is demonstrated on one framework and one signature-domain finding, and its generality to other frameworks and signatures is open. There is no residue-level attribution yet, so nothing here isolates which positions carry whatever signature-specific residual survives the composition and length controls, and that is the experiment this points at next.</p>
 </div>
 
 <p class="pp-section-num" id="cite">Cite</p>
