@@ -1163,6 +1163,9 @@ figure.pp-fig figcaption { font-family: var(--mono); font-size: 0.72rem; line-he
 @media (max-width: 780px) { .pp-toc { position: static; } }
 
 .pp-wrap .pp-body { max-width: none; margin: 0; }
+.pp-wrap .pp-body p { max-width: 76ch; }
+.pp-wrap .pp-body figcaption { max-width: 90ch; }
+.pp-wrap .pp-body .finding p, .pp-wrap .pp-body .why-box p, .pp-wrap .pp-body .pp-abstract p, .pp-wrap .pp-body .takeaway, .pp-wrap .pp-body table td, .pp-wrap .pp-body table th { max-width: none; }
 /* keep running prose at a comfortable measure while figures, tables and callout
    boxes still span the full card width */
 .pp-wrap .pp-body p { max-width: 76ch; }
@@ -1242,3 +1245,52 @@ table.pp-table td { font-family: var(--serif); line-height: 1.5; }
 .exp-track .exp-card-static,
 .exp-track .flip-card { flex: 0 0 min(380px, 82vw); scroll-snap-align: start; }
 @media (prefers-reduced-motion: reduce) { .exp-track { scroll-behavior: auto; } }
+
+/* ============ clean sans labels, sentence case (replaces monospace labels) ============ */
+.nav-name small,
+.recent-date,
+.bm-eyebrow,
+.bm-links a,
+.bm-video-cap,
+.venue-badge,
+.pp-section-num,
+.pp-thread-tag,
+.pp-thread-sub,
+.callout-q .cq-label,
+.sc-lab,
+.fn-label,
+figure.pp-fig figcaption,
+.pp-back a,
+.pp-toc a,
+.pp-abstract .pp-ab-label,
+.stat-row .stat .l,
+table.pp-table caption,
+table.armtab th,
+.pub-sec,
+.pub-links,
+.pub-year,
+.work-meta,
+.pc-tag,
+.pc-venue,
+.fun-label,
+.proj-featured,
+.writing-featured .writing-date,
+.w-sec-label,
+.wc-meta,
+.wc-read,
+.w-earlier-label,
+.entry-when,
+.exp-hint,
+.side-project-group h3,
+.post-back a,
+.rp-eyebrow,
+footer a,
+.footer-pending {
+  font-family: var(--sans);
+  text-transform: none;
+  letter-spacing: 0.005em;
+}
+.pp-toc a { font-size: 0.74rem; color: var(--muted); }
+.pp-toc a.on { color: var(--accent); }
+.pp-section-num { letter-spacing: 0.02em; }
+.pub-sec, .w-sec-label, .fun-label { letter-spacing: 0.01em; font-weight: 600; color: var(--navy); }
