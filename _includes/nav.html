@@ -5,7 +5,7 @@
   </a>
   <ul class="nav-links">
     <li><a{% if page.url == '/projects/' %} class="active" aria-current="page"{% endif %} href="{{ '/projects/' | relative_url }}">project pages</a></li>
-    <li><a href="https://saanviss.substack.com/p/interpreting-interpretability" target="_blank" rel="noopener">technical writing</a></li>
+    <li><a{% if page.url == '/writing/' %} class="active" aria-current="page"{% endif %} href="{{ '/writing/' | relative_url }}">technical writing</a></li>
     <li><a{% if page.url == '/more-me/' %} class="active" aria-current="page"{% endif %} href="{{ '/more-me/' | relative_url }}">more me</a></li>
   </ul>
 </nav>
