@@ -1362,13 +1362,13 @@ footer a,
 .pp-wrap .bm-links a:hover { border-color: var(--accent); }
 
 /* ============ roomier project pages for a cleaner read ============ */
-.pp-body p { margin-bottom: 28px; line-height: 1.85; }
-.pp-body > ul { margin-bottom: 28px; line-height: 1.8; }
-.pp-body li { margin-bottom: 10px; }
-.pp-section-title { margin-bottom: 22px; }
-.pp-thread { margin-top: 76px; padding-top: 22px; }
-.pp-section-num { margin-top: 76px; }
-.pp-fig { margin: 44px 0; }
+.pp-body p { margin-bottom: 32px; line-height: 1.92; }
+.pp-body > ul { margin-bottom: 32px; line-height: 1.85; }
+.pp-body li { margin-bottom: 12px; }
+.pp-section-title { margin-bottom: 24px; }
+.pp-thread { margin-top: 90px; padding-top: 26px; }
+.pp-section-num { margin-top: 90px; }
+.pp-fig { margin: 54px 0; }
 .pp-fig figcaption { margin-top: 15px; }
 .finding, .why-box, .concept-card, .callout-q { margin-top: 34px; margin-bottom: 34px; }
 .pp-abstract { padding: 24px 26px; margin: 26px 0 12px; }

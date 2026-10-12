@@ -20,6 +20,12 @@ thesis: "Once learning accuracy is matched and the baseline is tuned as hard as 
   .aid .why-box { border-left: 3px solid var(--pink); }
   .aid .pp-fig figcaption strong { color: var(--red); }
   .aid .stat .n { color: var(--red); }
+  .cl-anim .cl-wrap { width: 100%; aspect-ratio: 16 / 8.5; background: var(--read-card, #fffdf7); border: 1px solid var(--read-card-edge, #efe7d7); border-radius: 12px; }
+  .cl-anim .cl-wrap canvas { width: 100%; height: 100%; display: block; }
+  .cl-anim .cl-controls { display: flex; align-items: center; gap: 14px; margin-top: 10px; font-family: var(--sans); font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; }
+  .cl-anim .cl-controls button { font-family: var(--sans); font-size: 0.76rem; border: 1px solid var(--pink); color: var(--pink); background: transparent; border-radius: 999px; padding: 4px 15px; cursor: pointer; }
+  .cl-anim .cl-controls input[type=range] { flex: 1; min-width: 150px; accent-color: var(--red); }
+  .cl-anim .cl-readout b { color: var(--red); }
 </style>
 
 <div class="aid">
@@ -54,6 +60,16 @@ thesis: "Once learning accuracy is matched and the baseline is tuned as hard as 
 
   <p>Scored against backpropagation at the same learning accuracy, feedback alignment and direct feedback alignment matched backpropagation, predictive coding retained 0.21 points more with a 95% interval of [+0.11, +0.31], about a fifth of the instrument's own error, and replay added 10.6 points. Any retention advantage from locality on this protocol stays under a third of a point, while an explicit replay buffer is worth about fifty times as much.</p>
 
+  <figure class="pp-fig cl-anim">
+    <div class="cl-wrap"><canvas id="cl-plot"></canvas></div>
+    <div class="cl-controls">
+      <button id="cl-play" type="button">pause</button>
+      <input id="cl-slider" type="range" min="62" max="90" value="90" aria-label="Accuracy at which the baseline is compared">
+      <span class="cl-readout">locality's retention edge <b id="cl-edge">+4.3</b> pts</span>
+    </div>
+    <figcaption><strong>Interactive. A fair baseline erases the edge.</strong> Backward transfer falls along one curve as a network learns each task better, so comparing a local rule against backpropagation trained to a higher accuracy makes the rule look like it forgets less. Slide the baseline down to the rule's own learning accuracy and the edge collapses to the measured +0.21 points, while replay stays about 10.6 points above the curve. Axes are schematic; the matched edge (+0.21) and replay (+10.6) are the measured values.</figcaption>
+  </figure>
+
   <figure class="pp-fig">
     <img src="{{ '/assets/images/engram-continual-learning/locality.png' | relative_url }}" alt="Backward transfer against learning accuracy, local rules on the backpropagation curve and replay above it">
     <figcaption><strong>Figure 1.</strong> Backward transfer against learning accuracy. The backpropagation ladder traces a curve, the local rules fall on that same curve, and only replay sits above it, so locality leaves the forgetting-versus-learning trade-off where backpropagation sets it.</figcaption>
@@ -87,3 +103,49 @@ thesis: "Once learning accuracy is matched and the baseline is tuned as hard as 
 </div>
 
 </div>
+
+<script>
+(function(){
+  var cv=document.getElementById('cl-plot'); if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'); var DPR=Math.min(2,window.devicePixelRatio||1);
+  var PC_ACC=0.62, PC_EDGE=0.21, REPLAY_EDGE=10.6, MAXY=10, MINY=-8, A0=0.35, A1=0.90;
+  function bwt(a){ return 2 - 8*(a-A0)/(A1-A0); }
+  function col(v,f){ try{var c=getComputedStyle(document.documentElement).getPropertyValue(v).trim();return c||f;}catch(e){return f;} }
+  var slider=document.getElementById('cl-slider'), btn=document.getElementById('cl-play'), ed=document.getElementById('cl-edge');
+  var comp=0.90, playing=true, dir=-1;
+  function resize(){var w=cv.clientWidth,h=cv.clientHeight;cv.width=Math.max(1,w*DPR);cv.height=Math.max(1,h*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);}
+  function X(a,w){var L=54,R=18;return L+(a-A0)/(A1-A0)*(w-L-R);}
+  function Y(v,h){var T=18,B=40;return T+(MAXY-v)/(MAXY-MINY)*(h-T-B);}
+  function dot(x,y,r,c){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=c;ctx.fill();}
+  function draw(){
+    var w=cv.clientWidth,h=cv.clientHeight; ctx.clearRect(0,0,w,h);
+    var pink=col('--pink','#cf4d87'), red=col('--red','#a8324a'), mut='#9a9183';
+    ctx.strokeStyle='#e4dcce'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(X(A0,w),Y(MAXY,h)); ctx.lineTo(X(A0,w),Y(MINY,h)); ctx.lineTo(X(A1,w),Y(MINY,h)); ctx.stroke();
+    ctx.fillStyle=mut; ctx.font='11px Inter,system-ui,sans-serif'; ctx.textAlign='center';
+    ctx.save(); ctx.translate(16,h/2); ctx.rotate(-Math.PI/2); ctx.fillText('backward transfer (retention)',0,0); ctx.restore();
+    ctx.fillText('learning accuracy on the new task',(X(A0,w)+X(A1,w))/2,h-12);
+    ctx.strokeStyle=mut; ctx.lineWidth=2; ctx.beginPath();
+    for(var a=A0;a<=A1+1e-9;a+=0.01){var x=X(a,w),y=Y(bwt(a),h); if(a<=A0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+    ctx.fillStyle=mut; ctx.textAlign='left'; ctx.fillText('backprop ladder', X(0.74,w), Y(bwt(0.74),h)+16);
+    dot(X(0.5,w),Y(bwt(0.5)+0.1,h),3.5,'rgba(207,77,135,0.55)');
+    dot(X(0.55,w),Y(bwt(0.55)+0.1,h),3.5,'rgba(207,77,135,0.55)');
+    var cx=X(comp,w), cyC=Y(bwt(comp),h);
+    ctx.setLineDash([4,4]); ctx.strokeStyle='rgba(168,50,74,0.3)'; ctx.beginPath(); ctx.moveTo(cx,Y(MAXY,h)); ctx.lineTo(cx,Y(MINY,h)); ctx.stroke();
+    var pcy=Y(bwt(PC_ACC)+PC_EDGE,h);
+    ctx.strokeStyle=red; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(cx,pcy); ctx.lineTo(cx,cyC); ctx.stroke(); ctx.setLineDash([]);
+    dot(cx,cyC,4,mut);
+    dot(X(PC_ACC,w),pcy,5.5,red);
+    var ry=Y(bwt(PC_ACC)+REPLAY_EDGE,h); dot(X(PC_ACC,w),ry,5.5,pink);
+    ctx.font='600 11px Inter,system-ui,sans-serif'; ctx.fillStyle=red; ctx.textAlign='left';
+    ctx.fillText('predictive coding', X(PC_ACC,w)+9, pcy+4);
+    ctx.fillStyle=pink; ctx.fillText('replay', X(PC_ACC,w)+9, ry+4);
+    var e=(bwt(PC_ACC)+PC_EDGE)-bwt(comp); if(ed) ed.textContent='+'+(e<1?e.toFixed(2):e.toFixed(1));
+    if(slider&&document.activeElement!==slider) slider.value=String(Math.round(comp*100));
+  }
+  function loop(){ if(playing){ comp+=0.0012*dir; if(comp<=PC_ACC){comp=PC_ACC;dir=1;} if(comp>=0.90){comp=0.90;dir=-1;} } draw(); requestAnimationFrame(loop); }
+  if(slider) slider.addEventListener('input',function(){playing=false;if(btn)btn.textContent='play';comp=slider.value/100;});
+  if(btn) btn.addEventListener('click',function(){playing=!playing;btn.textContent=playing?'pause':'play';});
+  window.addEventListener('resize',resize); resize(); loop();
+})();
+</script>
