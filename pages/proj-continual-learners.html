@@ -10,7 +10,7 @@ links:
   - label: "Blog"
     url: "/thinking/brain-inspired-algorithms/"
 hook: "A learner that keeps training on new tasks tends to overwrite what it already knew. Biologically inspired learning rules are often reported to forget less than backpropagation, so I checked whether that advantage survives a fair comparison."
-thesis: "Once learning accuracy is matched and the baseline is tuned as hard as the rule, the retention advantage of local learning rules is under a third of a point, while replay adds about ten. locality itself does not reduce forgetting on this protocol."
+thesis: "Once learning accuracy is matched and the baseline is tuned as hard as the rule, the retention advantage of local learning rules is under a third of a point, while replay adds about ten. On this protocol, retention tracks learning accuracy rather than locality."
 ---
 
 <style>
@@ -26,64 +26,64 @@ thesis: "Once learning accuracy is matched and the baseline is tuned as hard as 
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p>what happens to an old skill when a model keeps training on new ones. the same training that teaches a new task can quietly overwrite an old one, and in a deployed model that is catastrophic forgetting with a cost attached, since the behavior being overwritten can be a capability or a safety property the model had before. biologically inspired learning rules are often reported to forget less than backpropagation, so i tested whether the advantage survives a fair comparison on class-incremental Split-CIFAR-10. a rule that learns each new task less well also has less to forget, so i first calibrated an instrument, then scored each rule against backpropagation at the same learning accuracy, tuning the baseline as hard as the rule. feedback alignment and direct feedback alignment were indistinguishable from backpropagation, predictive coding retained 0.21 points more, and replay added 10.6. any retention advantage from locality on this protocol is under a third of a point.</p>
+  <p>What happens to an old skill when a model keeps training on new ones? The same training that teaches a new task can quietly overwrite an old one, and in a deployed model that is catastrophic forgetting with a cost attached, since the behavior being overwritten can be a capability or a safety property the model had before. Biologically inspired learning rules are often reported to forget less than backpropagation, so I tested whether the advantage survives a fair comparison on class-incremental Split-CIFAR-10. A rule that learns each new task less well also has less to forget, so I first calibrated an instrument, then scored each rule against backpropagation at the same learning accuracy, tuning the baseline as hard as the rule. Feedback alignment and direct feedback alignment matched backpropagation, predictive coding retained 0.21 points more, and replay added 10.6. Any retention advantage from locality on this protocol stays under a third of a point.</p>
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="n">R&sup2; = 0.995</div><div class="l">backward transfer as a function of learning accuracy along a weakened-backprop ladder, the calibrated instrument</div></div>
-  <div class="stat"><div class="n">+0.21 pts</div><div class="l">retention edge of the best local rule at matched learning, 95% CI [+0.11, +0.31]</div></div>
-  <div class="stat"><div class="n">+10.6 pts</div><div class="l">retention from replay, about fifty times the local-rule effect</div></div>
+  <div class="stat"><div class="n">R&sup2; = 0.995</div><div class="l">Backward transfer as a function of learning accuracy along a weakened-backprop ladder, the calibrated instrument</div></div>
+  <div class="stat"><div class="n">+0.21 pts</div><div class="l">Retention edge of the best local rule at matched learning, 95% CI [+0.11, +0.31]</div></div>
+  <div class="stat"><div class="n">+10.6 pts</div><div class="l">Retention from replay, about fifty times the local-rule effect</div></div>
 </div>
 
 <p class="pp-section-num">01 &middot; The Challenge</p>
-<h2 class="pp-section-title">why a retention gain needs a matched baseline</h2>
+<h2 class="pp-section-title">Why a retention gain needs a matched baseline</h2>
 
-<p>a rule that learns each new task less well also has less to forget, so a retention number read on its own confounds how much a method protects old knowledge with how little it learned in the first place. a fair comparison has to hold learning accuracy fixed before it reads off forgetting. most reports of biologically inspired rules forgetting less than backpropagation do not do this, which is the gap this project closes.</p>
+<p>A rule that learns each new task less well also has less to forget, so a retention number read on its own confounds how much a method protects old knowledge with how little it learned in the first place. A fair comparison has to hold learning accuracy fixed before it reads off forgetting. Most reports of biologically inspired rules forgetting less than backpropagation skip this step, which is the gap this project closes.</p>
 
 <p class="pp-section-num">02 &middot; The Approach</p>
-<h2 class="pp-section-title">calibrate an instrument, then compare at matched learning</h2>
+<h2 class="pp-section-title">Calibrate an instrument, then compare at matched learning</h2>
 
-<p>i never let a fancy rule compete against a weak baseline, so i match the learning accuracy of every method before i compare how much it forgets. weakening backpropagation along a ladder of settings makes backward transfer almost a deterministic function of learning accuracy, with an R-squared of 0.995, which sets how small a difference i can resolve: a held-out error of 1.09 points. i then score each rule against backpropagation at the same learning accuracy, so a retention gain is not evidence until the baseline is tuned as hard as the rule.</p>
+<p>I never let a strong rule compete against a weak baseline, so I match the learning accuracy of every method before comparing how much it forgets. Weakening backpropagation along a ladder of settings makes backward transfer almost a deterministic function of learning accuracy, with an R-squared of 0.995, which sets how small a difference I can resolve: a held-out error of 1.09 points. I then score each rule against backpropagation at the same learning accuracy, so a retention gain counts as evidence only once the baseline is tuned as hard as the rule.</p>
 
 <p class="pp-section-num">03 &middot; Results</p>
-<h2 class="pp-section-title">one finding, and its boundary</h2>
+<h2 class="pp-section-title">One finding, and its boundary</h2>
 
 <section class="pp-thread" id="locality">
-  <h3 class="pp-thread-title">a fair baseline erases the retention advantage of local learning rules</h3>
+  <h3 class="pp-thread-title">A fair baseline erases the retention advantage of local learning rules</h3>
   <p><span class="venue-badge">NeurReps @ NeurIPS 2026</span><span class="venue-badge">DevAI @ NeurIPS 2026</span></p>
 
-  <p>scored against backpropagation at the same learning accuracy, feedback alignment and direct feedback alignment were indistinguishable from backpropagation, predictive coding retained 0.21 points more with a 95% interval of [+0.11, +0.31], about a fifth of the instrument's own error, and replay added 10.6 points. so any retention advantage from locality on this protocol is under a third of a point, while an explicit replay buffer is worth about fifty times as much.</p>
+  <p>Scored against backpropagation at the same learning accuracy, feedback alignment and direct feedback alignment matched backpropagation, predictive coding retained 0.21 points more with a 95% interval of [+0.11, +0.31], about a fifth of the instrument's own error, and replay added 10.6 points. Any retention advantage from locality on this protocol stays under a third of a point, while an explicit replay buffer is worth about fifty times as much.</p>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/engram-continual-learning/locality.png' | relative_url }}" alt="Backward transfer against learning accuracy, local rules on the backpropagation curve and replay above it">
-    <figcaption><strong>figure 1.</strong> backward transfer against learning accuracy. the backpropagation ladder traces a curve, the local rules fall on that same curve, and only replay sits above it, so locality does not move the forgetting-versus-learning trade-off.</figcaption>
+    <figcaption><strong>Figure 1.</strong> Backward transfer against learning accuracy. The backpropagation ladder traces a curve, the local rules fall on that same curve, and only replay sits above it, so locality leaves the forgetting-versus-learning trade-off where backpropagation sets it.</figcaption>
   </figure>
 
   <figure class="pp-fig">
     <img src="{{ '/assets/images/engram-continual-learning/neurreps.png' | relative_url }}" alt="Departure from the null for each rule, with and without replay">
-    <figcaption><strong>figure 2.</strong> each rule's departure from the null band. the credit-assignment rules sit within the null scatter, while adding replay lifts every rule about ten points above it. representational geometry differs across rules without changing the retention story.</figcaption>
+    <figcaption><strong>Figure 2.</strong> Each rule's departure from the null band. The credit-assignment rules sit within the null scatter, while adding replay lifts every rule about ten points above it. Representational geometry differs across rules while the retention story stays the same.</figcaption>
   </figure>
 
-  <div class="finding"><div class="fn-label">Finding</div><p>once learning accuracy is matched and the baseline is tuned fairly, the retention advantage of local rules is under a third of a point while replay adds 10.6, so locality itself does not reduce forgetting on this protocol.</p></div>
+  <div class="finding"><div class="fn-label">Finding</div><p>Once learning accuracy is matched and the baseline is tuned fairly, the retention advantage of local rules stays under a third of a point while replay adds 10.6, so on this protocol retention tracks learning accuracy rather than locality.</p></div>
 
   <div class="why-box">
-    <div class="wb-q">why care beyond neuroscience?</div>
-    <p>because continued training of a deployed model, whether fine-tuning or reinforcement learning from human feedback, can erase capabilities and safety behaviors the model had before. that is catastrophic forgetting with a deployment address, and the one constraint this work adds is that any method claiming to protect earlier behavior has to be compared at matched learning of the new task.</p>
+    <div class="wb-q">Why care beyond neuroscience?</div>
+    <p>Continued training of a deployed model, whether fine-tuning or reinforcement learning from human feedback, can erase capabilities and safety behaviors the model had before. That is catastrophic forgetting with a deployment address, and the one constraint this work adds is that any method claiming to protect earlier behavior has to be compared at matched learning of the new task.</p>
   </div>
 </section>
 
 <p class="pp-section-num" id="takeaways">Takeaways</p>
-<h2 class="pp-section-title">what it adds up to</h2>
+<h2 class="pp-section-title">What it adds up to</h2>
 
 <div class="takeaways">
-  <div class="takeaway"><div class="tk-h">a fair baseline is everything</div>matched learning erases the local-rule retention edge, leaving under a third of a point.</div>
-  <div class="takeaway"><div class="tk-h">replay is what moves retention</div>an explicit replay buffer adds 10.6 points, about fifty times the local-rule effect.</div>
-  <div class="takeaway"><div class="tk-h">forgetting is an alignment problem</div>continued training erases old behavior the same way it erases an old task, so retention claims deserve the same scrutiny as capability claims.</div>
+  <div class="takeaway"><div class="tk-h">A fair baseline is everything</div>Matched learning erases the local-rule retention edge, leaving under a third of a point.</div>
+  <div class="takeaway"><div class="tk-h">Replay is what moves retention</div>An explicit replay buffer adds 10.6 points, about fifty times the local-rule effect.</div>
+  <div class="takeaway"><div class="tk-h">Forgetting is an alignment problem</div>Continued training erases old behavior the same way it erases an old task, so retention claims deserve the same scrutiny as capability claims.</div>
 </div>
 
 <p class="pp-section-num">Limitations</p>
 <div class="limitations">
-  <p>this result is scoped to class-incremental Split-CIFAR-10 with a growing head, which sits near a retention floor, and a wider-window replication is the next step. the architectures compared are feedforward convolutional networks, so this is a statement about credit-assignment rules under this protocol, not about recurrent or sequential architectures. the code is not public yet, so the Code link is held until it is released.</p>
+  <p>This result is scoped to class-incremental Split-CIFAR-10 with a growing head, which sits near a retention floor, and a wider-window replication is the next step. The architectures compared are feedforward convolutional networks, so this speaks to credit-assignment rules under this protocol and leaves recurrent or sequential architectures for later. The code will be released, and the Code link is held until then.</p>
 </div>
 
 </div>
