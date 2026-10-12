@@ -12,11 +12,11 @@ video: ""  # TODO: Saanvi to add explainer video
 
 <div class="pp-abstract">
   <div class="pp-ab-label">Abstract</div>
-  <p>The same worry follows me into the clinic, where a number that looks like a gain can point a radiologist at the wrong part of the brain. A clinical model is usually judged by one benchmark number, and that number can be correct while the conclusion drawn from it is wrong. I build and evaluate clinical models against the decision they would actually support at the bedside. The main study asks whether an anatomical localization prior helps a 3D detector recover epileptogenic lesions it would otherwise miss. Restricting the search to the suspected lobe and looking for several candidate peaks recovers 14 of 24 missed lesions, 58%, against 1.4 expected by chance, with P below 0.001. That number is an upper bound reported under oracle localization, which means it assumes the correct lobe is already known, so I report it as a ceiling rather than an achievable EEG-guided result. Two further threads carry the same standard: a routing policy that decides per patient whether to wait, predict, or defer, and a catalogue of seven ways a clinical evaluation can report the right number and still support the wrong conclusion.</p>
+  <p>The same worry follows me into the clinic, where a number that looks like a gain can point a radiologist at the wrong part of the brain. A clinical model is usually judged by one benchmark number, and that number can be correct while the conclusion drawn from it is wrong. I build and evaluate clinical models against the decision they would actually support at the bedside. The main study asks whether an anatomical localization prior helps a 3D detector recover epileptogenic lesions it would otherwise miss. Restricting the search to the suspected lobe and looking for several candidate peaks recovers 14 of 25 missed lesions, 56%, against 1.4 expected by chance, with P below 0.001. That number is an upper bound reported under oracle localization, which means it assumes the correct lobe is already known, so I report it as a ceiling rather than an achievable EEG-guided result. Two further threads carry the same standard: a routing policy that decides per patient whether to wait, predict, or defer, and a catalogue of seven ways a clinical evaluation can report the right number and still support the wrong conclusion.</p>
 </div>
 
 <div class="stat-row">
-  <div class="stat"><div class="n">14 of 24</div><div class="l">Missed lesions recovered under oracle localization, a ceiling rather than an achievable result</div></div>
+  <div class="stat"><div class="n">14 of 25</div><div class="l">Missed lesions recovered under oracle localization, a ceiling rather than an achievable result</div></div>
   <div class="stat"><div class="n">1.4</div><div class="l">Recoveries expected by chance, against the 14 observed</div></div>
   <div class="stat"><div class="n">P &lt; 0.001</div><div class="l">Significance of the recovery against the chance baseline</div></div>
   <div class="stat"><div class="n">oracle</div><div class="l">The lobe is assumed known, so the achievable EEG-guided number is lower</div></div>
@@ -80,19 +80,16 @@ video: ""  # TODO: Saanvi to add explainer video
     </li>
   </ol>
 
-  <div class="stat-callout"><div class="sc-num">14 of 24</div><div class="sc-lab">Missed lesions recovered (58%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
+  <div class="stat-callout"><div class="sc-num">14 of 25</div><div class="sc-lab">Missed lesions recovered (56%) under oracle localization, against 1.4 expected by chance, P &lt; 0.001</div></div>
 
   <figure class="pp-fig">
-    <picture>
-      <source media="(max-width: 600px)" srcset="{{ '/assets/images/projects/clinical/fcd-detection-recovery-stacked.png' | relative_url }}">
-      <img src="{{ '/assets/images/projects/clinical/fcd-detection-recovery.png' | relative_url }}" alt="Left, baseline detection by cohort on 175 FCD cases, 86.3 percent overall with 24 missed. Right, the lobe-restricted multi-peak search recovers 14 of the 24 misses against 1.4 expected by chance.">
-    </picture>
-    <figcaption><strong>Figure 1. Detection, then recovery.</strong> Left, the baseline T2-FLAIR nnU-Net detects 86.3% of lesions across the four cohorts, 151 of 175, missing 24. Of those misses 17 are silent, meaning the model produced no suprathreshold output at all, and 7 are mislocalized, meaning it made a confident prediction 34 to 139 mm from the lesion. Right, restricting a multi-peak search to the lesion lobe recovers 14 of the 24 misses, 58%, split into 10 of 17 silent and 4 of 7 mislocalized, well above the 1.4 expected from a spatially uninformative search (P &lt; 0.001). Every recovery appears within the top four candidate peaks. The lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling rather than an achievable EEG-guided number.</figcaption>
+    <img src="{{ '/assets/images/projects/clinical/cortseer-recovery.png' | relative_url }}" alt="Bar chart: the oracle localization zone recovers 14 of 25 complete misses, against 4.0 for a random in-zone cluster null and 1.4 for a probability shuffle null.">
+    <figcaption><strong>Figure 1. Detection, then recovery.</strong> The baseline T2-FLAIR nnU-Net detects 150 of 175 lesions (85.7%) across the four cohorts and misses 25 completely. The recovery search covers 24 of those 25 (one 193-voxel lesion is omitted), which split into 17 silent, meaning no suprathreshold output at all, and 7 mislocalized, meaning a confident prediction away from the lesion. Restricting a multi-peak search to the lesion lobe recovers 14 of the 25, including 10 of the 17 silent, against 1.4 and 4.0 for two spatially uninformative nulls (P &lt; 0.001). Every recovery appears within the top four candidate peaks. The lobe is a stand-in for the region an EEG work-up would flag, so this is a ceiling rather than an achievable EEG-guided number.</figcaption>
   </figure>
 
   <div class="finding">
     <div class="fn-label">Finding 1</div>
-    <p>As an upper bound under perfect (oracle) localization, the lobe-restricted multi-peak search recovered 14 of 24 missed lesions, which is 58%, against 1.4 expected by chance, with P &lt; 0.001. This is an oracle ceiling rather than an achievable EEG-guided result.</p>
+    <p>As an upper bound under perfect (oracle) localization, the lobe-restricted multi-peak search recovered 14 of 25 missed lesions, which is 56%, against 1.4 expected by chance, with P &lt; 0.001. This is an oracle ceiling rather than an achievable EEG-guided result.</p>
   </div>
 
   <div class="finding">
@@ -102,18 +99,18 @@ video: ""  # TODO: Saanvi to add explainer video
 
   <div class="finding">
     <div class="fn-label">Finding 3</div>
-    <p>The failure case worth stating is a wrong prior. Pointing the search at the opposite-side lobe drops recovery from 14 of 24 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions. Tightening the zone also costs, since the subregional zone dropped two cases the lobe had recovered. The prior has to be right, and no finer than the lobe.</p>
+    <p>The failure case worth stating is a wrong prior. Pointing the search at the opposite-side lobe drops recovery from 14 of 25 to 1, below the 9 the model recovers with no prior at all, so a wrong localization actively suppresses true lesions. Tightening the zone also costs, since the subregional zone dropped two cases the lobe had recovered. The prior has to be right, and no finer than the lobe.</p>
   </div>
 
   <div class="why-box">
     <div class="wb-q">Why call it an upper bound?</div>
-    <p>The recovery of 14 of 24 assumes the correct lobe is already known. A deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number. That is why I report it as an upper bound every time it appears, and why the next step is removing the assumption rather than tuning it.</p>
+    <p>The recovery of 14 of 25 assumes the correct lobe is already known. A deployable pipeline would have to find the lobe from data first, so the achievable number is lower than this oracle number. That is why I report it as an upper bound every time it appears, and why the next step is removing the assumption rather than tuning it.</p>
   </div>
 
-  <p class="why-box" style="background:none;border:none;padding-left:0;">This matters because the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 24 of the misses would change a patient's path only if a deployable pipeline can supply the lobe without being told it. The oracle number shows the ceiling is high enough to aim for, and the next step is reaching it from measured data.</p>
+  <p class="why-box" style="background:none;border:none;padding-left:0;">This matters because the lesions that reach imaging are the subtle ones, and a prior that recovers 14 of 25 of the misses would change a patient's path only if a deployable pipeline can supply the lobe without being told it. The oracle number shows the ceiling is high enough to aim for, and the next step is reaching it from measured data.</p>
 
   <div class="limitations">
-    <p><strong>Limitations.</strong> The localization zone is simulated from the confirmed lesion lobe, not from a measured EEG report or raw signal, so every recovery number is a ceiling a measured prior would approach. The recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 24 across a sweep of them, though they were set on this cohort with no held-out split and there is no external test set yet. The recovery step still needs a specificity check on healthy controls. The next step is a pipeline that takes localization from measured EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
+    <p><strong>Limitations.</strong> The localization zone is simulated from the confirmed lesion lobe, not from a measured EEG report or raw signal, so every recovery number is a ceiling a measured prior would approach. The recovery hyperparameters, the fusion scale, the flood-fill thresholds, the 0.90 out-of-zone threshold, and the 10 mm margin, were fixed a priori rather than tuned, and the recovered count is stable at 14 of 25 across a sweep of them, though they were set on this cohort with no held-out split and there is no external test set yet. The recovery step still needs a specificity check on healthy controls. The next step is a pipeline that takes localization from measured EEG, which removes the oracle assumption that makes these numbers an upper bound.</p>
   </div>
 </section>
 
@@ -216,7 +213,7 @@ video: ""  # TODO: Saanvi to add explainer video
 <h2 class="pp-section-title">What the threads add up to</h2>
 
 <div class="takeaways">
-  <div class="takeaway"><div class="tk-h">Label the assumption</div>A localization prior recovered 14 of 24 missed lesions, reported as an upper bound under oracle localization rather than an achievable EEG-guided result.</div>
+  <div class="takeaway"><div class="tk-h">Label the assumption</div>A localization prior recovered 14 of 25 missed lesions, reported as an upper bound under oracle localization rather than an achievable EEG-guided result.</div>
   <div class="takeaway"><div class="tk-h">Report the harm</div>The same method that recovers missed lesions can suppress well-detected ones, and that failure case is stated next to the gain.</div>
   <div class="takeaway"><div class="tk-h">Evaluate the decision</div>A routing policy that answers on cross-segment self-agreement reaches 88.4% at 40% coverage, against 70.0% for the model's own confidence.</div>
   <div class="takeaway"><div class="tk-h">Make the standard explicit</div>The seven-failures catalogue is the checklist the other two threads are held to, applied first to my own numbers.</div>
