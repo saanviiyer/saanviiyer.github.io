@@ -42,7 +42,7 @@ With the instrument in hand, the comparison is honest: score each rule against b
 
 ## What actually survives
 
-Matched this way, the bio-plausible rules stop looking special. Feedback alignment and direct feedback alignment are indistinguishable from backpropagation. Predictive coding retains 0.21 points more, with a 95% interval of [+0.11, +0.31], which is about a fifth of the instrument's own resolution. In other words, any retention advantage from locality on this protocol is under a third of a point. The thing people reach for, locality of credit assignment, is not the thing that reduces forgetting.
+Matched this way, the bio-plausible rules stop looking special. Feedback alignment and direct feedback alignment are indistinguishable from backpropagation. Predictive coding retains 0.21 points more, with a 95% interval of [+0.11, +0.31], about a fifth of the instrument's own resolution, so any retention advantage from locality on this protocol stays under a third of a point. The thing people reach for, locality of credit assignment, is not the thing that reduces forgetting.
 
 What does reduce forgetting is embarrassingly old-fashioned. Adding a replay buffer, which simply rehearses a small sample of earlier data while learning the new task, adds 10.6 points of retention, about fifty times the local-rule effect. Rehearsal, not biological credit assignment, is what moves the number. This matches a plain reading of the brain too: the hippocampus replays experience during rest and sleep, and replay is arguably the most clearly established biological mechanism for not forgetting.
 
