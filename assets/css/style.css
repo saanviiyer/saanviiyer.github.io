@@ -1163,12 +1163,12 @@ figure.pp-fig figcaption { font-family: var(--mono); font-size: 0.72rem; line-he
 @media (max-width: 780px) { .pp-toc { position: static; } }
 
 .pp-wrap .pp-body { max-width: none; margin: 0; }
-.pp-wrap .pp-body p { max-width: 76ch; }
+.pp-wrap .pp-body p { max-width: 66ch; }
 .pp-wrap .pp-body figcaption { max-width: 90ch; }
 .pp-wrap .pp-body .finding p, .pp-wrap .pp-body .why-box p, .pp-wrap .pp-body .pp-abstract p, .pp-wrap .pp-body .takeaway, .pp-wrap .pp-body table td, .pp-wrap .pp-body table th { max-width: none; }
 /* keep running prose at a comfortable measure while figures, tables and callout
    boxes still span the full card width */
-.pp-wrap .pp-body p { max-width: 76ch; }
+.pp-wrap .pp-body p { max-width: 66ch; }
 .pp-wrap .pp-body .finding p,
 .pp-wrap .pp-body .why-box p,
 .pp-wrap .pp-body .pp-abstract p,
@@ -1362,7 +1362,7 @@ footer a,
 .pp-wrap .bm-links a:hover { border-color: var(--accent); }
 
 /* ============ roomier project pages for a cleaner read ============ */
-.pp-body p { margin-bottom: 32px; line-height: 1.92; }
+.pp-body p { margin-bottom: 36px; line-height: 1.98; max-width: 66ch; }
 .pp-body > ul { margin-bottom: 32px; line-height: 1.85; }
 .pp-body li { margin-bottom: 12px; }
 .pp-section-title { margin-bottom: 24px; }
