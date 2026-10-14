@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Current ways we can read the brain: comparing approaches for neural interfacing"
+title: "Current ways we can read the brain, comparing approaches for neural interfacing"
 date: 2026-10-12
 tag: "Essay"
 section: technical

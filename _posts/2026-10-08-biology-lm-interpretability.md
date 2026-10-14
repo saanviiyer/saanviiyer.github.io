@@ -26,7 +26,7 @@ Three things follow from getting this right. If function is only accessible in a
 
 Biology is an unusually good place to ask, because the answer is constrained from outside the model and from two directions. Deep mutational scanning gives measured fitness for thousands of single substitutions. Physical chemistry gives substitution matrices and hydropathy scales fixed long before any language model existed, which makes them honest baselines rather than tuned ones. And in coding DNA the constraint is combinatorial rather than measured: reading frame, codon boundaries and stop placement are facts about a sequence that a correct model must respect and a wrong model can be caught violating.
 
-## The setup: fitting a direction and injecting it
+## The setup, fitting a direction and injecting it
 
 The functional target is deep mutational scanning fitness across ten ProteinGym assays, 72 to 212 residues. The direction is the difference between mean activations of high- and low-fitness variants, fitted on training proteins only, centred within each protein. Without that centring the between-protein offset dominates and the fitted direction becomes a protein detector rather than a fitness direction.
 
@@ -34,7 +34,7 @@ The direction is injected with a forward hook at a chosen layer, so the perturba
 
 Everything then depends on what you compare it against. I use three nulls at matched norm: a random Gaussian direction, a direction orthogonal to the fitted one, and the unweighted mean activation. The third is the stiff one, because adding any large in-distribution shift moves embeddings somewhere, and a control that does not do that is not testing the hypothesis.
 
-## Main finding: an interior band at three-quarter depth
+## Main finding, an interior band at three-quarter depth
 
 The specific effect is confined to a band near three-quarter depth. Two independently constructed contrasts, built from different definitions of "high" and "low" fitness, agree that an interior maximum exists there.
 
@@ -72,7 +72,7 @@ Three more failures came out of the same sweep, and I report them because each o
 - **A recovery fraction is not comparable across depths.** Its numerator grows as the injection point approaches the output while the denominator is fixed, so the same property read 0.11 at depth 0.48 and 1.34 at depth 0.97. A recovery fraction above one is not a recovery fraction, and I initially read the late value as a mechanism.
 - **A dose-response inside the linear regime proves nothing.** At strengths of 0.5, 1 and 2 the response doubled with every doubling, which established only that the readout is linear in the injected vector. The grid had to widen sixteen-fold before anything was diagnostic.
 
-## Mechanistic deep-dive: the atom attribution selects is not the atom that works
+## Mechanistic deep-dive, the atom attribution selects is not the atom that works
 
 If function is carried by reusable parts, a sparse dictionary should isolate them. I trained a 16,384-feature top-*k* autoencoder at layer 30, three seeds, 12.8× overcomplete with k = 48 active per residue, and reported held-out quality first because a failure to localise is uninterpretable without it: fraction of variance unexplained 0.149, reconstruction cosine 0.914, measured sparsity exactly 48, dead features 2.6 to 3.4 percent. An earlier, undertrained dictionary was discarded for exactly this reason — a feature that was never aligned is not expected to steer, so its failure says nothing.
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "We need to think outside the (black)box: why evaluations keep failing, and the case for interpretability"
+title: "We need to think outside the (black)box, why evaluations keep failing, and the case for interpretability"
 date: 2026-10-12
 tag: "Essay"
 section: technical
@@ -12,7 +12,7 @@ excerpt: "Every output-level evaluation I have stress-tested fails the moment a 
 
 **TL;DR.** I have spent a while trying to break evaluations, and the same thing happens every time: a score looks healthy on a fixed dataset and stops meaning anything the moment a model or a search optimizes against it. A zero-shot protein score ranks below counting mutations. A benchmark correlation stops predicting which designs a campaign should keep. A verifier certifies a scorer that memorized the answers. A safety benchmark can be half-answered without reading the question. These are not four unrelated bugs. They are the same structural fact: an evaluation defined on outputs is gameable and incomplete, because the output is a projection of what the model actually did. The complement is interpretability, reading the computation rather than only the emission, and it is the part I think the field underweights.
 
-## The pattern: scores die where they are used
+## The pattern, scores die where they are used
 
 Start with the mechanism that shows up everywhere, the winner's curse. Write any score as the true quality plus an error term,
 
@@ -42,7 +42,7 @@ The usual response is to fix the benchmark: add harder examples, de-duplicate, r
 
 Every one of these failures lives at the output. The score reads a model's emissions, the benchmark summarizes emissions over a corpus, the gate reads emitted outcomes. None of them look at what the model computed to get there. That is the ceiling: an output-level evaluation cannot distinguish a model that solved the task from one that found a shortcut that produces the same output, and a shortcut is exactly what an optimizer finds first.
 
-## The complement: read the computation
+## The complement, read the computation
 
 Interpretability is the move that steps off the output. Instead of asking whether the model's answer is right, it asks what internal structure produced the answer, and whether that structure is the thing you think it is. I have argued the skeptical half of this elsewhere, that interpretability evidence is easy to overread, and I still believe it. A linear probe that recovers a concept is not proof the model uses that concept: in one case a probe reads a mutational process out of an embedding at an AUC of 0.94 on familiar processes and collapses to 0.775% on held-out ones, so it had memorized a fingerprint, not learned a mechanism. Decodability is the start of an evaluation, not the end.
 

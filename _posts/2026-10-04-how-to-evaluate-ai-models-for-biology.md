@@ -80,7 +80,7 @@ So far the model was the thing being measured. But in an agent loop the evaluato
 
 **Figure 7.** Good candidates per batch over random, against the share of the batch spent on a random audit. The truthful run loses value to the audit faster than the audit recovers from the attacked one, so detection and recovery are different quantities and have to be reported separately.
 
-## A protocol: evaluations that survive optimizers
+## A protocol, evaluations that survive optimizers
 
 The thread through all six is that the failure never shows up in the headline number and always shows up once you add the control. So I run the same battery on any score before I trust it. First, does it beat a trivial baseline like a mutation count or the longest answer. Second, does it stay useful in the top-ranked region a search would actually act on, measured as top-k utility rather than bulk correlation. Third, does the signal survive a confound control for composition, length, or writing style. Fourth, does it transfer to cases the model never saw, tested by holding whole groups out. A fifth rule sits underneath the others: when a search selects the top candidate, the right null is not a random draw but one that mimics the selection, because that is the baseline the winner's curse is measured against.
 

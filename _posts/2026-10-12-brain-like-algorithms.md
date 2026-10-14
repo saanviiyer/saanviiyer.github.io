@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Brain-like algorithms: can they solve continual learning and catastrophic forgetting?"
+title: "Brain-like algorithms, can they solve continual learning and catastrophic forgetting?"
 date: 2026-10-12
 tag: "Essay"
 section: technical
@@ -24,7 +24,7 @@ The appealing version of the hope is that locality itself buys retention. A back
 
 The trouble with that literature is a confound hiding in plain sight. A rule that learns each new task less well also has less to forget. If a method only reaches 70% on the new task where backpropagation reaches 90%, it has written less into the shared weights, so of course it overwrites less of the old task. Read on its own, its "better retention" is partly just weaker learning. You cannot compare forgetting across methods until you hold learning fixed.
 
-## The instrument: fix learning first
+## The instrument, fix learning first
 
 So the first thing to build is not a model, it is a measuring instrument. I weakened backpropagation along a ladder of settings, fewer steps, smaller capacity, and so on, and measured backward transfer, how much accuracy on earlier tasks moves, as a function of how well the new task was learned. Across that ladder, backward transfer is almost a deterministic function of learning accuracy, with an $R^2$ of 0.995. That tight relationship is the instrument: it tells me, for any learning accuracy, what backward transfer a plain backpropagation baseline already achieves, and it sets how small a difference I can resolve, a held-out error of 1.09 points.
 

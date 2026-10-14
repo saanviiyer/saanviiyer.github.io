@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PRISM: methods, controls, and what each number is a number about"
+title: "PRISM, methods, controls, and what each number is a number about"
 date: 2026-09-29
 tag: "Research"
 section: technical
@@ -61,7 +61,7 @@ A composition follow-up narrows this further. Amino-acid frequencies alone predi
 
 **Figure 4.** The measured SBS17a direction reduces cosine distance to the PF17041 centroid by 0.0425, and a context-scrambled direction that preserves composition keeps 72% of that movement. The right panel shows the context effect, 0.0081, sitting 5.8 times above the seed-to-seed floor of 0.0014.
 
-## The recommender: two evaluations, not one
+## The recommender, two evaluations, not one
 
 The inverse-design recommender ranks signatures for a requested Pfam-to-Pfam transition. A random forest reads the origin centroid, the target centroid, their difference, and each signature's 96-channel COSMIC profile, over 35,403 positive-attraction transitions spanning 75 proteins.
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Scientific superintelligence: what would it take to enhance model reasoning?"
+title: "Scientific superintelligence, what would it take to enhance model reasoning?"
 date: 2026-10-12
 tag: "Essay"
 section: technical

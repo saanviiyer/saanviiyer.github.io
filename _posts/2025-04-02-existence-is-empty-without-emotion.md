@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Étrange: Existence Is Empty Without Emotion"
+title: "Étrange, Existence Is Empty Without Emotion"
 date: 2025-04-02
 tag: "Essay · Literature"
 permalink: /thinking/existence-is-empty-without-emotion/

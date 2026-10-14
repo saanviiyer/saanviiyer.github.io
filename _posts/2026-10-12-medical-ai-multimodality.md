@@ -24,7 +24,7 @@ To measure the best case, I gave the recovery step a perfect localization prior:
 
 But a perfect prior is not a result a clinician can obtain, because a deployable pipeline has to find the region first, and no EEG signal was processed anywhere in that experiment. The 14 of 25 is an oracle upper bound, not an achievable number, and I report it that way every time it appears. The real question is what a realistic, imperfect prior buys.
 
-## The result that matters: a realistic prior adds almost nothing
+## The result that matters, a realistic prior adds almost nothing
 
 Here is where multimodality stops being free. When I fuse a prior at the strength a real EEG localizer could supply, the benefit collapses. A 90%-accurate prior applied after segmentation is statistically indistinguishable from no prior at all, with a break-even near chance (\\(p \approx 0.55\\)), and forcing a hard fusion into the pipeline hurts: it loses about 0.36 Dice and degrades the majority of cases rather than helping them. The gap between the oracle ceiling and the realistic floor is the entire problem, and it is invisible to anyone who only reports the oracle number.
 

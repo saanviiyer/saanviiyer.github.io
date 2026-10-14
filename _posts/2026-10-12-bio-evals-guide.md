@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Bio evals: a benchmarking guide"
+title: "Bio evals, a benchmarking guide"
 date: 2026-10-12
 tag: "Guide"
 section: technical
