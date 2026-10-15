@@ -1,0 +1,403 @@
+---
+title: Speech in ultrasound and in silico · Saanvi S. Subramanian
+permalink: /playground/speech-ultrasound/
+description: One speech experiment run through functional ultrasound of auditory cortex and through Meta's TRIBE v2 brain foundation model, with interactive results.
+---
+
+<style>
+  .su { max-width: 820px; margin: 0 auto; }
+  .su-eyebrow { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin: 0 0 18px; }
+  .su-eyebrow a { color: var(--accent); text-decoration: none; }
+  .su-eyebrow a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .su-title { font-family: var(--sans); font-size: clamp(2rem, 4.4vw, 3rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 14px; }
+  .su-desc { font-family: var(--sans); font-size: 1.08rem; line-height: 1.72; color: var(--ink); margin: 0 0 18px; }
+  .su-links { font-family: var(--sans); font-size: 0.82rem; margin: 0 0 8px; }
+  .su-links a { color: var(--berry); text-decoration: none; margin-right: 18px; }
+  .su-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .su-fig { margin: 40px 0; }
+  .su-fig h2 { font-family: var(--sans); font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .su-fig .su-sub { font-family: var(--sans); font-size: 0.92rem; color: var(--muted); line-height: 1.55; margin: 0 0 16px; }
+  .su-panel { background: var(--read-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+  .su-canvas-wrap { width: 100%; position: relative; }
+  .su-canvas-wrap canvas { width: 100%; display: block; }
+  .su-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 14px 0 0; }
+  .su-chip, .su-preset, .su-toggle { font-family: var(--sans); font-size: 0.78rem; border: 1px solid var(--border); color: var(--ink); background: transparent; border-radius: 999px; padding: 5px 13px; cursor: pointer; line-height: 1.2; }
+  .su-chip[aria-pressed="true"], .su-toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .su-preset:hover, .su-chip:hover, .su-toggle:hover { border-color: var(--accent); }
+  .su-chip:focus-visible, .su-preset:focus-visible, .su-toggle:focus-visible, .su-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .su-sliderrow { display: flex; align-items: center; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+  .su-slider { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .su-readout { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+  .su-readout b { color: var(--accent); }
+  .su-grouplabel { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-right: 4px; align-self: center; }
+  .su-legend { font-family: var(--sans); font-size: 0.76rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; }
+  .su-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .su-swatch { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+  .su-two { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 620px) { .su-two { grid-template-columns: 1fr 1fr; } }
+  .su-note { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .su-caveats { border-left: 2px solid var(--accent); padding: 4px 0 4px 18px; margin: 40px 0 28px; }
+  .su-caveats li { font-family: var(--sans); font-size: 0.9rem; line-height: 1.6; color: var(--muted); margin-bottom: 8px; }
+  .su-loading { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); padding: 30px 0; text-align: center; }
+  .su-back { margin-top: 44px; }
+  .su-back a { color: var(--accent); font-family: var(--sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none; }
+</style>
+
+<article class="su" id="su-root">
+  <p class="su-eyebrow"><a href="{{ '/playground/' | relative_url }}">&larr; playground</a></p>
+  <h1 class="su-title">Speech in ultrasound and in silico</h1>
+
+  <p class="su-desc">I ran one speech experiment through two systems: a functional ultrasound (fUSI) recording of auditory cortex, and Meta's TRIBE v2 brain foundation model, which predicts fMRI responses from audio, text and video. In the ultrasound data, I measured the blood-response timing directly. The original pipeline's &minus;1.6 s onset shift went the wrong way: the best fit was +2.8 s, which held on held-out blocks, and the response was broader than the fMRI model assumes (center of mass 7.3 s vs 5.3 s). I then replayed the same block design through TRIBE with acoustic controls, and found that its audio pathway treats time-reversed speech as speech. Its text pathway restores the response only when a transcriber can recover the words (93% for vocoded speech). Along the way I found and fixed a transcript-placement bug in TRIBE's pipeline, and built a tested, reproducible codebase that recovers effects planted in synthetic data.</p>
+
+  <p class="su-links">
+    <a href="https://github.com/saanviiyer/fusi-tribe-speech" target="_blank" rel="noopener">code and methods</a>
+    <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE v2 (Meta)</a>
+  </p>
+
+  <div id="su-status" class="su-loading" aria-live="polite">Interactive figures load when you scroll here&hellip;</div>
+
+  <!-- 1. Onset-shift explorer -->
+  <section class="su-fig" id="fig-onset" hidden>
+    <h2>1 &middot; Onset-shift explorer</h2>
+    <p class="su-sub">The measured fUSI signal in auditory cortex, with the fitted Glover model overlaid for a chosen onset shift. The original pipeline assumed &minus;1.6 s; the data prefer +2.8 s.</p>
+    <div class="su-panel">
+      <div class="su-canvas-wrap"><canvas id="c-onset" height="300" role="img" aria-label="Measured fUSI ROI signal over time with task blocks shaded and the fitted model overlaid"></canvas></div>
+      <div class="su-controls" role="group" aria-label="Onset shift presets">
+        <span class="su-grouplabel">preset</span>
+        <button class="su-preset" data-shift="-1.6" type="button">Original &minus;1.6 s</button>
+        <button class="su-preset" data-shift="0" type="button">No shift</button>
+        <button class="su-preset" data-shift="2.8" type="button">Best +2.8 s</button>
+      </div>
+      <div class="su-sliderrow">
+        <label for="s-onset" class="su-grouplabel">shift</label>
+        <input id="s-onset" class="su-slider" type="range" min="-6" max="6" step="0.2" value="2.8" aria-label="Onset shift in seconds">
+      </div>
+      <div class="su-readout">shift <b id="r-onset-shift">+2.8 s</b> &middot; variance explained R&sup2; <b id="r-onset-r2">&ndash;</b></div>
+      <div class="su-canvas-wrap" style="margin-top:12px"><canvas id="c-onset-r2" height="150" role="img" aria-label="R squared as a function of onset shift, with a marker at the current shift"></canvas></div>
+      <div class="su-legend">
+        <span><i class="su-swatch" style="background:var(--berry)"></i> measured fUSI</span>
+        <span><i class="su-swatch" style="background:var(--navy)"></i> fitted model</span>
+        <span><i class="su-swatch" style="background:rgba(154,145,131,.6)"></i> audio-only block</span>
+        <span><i class="su-swatch" style="background:var(--accent-soft)"></i> speech block</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Response shapes -->
+  <section class="su-fig" id="fig-shapes" hidden>
+    <h2>2 &middot; Response shapes</h2>
+    <p class="su-sub">Each response peak-normalized over 0&ndash;25 s, with its center of mass marked (computed over 0&ndash;40 s). The measured ultrasound response is slower and broader than the fMRI convention; TRIBE's prediction is faster.</p>
+    <div class="su-panel">
+      <div class="su-canvas-wrap"><canvas id="c-shapes" height="300" role="img" aria-label="Three peak-normalized response shapes with their centers of mass marked"></canvas></div>
+      <div class="su-controls" role="group" aria-label="Toggle response curves">
+        <button class="su-toggle" data-curve="glover" aria-pressed="true" type="button">fMRI convention (Glover)</button>
+        <button class="su-toggle" data-curve="fusi" aria-pressed="true" type="button">fUSI measured</button>
+        <button class="su-toggle" data-curve="tribe" aria-pressed="true" type="button">TRIBE predicted</button>
+      </div>
+      <div class="su-readout" id="r-shapes">center of mass: fMRI 5.3 s &middot; fUSI 7.3 s &middot; TRIBE 3.2 s</div>
+    </div>
+  </section>
+
+  <!-- 3. What does the model treat as speech? -->
+  <section class="su-fig" id="fig-treat" hidden>
+    <h2>3 &middot; What does the model treat as speech?</h2>
+    <p class="su-sub">TRIBE's block-locked prediction for a control condition against the matched speech block. Retention is control response divided by speech response: 1 means the model treats the control like speech, 0 means it ignores it. These are model predictions, not brain measurements.</p>
+    <div class="su-panel">
+      <div class="su-controls" role="group" aria-label="Control condition">
+        <span class="su-grouplabel">control</span>
+        <button class="su-chip" data-cond="lowpass" type="button">lowpass</button>
+        <button class="su-chip" data-cond="rotated" type="button">rotated</button>
+        <button class="su-chip" data-cond="vocoded" type="button">vocoded</button>
+        <button class="su-chip" data-cond="reversed" aria-pressed="true" type="button">reversed</button>
+        <button class="su-chip" data-cond="intact" type="button">intact</button>
+        <button class="su-chip" data-cond="silence" type="button">silence</button>
+      </div>
+      <div class="su-controls" role="group" aria-label="Region">
+        <span class="su-grouplabel">region</span>
+        <button class="su-chip su-treat-roi" data-roi="HG" aria-pressed="true" type="button">HG</button>
+        <button class="su-chip su-treat-roi" data-roi="PT" type="button">PT</button>
+        <button class="su-chip su-treat-roi" data-roi="STG" type="button">STG</button>
+        <button class="su-chip su-treat-roi" data-roi="STS" type="button">STS</button>
+        <button class="su-chip su-treat-roi" data-roi="MTG" type="button">MTG</button>
+      </div>
+      <div class="su-two" style="margin-top:14px">
+        <div>
+          <div class="su-note" style="margin-bottom:6px">response (seconds from block onset)</div>
+          <div class="su-canvas-wrap"><canvas id="c-treat" height="220" role="img" aria-label="TRIBE predicted speech and control responses against time from block onset"></canvas></div>
+        </div>
+        <div>
+          <div class="su-note" style="margin-bottom:6px">control spectrogram (0&ndash;3 s, up to 8 kHz)</div>
+          <div class="su-canvas-wrap"><canvas id="c-spec" height="160" role="img" aria-label="Spectrogram of the control audio"></canvas></div>
+        </div>
+      </div>
+      <div class="su-readout" id="r-treat">retention <b>&ndash;</b></div>
+      <div class="su-legend">
+        <span><i class="su-swatch" style="background:var(--robin)"></i> speech (model)</span>
+        <span><i class="su-swatch" style="background:var(--navy)"></i> control (model)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Does hearing the words help? -->
+  <section class="su-fig" id="fig-words" hidden>
+    <h2>4 &middot; Does hearing the words help?</h2>
+    <p class="su-sub">Change in TRIBE's retention when the text pathway is added, by control. Each bar is labeled with the fraction of words a transcriber recovered. Bars whose 95% interval excludes zero are solid; the rest are faded. Intact is the null check.</p>
+    <div class="su-panel">
+      <div class="su-controls" role="group" aria-label="Region">
+        <span class="su-grouplabel">region</span>
+        <button class="su-chip su-words-roi" data-roi="HG" aria-pressed="true" type="button">HG</button>
+        <button class="su-chip su-words-roi" data-roi="PT" type="button">PT</button>
+        <button class="su-chip su-words-roi" data-roi="STG" type="button">STG</button>
+        <button class="su-chip su-words-roi" data-roi="STS" type="button">STS</button>
+        <button class="su-chip su-words-roi" data-roi="MTG" type="button">MTG</button>
+      </div>
+      <div class="su-canvas-wrap" style="margin-top:14px"><canvas id="c-words" height="300" role="img" aria-label="Change in retention when the text pathway is added, by control, with confidence intervals"></canvas></div>
+      <div class="su-readout" id="r-words">adding the words helps most where a transcriber can recover them.</div>
+    </div>
+  </section>
+
+  <ul class="su-caveats" hidden id="su-caveats">
+    <li>This is one recording with one synthetic voice.</li>
+    <li>The TRIBE results are model predictions, not brain measurements.</li>
+    <li>In this data, a slow response and a late event clock cannot be told apart.</li>
+  </ul>
+
+  <p class="su-back"><a href="{{ '/playground/' | relative_url }}">&larr; back to playground</a></p>
+</article>
+
+<script>
+(function(){
+  var DATA_URL = "{{ '/assets/data/speech-ultrasound/interactive_data.json' | relative_url }}?v=1";
+  var root = document.getElementById('su-root');
+  var statusEl = document.getElementById('su-status');
+  var started = false, DATA = null;
+
+  function cssvar(n, fb){ try{ var c = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return c || fb; }catch(e){ return fb; } }
+  var GREY = 'rgba(154,145,131,0.85)';
+
+  function fitCanvas(cv){
+    var DPR = Math.min(2, window.devicePixelRatio || 1);
+    var r = cv.getBoundingClientRect();
+    var w = r.width || cv.parentNode.clientWidth || 300;
+    var h = cv.getAttribute('height') ? +cv.getAttribute('height') : 240;
+    cv.width = Math.max(1, w*DPR); cv.height = Math.max(1, h*DPR);
+    var ctx = cv.getContext('2d'); ctx.setTransform(DPR,0,0,DPR,0,0);
+    return {ctx:ctx, w:w, h:h};
+  }
+
+  // --- gamma helpers (shared by piece 2) ---
+  function lgamma(x){
+    var g=7, c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,
+      -176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    if(x<0.5) return Math.log(Math.PI/Math.sin(Math.PI*x)) - lgamma(1-x);
+    x-=1; var a=c[0], t=x+g+0.5;
+    for(var i=1;i<g+2;i++) a+=c[i]/(x+i);
+    return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);
+  }
+  function gammaPdf(t,k,th){ if(t<=0) return 0; return Math.exp((k-1)*Math.log(t)-t/th-k*Math.log(th)-lgamma(k)); }
+  function gammaFromPeakFwhm(peak,fwhm){ var sd=fwhm/2.3548, p=peak; var k=1+(p*p+p*Math.sqrt(p*p+4*sd*sd))/(2*sd*sd); var th=p/(k-1); return {k:k,th:th}; }
+  function curveGamma(peak,fwhm,t){ var g=gammaFromPeakFwhm(peak,fwhm); return t.map(function(tt){ return tt<=0?0:Math.exp((g.k-1)*Math.log(tt)-tt/g.th); }); }
+  function curveGlover(t){ // delay6, undershoot12, dispersion0.9, ratio0.35
+    return t.map(function(tt){ return gammaPdf(tt,6/0.9,0.9) - 0.35*gammaPdf(tt,12/0.9,0.9); });
+  }
+  function peakNorm(y){ var m=0; for(var i=0;i<y.length;i++) if(Math.abs(y[i])>m) m=Math.abs(y[i]); return m>0?y.map(function(v){return v/m;}):y; }
+  function centerOfMass(peak,fwhm,kind){ // over 0..40, positive part only
+    var n=4000, num=0, den=0;
+    for(var i=1;i<n;i++){ var t=40*i/n; var v = kind==='glover'? (gammaPdf(t,6/0.9,0.9)-0.35*gammaPdf(t,12/0.9,0.9)) : (function(){ var g=gammaFromPeakFwhm(peak,fwhm); return Math.exp((g.k-1)*Math.log(t)-t/g.th); })(); if(v>0){ num+=t*v; den+=v; } }
+    return den>0? num/den : 0;
+  }
+
+  // --- axis helper ---
+  function axes(ctx,w,h,pad,xmin,xmax,ymin,ymax){
+    var L=pad.l,R=pad.r,T=pad.t,B=pad.b;
+    function X(x){ return L+(x-xmin)/(xmax-xmin)*(w-L-R); }
+    function Y(y){ return (h-B)-(y-ymin)/(ymax-ymin)*(h-T-B); }
+    ctx.strokeStyle=cssvar('--border','rgba(0,0,0,.15)'); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(L,T); ctx.lineTo(L,h-B); ctx.lineTo(w-R,h-B); ctx.stroke();
+    return {X:X,Y:Y,L:L,R:R,T:T,B:B};
+  }
+  function label(ctx,txt,x,y,align,color,size){ ctx.fillStyle=color||cssvar('--muted','#777'); ctx.font=(size||10)+'px Inter,system-ui,sans-serif'; ctx.textAlign=align||'left'; ctx.fillText(txt,x,y); }
+
+  // ============ PIECE 1: onset-shift ============
+  function initOnset(){
+    var f=DATA.fusi; var cv=document.getElementById('c-onset'), cvr=document.getElementById('c-onset-r2');
+    var slider=document.getElementById('s-onset');
+    var shifts=f.shifts; function idxForShift(s){ var best=0,bd=1e9; for(var i=0;i<shifts.length;i++){var d=Math.abs(shifts[i]-s); if(d<bd){bd=d;best=i;}} return best; }
+    function draw(){
+      var s=parseFloat(slider.value); var i=idxForShift(s); var sh=shifts[i];
+      document.getElementById('r-onset-shift').textContent=(sh>=0?'+':'')+sh.toFixed(1)+' s';
+      document.getElementById('r-onset-r2').textContent=(f.r2[i]!=null? f.r2[i].toFixed(3):'–');
+      // main
+      var c=fitCanvas(cv), ctx=c.ctx, w=c.w, hh=c.h;
+      var t=f.t, y=f.y, fit=f.fits[i];
+      var xmin=t[0], xmax=t[t.length-1];
+      var ymin=Math.min.apply(null,y), ymax=Math.max.apply(null,y);
+      var fmn=Math.min.apply(null,fit), fmx=Math.max.apply(null,fit);
+      ymin=Math.min(ymin,fmn); ymax=Math.max(ymax,fmx); var padY=(ymax-ymin)*0.08; ymin-=padY; ymax+=padY;
+      var A=axes(ctx,w,hh,{l:38,r:12,t:12,b:26},xmin,xmax,ymin,ymax);
+      // blocks
+      f.blocks.forEach(function(b){ var x0=A.X(b.onset), x1=A.X(b.onset+b.dur);
+        ctx.fillStyle = b.type==='Speech' ? cssvar('--accent-soft','rgba(156,28,140,.16)') : 'rgba(154,145,131,0.14)';
+        ctx.fillRect(x0,A.T, x1-x0, hh-A.T-A.B); });
+      // measured
+      ctx.strokeStyle=cssvar('--berry','#a8324a'); ctx.lineWidth=1.8; ctx.beginPath();
+      for(var j=0;j<t.length;j++){ var px=A.X(t[j]),py=A.Y(y[j]); j?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke();
+      // fit
+      ctx.strokeStyle=cssvar('--navy','#26406e'); ctx.lineWidth=1.8; ctx.beginPath();
+      for(var k=0;k<t.length;k++){ var qx=A.X(t[k]),qy=A.Y(fit[k]); k?ctx.lineTo(qx,qy):ctx.moveTo(qx,qy);} ctx.stroke();
+      label(ctx,'time (s)',w/2,hh-8,'center');
+      label(ctx,'% change',38,A.T-2,'left');
+      // r2 curve
+      var c2=fitCanvas(cvr), x2=c2.ctx, w2=c2.w, h2=c2.h;
+      var rmin=Math.min.apply(null,f.r2), rmax=Math.max.apply(null,f.r2); var rp=(rmax-rmin)*0.1||0.01;
+      var B2=axes(x2,w2,h2,{l:38,r:12,t:12,b:24},shifts[0],shifts[shifts.length-1],rmin-rp,rmax+rp);
+      x2.strokeStyle=GREY; x2.lineWidth=1.6; x2.beginPath();
+      for(var m=0;m<shifts.length;m++){ var mx=B2.X(shifts[m]),my=B2.Y(f.r2[m]); m?x2.lineTo(mx,my):x2.moveTo(mx,my);} x2.stroke();
+      var cx=B2.X(sh), cy=B2.Y(f.r2[i]);
+      x2.setLineDash([3,3]); x2.strokeStyle=cssvar('--accent','#9c1c8c'); x2.beginPath(); x2.moveTo(cx,h2-B2.B); x2.lineTo(cx,cy); x2.stroke(); x2.setLineDash([]);
+      x2.beginPath(); x2.arc(cx,cy,4,0,7); x2.fillStyle=cssvar('--accent','#9c1c8c'); x2.fill();
+      label(x2,'onset shift (s)',w2/2,h2-6,'center');
+      label(x2,'R²',38,B2.T-2,'left');
+    }
+    slider.addEventListener('input',draw);
+    Array.prototype.forEach.call(document.querySelectorAll('#fig-onset .su-preset'),function(btn){
+      btn.addEventListener('click',function(){ slider.value=btn.getAttribute('data-shift'); draw(); });
+    });
+    onThemeOrResize(draw); draw();
+  }
+
+  // ============ PIECE 2: response shapes ============
+  function initShapes(){
+    var cv=document.getElementById('c-shapes'); var fg=DATA.fusi.timing.gamma_fit.A, tg=DATA.tribe.timing;
+    var on={glover:true,fusi:true,tribe:true};
+    var t=[]; for(var i=0;i<=500;i++) t.push(25*i/500);
+    var curves={ glover:{y:peakNorm(curveGlover(t)), com:centerOfMass(null,null,'glover'), color:GREY, dash:[5,4], name:'fMRI'},
+                 fusi:{y:peakNorm(curveGamma(fg.peak_s,fg.fwhm_s,t)), com:centerOfMass(fg.peak_s,fg.fwhm_s), color:cssvar('--berry','#a8324a'), dash:[], name:'fUSI'},
+                 tribe:{y:peakNorm(curveGamma(tg.peak_s,tg.fwhm_s,t)), com:centerOfMass(tg.peak_s,tg.fwhm_s), color:cssvar('--robin','#2f93ab'), dash:[], name:'TRIBE'} };
+    function draw(){
+      var c=fitCanvas(cv), ctx=c.ctx, w=c.w, h=c.h;
+      var A=axes(ctx,w,h,{l:34,r:12,t:14,b:26},0,25,-0.4,1.08);
+      // zero line
+      ctx.strokeStyle='rgba(154,145,131,0.3)'; ctx.setLineDash([2,3]); ctx.beginPath(); ctx.moveTo(A.L,A.Y(0)); ctx.lineTo(w-A.R,A.Y(0)); ctx.stroke(); ctx.setLineDash([]);
+      ['glover','fusi','tribe'].forEach(function(key){ if(!on[key])return; var cu=curves[key];
+        ctx.strokeStyle=cu.color; ctx.lineWidth=2; ctx.setLineDash(cu.dash); ctx.beginPath();
+        for(var j=0;j<t.length;j++){ var px=A.X(t[j]),py=A.Y(cu.y[j]); j?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); ctx.setLineDash([]);
+        // COM marker
+        var mx=A.X(cu.com); ctx.strokeStyle=cu.color; ctx.setLineDash([2,2]); ctx.beginPath(); ctx.moveTo(mx,A.Y(0)); ctx.lineTo(mx,A.Y(1.02)); ctx.stroke(); ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(mx,A.Y(1.02),3,0,7); ctx.fillStyle=cu.color; ctx.fill();
+        label(ctx,cu.com.toFixed(1)+'s',mx,A.Y(1.02)-6,'center',cu.color,10);
+      });
+      label(ctx,'time (s)',w/2,h-8,'center'); label(ctx,'peak-normalized',34,A.T-2,'left');
+      document.getElementById('r-shapes').textContent='center of mass: fMRI '+curves.glover.com.toFixed(1)+' s · fUSI '+curves.fusi.com.toFixed(1)+' s · TRIBE '+curves.tribe.com.toFixed(1)+' s';
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#fig-shapes .su-toggle'),function(btn){
+      btn.addEventListener('click',function(){ var k=btn.getAttribute('data-curve'); on[k]=!on[k]; btn.setAttribute('aria-pressed',on[k]?'true':'false'); draw(); });
+    });
+    onThemeOrResize(draw); draw();
+  }
+
+  // ============ PIECE 3: treat as speech ============
+  function magma(v){ // v in 0..1 -> perceptual ramp
+    var stops=[[0,0,4],[80,18,123],[182,54,121],[251,136,97],[252,253,191]];
+    v=Math.max(0,Math.min(1,v)); var x=v*(stops.length-1); var i=Math.floor(x), f=x-i; if(i>=stops.length-1){i=stops.length-2;f=1;}
+    var a=stops[i], b=stops[i+1]; return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
+  }
+  function initTreat(){
+    var cond='reversed', roi='HG';
+    var cv=document.getElementById('c-treat'), cs=document.getElementById('c-spec');
+    var retIdx={}; DATA.tribe.retention.forEach(function(e){ retIdx[e.condition+'|'+e.roi]=e; });
+    function drawResp(){
+      var c=fitCanvas(cv), ctx=c.ctx, w=c.w, h=c.h; var lags=DATA.tribe.lags;
+      var tc=DATA.tribe.tc[cond] && DATA.tribe.tc[cond][roi];
+      if(!tc){ label(ctx,'no data',w/2,h/2,'center'); return; }
+      var sp=tc.speech, co=tc.control;
+      var all=sp.concat(co); var ymin=Math.min.apply(null,all), ymax=Math.max.apply(null,all); var p=(ymax-ymin)*0.1||0.01; ymin-=p; ymax+=p;
+      var A=axes(ctx,w,h,{l:34,r:10,t:12,b:24},lags[0],lags[lags.length-1],ymin,ymax);
+      // onset line at 0
+      ctx.strokeStyle='rgba(154,145,131,0.4)'; ctx.setLineDash([2,3]); ctx.beginPath(); ctx.moveTo(A.X(0),A.T); ctx.lineTo(A.X(0),h-A.B); ctx.stroke(); ctx.setLineDash([]);
+      function line(arr,color){ ctx.strokeStyle=color; ctx.lineWidth=1.9; ctx.beginPath(); for(var j=0;j<lags.length;j++){ var px=A.X(lags[j]),py=A.Y(arr[j]); j?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); }
+      line(sp,cssvar('--robin','#2f93ab')); line(co,cssvar('--navy','#26406e'));
+      label(ctx,'s from onset',w/2,h-8,'center');
+    }
+    function drawSpec(){
+      var c=fitCanvas(cs), ctx=c.ctx, w=c.w, h=c.h;
+      ctx.clearRect(0,0,w,h);
+      var S=DATA.tribe.spec[cond];
+      if(!S){ ctx.fillStyle=cssvar('--read-card','#fff'); label(ctx,'silence: no audio',w/2,h/2,'center',cssvar('--muted','#777'),12); return; }
+      try{
+        var bin=atob(S.b64); var H=S.h, W=S.w; var img=ctx.createImageData(w,h);
+        for(var py=0;py<h;py++){ var sy=Math.floor(py/h*H); for(var px=0;px<w;px++){ var sx=Math.floor(px/w*W);
+          var v=bin.charCodeAt(sy*W+sx)/255; var rgb=magma(v); var o=(py*w+px)*4; img.data[o]=rgb[0]; img.data[o+1]=rgb[1]; img.data[o+2]=rgb[2]; img.data[o+3]=255; } }
+        ctx.putImageData(img,0,0);
+      }catch(e){ label(ctx,'spectrogram unavailable',w/2,h/2,'center',cssvar('--muted','#777'),12); }
+    }
+    function readout(){ var e=retIdx[cond+'|'+roi]; var el=document.getElementById('r-treat');
+      if(!e){ el.innerHTML='retention <b>–</b>'; return; }
+      el.innerHTML='retention <b>'+e.retention.toFixed(2)+'</b> (95% CI '+e.ci_lo.toFixed(2)+' to '+e.ci_hi.toFixed(2)+') · 1 = treated like speech, 0 = ignored';
+    }
+    function drawAll(){ drawResp(); drawSpec(); readout(); }
+    function wire(sel,attr,set){ Array.prototype.forEach.call(document.querySelectorAll(sel),function(btn){ btn.addEventListener('click',function(){
+      Array.prototype.forEach.call(document.querySelectorAll(sel),function(b){b.setAttribute('aria-pressed','false');}); btn.setAttribute('aria-pressed','true'); set(btn.getAttribute(attr)); drawAll(); }); }); }
+    wire('#fig-treat [data-cond]','data-cond',function(v){cond=v;});
+    wire('#fig-treat .su-treat-roi','data-roi',function(v){roi=v;});
+    onThemeOrResize(drawAll); drawAll();
+  }
+
+  // ============ PIECE 4: words help ============
+  function initWords(){
+    var roi='HG'; var order=['lowpass','vocoded','reversed','rotated','intact'];
+    var cv=document.getElementById('c-words');
+    function draw(){
+      var c=fitCanvas(cv), ctx=c.ctx, w=c.w, h=c.h;
+      var rows=order.map(function(cond){ var e=DATA.modes.change.find(function(x){return x.condition===cond&&x.roi===roi;}); return {cond:cond,e:e,words:DATA.modes.words[cond]}; }).filter(function(r){return r.e;});
+      var vals=[]; rows.forEach(function(r){ vals.push(r.e.change,r.e.ci_lo,r.e.ci_hi); });
+      var vmin=Math.min.apply(null,vals.concat([0])), vmax=Math.max.apply(null,vals.concat([0])); var pad=(vmax-vmin)*0.12||0.05; vmin-=pad; vmax+=pad;
+      var A=axes(ctx,w,h,{l:40,r:12,t:16,b:52},0,rows.length,vmin,vmax);
+      // zero line
+      ctx.strokeStyle='rgba(154,145,131,0.5)'; ctx.beginPath(); ctx.moveTo(A.L,A.Y(0)); ctx.lineTo(w-A.R,A.Y(0)); ctx.stroke();
+      label(ctx,'Δ retention',40,A.T-2,'left');
+      var bw=(w-A.L-A.R)/rows.length;
+      rows.forEach(function(r,i){ var cx=A.L+bw*(i+0.5); var x0=A.L+bw*i+bw*0.2, x1=A.L+bw*(i+1)-bw*0.2;
+        var solid = (r.e.ci_lo>0)||(r.e.ci_hi<0);
+        var col=cssvar('--berry','#a8324a');
+        ctx.globalAlpha = solid?1:0.32; ctx.fillStyle=col;
+        var y0=A.Y(0), y1=A.Y(r.e.change); ctx.fillRect(x0,Math.min(y0,y1), x1-x0, Math.abs(y1-y0));
+        // CI whisker
+        ctx.globalAlpha = solid?1:0.5; ctx.strokeStyle=cssvar('--ink','#333'); ctx.lineWidth=1.2;
+        ctx.beginPath(); ctx.moveTo(cx,A.Y(r.e.ci_lo)); ctx.lineTo(cx,A.Y(r.e.ci_hi)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx-4,A.Y(r.e.ci_lo)); ctx.lineTo(cx+4,A.Y(r.e.ci_lo)); ctx.moveTo(cx-4,A.Y(r.e.ci_hi)); ctx.lineTo(cx+4,A.Y(r.e.ci_hi)); ctx.stroke();
+        ctx.globalAlpha=1;
+        label(ctx,r.cond,cx,h-34,'center',cssvar('--ink','#333'),11);
+        label(ctx,Math.round(r.words*100)+'% words',cx,h-20,'center',cssvar('--muted','#777'),10);
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#fig-words .su-words-roi'),function(btn){ btn.addEventListener('click',function(){
+      Array.prototype.forEach.call(document.querySelectorAll('#fig-words .su-words-roi'),function(b){b.setAttribute('aria-pressed','false');}); btn.setAttribute('aria-pressed','true'); roi=btn.getAttribute('data-roi'); draw(); }); });
+    onThemeOrResize(draw); draw();
+  }
+
+  // --- redraw hooks ---
+  var redrawers=[];
+  function onThemeOrResize(fn){ redrawers.push(fn); }
+  var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ redrawers.forEach(function(f){try{f();}catch(e){}}); },120); });
+  window.addEventListener('themechange',function(){ redrawers.forEach(function(f){try{f();}catch(e){}}); });
+
+  function build(){
+    ['fig-onset','fig-shapes','fig-treat','fig-words','su-caveats'].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden=false; });
+    statusEl.style.display='none';
+    try{ initOnset(); }catch(e){ console.error(e); }
+    try{ initShapes(); }catch(e){ console.error(e); }
+    try{ initTreat(); }catch(e){ console.error(e); }
+    try{ initWords(); }catch(e){ console.error(e); }
+  }
+  function load(){ if(started) return; started=true; statusEl.textContent='Loading figures…';
+    fetch(DATA_URL).then(function(r){ if(!r.ok) throw new Error('fetch '+r.status); return r.json(); })
+      .then(function(d){ DATA=d; build(); })
+      .catch(function(e){ statusEl.innerHTML='Could not load the interactive data. The figures and full results are in the <a href="https://github.com/saanviiyer/fusi-tribe-speech" target="_blank" rel="noopener">code repository</a>.'; console.error(e); });
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ load(); io.disconnect(); } }); },{rootMargin:'200px'});
+    io.observe(root);
+  } else { load(); }
+})();
+</script>
