@@ -177,10 +177,14 @@ description: One speech experiment run through functional ultrasound of auditory
 
   function fitCanvas(cv){
     var DPR = Math.min(2, window.devicePixelRatio || 1);
-    var r = cv.getBoundingClientRect();
-    var w = r.width || cv.parentNode.clientWidth || 300;
-    var h = cv.getAttribute('height') ? +cv.getAttribute('height') : 240;
-    cv.width = Math.max(1, w*DPR); cv.height = Math.max(1, h*DPR);
+    // Capture the intended logical height ONCE. Reading the height attribute on
+    // every call is a trap: fitCanvas sets cv.height = h*DPR, so the next read
+    // would be the doubled value and the canvas would grow without bound.
+    if (!cv.dataset.h) cv.dataset.h = cv.getAttribute('height') || '240';
+    var h = +cv.dataset.h;
+    cv.style.height = h + 'px';
+    var w = cv.getBoundingClientRect().width || cv.parentNode.clientWidth || 300;
+    cv.width = Math.max(1, Math.round(w*DPR)); cv.height = Math.max(1, Math.round(h*DPR));
     var ctx = cv.getContext('2d'); ctx.setTransform(DPR,0,0,DPR,0,0);
     return {ctx:ctx, w:w, h:h};
   }
