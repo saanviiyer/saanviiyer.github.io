@@ -4,6 +4,7 @@ title: "Reading the brain, a guide to neural interfaces and clinical decoding"
 date: 2026-10-12
 tag: "Book"
 section: technical
+rank: 1
 math: true
 thumb: /assets/images/bci-foundations/decoders.png
 permalink: /thinking/reading-the-brain/

@@ -4,6 +4,7 @@ title: "Apical Dust"
 date: 2026-10-12
 tag: "Guide"
 section: technical
+rank: 4
 math: true
 thumb: /assets/images/apical-dust/fig3.svg
 permalink: /thinking/brain-like-learning/

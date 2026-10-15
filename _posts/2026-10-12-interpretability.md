@@ -4,6 +4,7 @@ title: "We need to think outside the (black)box"
 date: 2026-10-12
 tag: "Guide"
 section: technical
+rank: 3
 math: true
 thumb: /assets/images/biology-lm-interpretability/fig_depth.png
 permalink: /thinking/interpretability/

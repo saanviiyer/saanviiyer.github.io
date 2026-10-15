@@ -8,7 +8,8 @@ permalink: /writing/
 
   <div class="pub-list">
 
-    {% assign tech = site.posts | where: "section", "technical" %}
+    {% comment %} best-to-worst order via the `rank` field in each post's front matter (1 = best) {% endcomment %}
+    {% assign tech = site.posts | where: "section", "technical" | sort: "rank" %}
     {% for post in tech %}
     <div class="pub-row">
       <a class="pub-thumb" href="{{ post.url | relative_url }}">{% if post.thumb %}<img src="{{ post.thumb | relative_url }}" alt="{{ post.title }}">{% endif %}</a>

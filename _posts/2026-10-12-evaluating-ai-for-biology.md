@@ -4,6 +4,7 @@ title: "How to evaluate AI models for biology"
 date: 2026-10-12
 tag: "Book"
 section: technical
+rank: 2
 math: true
 thumb: /assets/images/eval-biology-article/winners-curse.png
 permalink: /thinking/evaluating-ai-for-biology/
