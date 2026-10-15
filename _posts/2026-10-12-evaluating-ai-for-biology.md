@@ -106,9 +106,9 @@ Those are the failure modes, each one from a measurement I ran. The rest of this
 
 ## Notation and why simulation
 
-I use one set of symbols throughout. Items are indexed by \(j = 1,\dots,n\), respondents (models or human participants) by \(r = 1,\dots,R\), and repeated samples of the same respondent on the same item by \(s = 1,\dots,K\). When items share a scenario, I call the scenario a cluster and index it by \(c\), with \(m_c\) items in cluster \(c\). The graded outcome of sample \(s\) of respondent \(r\) on item \(j\) is \(y_{rjs} \in \{0,1\}\), the per-item mean over its \(K\) samples is \(\bar y_j\), the benchmark score is \(\hat\mu\), and the estimand it targets is \(\mu\). The intraclass correlation of outcomes within a cluster is \(\rho\). In item response theory, \(\theta_r\) is the latent ability of respondent \(r\), and \(a_j, b_j, c_j\) are the discrimination, difficulty, and guessing floor of item \(j\), with Fisher information \(I_j(\theta)\). A grader has sensitivity \(\mathrm{Se}\) and specificity \(\mathrm{Sp}\). In an uplift trial, \(p_0\) and \(p_1\) are the control and treatment success probabilities and \(d\) is the standardized mean difference. The decision threshold is \(\tau\), the type I error rate is \(\alpha\), and the power is \(1-\beta\), with \(z_q\) the \(q\) quantile of the standard normal distribution.
+I use one set of symbols throughout. Items are indexed by \\(j = 1,\dots,n\\), respondents (models or human participants) by \\(r = 1,\dots,R\\), and repeated samples of the same respondent on the same item by \\(s = 1,\dots,K\\). When items share a scenario, I call the scenario a cluster and index it by \\(c\\), with \\(m_c\\) items in cluster \\(c\\). The graded outcome of sample \\(s\\) of respondent \\(r\\) on item \\(j\\) is \\(y_{rjs} \in \{0,1\}\\), the per-item mean over its \\(K\\) samples is \\(\bar y_j\\), the benchmark score is \\(\hat\mu\\), and the estimand it targets is \\(\mu\\). The intraclass correlation of outcomes within a cluster is \\(\rho\\). In item response theory, \\(\theta_r\\) is the latent ability of respondent \\(r\\), and \\(a_j, b_j, c_j\\) are the discrimination, difficulty, and guessing floor of item \\(j\\), with Fisher information \\(I_j(\theta)\\). A grader has sensitivity \\(\mathrm{Se}\\) and specificity \\(\mathrm{Sp}\\). In an uplift trial, \\(p_0\\) and \\(p_1\\) are the control and treatment success probabilities and \\(d\\) is the standardized mean difference. The decision threshold is \\(\tau\\), the type I error rate is \\(\alpha\\), and the power is \\(1-\beta\\), with \\(z_q\\) the \\(q\\) quantile of the standard normal distribution.
 
-A hat denotes an estimate, so \(\hat\mu\) estimates \(\mu\), and \(\operatorname{SE}(\cdot)\) is a standard error. Confidence intervals are two-sided at the 95 percent level unless stated otherwise. The field overloads the word model, which can mean the AI system under test or a statistical model of responses. To keep these apart, I call the AI system the model under test, or the respondent when the statement applies equally to humans, and I call statistical models by their names, for example the 2PL model.
+A hat denotes an estimate, so \\(\hat\mu\\) estimates \\(\mu\\), and \\(\operatorname{SE}(\cdot)\\) is a standard error. Confidence intervals are two-sided at the 95 percent level unless stated otherwise. The field overloads the word model, which can mean the AI system under test or a statistical model of responses. To keep these apart, I call the AI system the model under test, or the respondent when the statement applies equally to humans, and I call statistical models by their names, for example the 2PL model.
 
 The companion library depends only on NumPy, SciPy, and Matplotlib, and its modules follow the structure of this guide, `items`, `simulate`, `grading`, `stats`, `irt`, `agentic`, `contamination`, `robustness`, `uplift`, `thresholds`, `harness`, and `reporting`. Two scripts reproduce every number and figure, with all random seeds fixed.
 
@@ -120,45 +120,45 @@ An evaluation produces a number, and a decision rests on that number. Before ask
 
 ### Three estimands: capability, propensity, and uplift
 
-An estimand is the quantity an evaluation tries to learn. Biosecurity evaluations target three different estimands, and confusing them frequently leads to misread results. Consider a model under test \(M\) and a task \(T\) drawn from a population \(\mathcal{T}\). Write \(Y(M, T, e) \in \{0,1\}\) for whether \(M\) completes \(T\) successfully under an elicitation configuration \(e\), where \(e\) includes the prompt, the sampling temperature, any tools, any scaffolding, and any fine-tuning applied before the test.
+An estimand is the quantity an evaluation tries to learn. Biosecurity evaluations target three different estimands, and confusing them frequently leads to misread results. Consider a model under test \\(M\\) and a task \\(T\\) drawn from a population \\(\mathcal{T}\\). Write \\(Y(M, T, e) \in \{0,1\}\\) for whether \\(M\\) completes \\(T\\) successfully under an elicitation configuration \\(e\\), where \\(e\\) includes the prompt, the sampling temperature, any tools, any scaffolding, and any fine-tuning applied before the test.
 
-The capability of \(M\) is the success rate under the best elicitation available to a relevant actor,
+The capability of \\(M\\) is the success rate under the best elicitation available to a relevant actor,
 
 $$\mu_{\text{cap}}(M) = \max_{e \in \mathcal{E}} \; \mathbb{E}_{T \sim \mathcal{T}}\big[ \Pr(Y(M,T,e) = 1) \big],$$
 
-where \(\mathcal{E}\) is the set of elicitation configurations a relevant actor could plausibly use. Capability answers what the model can do, and the maximum carries weight. A model that fails under a plain prompt but succeeds with a better prompt or with tools has the capability, so a measurement under the plain prompt underestimates it.
+where \\(\mathcal{E}\\) is the set of elicitation configurations a relevant actor could plausibly use. Capability answers what the model can do, and the maximum carries weight. A model that fails under a plain prompt but succeeds with a better prompt or with tools has the capability, so a measurement under the plain prompt underestimates it.
 
-The propensity of \(M\) is the success rate under the configuration users actually encounter, usually the deployed system with its safeguards,
+The propensity of \\(M\\) is the success rate under the configuration users actually encounter, usually the deployed system with its safeguards,
 
 $$\mu_{\text{prop}}(M) = \mathbb{E}_{T \sim \mathcal{T}}\big[\Pr(Y(M,T,e_{\text{deploy}}) = 1)\big].$$
 
 Propensity answers what the deployed system will do when asked. A model with high capability and low propensity has the knowledge but refuses to share it. Safeguard evaluations, including tests against adversarial prompting (Wei et al., 2023; Zou et al., 2023), estimate how far a determined user can push the propensity toward the capability.
 
-The uplift of \(M\) for a population of human actors \(\mathcal{H}\) is the causal effect of model access on their success,
+The uplift of \\(M\\) for a population of human actors \\(\mathcal{H}\\) is the causal effect of model access on their success,
 
 $$\Delta(M) = \mathbb{E}_{H \sim \mathcal{H},\, T \sim \mathcal{T}}\big[ \Pr(Z(H, T, M) = 1) - \Pr(Z(H, T, \varnothing) = 1) \big],$$
 
-where \(Z(H,T,M)\) is whether actor \(H\) succeeds with access to \(M\), and \(Z(H,T,\varnothing)\) is the counterfactual with only the resources the actor would otherwise have, such as internet search and textbooks. Uplift answers the question most risk policies care about, namely whether the model makes harmful outcomes more likely than a world without it.
+where \\(Z(H,T,M)\\) is whether actor \\(H\\) succeeds with access to \\(M\\), and \\(Z(H,T,\varnothing)\\) is the counterfactual with only the resources the actor would otherwise have, such as internet search and textbooks. Uplift answers the question most risk policies care about, namely whether the model makes harmful outcomes more likely than a world without it.
 
-**Each of the three quantities is a property of a model together with its measurement conditions.** Capability is defined relative to an elicitation set \(\mathcal{E}\) and a task population \(\mathcal{T}\), and a larger \(\mathcal{E}\) can only raise the maximum, so two capability estimates made with different elicitation sets stand on different scales. Propensity is defined relative to one deployment configuration and changes whenever the system prompt, the safeguards, or the user interface change. Uplift is defined relative to an actor population, a task population, a control condition, and an outcome, and changing any of these four changes the estimand. Every report should therefore give each number as "the capability of \(M\) on \(\mathcal{T}\) under \(\mathcal{E}\)" or "the uplift of \(M\) for \(\mathcal{H}\) on \(\mathcal{T}\) against \(\varnothing\)," and state each scope explicitly.
+**Each of the three quantities is a property of a model together with its measurement conditions.** Capability is defined relative to an elicitation set \\(\mathcal{E}\\) and a task population \\(\mathcal{T}\\), and a larger \\(\mathcal{E}\\) can only raise the maximum, so two capability estimates made with different elicitation sets stand on different scales. Propensity is defined relative to one deployment configuration and changes whenever the system prompt, the safeguards, or the user interface change. Uplift is defined relative to an actor population, a task population, a control condition, and an outcome, and changing any of these four changes the estimand. Every report should therefore give each number as "the capability of \\(M\\) on \\(\mathcal{T}\\) under \\(\mathcal{E}\\)" or "the uplift of \\(M\\) for \\(\mathcal{H}\\) on \\(\mathcal{T}\\) against \\(\varnothing\\)," and state each scope explicitly.
 
 The three estimands are related, yet each stands independent of the others. A model can score well on a knowledge benchmark, a capability measurement, and give no uplift, because the same knowledge is equally easy to find online. A model can give uplift while scoring low on benchmarks, for example by helping a novice organize public information or troubleshoot an error. Sandbrink (2023) draws a related distinction between language models, whose main risk is broadening access to existing knowledge, and specialized biological design tools, whose main risk is raising the ceiling of what an expert can do.
 
 Each estimand needs a different study design. Running the model on a set of items measures capability and propensity, which is cheap and repeatable. Uplift needs a randomized trial with human participants, which is expensive and slow. In practice organizations run capability evaluations often as early-warning signals and run uplift studies rarely to calibrate what capability scores mean (Patwardhan et al., 2024; Mouton et al., 2024).
 
-**The proxy assumption.** Capability thresholds in published safety policies act as proxies for uplift thresholds. I treat that relationship as an assumption, and **I know of no study that establishes a general quantitative relationship between benchmark capability and human uplift.** A qualitative argument suggests when the proxy is reasonable. If no elicitation in \(\mathcal{E}\) draws the information or help a step requires out of a model, then a human working through the same channels draws none either, so low capability on a step implies low uplift on that step. The argument depends on three conditions. The task population must cover what the actor would actually ask, the elicitation set must include what the actor could actually do, and uplift must come from content the model produces, beyond encouragement, time savings, or help organizing a search. When any condition fails, low capability stops bounding uplift. High capability leaves uplift open, because the actor may struggle to recognize correct answers, or may find the same information elsewhere at equal cost.
+**The proxy assumption.** Capability thresholds in published safety policies act as proxies for uplift thresholds. I treat that relationship as an assumption, and **I know of no study that establishes a general quantitative relationship between benchmark capability and human uplift.** A qualitative argument suggests when the proxy is reasonable. If no elicitation in \\(\mathcal{E}\\) draws the information or help a step requires out of a model, then a human working through the same channels draws none either, so low capability on a step implies low uplift on that step. The argument depends on three conditions. The task population must cover what the actor would actually ask, the elicitation set must include what the actor could actually do, and uplift must come from content the model produces, beyond encouragement, time savings, or help organizing a search. When any condition fails, low capability stops bounding uplift. High capability leaves uplift open, because the actor may struggle to recognize correct answers, or may find the same information elsewhere at equal cost.
 
 As an example, suppose a developer reports that a model scores 0.62 on a knowledge benchmark and that domain experts score 0.40 on the same items. This is a capability statement. It leaves open whether the model would help a non-expert, because non-experts may struggle to recognize which answers are correct, and it leaves open whether the deployed model would share the information, because safeguards may block the relevant requests. Each further claim needs its own evidence.
 
 ### Threat models as measurement specifications
 
-A threat model describes a pathway by which a model could contribute to harm. Risk policies usually state threat models in terms of an actor and a degree of contribution (Anthropic, 2023; OpenAI, 2023; Google DeepMind, 2024). For measurement, a threat model has three jobs. It fixes the actor population \(\mathcal{H}\), which determines whom an uplift trial should recruit; it fixes the task population \(\mathcal{T}\), which determines what the items should test; and it fixes the elicitation set \(\mathcal{E}\), which determines how hard evaluators must try to draw out the capability.
+A threat model describes a pathway by which a model could contribute to harm. Risk policies usually state threat models in terms of an actor and a degree of contribution (Anthropic, 2023; OpenAI, 2023; Google DeepMind, 2024). For measurement, a threat model has three jobs. It fixes the actor population \\(\mathcal{H}\\), which determines whom an uplift trial should recruit; it fixes the task population \\(\mathcal{T}\\), which determines what the items should test; and it fixes the elicitation set \\(\mathcal{E}\\), which determines how hard evaluators must try to draw out the capability.
 
-Harmful biological outcomes require a sequence of steps, and an actor fails if any required step fails. Public analyses describe this structure at a high level and leave the operational detail of the steps unstated (National Academies, 2018; Mouton et al., 2024; Carter et al., 2023). I represent the structure abstractly. Let a pathway consist of steps \(1, \dots, S\), and let \(q_s\) be the probability the actor completes step \(s\) given earlier steps succeeded. If all steps must succeed, the end-to-end success probability is
+Harmful biological outcomes require a sequence of steps, and an actor fails if any required step fails. Public analyses describe this structure at a high level and leave the operational detail of the steps unstated (National Academies, 2018; Mouton et al., 2024; Carter et al., 2023). I represent the structure abstractly. Let a pathway consist of steps \\(1, \dots, S\\), and let \\(q_s\\) be the probability the actor completes step \\(s\\) given earlier steps succeeded. If all steps must succeed, the end-to-end success probability is
 
 $$P_{\text{end}} = \prod_{s=1}^{S} q_s.$$
 
-Writing \(q_s^{(1)}\) for the step probability with access and \(q_s^{(0)}\) without, the end-to-end uplift ratio is
+Writing \\(q_s^{(1)}\\) for the step probability with access and \\(q_s^{(0)}\\) without, the end-to-end uplift ratio is
 
 $$\frac{P_{\text{end}}^{(1)}}{P_{\text{end}}^{(0)}} = \prod_{s=1}^{S} \frac{q_s^{(1)}}{q_s^{(0)}}.$$
 
@@ -200,7 +200,7 @@ Domain experts should write the items, and different experts, outside the set wh
 
 A multiple-choice score depends on how the evaluation parses answers, on the order of the options, and on the guessing floor. A language model returns free text, so the evaluation must extract a choice from it, and the evaluation must keep parsing failures separate from wrong answers and refusals. The library's parser prefers an explicit answer line and otherwise takes the last standalone letter, because models usually restate options while reasoning before committing at the end. Whatever rule you use, the report should give the parse-failure rate per model, since **a high rate means the evaluation partly measures formatting behavior.**
 
-Language models show position preferences in multiple-choice questions, favoring some letters regardless of content (Zheng et al., 2024). The remedy is to shuffle option order independently for each sample and map the parsed letter back to the underlying option, recording the permutation so the analysis can estimate position effects afterward. A respondent who guesses uniformly among \(k\) options scores \(1/k\) on average, so you can rescale a raw score so chance maps to zero and perfect to one,
+Language models show position preferences in multiple-choice questions, favoring some letters regardless of content (Zheng et al., 2024). The remedy is to shuffle option order independently for each sample and map the parsed letter back to the underlying option, recording the permutation so the analysis can estimate position effects afterward. A respondent who guesses uniformly among \\(k\\) options scores \\(1/k\\) on average, so you can rescale a raw score so chance maps to zero and perfect to one,
 
 $$\hat\mu_{\text{corr}} = \frac{\hat\mu - 1/k}{1 - 1/k}.$$
 
@@ -208,7 +208,7 @@ This assumes a respondent either knows the answer or guesses uniformly; partial 
 
 ### Open-ended items and rubric grading
 
-Open-ended items ask the respondent to produce an answer, such as a written protocol or a diagnosis of a failure, and need a grader. A rubric breaks grading into a list of criteria marked met or not met, some of them critical, so that a response missing a critical criterion fails regardless of the rest. The rubric score is a weighted fraction in \([0,1]\), and whether to report it continuously or threshold it into pass and fail depends on the construct.
+Open-ended items ask the respondent to produce an answer, such as a written protocol or a diagnosis of a failure, and need a grader. A rubric breaks grading into a list of criteria marked met or not met, some of them critical, so that a response missing a critical criterion fails regardless of the rest. The rubric score is a weighted fraction in \\([0,1]\\), and whether to report it continuously or threshold it into pass and fail depends on the construct.
 
 Because human experts grade slowly and at high cost, evaluations increasingly use a language model as a grader (Zheng et al., 2023). Judges introduce their own errors and biases, including position bias and a preference for longer answers. Two design choices reduce the problem. The judge should grade one rubric criterion at a time, since **a narrow binary question is easier to answer reliably than a global score,** and the team should measure the judge's accuracy on a gold set of human-labeled responses and use it to correct the final rate. The library's judge template passes the response by reference, so the secure environment resolves the reference and ordinary prompt logs stay free of restricted transcripts.
 
@@ -224,7 +224,7 @@ In practice you resolve this by **measuring capability on a configuration that a
 
 ### Grader agreement
 
-Agreement between graders limits how well any score can measure the construct, and **raw percent agreement overstates reliability because some agreement happens by chance.** If 90 percent of responses fail, two graders who each mark responses as failing at random 90 percent of the time agree on \(0.9^2 + 0.1^2 = 0.82\) of responses from chance alone. Cohen (1960) corrected for this. Let \(p_o\) be observed agreement and let the agreement expected under independent labeling with the observed marginal rates be
+Agreement between graders limits how well any score can measure the construct, and **raw percent agreement overstates reliability because some agreement happens by chance.** If 90 percent of responses fail, two graders who each mark responses as failing at random 90 percent of the time agree on \\(0.9^2 + 0.1^2 = 0.82\\) of responses from chance alone. Cohen (1960) corrected for this. Let \\(p_o\\) be observed agreement and let the agreement expected under independent labeling with the observed marginal rates be
 
 $$p_e = \sum_k \pi_{A,k}\,\pi_{B,k}.$$
 
@@ -232,29 +232,29 @@ Cohen's kappa is the fraction of possible improvement over chance that is achiev
 
 $$\kappa = \frac{p_o - p_e}{1 - p_e}.$$
 
-Kappa equals 1 for perfect agreement, 0 for chance agreement, and turns negative for systematic disagreement. The conventional verbal labels for kappa values (Landis and Koch, 1977) are arbitrary, and a team should keep them out of pass criteria. For several graders who each label a different subset, Krippendorff (2004) defined an agreement coefficient \(\alpha = 1 - D_o/D_e\) that handles any number of graders and missing labels. When graders give continuous scores, you measure agreement with an intraclass correlation coefficient, usually ICC(2,1) (Shrout and Fleiss, 1979), which treats both responses and graders as random and penalizes graders who differ systematically in leniency,
+Kappa equals 1 for perfect agreement, 0 for chance agreement, and turns negative for systematic disagreement. The conventional verbal labels for kappa values (Landis and Koch, 1977) are arbitrary, and a team should keep them out of pass criteria. For several graders who each label a different subset, Krippendorff (2004) defined an agreement coefficient \\(\alpha = 1 - D_o/D_e\\) that handles any number of graders and missing labels. When graders give continuous scores, you measure agreement with an intraclass correlation coefficient, usually ICC(2,1) (Shrout and Fleiss, 1979), which treats both responses and graders as random and penalizes graders who differ systematically in leniency,
 
 $$\mathrm{ICC}(2,1) = \frac{MS_R - MS_E}{MS_R + (k-1)MS_E + \tfrac{k}{n}(MS_C - MS_E)}.$$
 
-A design detail prevents a common confound. If grader \(A\) scores all responses from model \(X\) and grader \(B\) all responses from model \(Y\), any difference in leniency appears as a difference between the models. **Each grader should score responses from every model, in random order, blind to which model produced which response.** This is the evaluation analogue of blinding in a clinical trial.
+A design detail prevents a common confound. If grader \\(A\\) scores all responses from model \\(X\\) and grader \\(B\\) all responses from model \\(Y\\), any difference in leniency appears as a difference between the models. **Each grader should score responses from every model, in random order, blind to which model produced which response.** This is the evaluation analogue of blinding in a clinical trial.
 
 ### Correcting pass rates for grader error
 
-**An imperfect grader biases the observed pass rate toward its own error rates,** and if the grader's sensitivity and specificity are known you can remove the bias. Let \(\pi\) be the true pass rate, with judge sensitivity \(\mathrm{Se} = \Pr(\text{judge pass} \mid \text{true pass})\) and specificity \(\mathrm{Sp} = \Pr(\text{judge fail} \mid \text{true fail})\). The probability the judge marks a random response as passing is
+**An imperfect grader biases the observed pass rate toward its own error rates,** and if the grader's sensitivity and specificity are known you can remove the bias. Let \\(\pi\\) be the true pass rate, with judge sensitivity \\(\mathrm{Se} = \Pr(\text{judge pass} \mid \text{true pass})\\) and specificity \\(\mathrm{Sp} = \Pr(\text{judge fail} \mid \text{true fail})\\). The probability the judge marks a random response as passing is
 
 $$\pi_{\text{obs}} = \pi\,\mathrm{Se} + (1-\pi)(1 - \mathrm{Sp}),$$
 
-which is linear in \(\pi\), and solving gives the Rogan-Gladen estimator (Rogan and Gladen, 1978),
+which is linear in \\(\pi\\), and solving gives the Rogan-Gladen estimator (Rogan and Gladen, 1978),
 
 $$\pi = \frac{\pi_{\text{obs}} + \mathrm{Sp} - 1}{\mathrm{Se} + \mathrm{Sp} - 1}.$$
 
-The denominator \(\mathrm{Se} + \mathrm{Sp} - 1\) is Youden's \(J\) statistic, which is zero for a judge no better than chance, in which case the observed rate carries no information. A judge with imperfect specificity inflates low pass rates, which is where biosecurity evaluations often operate, so specificity carries the most weight. In the verification run, a true pass rate of 0.12 graded by a judge with sensitivity 0.85 and specificity 0.95 shows as 0.146, and the correction recovers 0.12. I run this correction whenever a judge model grades, because I was surprised how far the naive rate of 0.146 sits from the true 0.12 at low pass rates.
+The denominator \\(\mathrm{Se} + \mathrm{Sp} - 1\\) is Youden's \\(J\\) statistic, which is zero for a judge no better than chance, in which case the observed rate carries no information. A judge with imperfect specificity inflates low pass rates, which is where biosecurity evaluations often operate, so specificity carries the most weight. In the verification run, a true pass rate of 0.12 graded by a judge with sensitivity 0.85 and specificity 0.95 shows as 0.146, and the correction recovers 0.12. I run this correction whenever a judge model grades, because I was surprised how far the naive rate of 0.146 sits from the true 0.12 at low pass rates.
 
 ![Grader error and its correction](/assets/images/biosec-evaluations/grader.png)
 
 **Figure 6.** Grader error and its correction. Left, observed pass rate as a function of the true rate for three judges; imperfect specificity inflates low rates. Right, width of the 95 percent interval for the corrected rate as the gold set used to audit the judge grows, for an observed rate of 73/500. The dashed line shows the width of a naive interval that ignores grader error.
 
-In practice you estimate \(\mathrm{Se}\) and \(\mathrm{Sp}\) by comparing the judge with expert labels on a finite gold set, so the corrected rate inherits uncertainty from the observed rate and the two estimated grader rates. A parametric bootstrap propagates all three by drawing each from a Beta posterior and applying the correction to each draw. **With a gold set of 25 responses the corrected interval is more than three times as wide as the naive interval,** and even with 800 gold responses it stays wider, because the naive interval leaves out a real source of uncertainty. Evaluations that use judge models should report the gold-set size, the estimated sensitivity and specificity, and an interval that includes grader uncertainty. The correction also assumes the judge's error rates are the same for every model, which can fail if a judge is more lenient toward responses in its own style, so the gold set should include responses from each model.
+In practice you estimate \\(\mathrm{Se}\\) and \\(\mathrm{Sp}\\) by comparing the judge with expert labels on a finite gold set, so the corrected rate inherits uncertainty from the observed rate and the two estimated grader rates. A parametric bootstrap propagates all three by drawing each from a Beta posterior and applying the correction to each draw. **With a gold set of 25 responses the corrected interval is more than three times as wide as the naive interval,** and even with 800 gold responses it stays wider, because the naive interval leaves out a real source of uncertainty. Evaluations that use judge models should report the gold-set size, the estimated sensitivity and specificity, and an interval that includes grader uncertainty. The correction also assumes the judge's error rates are the same for every model, which can fail if a judge is more lenient toward responses in its own style, so the gold set should include responses from each model.
 
 ### Case study, a safety benchmark answered without the question
 
@@ -276,29 +276,29 @@ A benchmark score is an estimate built from a finite set of items, a finite numb
 
 ### What the score estimates
 
-The items in a benchmark are a sample from a larger population of items that could have been written to test the same construct. Let item \(j\) have true success probability \(p_j\), the long-run fraction of correct samples. The benchmark score with \(K\) samples per item is
+The items in a benchmark are a sample from a larger population of items that could have been written to test the same construct. Let item \\(j\\) have true success probability \\(p_j\\), the long-run fraction of correct samples. The benchmark score with \\(K\\) samples per item is
 
 $$\hat\mu = \frac{1}{n}\sum_{j=1}^{n} \bar y_j, \qquad \bar y_j = \frac{1}{K}\sum_{s=1}^{K} y_{js}.$$
 
-The fixed-item estimand is the mean of \(p_j\) over the \(n\) items actually in the benchmark, with uncertainty only from sampling the model. The item-population estimand is \(\mu = \mathbb{E}_j[p_j]\) over the population the benchmark was drawn from, with uncertainty from sampling both the model and the items. **For biosecurity I usually want the item-population estimand,** because the decision depends on the construct and the particular items only stand in for it. Once you adopt that estimand, the standard error must include between-item variance, and you must compare two models on the same items so that item-sampling variance cancels. There is a subtler version of the same warning, which the case study at the start of this guide made concrete. A benchmark's bulk correlation is itself a statistic measured over the whole item population, and it can miss the top tail where a search actually selects, as Figure 2 and the decay animation show.
+The fixed-item estimand is the mean of \\(p_j\\) over the \\(n\\) items actually in the benchmark, with uncertainty only from sampling the model. The item-population estimand is \\(\mu = \mathbb{E}_j[p_j]\\) over the population the benchmark was drawn from, with uncertainty from sampling both the model and the items. **For biosecurity I usually want the item-population estimand,** because the decision depends on the construct and the particular items only stand in for it. Once you adopt that estimand, the standard error must include between-item variance, and you must compare two models on the same items so that item-sampling variance cancels. There is a subtler version of the same warning, which the case study at the start of this guide made concrete. A benchmark's bulk correlation is itself a statistic measured over the whole item population, and it can miss the top tail where a search actually selects, as Figure 2 and the decay animation show.
 
 ### Intervals for a proportion
 
-Consider \(n\) independent items, one sample each, with \(k\) correct, so \(k \sim \text{Binomial}(n, \mu)\) and \(\hat\mu = k/n\). The textbook Wald interval
+Consider \\(n\\) independent items, one sample each, with \\(k\\) correct, so \\(k \sim \text{Binomial}(n, \mu)\\) and \\(\hat\mu = k/n\\). The textbook Wald interval
 
 $$\hat\mu \pm z_{1-\alpha/2}\sqrt{\frac{\hat\mu(1-\hat\mu)}{n}}$$
 
-performs poorly near 0 or 1 and for small \(n\); **at \(\hat\mu = 0\) it has zero width and claims certainty from a handful of failures** (Brown et al., 2001). Biosecurity evaluations often produce scores near 0 or near 1, exactly where Wald fails. Wilson (1927) inverts the score test instead, collecting every \(\mu_0\) the test retains, which gives endpoints
+performs poorly near 0 or 1 and for small \\(n\\); **at \\(\hat\mu = 0\\) it has zero width and claims certainty from a handful of failures** (Brown et al., 2001). Biosecurity evaluations often produce scores near 0 or near 1, exactly where Wald fails. Wilson (1927) inverts the score test instead, collecting every \\(\mu_0\\) the test retains, which gives endpoints
 
 $$\frac{1}{1 + z^2/n}\left[\hat\mu + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat\mu(1-\hat\mu)}{n} + \frac{z^2}{4n^2}}\right].$$
 
-The Wilson interval pulls its center toward \(1/2\), keeps positive width at \(\hat\mu = 0\), and holds close to nominal coverage. Clopper and Pearson (1934) instead guarantee at least nominal coverage by inverting exact binomial tests, with limits written as Beta quantiles \([\,B_{\alpha/2}(k, n-k+1),\; B_{1-\alpha/2}(k+1, n-k)\,]\); the guarantee costs some conservatism, so I use it when a decision rule needs a guaranteed bound.
+The Wilson interval pulls its center toward \\(1/2\\), keeps positive width at \\(\hat\mu = 0\\), and holds close to nominal coverage. Clopper and Pearson (1934) instead guarantee at least nominal coverage by inverting exact binomial tests, with limits written as Beta quantiles \\([\,B_{\alpha/2}(k, n-k+1),\; B_{1-\alpha/2}(k+1, n-k)\,]\\); the guarantee costs some conservatism, so I use it when a decision rule needs a guaranteed bound.
 
-As an example, a model that succeeds on 0 of 30 agentic tasks has a Wald interval of \([0,0]\), a Wilson interval of \([0, 0.114]\), and a one-sided 95 percent Clopper-Pearson upper bound of \(1 - 0.05^{1/30} \approx 0.095\), which is the source of the rule-of-three approximation \(3/n = 0.1\). A report that says the model never succeeded should add that **the data are consistent with a true success rate as high as about 10 percent.** In short, use Wilson for reporting and Clopper-Pearson when a decision rule needs a guaranteed bound.
+As an example, a model that succeeds on 0 of 30 agentic tasks has a Wald interval of \\([0,0]\\), a Wilson interval of \\([0, 0.114]\\), and a one-sided 95 percent Clopper-Pearson upper bound of \\(1 - 0.05^{1/30} \approx 0.095\\), which is the source of the rule-of-three approximation \\(3/n = 0.1\\). A report that says the model never succeeded should add that **the data are consistent with a true success rate as high as about 10 percent.** In short, use Wilson for reporting and Clopper-Pearson when a decision rule needs a guaranteed bound.
 
 ### Clustered items
 
-Items that share a scenario are correlated, and **treating them as independent makes the standard error too small.** Let the \(n\) items fall into \(C\) clusters, with cluster totals \(T_c\) independent across clusters, so \(\hat\mu = n^{-1}\sum_c T_c\) and \(\Var(\hat\mu) = n^{-2}\sum_c \Var(T_c)\). If within a cluster every item has variance \(\sigma^2\) and every distinct pair has correlation \(\rho\), then for equal cluster sizes \(m\) with \(n = Cm\),
+Items that share a scenario are correlated, and **treating them as independent makes the standard error too small.** Let the \\(n\\) items fall into \\(C\\) clusters, with cluster totals \\(T_c\\) independent across clusters, so \\(\hat\mu = n^{-1}\sum_c T_c\\) and \\(\Var(\hat\mu) = n^{-2}\sum_c \Var(T_c)\\). If within a cluster every item has variance \\(\sigma^2\\) and every distinct pair has correlation \\(\rho\\), then for equal cluster sizes \\(m\\) with \\(n = Cm\\),
 
 $$\Var(\hat\mu) = \frac{\sigma^2}{n}\big[1 + (m-1)\rho\big].$$
 
@@ -306,17 +306,17 @@ The first factor is the variance under independence, and the bracketed term is t
 
 $$\mathrm{deff} = 1 + (m - 1)\rho,$$
 
-with effective sample size \(n_{\text{eff}} = n / \mathrm{deff}\). **A benchmark of 400 items in scenarios of 8 with \(\rho = 0.2\) carries as much information as about 166 independent items.** I was surprised the first time I worked this out, since treating 400 clustered items as 166 is a steep discount to pay for shared scenarios.
+with effective sample size \\(n_{\text{eff}} = n / \mathrm{deff}\\). **A benchmark of 400 items in scenarios of 8 with \\(\rho = 0.2\\) carries as much information as about 166 independent items.** I was surprised the first time I worked this out, since treating 400 clustered items as 166 is a steep discount to pay for shared scenarios.
 
 ![The design effect of clustered items](/assets/images/biosec-evaluations/design_effect.png)
 
-**Figure 8.** The design effect of clustered items. Left, variance inflation as a function of the intraclass correlation \(\rho\) for different numbers of items per scenario \(m\). Right, the effective number of independent items in a 400-item benchmark. Large scenarios with moderate correlation consume most of the nominal sample size.
+**Figure 8.** The design effect of clustered items. Left, variance inflation as a function of the intraclass correlation \\(\rho\\) for different numbers of items per scenario \\(m\\). Right, the effective number of independent items in a 400-item benchmark. Large scenarios with moderate correlation consume most of the nominal sample size.
 
-In practice cluster sizes are unequal and \(\rho\) is unknown, so the cluster-robust (sandwich) estimator (Liang and Zeger, 1986; Cameron and Miller, 2015) estimates each cluster's variance directly from its residual total. With \(e_j = \bar y_j - \hat\mu\) and \(E_c = \sum_{j \in c} e_j\),
+In practice cluster sizes are unequal and \\(\rho\\) is unknown, so the cluster-robust (sandwich) estimator (Liang and Zeger, 1986; Cameron and Miller, 2015) estimates each cluster's variance directly from its residual total. With \\(e_j = \bar y_j - \hat\mu\\) and \\(E_c = \sum_{j \in c} e_j\\),
 
 $$\widehat{\Var}_{\text{CR}}(\hat\mu) = \frac{C}{C-1}\cdot\frac{1}{n^2}\sum_{c=1}^{C} E_c^2.$$
 
-The factor \(C/(C-1)\) corrects for small samples. The estimator is consistent as the number of clusters grows, whatever the within-cluster structure, and its accuracy depends on the number of clusters, and the number of items leaves it unchanged. With fewer than about 30 clusters it tends to underestimate the variance, and with fewer than about 10 it is unreliable. When every cluster has one item it reduces to the usual independent-items variance, so it is the safe default whenever cluster labels exist. For planning, the analysis-of-variance estimator of \(\rho\) compares the variation of cluster means with the variation within clusters.
+The factor \\(C/(C-1)\\) corrects for small samples. The estimator is consistent as the number of clusters grows, whatever the within-cluster structure, and its accuracy depends on the number of clusters, and the number of items leaves it unchanged. With fewer than about 30 clusters it tends to underestimate the variance, and with fewer than about 10 it is unreliable. When every cluster has one item it reduces to the usual independent-items variance, so it is the safe default whenever cluster labels exist. For planning, the analysis-of-variance estimator of \\(\rho\\) compares the variation of cluster means with the variation within clusters.
 
 ![Coverage of 95 percent intervals for clustered items](/assets/images/biosec-evaluations/coverage.png)
 
@@ -326,41 +326,41 @@ The factor \(C/(C-1)\) corrects for small samples. The estimator is consistent a
 
 ### Repeated sampling and the variance floor
 
-Sampling a model several times per item reduces the noise from the model's own randomness, while the noise from which items were chosen stays. With \(K\) samples per item, the law of total variance splits the item mean into
+Sampling a model several times per item reduces the noise from the model's own randomness, while the noise from which items were chosen stays. With \\(K\\) samples per item, the law of total variance splits the item mean into
 
 $$\Var(\bar y_j) = \Var_j(p_j) + \mathbb{E}_j\!\left[\frac{p_j(1-p_j)}{K}\right].$$
 
-Writing \(\sigma_b^2 = \Var_j(p_j)\) for between-item variance and \(\sigma_w^2 = \mathbb{E}_j[p_j(1-p_j)]\) for mean within-item variance, for \(n\) independent items
+Writing \\(\sigma_b^2 = \Var_j(p_j)\\) for between-item variance and \\(\sigma_w^2 = \mathbb{E}_j[p_j(1-p_j)]\\) for mean within-item variance, for \\(n\\) independent items
 
 $$\operatorname{SE}(\hat\mu) = \sqrt{\frac{\sigma_b^2}{n} + \frac{\sigma_w^2}{nK}}.$$
 
-Increasing \(K\) shrinks only the second term, and **as \(K \to \infty\) the standard error approaches the floor \(\sigma_b/\sqrt{n}\), which only more items can lower.**
+Increasing \\(K\\) shrinks only the second term, and **as \\(K \to \infty\\) the standard error approaches the floor \\(\sigma_b/\sqrt{n}\\), which only more items can lower.**
 
 ![Standard error as the number of samples per item grows](/assets/images/biosec-evaluations/resampling.png)
 
-**Figure 10.** Standard error of the benchmark score as the number of samples per item \(K\) grows, for 200 simulated items. The dashed line is the floor set by between-item variance, which repeated sampling cannot reduce.
+**Figure 10.** Standard error of the benchmark score as the number of samples per item \\(K\\) grows, for 200 simulated items. The dashed line is the floor set by between-item variance, which repeated sampling cannot reduce.
 
-You can estimate both components from data with \(K \ge 2\). The unbiased estimate of \(p_j(1-p_j)\) is \(\bar y_j(1-\bar y_j)K/(K-1)\), and averaging it over items estimates \(\sigma_w^2\), while the sample variance of the \(\bar y_j\) estimates \(\sigma_b^2 + \sigma_w^2/K\). The ratio \(\sigma_w^2/\sigma_b^2\) yields a planning rule. Once \(K\) exceeds roughly \(\sigma_w^2/\sigma_b^2\), the marginal benefit of another sample falls below that of one more item. Greedy decoding removes within-item variance but leaves the model's uncertainty in place and gives a fixed-item quantity for one configuration, so for capability estimation sampling at the deployment temperature usually teaches more.
+You can estimate both components from data with \\(K \ge 2\\). The unbiased estimate of \\(p_j(1-p_j)\\) is \\(\bar y_j(1-\bar y_j)K/(K-1)\\), and averaging it over items estimates \\(\sigma_w^2\\), while the sample variance of the \\(\bar y_j\\) estimates \\(\sigma_b^2 + \sigma_w^2/K\\). The ratio \\(\sigma_w^2/\sigma_b^2\\) yields a planning rule. Once \\(K\\) exceeds roughly \\(\sigma_w^2/\sigma_b^2\\), the marginal benefit of another sample falls below that of one more item. Greedy decoding removes within-item variance but leaves the model's uncertainty in place and gives a fixed-item quantity for one configuration, so for capability estimation sampling at the deployment temperature usually teaches more.
 
 ### Comparing models
 
-Compare two models on the same items, using per-item differences \(d_j = \bar y_{Aj} - \bar y_{Bj}\), because **pairing removes item-difficulty variance.** The variance of the difference is
+Compare two models on the same items, using per-item differences \\(d_j = \bar y_{Aj} - \bar y_{Bj}\\), because **pairing removes item-difficulty variance.** The variance of the difference is
 
 $$\Var(\hat\delta) = \frac{1}{n}\big[\Var(\bar y_{Aj}) + \Var(\bar y_{Bj}) - 2\Cov(\bar y_{Aj}, \bar y_{Bj})\big].$$
 
-Items hard for model \(A\) tend to be hard for \(B\), so the covariance is positive and subtracting it shrinks the variance. An unpaired analysis omits the covariance and overstates the uncertainty of the difference. With equal item variance \(\sigma^2\) and correlation \(\rho_{\text{pair}}\), the paired variance is \(2\sigma^2(1 - \rho_{\text{pair}})/n\), so **at \(\rho_{\text{pair}} = 0.5\) pairing halves the variance.** With one sample per item, McNemar's exact test (McNemar, 1947) uses only the discordant items, since under the null each discordant item is equally likely to favor either model; with clustered items the paired-difference test with cluster-robust standard errors replaces it. A comparison of two models should use the paired difference and set aside any overlap of their separate intervals.
+Items hard for model \\(A\\) tend to be hard for \\(B\\), so the covariance is positive and subtracting it shrinks the variance. An unpaired analysis omits the covariance and overstates the uncertainty of the difference. With equal item variance \\(\sigma^2\\) and correlation \\(\rho_{\text{pair}}\\), the paired variance is \\(2\sigma^2(1 - \rho_{\text{pair}})/n\\), so **at \\(\rho_{\text{pair}} = 0.5\\) pairing halves the variance.** With one sample per item, McNemar's exact test (McNemar, 1947) uses only the discordant items, since under the null each discordant item is equally likely to favor either model; with clustered items the paired-difference test with cluster-robust standard errors replaces it. A comparison of two models should use the paired difference and set aside any overlap of their separate intervals.
 
 ### Power and the number of items
 
-Before building a benchmark, compute how many items it needs to detect the smallest difference that would change a decision. Card et al. (2020) showed that many NLP comparisons are underpowered, and the same problem affects biosecurity evaluations. For a two-sided paired test at level \(\alpha\) with power \(1-\beta\), the number of items satisfies \(\delta/\operatorname{SE}(\hat\delta) = z_{1-\alpha/2} + z_{1-\beta}\), and for binary outcomes near base rate \(p\) with pairing correlation \(\rho_{\text{pair}}\) and design effect \(\mathrm{deff}\),
+Before building a benchmark, compute how many items it needs to detect the smallest difference that would change a decision. Card et al. (2020) showed that many NLP comparisons are underpowered, and the same problem affects biosecurity evaluations. For a two-sided paired test at level \\(\alpha\\) with power \\(1-\beta\\), the number of items satisfies \\(\delta/\operatorname{SE}(\hat\delta) = z_{1-\alpha/2} + z_{1-\beta}\\), and for binary outcomes near base rate \\(p\\) with pairing correlation \\(\rho_{\text{pair}}\\) and design effect \\(\mathrm{deff}\\),
 
 $$n = \frac{\mathrm{deff}\cdot 2p(1-p)(1-\rho_{\text{pair}})\,(z_{1-\alpha/2} + z_{1-\beta})^2}{\delta^2}.$$
 
-This scales as \(1/\delta^2\), so **halving the detectable difference quadruples the item count.** At \(p = 0.5\) with no pairing benefit and no clustering, detecting a 10-point difference needs 393 items, a 5-point difference needs 1,570, and a 2-point difference needs 9,812.
+This scales as \\(1/\delta^2\\), so **halving the detectable difference quadruples the item count.** At \\(p = 0.5\\) with no pairing benefit and no clustering, detecting a 10-point difference needs 393 items, a 5-point difference needs 1,570, and a 2-point difference needs 9,812.
 
 ![Items required for 80 percent power](/assets/images/biosec-evaluations/items_needed.png)
 
-**Figure 11.** Items required for 80 percent power to detect a difference between two models at \(\alpha = 0.05\), at a base rate of 0.5. Pairing reduces the requirement and clustering increases it. The vertical scale is logarithmic.
+**Figure 11.** Items required for 80 percent power to detect a difference between two models at \\(\alpha = 0.05\\), at a base rate of 0.5. Pairing reduces the requirement and clustering increases it. The vertical scale is logarithmic.
 
 Most biosecurity benchmarks have a few hundred items, so they can reliably detect differences of about 10 points and leave 2 or 3 out of reach, and **a report that ranks models separated by a few points on such a benchmark is reporting noise.** The inverse calculation gives the minimum detectable difference for an existing benchmark,
 
@@ -372,7 +372,7 @@ which should be reported alongside the benchmark so readers see which comparison
 
 The bootstrap (Efron and Tibshirani, 1993) estimates the sampling distribution of a statistic by resampling, and I turn to it for statistics with no simple variance formula, such as the corrected rate above, and when clusters are too few for the sandwich estimator. The resampling unit must match the dependence structure, so for clustered items you resample whole clusters with replacement and keep all items of a selected cluster together. **With very few clusters every bootstrap method becomes unreliable, and the honest response is to report that the benchmark has too few independent scenarios.**
 
-A typical assessment reports scores for several constructs, models, and conditions, and **testing each at \(\alpha = 0.05\) gives a chance of at least one false positive across 20 independent comparisons of \(1 - 0.95^{20} \approx 0.64\).** The Holm procedure (Holm, 1979) controls the family-wise error rate, and the Benjamini-Hochberg procedure (Benjamini and Hochberg, 1995) controls the false discovery rate. For safety decisions the asymmetry often runs the other way, since a false negative that misses a real capability usually costs more than a false positive, so a team may prefer to report uncorrected results and state explicitly how many comparisons it made.
+A typical assessment reports scores for several constructs, models, and conditions, and **testing each at \\(\alpha = 0.05\\) gives a chance of at least one false positive across 20 independent comparisons of \\(1 - 0.95^{20} \approx 0.64\\).** The Holm procedure (Holm, 1979) controls the family-wise error rate, and the Benjamini-Hochberg procedure (Benjamini and Hochberg, 1995) controls the false discovery rate. For safety decisions the asymmetry often runs the other way, since a false negative that misses a real capability usually costs more than a false positive, so a team may prefer to report uncorrected results and state explicitly how many comparisons it made.
 
 ## Item response theory for evaluation suites
 
@@ -380,7 +380,7 @@ The benchmark score treats every item as equally informative, but items differ. 
 
 ### From sum scores to latent ability
 
-The Rasch model (Rasch, 1960) gives each item a difficulty \(b_j\) and each respondent an ability \(\theta_r\),
+The Rasch model (Rasch, 1960) gives each item a difficulty \\(b_j\\) and each respondent an ability \\(\theta_r\\),
 
 $$\Pr(y_{rj} = 1 \mid \theta_r) = \sigma(\theta_r - b_j), \qquad \sigma(x) = \frac{1}{1 + e^{-x}}.$$
 
@@ -392,29 +392,29 @@ $$\Pr(y_{rj} = 1 \mid \theta_r) = \sigma\big(a_j(\theta_r - b_j)\big).$$
 
 $$p_j(\theta) = c_j + (1 - c_j)\,\sigma\big(a_j(\theta - b_j)\big).$$
 
-Estimating \(c_j\) freely is unstable, so a practical compromise fixes \(c_j = 1/k\) for a \(k\)-option item.
+Estimating \\(c_j\\) freely is unstable, so a practical compromise fixes \\(c_j = 1/k\\) for a \\(k\\)-option item.
 
 ![Item characteristic curves](/assets/images/biosec-evaluations/icc.png)
 
-**Figure 12.** Item characteristic curves. Left, three items with the same difficulty and different discrimination; higher discrimination produces a sharper transition. Right, items of different difficulty, and a four-option item with a guessing floor \(c = 0.25\) (dashed).
+**Figure 12.** Item characteristic curves. Left, three items with the same difficulty and different discrimination; higher discrimination produces a sharper transition. Right, items of different difficulty, and a four-option item with a guessing floor \\(c = 0.25\\) (dashed).
 
 In an evaluation the respondents can be models, model configurations, and human experts or novices who took the same items as a baseline, and fitting them together puts them on one ability scale, so "this model's ability exceeds that of the median expert in the validation pool" has a precise meaning. A single ability dimension assumes the items measure one construct, so using IRT responsibly includes checking fit by construct and by respondent type.
 
 ### Estimation by joint maximum a posteriori
 
-Given a response matrix \(Y\) with a mask \(M_{rj}\) marking observed responses, the 2PL log-likelihood with a fixed guessing floor is
+Given a response matrix \\(Y\\) with a mask \\(M_{rj}\\) marking observed responses, the 2PL log-likelihood with a fixed guessing floor is
 
 $$\ell(\theta, a, b) = \sum_{r,j} M_{rj}\Big[ y_{rj}\log p_{rj} + (1 - y_{rj})\log(1 - p_{rj}) \Big],$$
 
-with \(p_{rj} = c_j + (1-c_j)\sigma(z_{rj})\) and \(z_{rj} = a_j(\theta_r - b_j)\). Maximizing this directly can diverge, because a respondent who answers everything correctly has maximum-likelihood ability \(+\infty\), so weak priors (\(\theta_r \sim \mathcal{N}(0,1)\), \(b_j \sim \mathcal{N}(0,2^2)\), \(\log a_j \sim \mathcal{N}(0,0.5^2)\)) give a maximum a posteriori estimate instead. The gradient of one term with respect to \(z_{rj}\) is
+with \\(p_{rj} = c_j + (1-c_j)\sigma(z_{rj})\\) and \\(z_{rj} = a_j(\theta_r - b_j)\\). Maximizing this directly can diverge, because a respondent who answers everything correctly has maximum-likelihood ability \\(+\infty\\), so weak priors (\\(\theta_r \sim \mathcal{N}(0,1)\\), \\(b_j \sim \mathcal{N}(0,2^2)\\), \\(\log a_j \sim \mathcal{N}(0,0.5^2)\\)) give a maximum a posteriori estimate instead. The gradient of one term with respect to \\(z_{rj}\\) is
 
 $$g_{rj} = M_{rj}\left(\frac{y_{rj}}{p_{rj}} - \frac{1 - y_{rj}}{1 - p_{rj}}\right)(1 - c_j)\,\sigma(z_{rj})\big(1 - \sigma(z_{rj})\big),$$
 
-which reduces to the familiar logistic residual \(M_{rj}(y_{rj} - p_{rj})\) when \(c_j = 0\). Summing over the appropriate index and adding the prior terms gives the gradients with respect to \(\theta_r\), \(b_j\), and \(\log a_j\), which L-BFGS uses to fit. Joint estimation treats every ability as a parameter and, with few items per respondent, gives inconsistent item parameters; the standard alternative is marginal maximum likelihood (Bock and Aitkin, 1981). **Evaluations often reverse the educational-testing setting, with many items and a few dozen respondents, where joint MAP with weak priors is adequate and much simpler.** The 2PL needs constraints for identification, so you standardize abilities to mean zero and unit variance and transform item parameters to match, and because this fixes the scale relative to the fitted sample, a later fit with a new, stronger model shifts the scale unless secure anchor items hold it fixed.
+which reduces to the familiar logistic residual \\(M_{rj}(y_{rj} - p_{rj})\\) when \\(c_j = 0\\). Summing over the appropriate index and adding the prior terms gives the gradients with respect to \\(\theta_r\\), \\(b_j\\), and \\(\log a_j\\), which L-BFGS uses to fit. Joint estimation treats every ability as a parameter and, with few items per respondent, gives inconsistent item parameters; the standard alternative is marginal maximum likelihood (Bock and Aitkin, 1981). **Evaluations often reverse the educational-testing setting, with many items and a few dozen respondents, where joint MAP with weak priors is adequate and much simpler.** The 2PL needs constraints for identification, so you standardize abilities to mean zero and unit variance and transform item parameters to match, and because this fixes the scale relative to the fitted sample, a later fit with a new, stronger model shifts the scale unless secure anchor items hold it fixed.
 
 ### Fisher information and targeted testing
 
-**An item is most informative about respondents whose ability is near its difficulty,** and information adds across items, so you can build a test to be precise where a decision is made. For a Bernoulli outcome with success probability \(p(\theta)\), the Fisher information is
+**An item is most informative about respondents whose ability is near its difficulty,** and information adds across items, so you can build a test to be precise where a decision is made. For a Bernoulli outcome with success probability \\(p(\theta)\\), the Fisher information is
 
 $$I(\theta) = \frac{[p'(\theta)]^2}{p(\theta)\big(1 - p(\theta)\big)},$$
 
@@ -422,11 +422,11 @@ which for the 3PL model becomes
 
 $$I_j(\theta) = a_j^2\,\frac{(p_j - c_j)^2}{(1 - c_j)^2}\,\frac{1 - p_j}{p_j}.$$
 
-For the 2PL case this is \(a_j^2\,p_j(1 - p_j)\), which peaks at \(\theta = b_j\) with height \(a_j^2/4\); a guessing floor lowers the information and shifts its peak slightly above \(b_j\). Test information is \(I(\theta) = \sum_j I_j(\theta)\), and the standard error of an ability estimate is approximately \(1/\sqrt{I(\theta)}\).
+For the 2PL case this is \\(a_j^2\,p_j(1 - p_j)\\), which peaks at \\(\theta = b_j\\) with height \\(a_j^2/4\\); a guessing floor lowers the information and shifts its peak slightly above \\(b_j\\). Test information is \\(I(\theta) = \sum_j I_j(\theta)\\), and the standard error of an ability estimate is approximately \\(1/\sqrt{I(\theta)}\\).
 
 ![Fisher information](/assets/images/biosec-evaluations/information.png)
 
-**Figure 13.** Fisher information. Left, information curves of a sample of items from a 120-item pool. Right, test information of a 30-item form built from the items most informative at a decision threshold \(\theta^* = 1.5\), compared with a random 30-item form. The targeted form concentrates precision where the decision is made.
+**Figure 13.** Fisher information. Left, information curves of a sample of items from a 120-item pool. Right, test information of a 30-item form built from the items most informative at a decision threshold \\(\theta^* = 1.5\\), compared with a random 30-item form. The targeted form concentrates precision where the decision is made.
 
 At the threshold the targeted form has 1.85 times the information of the random form (5.69 against 3.07), so its ability standard error there is about 27 percent smaller. Before trusting IRT estimates I run a recovery study at the data's size.
 
@@ -434,7 +434,7 @@ At the threshold the targeted form has 1.85 times the information of the random 
 
 **Figure 14.** Recovery of 2PL parameters by joint MAP estimation from a simulated 60-respondent, 300-item response matrix. Dashed lines mark perfect recovery. Abilities and difficulties recover well, with correlations 0.99 and 0.94. Discriminations, each estimated from only 60 responses, recover less precisely, at correlation 0.62.
 
-Because discrimination recovers weakly with few respondents, analysts should confirm stability across refits before basing any decision on individual item discriminations, such as dropping items for low discrimination. A safety decision asks whether ability exceeds a threshold, and once a calibration study has fixed the item parameters, you can place a new model on the scale with the expected a posteriori estimate, the posterior mean of \(\theta\) over a grid,
+Because discrimination recovers weakly with few respondents, analysts should confirm stability across refits before basing any decision on individual item discriminations, such as dropping items for low discrimination. A safety decision asks whether ability exceeds a threshold, and once a calibration study has fixed the item parameters, you can place a new model on the scale with the expected a posteriori estimate, the posterior mean of \\(\theta\\) over a grid,
 
 $$\hat\theta_{\text{EAP}} = \frac{\int \theta\, L(y \mid \theta)\,\phi(\theta)\,d\theta}{\int L(y \mid \theta)\,\phi(\theta)\,d\theta}.$$
 
@@ -450,21 +450,21 @@ Single-turn questions measure what a model knows and can state, but many capabil
 
 ### Counting repeated attempts
 
-An actor can try a task many times. If a model succeeds with probability \(p\) per independent attempt, the probability that at least one of \(k\) attempts succeeds is
+An actor can try a task many times. If a model succeeds with probability \\(p\\) per independent attempt, the probability that at least one of \\(k\\) attempts succeeds is
 
 $$\text{pass@}k = 1 - (1 - p)^k.$$
 
-**A model that succeeds 10 percent of the time per attempt succeeds at least once in 10 attempts with probability 0.65 and in 32 with probability 0.97,** so a low per-attempt rate still carries risk when an actor can try many times and recognize success. I keep coming back to how fast a 10 percent per-attempt rate compounds, reaching 0.97 by 32 tries. In practice \(p\) is unknown, and from \(n \ge k\) samples with \(c\) successes the plug-in estimate \(1 - (1 - c/n)^k\) is biased downward by Jensen's inequality. Chen et al. (2021) derived an unbiased estimator,
+**A model that succeeds 10 percent of the time per attempt succeeds at least once in 10 attempts with probability 0.65 and in 32 with probability 0.97,** so a low per-attempt rate still carries risk when an actor can try many times and recognize success. I keep coming back to how fast a 10 percent per-attempt rate compounds, reaching 0.97 by 32 tries. In practice \\(p\\) is unknown, and from \\(n \ge k\\) samples with \\(c\\) successes the plug-in estimate \\(1 - (1 - c/n)^k\\) is biased downward by Jensen's inequality. Chen et al. (2021) derived an unbiased estimator,
 
 $$\widehat{\text{pass@}k} = 1 - \frac{\binom{n - c}{k}}{\binom{n}{k}},$$
 
-which equals the probability that a random \(k\)-subset of the \(n\) outcomes contains a success; averaging over the i.i.d. outcomes gives \(1 - (1-p)^k\). Computed as a stable product, with true per-attempt rate 0.15, \(n = 20\), and \(k = 5\), its mean over 20,000 replicates is 0.558 against the true 0.556. Some threat models instead need every attempt to succeed, for which the unbiased estimator of pass\(^k\) is \(\binom{c}{k}/\binom{n}{k}\).
+which equals the probability that a random \\(k\\)-subset of the \\(n\\) outcomes contains a success; averaging over the i.i.d. outcomes gives \\(1 - (1-p)^k\\). Computed as a stable product, with true per-attempt rate 0.15, \\(n = 20\\), and \\(k = 5\\), its mean over 20,000 replicates is 0.558 against the true 0.556. Some threat models instead need every attempt to succeed, for which the unbiased estimator of pass\\(^k\\) is \\(\binom{c}{k}/\binom{n}{k}\\).
 
 ![Repeated attempts](/assets/images/biosec-evaluations/passk.png)
 
-**Figure 16.** Repeated attempts. Left, probability of at least one success in \(k\) attempts (pass@\(k\)) for three per-attempt rates. Right, probability that all \(k\) attempts succeed (pass\(^k\)); a model with per-attempt success 0.8 completes 8 consecutive attempts with probability 0.17. Which quantity matters depends on whether the actor in the threat model can recognize success.
+**Figure 16.** Repeated attempts. Left, probability of at least one success in \\(k\\) attempts (pass@\\(k\\)) for three per-attempt rates. Right, probability that all \\(k\\) attempts succeed (pass\\(^k\\)); a model with per-attempt success 0.8 completes 8 consecutive attempts with probability 0.17. Which quantity matters depends on whether the actor in the threat model can recognize success.
 
-pass@\(k\) assumes the actor can tell which attempt succeeded, which unit tests provide in coding, while a written protocol often requires carrying it out. If the actor's imperfect check accepts a correct attempt with probability \(t\) and an incorrect one with probability \(f\) and takes the first accepted attempt, the expected success rate lies between the single-attempt rate and pass@\(n\). **I call the gap between pass@\(n\) and this verified rate the oracle gap.** Reporting pass@\(k\) alone assumes a perfect verifier and overstates what most real actors could achieve, while reporting only the single-attempt rate assumes no verifier and understates it. A threat model should state what verification the actor population has, and the evaluation should report the corresponding quantity.
+pass@\\(k\\) assumes the actor can tell which attempt succeeded, which unit tests provide in coding, while a written protocol often requires carrying it out. If the actor's imperfect check accepts a correct attempt with probability \\(t\\) and an incorrect one with probability \\(f\\) and takes the first accepted attempt, the expected success rate lies between the single-attempt rate and pass@\\(n\\). **I call the gap between pass@\\(n\\) and this verified rate the oracle gap.** Reporting pass@\\(k\\) alone assumes a perfect verifier and overstates what most real actors could achieve, while reporting only the single-attempt rate assumes no verifier and understates it. A threat model should state what verification the actor population has, and the evaluation should report the corresponding quantity.
 
 ### Time horizons
 
@@ -472,7 +472,7 @@ Agentic tasks vary greatly in length, and Kwa et al. (2025) proposed summarizing
 
 $$\Pr(\text{success on } t) = \sigma\big(\beta(\log_2 h_{50} - \log_2 \ell_t)\big),$$
 
-gives the 50 percent time horizon \(h_{50}\) and a slope \(\beta\), and the horizon at any other success level \(q\) is \(h_q = h_{50} \cdot 2^{-\operatorname{logit}(q)/\beta}\).
+gives the 50 percent time horizon \\(h_{50}\\) and a slope \\(\beta\\), and the horizon at any other success level \\(q\\) is \\(h_q = h_{50} \cdot 2^{-\operatorname{logit}(q)/\beta}\\).
 
 ![Time-horizon summary of an agentic suite](/assets/images/biosec-evaluations/horizon.png)
 
@@ -482,7 +482,7 @@ Fitting 60 simulated tasks from 1 to 960 minutes with a true horizon of 45 minut
 
 ### Elicitation
 
-**A capability evaluation that uses weak elicitation measures the evaluator's effort as much as the model,** and the capability estimand is a maximum over elicitation methods. Davidson et al. (2023) found that post-training enhancements can raise performance substantially while the base model stays as is, so a score under default prompting is a lower bound and possibly a loose one. Searching over elicitation conditions and reporting the best one pays a statistical cost. If every condition has the same true score \(p\), the maximum of several noisy scores is biased upward, because the maximum selects the condition whose noise happened to be most positive, the winner's curse. This is the same selection-on-error mechanism that opened the guide, now acting on elicitation conditions in place of candidate designs.
+**A capability evaluation that uses weak elicitation measures the evaluator's effort as much as the model,** and the capability estimand is a maximum over elicitation methods. Davidson et al. (2023) found that post-training enhancements can raise performance substantially while the base model stays as is, so a score under default prompting is a lower bound and possibly a loose one. Searching over elicitation conditions and reporting the best one pays a statistical cost. If every condition has the same true score \\(p\\), the maximum of several noisy scores is biased upward, because the maximum selects the condition whose noise happened to be most positive, the winner's curse. This is the same selection-on-error mechanism that opened the guide, now acting on elicitation conditions in place of candidate designs.
 
 ![Optimistic bias from reporting the best of several conditions](/assets/images/biosec-evaluations/winner.png)
 
@@ -520,7 +520,7 @@ In the simulation **a model trained on leaked items scores about 15 points highe
 
 ### Saturation and the label-noise ceiling
 
-A benchmark stops discriminating between models before scores reach 100 percent, and **answer-key errors make saturation arrive early** (Ott et al., 2022). Let \(\kappa_j\) be the probability that item \(j\)'s key is correct. A perfect respondent matches the key on items with correct keys and, for a four-option item with a wrong key, matches with probability near zero, so the maximum attainable expected score is approximately
+A benchmark stops discriminating between models before scores reach 100 percent, and **answer-key errors make saturation arrive early** (Ott et al., 2022). Let \\(\kappa_j\\) be the probability that item \\(j\\)'s key is correct. A perfect respondent matches the key on items with correct keys and, for a four-option item with a wrong key, matches with probability near zero, so the maximum attainable expected score is approximately
 
 $$\mu_{\max} \approx \frac{1}{n}\sum_j \kappa_j.$$
 
@@ -532,7 +532,7 @@ $$\mu_{\max} \approx \frac{1}{n}\sum_j \kappa_j.$$
 
 ### Sensitivity to evaluation design
 
-**Language-model scores are sensitive to choices that should not matter.** Sclar et al. (2024) found that prompt-formatting changes can move accuracy by tens of points, Madaan et al. (2024) measured variance across seeds large enough to change rankings, and Biderman et al. (2024) documented how implementation details produce irreproducible results. A factorial design over a few levels of each factor decomposes the variance of the resulting scores, with the share due to factor \(f\) being the variance of its level means around the grand mean, divided by the total variance.
+**Language-model scores are sensitive to choices that should not matter.** Sclar et al. (2024) found that prompt-formatting changes can move accuracy by tens of points, Madaan et al. (2024) measured variance across seeds large enough to change rankings, and Biderman et al. (2024) documented how implementation details produce irreproducible results. A factorial design over a few levels of each factor decomposes the variance of the resulting scores, with the share due to factor \\(f\\) being the variance of its level means around the grand mean, divided by the total variance.
 
 ![Sensitivity of a score to evaluation design](/assets/images/biosec-evaluations/varcomp.png)
 
@@ -650,47 +650,47 @@ The minimal design has two arms. The control arm receives the resources the thre
 
 ### Sample size
 
-Uplift trials are expensive per participant, so they are often too small, and **a trial too small to detect a decision-relevant effect leaves the claim of an absent effect unsupported.** For a binary outcome with success probabilities \(p_0\) and \(p_1\) and \(n\) participants per arm, with pooled rate \(\bar p = (p_0 + p_1)/2\),
+Uplift trials are expensive per participant, so they are often too small, and **a trial too small to detect a decision-relevant effect leaves the claim of an absent effect unsupported.** For a binary outcome with success probabilities \\(p_0\\) and \\(p_1\\) and \\(n\\) participants per arm, with pooled rate \\(\bar p = (p_0 + p_1)/2\\),
 
 $$n = \frac{\Big[z_{1-\alpha/2}\sqrt{2\bar p(1-\bar p)} + z_{1-\beta}\sqrt{p_0(1-p_0) + p_1(1-p_1)}\Big]^2}{(p_1 - p_0)^2}.$$
 
 ![Power of uplift trials](/assets/images/biosec-evaluations/uplift_power.png)
 
-**Figure 29.** Power of uplift trials. Left, power to detect an increase from a control success rate of 0.10 to three treatment rates, as a function of participants per arm; the dashed line marks 80 percent power. Right, participants per arm needed for 80 percent power on a continuous outcome, as a function of the standardized effect, with and without adjustment for a baseline covariate that explains a fraction \(R^2\) of outcome variance.
+**Figure 29.** Power of uplift trials. Left, power to detect an increase from a control success rate of 0.10 to three treatment rates, as a function of participants per arm; the dashed line marks 80 percent power. Right, participants per arm needed for 80 percent power on a continuous outcome, as a function of the standardized effect, with and without adjustment for a baseline covariate that explains a fraction \\(R^2\\) of outcome variance.
 
-**To detect an increase from 10 percent to 25 percent at 80 percent power needs 100 participants per arm,** and in 1,000 simulated trials the Newcombe interval excluded zero 82.1 percent of the time. An increase from 10 to 15 percent needs several hundred per arm, and a trial with 50 per arm and a control rate of 10 percent has 80 percent power only for increases of 22 points or more. For a continuous outcome with standardized effect \(d\),
+**To detect an increase from 10 percent to 25 percent at 80 percent power needs 100 participants per arm,** and in 1,000 simulated trials the Newcombe interval excluded zero 82.1 percent of the time. An increase from 10 to 15 percent needs several hundred per arm, and a trial with 50 per arm and a control rate of 10 percent has 80 percent power only for increases of 22 points or more. For a continuous outcome with standardized effect \\(d\\),
 
 $$n = \frac{2(z_{1-\alpha/2} + z_{1-\beta})^2}{d^2},$$
 
-so at 80 percent power \(d = 0.2\) needs 393 per arm, \(d = 0.5\) needs 63, and \(d = 0.8\) needs 25. A baseline covariate that explains a fraction \(R^2\) of outcome variance reduces the required sample to \((1 - R^2)n\), which is usually the cheapest way to increase power. When participants are nested in groups or work in teams, the design effect applies and the unit of analysis becomes the group, which makes team-based trials much more expensive.
+so at 80 percent power \\(d = 0.2\\) needs 393 per arm, \\(d = 0.5\\) needs 63, and \\(d = 0.8\\) needs 25. A baseline covariate that explains a fraction \\(R^2\\) of outcome variance reduces the required sample to \\((1 - R^2)n\\), which is usually the cheapest way to increase power. When participants are nested in groups or work in teams, the design effect applies and the unit of analysis becomes the group, which makes team-based trials much more expensive.
 
 ### Analysis and covariate adjustment
 
-The primary estimate for a binary outcome is the risk difference \(\hat p_1 - \hat p_0\), whose interval needs a method beyond the Wald formula. Newcombe (1998) recommended a hybrid combining the Wilson intervals of the two arms; with \([l_0, u_0]\) and \([l_1, u_1]\) the Wilson intervals, the interval for \(p_1 - p_0\) is
+The primary estimate for a binary outcome is the risk difference \\(\hat p_1 - \hat p_0\\), whose interval needs a method beyond the Wald formula. Newcombe (1998) recommended a hybrid combining the Wilson intervals of the two arms; with \\([l_0, u_0]\\) and \\([l_1, u_1]\\) the Wilson intervals, the interval for \\(p_1 - p_0\\) is
 
 $$\left[\hat\delta - \sqrt{(\hat p_1 - l_1)^2 + (u_0 - \hat p_0)^2},\;\; \hat\delta + \sqrt{(u_1 - \hat p_1)^2 + (\hat p_0 - l_0)^2}\right].$$
 
-Adjusting for a prognostic baseline covariate increases power while leaving the treatment effect unbiased, and for binary outcomes analyzed with logistic regression it also changes which effect is estimated. Fitting \(\operatorname{logit}\Pr(Z_i = 1) = \beta_0 + \beta_1\,\text{arm}_i + \beta_2\,x_i\) by Newton-Raphson, the arm coefficient is the log odds ratio among participants with the same baseline skill. In simulated trials with 120 per arm, a control rate of 0.2, and a true conditional odds ratio of 2, **the unadjusted analysis detected the effect in 50.9 percent of trials and the adjusted in 58.4 percent.** Part of the gain is variance reduction, and part is non-collapsibility. In logistic regression the conditional odds ratio is farther from 1 than the marginal one even when skill is perfectly balanced (Gail et al., 1984), so the unadjusted and adjusted analyses estimate different quantities. The unadjusted estimates the marginal effect ("how much does model access change the success rate in this population?") and the adjusted the conditional effect ("for a participant of given skill?"). For uplift claims the marginal risk difference is usually most interpretable, and standardization recovers it from the adjusted model (Kahan et al., 2014).
+Adjusting for a prognostic baseline covariate increases power while leaving the treatment effect unbiased, and for binary outcomes analyzed with logistic regression it also changes which effect is estimated. Fitting \\(\operatorname{logit}\Pr(Z_i = 1) = \beta_0 + \beta_1\,\text{arm}_i + \beta_2\,x_i\\) by Newton-Raphson, the arm coefficient is the log odds ratio among participants with the same baseline skill. In simulated trials with 120 per arm, a control rate of 0.2, and a true conditional odds ratio of 2, **the unadjusted analysis detected the effect in 50.9 percent of trials and the adjusted in 58.4 percent.** Part of the gain is variance reduction, and part is non-collapsibility. In logistic regression the conditional odds ratio is farther from 1 than the marginal one even when skill is perfectly balanced (Gail et al., 1984), so the unadjusted and adjusted analyses estimate different quantities. The unadjusted estimates the marginal effect ("how much does model access change the success rate in this population?") and the adjusted the conditional effect ("for a participant of given skill?"). For uplift claims the marginal risk difference is usually most interpretable, and standardization recovers it from the adjusted model (Kahan et al., 2014).
 
 ### Demonstrating the absence of uplift
 
-**A non-significant result leaves the absence of uplift unproven, because a small trial retains the null for most true effects, large ones included.** To support a claim of no meaningful uplift, a trial must show the effect is smaller than a pre-specified margin \(\Delta\), the largest effect that would count as negligible. The two one-sided tests procedure (TOST) tests \(H_{01}\colon \delta \le -\Delta\) and \(H_{02}\colon \delta \ge \Delta\) (Schuirmann, 1987; Lakens, 2017), and rejecting both at level \(\alpha\) supports \(-\Delta < \delta < \Delta\), which is equivalent to the \((1 - 2\alpha)\) confidence interval lying entirely inside the band.
+**A non-significant result leaves the absence of uplift unproven, because a small trial retains the null for most true effects, large ones included.** To support a claim of no meaningful uplift, a trial must show the effect is smaller than a pre-specified margin \\(\Delta\\), the largest effect that would count as negligible. The two one-sided tests procedure (TOST) tests \\(H_{01}\colon \delta \le -\Delta\\) and \\(H_{02}\colon \delta \ge \Delta\\) (Schuirmann, 1987; Lakens, 2017), and rejecting both at level \\(\alpha\\) supports \\(-\Delta < \delta < \Delta\\), which is equivalent to the \\((1 - 2\alpha)\\) confidence interval lying entirely inside the band.
 
 ![Equivalence testing](/assets/images/biosec-evaluations/tost.png)
 
-**Figure 30.** Equivalence testing. Five hypothetical trials, each shown as a 90 percent interval for the risk difference. The shaded band is the equivalence margin of \(\pm 0.10\). Only intervals entirely inside the band support a claim of no meaningful uplift.
+**Figure 30.** Equivalence testing. Five hypothetical trials, each shown as a 90 percent interval for the risk difference. The shaded band is the equivalence margin of \\(\pm 0.10\\). Only intervals entirely inside the band support a claim of no meaningful uplift.
 
 Trials with narrow intervals inside the margin support equivalence, a trial whose interval excludes zero detects uplift, and trials whose intervals include zero but extend past the margin are inconclusive, since a superiority test would call them non-significant yet they leave meaningful uplift possible. **Describing such a trial as showing no uplift misstates the evidence.** Equivalence trials need more participants than superiority trials for the same margin, and the threat model must justify the margin in advance, since a margin chosen after seeing the data can make any result look like equivalence.
 
 ### Sequential monitoring
 
-Looking at trial data repeatedly and stopping when the result is significant inflates the false positive rate; **with five looks at the 5 percent level the chance of at least one false rejection under the null is about 14 percent** (Armitage et al., 1969). Group-sequential designs fix this with stricter early boundaries. The O'Brien-Fleming design (O'Brien and Fleming, 1979) uses very strict early boundaries that relax toward the conventional value at the final look, and Lan and DeMets (1983) generalized it with alpha-spending functions that specify how much of the total type I error each information fraction \(t\) spends. The O'Brien-Fleming-type spending function per side is \(\alpha_1(t) = 2 - 2\Phi(z_{1-\alpha/4}/\sqrt{t})\), which spends \(\alpha/2\) per side by \(t = 1\) and almost nothing at small \(t\). The method finds each boundary so the probability of first crossing at that look under the null equals the incremental spend, evaluating on a fine grid the density of the score statistic restricted to paths that have not yet crossed.
+Looking at trial data repeatedly and stopping when the result is significant inflates the false positive rate; **with five looks at the 5 percent level the chance of at least one false rejection under the null is about 14 percent** (Armitage et al., 1969). Group-sequential designs fix this with stricter early boundaries. The O'Brien-Fleming design (O'Brien and Fleming, 1979) uses very strict early boundaries that relax toward the conventional value at the final look, and Lan and DeMets (1983) generalized it with alpha-spending functions that specify how much of the total type I error each information fraction \\(t\\) spends. The O'Brien-Fleming-type spending function per side is \\(\alpha_1(t) = 2 - 2\Phi(z_{1-\alpha/4}/\sqrt{t})\\), which spends \\(\alpha/2\\) per side by \\(t = 1\\) and almost nothing at small \\(t\\). The method finds each boundary so the probability of first crossing at that look under the null equals the incremental spend, evaluating on a fine grid the density of the score statistic restricted to paths that have not yet crossed.
 
 ![Group-sequential boundaries for an uplift trial](/assets/images/biosec-evaluations/obf.png)
 
-**Figure 31.** Group-sequential boundaries for an uplift trial with five equally spaced looks. Blue, O'Brien-Fleming-type boundaries from the Lan-DeMets spending function. Orange, the unadjusted \(\pm 1.96\) boundary. Grey lines are sample paths of the \(z\) statistic under the null hypothesis.
+**Figure 31.** Group-sequential boundaries for an uplift trial with five equally spaced looks. Blue, O'Brien-Fleming-type boundaries from the Lan-DeMets spending function. Orange, the unadjusted \\(\pm 1.96\\) boundary. Grey lines are sample paths of the \\(z\\) statistic under the null hypothesis.
 
-For five equally spaced looks at \(\alpha = 0.05\), the library returns \(z\) boundaries of 4.87, 3.36, 2.68, 2.29, and 2.03, which agree with published tables to within the grid resolution. Interim looks are safe only with boundaries fixed in advance.
+For five equally spaced looks at \\(\alpha = 0.05\\), the library returns \\(z\\) boundaries of 4.87, 3.36, 2.68, 2.29, and 2.03, which agree with published tables to within the grid resolution. Interim looks are safe only with boundaries fixed in advance.
 
 ### Ethics and generalization
 
@@ -704,11 +704,11 @@ An evaluation ends in a decision. Clear a model under standard safeguards, flag 
 
 ### Burden of proof
 
-Let the true capability score be \(\mu\) and the threshold \(\tau\), with \(k\) successes in \(n\) items. A rule-out rule clears the model only if the one-sided upper bound is below \(\tau\), so uncertainty counts against clearance and a model with too few items stays uncleared,
+Let the true capability score be \\(\mu\\) and the threshold \\(\tau\\), with \\(k\\) successes in \\(n\\) items. A rule-out rule clears the model only if the one-sided upper bound is below \\(\tau\\), so uncertainty counts against clearance and a model with too few items stays uncleared,
 
 $$\text{clear} \iff U_{1-\alpha}(k, n) < \tau.$$
 
-A rule-in rule flags the model only if the one-sided lower bound exceeds \(\tau\), so uncertainty counts against flagging,
+A rule-in rule flags the model only if the one-sided lower bound exceeds \\(\tau\\), so uncertainty counts against flagging,
 
 $$\text{flag} \iff L_{1-\alpha}(k, n) > \tau.$$
 
@@ -722,35 +722,35 @@ Applying both rules partitions every result into cleared, flagged, or inconclusi
 
 **Figure 32.** Three-way decision regions for a threshold of 0.5 with one-sided 95 percent Clopper-Pearson bounds. Green, cleared under the rule-out rule. Orange, flagged under the rule-in rule. Grey, inconclusive. The inconclusive band narrows as the number of items grows.
 
-The band is wide when \(n\) is small and narrows at rate \(1/\sqrt{n}\). With 100 items any observed score between about 0.42 and 0.58 is inconclusive, and with 1,000 items the band narrows to about 0.47 to 0.53. **A model whose true score is near the threshold needs many items to leave the band.** For a threshold of 0.5, a model with true score 0.30 resolves with 30 items, one at 0.40 needs 80, one at 0.45 needs 285, and one at 0.48 needs 1,705, since the requirement grows as the inverse square of the distance to the threshold. This is a strong argument for targeted and adaptive testing, spending budgets on the models that sit near thresholds.
+The band is wide when \\(n\\) is small and narrows at rate \\(1/\sqrt{n}\\). With 100 items any observed score between about 0.42 and 0.58 is inconclusive, and with 1,000 items the band narrows to about 0.47 to 0.53. **A model whose true score is near the threshold needs many items to leave the band.** For a threshold of 0.5, a model with true score 0.30 resolves with 30 items, one at 0.40 needs 80, one at 0.45 needs 285, and one at 0.48 needs 1,705, since the requirement grows as the inverse square of the distance to the threshold. This is a strong argument for targeted and adaptive testing, spending budgets on the models that sit near thresholds.
 
 ### Bayesian exceedance and asymmetric loss
 
-Frequentist bounds answer how surprising a result would be if the true score were at the threshold, but decision makers often want the probability that the true score exceeds the threshold given the data. With a Beta\((a, b)\) prior and \(k\) successes in \(n\) items, the posterior is Beta\((a + k, b + n - k)\) and the exceedance probability is
+Frequentist bounds answer how surprising a result would be if the true score were at the threshold, but decision makers often want the probability that the true score exceeds the threshold given the data. With a Beta\\((a, b)\\) prior and \\(k\\) successes in \\(n\\) items, the posterior is Beta\\((a + k, b + n - k)\\) and the exceedance probability is
 
 $$\Pr(\mu > \tau \mid k, n) = 1 - F_{\text{Beta}(a+k,\, b+n-k)}(\tau).$$
 
-Letting \(L_{\text{clear}}\) be the cost of clearing a model truly above the threshold and \(L_{\text{flag}}\) the cost of flagging one truly below, flagging minimizes expected loss when the exceedance probability exceeds
+Letting \\(L_{\text{clear}}\\) be the cost of clearing a model truly above the threshold and \\(L_{\text{flag}}\\) the cost of flagging one truly below, flagging minimizes expected loss when the exceedance probability exceeds
 
 $$p^* = \frac{L_{\text{flag}}}{L_{\text{flag}} + L_{\text{clear}}}.$$
 
-If a decision maker judges clearing a dangerous model to be 20 times as costly as flagging a safe one, the critical probability is \(1/21 \approx 0.048\), so flag the model whenever it has roughly a 5 percent chance of exceeding the threshold. **Writing down the cost ratio converts an implicit judgment into an explicit, arguable number.** A uniform prior Beta\((1,1)\) is a common default, and a prior informed by the previous generation's score is more realistic but, if too strong, can hide a sudden jump in capability, so reports should show results under a weak prior and any informed prior used.
+If a decision maker judges clearing a dangerous model to be 20 times as costly as flagging a safe one, the critical probability is \\(1/21 \approx 0.048\\), so flag the model whenever it has roughly a 5 percent chance of exceeding the threshold. **Writing down the cost ratio converts an implicit judgment into an explicit, arguable number.** A uniform prior Beta\\((1,1)\\) is a common default, and a prior informed by the previous generation's score is more realistic but, if too strong, can hide a sudden jump in capability, so reports should show results under a weak prior and any informed prior used.
 
 ### Aggregating evidence, and policies as rules
 
-A biosecurity assessment rarely rests on one evaluation, and **two aggregation logics point in opposite directions.** When several independent evaluations test the same construct, Fisher's method combines their \(p\)-values through \(-2\sum_i \log p_i\), which follows a \(\chi^2\) distribution with \(2m\) degrees of freedom under the null; in practice different evaluations of one construct share items, graders, or elicitation, so they are rarely independent and Fisher's method overstates the combined evidence, and pooling at the level of item responses through a joint IRT model is more honest. When evaluations test different steps of a pathway the logic reverses, because the pathway succeeds only if every step succeeds, so clearing a model on the grounds that it fails one step requires a strong evaluation of that step, and a step with no evaluation counts as inconclusive by default. Absence of evidence about a step is not evidence that the step is hard.
+A biosecurity assessment rarely rests on one evaluation, and **two aggregation logics point in opposite directions.** When several independent evaluations test the same construct, Fisher's method combines their \\(p\\)-values through \\(-2\sum_i \log p_i\\), which follows a \\(\chi^2\\) distribution with \\(2m\\) degrees of freedom under the null; in practice different evaluations of one construct share items, graders, or elicitation, so they are rarely independent and Fisher's method overstates the combined evidence, and pooling at the level of item responses through a joint IRT model is more honest. When evaluations test different steps of a pathway the logic reverses, because the pathway succeeds only if every step succeeds, so clearing a model on the grounds that it fails one step requires a strong evaluation of that step, and a step with no evaluation counts as inconclusive by default. Absence of evidence about a step is not evidence that the step is hard.
 
-Published frontier safety policies can be read as decision rules of this kind. Anthropic's Responsible Scaling Policy defines AI Safety Levels with capability thresholds, including for chemical, biological, radiological, and nuclear weapons, and requires stronger safeguards once a model reaches a threshold or the developer cannot rule it out (Anthropic, 2023). OpenAI's Preparedness Framework tracks risk categories including biological and chemical capability (OpenAI, 2023), and Google DeepMind's Frontier Safety Framework defines critical capability levels with early-warning evaluations (Google DeepMind, 2024). Where a policy states a threshold in terms of uplift but tests it with capability evaluations, **it relies on the proxy assumption, a policy judgment no measurement has tested.** Policies usually leave the statistical form of the rule unspecified in public, such as which bound is compared with the threshold, at what confidence level, and how many items or participants it requires; making these choices explicit, even internally, would make decisions more consistent and easier to audit. For early-warning designs, the gap between the warning threshold \(\tau_{\text{warn}}\) and the critical threshold \(\tau\) should exceed the expected capability gain between evaluations plus the width of the inconclusive band, or a model can cross from below the warning level to above the critical level between rounds, with both rounds missing it.
+Published frontier safety policies can be read as decision rules of this kind. Anthropic's Responsible Scaling Policy defines AI Safety Levels with capability thresholds, including for chemical, biological, radiological, and nuclear weapons, and requires stronger safeguards once a model reaches a threshold or the developer cannot rule it out (Anthropic, 2023). OpenAI's Preparedness Framework tracks risk categories including biological and chemical capability (OpenAI, 2023), and Google DeepMind's Frontier Safety Framework defines critical capability levels with early-warning evaluations (Google DeepMind, 2024). Where a policy states a threshold in terms of uplift but tests it with capability evaluations, **it relies on the proxy assumption, a policy judgment no measurement has tested.** Policies usually leave the statistical form of the rule unspecified in public, such as which bound is compared with the threshold, at what confidence level, and how many items or participants it requires; making these choices explicit, even internally, would make decisions more consistent and easier to audit. For early-warning designs, the gap between the warning threshold \\(\tau_{\text{warn}}\\) and the critical threshold \\(\tau\\) should exceed the expected capability gain between evaluations plus the width of the inconclusive band, or a model can cross from below the warning level to above the critical level between rounds, with both rounds missing it.
 
 ## An end-to-end evaluation
 
 To put the pieces together, I build a benchmark, run two simulated models through the harness, compute intervals and a paired comparison, place both models on an IRT ability scale, apply a three-way decision rule, and produce tiered reports. Every number comes from the worked-example script's output, and because the items are placeholders and the models are simulators, the true values are known.
 
-I create 240 placeholder items in 4 constructs, grouped 4 to a scenario, and split by cluster into a 60-item development set, used to choose the prompt and elicitation, and a 180-item held-out set on which I compute every number. **The blueprint check shows each construct has 45 items from 45 scenarios, and the power formula already says that construct-level scores from 45 items will have intervals roughly \(\pm 0.13\) wide,** so construct-level differences of a few points carry no meaning. Knowing this before running the evaluation prevents over-reading the per-construct table later.
+I create 240 placeholder items in 4 constructs, grouped 4 to a scenario, and split by cluster into a 60-item development set, used to choose the prompt and elicitation, and a 180-item held-out set on which I compute every number. **The blueprint check shows each construct has 45 items from 45 scenarios, and the power formula already says that construct-level scores from 45 items will have intervals roughly \\(\pm 0.13\\) wide,** so construct-level differences of a few points carry no meaning. Knowing this before running the evaluation prevents over-reading the per-construct table later.
 
 The harness sends each item to the model five times, shuffling option order on each sample, parses each response, detects refusals, and scores the parsed choice against the key after undoing the shuffle. The transcript sink writes `PUBLIC` transcripts to an ordinary file and higher-tier transcripts to a secure writer, keeping only a reference built from the item fingerprint, the sample index, and a hash of the text; in a verification run over 80 items with 4 samples each, **the public file contained exactly 124 lines, equal to the 31 `PUBLIC` items times 4 samples, and no restricted transcript reached it.** Each run also writes a content-free manifest with a hash of all item fingerprints and a configuration digest, which lets an auditor confirm the item set and configuration.
 
-I evaluate two models, both 3PL simulators with fixed abilities \(\theta_A = -0.2\) and \(\theta_B = 0.6\), in a helpful-only configuration so they answer every item and the score targets capability. A third run evaluates model B's deployed configuration, which refuses 60 percent of samples on `RESTRICTED` items, scored with refusals as incorrect so it targets propensity. The scores and their uncertainty follow.
+I evaluate two models, both 3PL simulators with fixed abilities \\(\theta_A = -0.2\\) and \\(\theta_B = 0.6\\), in a helpful-only configuration so they answer every item and the score targets capability. A third run evaluates model B's deployed configuration, which refuses 60 percent of samples on `RESTRICTED` items, scored with refusals as incorrect so it targets propensity. The scores and their uncertainty follow.
 
 | | model A | model B |
 |---|---|---|
@@ -764,13 +764,13 @@ I evaluate two models, both 3PL simulators with fixed abilities \(\theta_A = -0.
 | 95% CI (cluster bootstrap) | [0.612, 0.699] | [0.734, 0.809] |
 | between-item variance | 0.030 | 0.036 |
 | mean within-item variance | 0.196 | 0.141 |
-| SE floor as \(K \to \infty\) | 0.0129 | 0.0141 |
+| SE floor as \\(K \to \infty\\) | 0.0129 | 0.0141 |
 
 **Both scores are within one standard error of the true expected scores.** For model A clustering inflates the variance by about 31 percent and the effective sample size falls from 180 to 137, while for model B the design effect is 1.03; the difference is why each model needs its own design effect. The clustered normal and cluster bootstrap intervals agree to within 0.002. For model A the within-item variance is about 6.5 times the between-item variance, so about six or seven samples per item would be reasonable, and with five the standard error of 0.0196 is about 50 percent above the floor of 0.0129.
 
 Because both models answered the same items, I pair the comparison with cluster-robust standard errors. **Model B scores 0.116 higher than model A, with a paired clustered standard error of 0.0174 and a 95 percent interval of [0.081, 0.150].** An unpaired analysis would give a standard error about 56 percent larger because it ignores the positive correlation between the two models' item outcomes. The true difference of 0.114 lies inside the interval, the minimum detectable difference for this benchmark is about 0.12, and a benchmark of this size would often miss a smaller true difference. The deployed configuration of model B refused 17.9 percent of all samples and, with refusals scored as incorrect, scored 0.646 against the capability score of 0.771, a different question about how often a user of the deployed system would receive a correct answer, where the capability score measures how much the model knows.
 
-To place the models on a stable scale, I calibrate the item parameters on a panel of 40 other respondents with the 3PL model and guessing floors fixed at 0.25. The calibration converged, recovered difficulties with correlation 0.90, and produced no negative discriminations, so there is no sign of key errors. Model A has estimated ability \(-0.15\) (posterior SD 0.18) against a true \(-0.14\), and model B has \(0.66\) (SD 0.19) against a true \(0.55\), both within one posterior SD. With a threshold of \(\tau = 0.70\) and a rule-out burden of proof, applied to the effective sample size to respect clustering, model A's one-sided 95 percent bounds are [0.585, 0.724]. The upper bound exceeds 0.70, which blocks clearance, and the lower bound sits below 0.70, which blocks flagging, so the outcome is inconclusive, and the posterior exceedance probability is 0.12 under a uniform prior. Model B's bounds are [0.712, 0.822], so its lower bound exceeds the threshold and it is flagged, with posterior exceedance 0.98. **Model A's true score is about 4 points below the threshold, and with 137 effective items the evaluation leaves it uncleared,** so the appropriate response is to add items targeted near the threshold, keeping the result as the data give it.
+To place the models on a stable scale, I calibrate the item parameters on a panel of 40 other respondents with the 3PL model and guessing floors fixed at 0.25. The calibration converged, recovered difficulties with correlation 0.90, and produced no negative discriminations, so there is no sign of key errors. Model A has estimated ability \\(-0.15\\) (posterior SD 0.18) against a true \\(-0.14\\), and model B has \\(0.66\\) (SD 0.19) against a true \\(0.55\\), both within one posterior SD. With a threshold of \\(\tau = 0.70\\) and a rule-out burden of proof, applied to the effective sample size to respect clustering, model A's one-sided 95 percent bounds are [0.585, 0.724]. The upper bound exceeds 0.70, which blocks clearance, and the lower bound sits below 0.70, which blocks flagging, so the outcome is inconclusive, and the posterior exceedance probability is 0.12 under a uniform prior. Model B's bounds are [0.712, 0.822], so its lower bound exceeds the threshold and it is flagged, with posterior exceedance 0.98. **Model A's true score is about 4 points below the threshold, and with 137 effective items the evaluation leaves it uncleared,** so the appropriate response is to add items targeted near the threshold, keeping the result as the data give it.
 
 Finally the pipeline builds construct-level rows and renders a controlled view at full precision and a public view that coarsens scores and interval limits to the nearest 0.05 and suppresses any slice with fewer than 20 items or 5 clusters. The public construct-level intervals are about 0.15 to 0.20 wide, too wide to compare constructs within a model, and the evaluation card lists this limitation explicitly. The worked example demonstrates that the blueprint check predicted uninformative construct-level comparisons before any model ran, that clustering changed the effective sample size differently for the two models, that pairing reduced the comparison's standard error by about a third, that the propensity and capability scores answer different questions, and that a model 4 points below the threshold stayed uncleared with 137 effective items.
 
@@ -810,7 +810,7 @@ My meeting notes give this failure a name, the behavioral alignment fallacy. Ide
 
 ### Test 5, null against the selection
 
-When a search keeps the top candidate, the right null mimics the selection at the same budget. The kept candidate has the largest error among many, so with \\(s = f^{*} + \varepsilon\\) the quantity \\(\mathbb{E}[\max_{i\le n}\varepsilon_i]\\) grows with \\(n\\) and the selected error inflates the score on its own. Compare your selection to a null that mimics the selection procedure at the same budget, and report where the score and the realized quality first separate. **The fail signal is that the apparent gain is selected error.** This is also why a safety benchmark can be half-answered from the options alone, which is the WMDP-Bio case study earlier, and why reporting the best of several elicitation conditions biases a capability estimate upward.
+When a search keeps the top candidate, the right null mimics the selection at the same budget. The kept candidate has the largest error among many, so with \\\(s = f^{*} + \varepsilon\\\) the quantity \\\(\mathbb{E}[\max_{i\le n}\varepsilon_i]\\\) grows with \\\(n\\\) and the selected error inflates the score on its own. Compare your selection to a null that mimics the selection procedure at the same budget, and report where the score and the realized quality first separate. **The fail signal is that the apparent gain is selected error.** This is also why a safety benchmark can be half-answered from the options alone, which is the WMDP-Bio case study earlier, and why reporting the best of several elicitation conditions biases a capability estimate upward.
 
 ### What to report
 
@@ -834,41 +834,41 @@ PRISM was supervised independent research with AITHYRA, with Gabriela Lobińska,
 
 ## Supplementary derivations
 
-**Standard error of a chance-corrected score.** The chance-corrected score is a linear function of the raw score, and for \(g(x) = (x - u)/v\) the variance scales by \(1/v^2\), so
+**Standard error of a chance-corrected score.** The chance-corrected score is a linear function of the raw score, and for \\(g(x) = (x - u)/v\\) the variance scales by \\(1/v^2\\), so
 
 $$\operatorname{SE}(\hat\mu_{\text{corr}}) = \frac{\operatorname{SE}(\hat\mu)}{1 - 1/k} = \frac{k}{k-1}\,\operatorname{SE}(\hat\mu).$$
 
-For four-option items the corrected standard error is \(4/3\) times the raw one. Chance correction stretches the scale, and the uncertainty stretches with it.
+For four-option items the corrected standard error is \\(4/3\\) times the raw one. Chance correction stretches the scale, and the uncertainty stretches with it.
 
 **The binomial-Beta identity behind Clopper-Pearson.** The limits rest on
 
 $$\Pr(X \ge k \mid n, p) = \Pr(B \le p), \qquad X \sim \text{Binomial}(n, p),\; B \sim \text{Beta}(k, n - k + 1).$$
 
-Drawing \(n\) uniforms, the event that at least \(k\) fall below \(p\) is the event that the \(k\)-th smallest is at most \(p\), and the \(k\)-th order statistic of \(n\) uniforms is Beta\((k, n-k+1)\). The lower Clopper-Pearson limit is therefore the \(\alpha/2\) quantile of Beta\((k, n-k+1)\), and the upper limit follows symmetrically.
+Drawing \\(n\\) uniforms, the event that at least \\(k\\) fall below \\(p\\) is the event that the \\(k\\)-th smallest is at most \\(p\\), and the \\(k\\)-th order statistic of \\(n\\) uniforms is Beta\\((k, n-k+1)\\). The lower Clopper-Pearson limit is therefore the \\(\alpha/2\\) quantile of Beta\\((k, n-k+1)\\), and the upper limit follows symmetrically.
 
-**Consistency of the cluster-robust variance.** Writing \(E_c = (T_c - m_c\mu) - m_c(\hat\mu - \mu)\), the first term has mean zero and variance \(\Var(T_c)\), and the second is of order \(m_c/\sqrt{C}\), so summing squares over clusters gives \(\sum_c E_c^2 = \sum_c \Var(T_c)(1 + O(1/C))\) in expectation and the estimator is consistent as the number of clusters grows. The factor \(C/(C-1)\) removes the leading downward bias. Consistency requires many clusters, and adding items within a cluster leaves it unchanged, which is why the estimator is unreliable with few scenarios.
+**Consistency of the cluster-robust variance.** Writing \\(E_c = (T_c - m_c\mu) - m_c(\hat\mu - \mu)\\), the first term has mean zero and variance \\(\Var(T_c)\\), and the second is of order \\(m_c/\sqrt{C}\\), so summing squares over clusters gives \\(\sum_c E_c^2 = \sum_c \Var(T_c)(1 + O(1/C))\\) in expectation and the estimator is consistent as the number of clusters grows. The factor \\(C/(C-1)\\) removes the leading downward bias. Consistency requires many clusters, and adding items within a cluster leaves it unchanged, which is why the estimator is unreliable with few scenarios.
 
-**Unbiased estimation of within-item variance.** For an item with true probability \(p\) and \(K\) samples with mean \(\bar y\),
+**Unbiased estimation of within-item variance.** For an item with true probability \\(p\\) and \\(K\\) samples with mean \\(\bar y\\),
 
 $$\mathbb{E}[\bar y(1 - \bar y)] = p(1-p)\,\frac{K-1}{K},$$
 
-so multiplying by \(K/(K-1)\) gives an unbiased estimator of \(p(1-p)\), and averaging over items gives \(\sigma_w^2\). Since the sample variance of item means has expectation \(\sigma_b^2 + \sigma_w^2/K\), subtracting the estimated \(\sigma_w^2/K\) gives \(\sigma_b^2\), truncated at zero in small samples.
+so multiplying by \\(K/(K-1)\\) gives an unbiased estimator of \\(p(1-p)\\), and averaging over items gives \\(\sigma_w^2\\). Since the sample variance of item means has expectation \\(\sigma_b^2 + \sigma_w^2/K\\), subtracting the estimated \\(\sigma_w^2/K\\) gives \\(\sigma_b^2\\), truncated at zero in small samples.
 
-**Unbiasedness of the pass@\(k\) estimator.** Let \(S\) be a uniformly random \(k\)-subset of the \(n\) outcomes, chosen independently, and \(A = 1\) if \(\max_{i \in S} Y_i = 1\). Conditional on the outcomes, \(\Pr(A = 1) = 1 - \binom{n-c}{k}/\binom{n}{k}\), the estimator itself. Because \(S\) is independent of the i.i.d. outcomes, \(\{Y_i : i \in S\}\) is a set of \(k\) i.i.d. Bernoulli\((p)\) variables, so the expectation is \(1 - (1-p)^k\). The same argument with the minimum gives the pass\(^k\) estimator.
+**Unbiasedness of the pass@\\(k\\) estimator.** Let \\(S\\) be a uniformly random \\(k\\)-subset of the \\(n\\) outcomes, chosen independently, and \\(A = 1\\) if \\(\max_{i \in S} Y_i = 1\\). Conditional on the outcomes, \\(\Pr(A = 1) = 1 - \binom{n-c}{k}/\binom{n}{k}\\), the estimator itself. Because \\(S\\) is independent of the i.i.d. outcomes, \\(\{Y_i : i \in S\}\\) is a set of \\(k\\) i.i.d. Bernoulli\\((p)\\) variables, so the expectation is \\(1 - (1-p)^k\\). The same argument with the minimum gives the pass\\(^k\\) estimator.
 
-**Delta-method variance of the Rogan-Gladen estimator.** With \(g(o, s, t) = (o + t - 1)/(s + t - 1)\) and \(J = s + t - 1\), the partial derivatives are \(1/J\), \(-g/J\), and \((1-g)/J\), so for independent samples
+**Delta-method variance of the Rogan-Gladen estimator.** With \\(g(o, s, t) = (o + t - 1)/(s + t - 1)\\) and \\(J = s + t - 1\\), the partial derivatives are \\(1/J\\), \\(-g/J\\), and \\((1-g)/J\\), so for independent samples
 
 $$\Var(\hat\pi) \approx \frac{1}{J^2}\left[\Var(\hat\pi_{\text{obs}}) + \pi^2\,\Var(\widehat{\mathrm{Se}}) + (1 - \pi)^2\,\Var(\widehat{\mathrm{Sp}})\right].$$
 
-The factor \(1/J^2\) inflates all variance when the grader is weak, and the weight \((1-\pi)^2\) means that for low pass rates uncertainty in specificity dominates.
+The factor \\(1/J^2\\) inflates all variance when the grader is weak, and the weight \\((1-\pi)^2\\) means that for low pass rates uncertainty in specificity dominates.
 
 **A numerical example of non-collapsibility.** Split a population evenly into low-skill and high-skill participants, with skill balanced across arms, and suppose model access doubles the odds of success in both strata. Among low-skill participants success rises from 0.10 to about 0.182, and among high-skill from 0.50 to about 0.667, a conditional odds ratio of 2 in each stratum. Averaging, control success is 0.30 and treatment is 0.424, so the marginal odds ratio is
 
 $$\frac{0.424/0.576}{0.30/0.70} \approx 1.72,$$
 
-smaller than the conditional 2 despite no confounding. The marginal risk difference, \(0.424 - 0.30 = 0.124\), is often the most useful summary, and standardization recovers it from the adjusted model (Kahan et al., 2014).
+smaller than the conditional 2 despite no confounding. The marginal risk difference, \\(0.424 - 0.30 = 0.124\\), is often the most useful summary, and standardization recovers it from the adjusted model (Kahan et al., 2014).
 
-**Fisher information of a Bernoulli outcome.** For \(\ell(\theta) = y\log p + (1-y)\log(1-p)\), the score is \(\ell'(\theta) = p'(y - p)/[p(1-p)]\), and since \(\mathbb{E}[(y-p)^2] = p(1-p)\),
+**Fisher information of a Bernoulli outcome.** For \\(\ell(\theta) = y\log p + (1-y)\log(1-p)\\), the score is \\(\ell'(\theta) = p'(y - p)/[p(1-p)]\\), and since \\(\mathbb{E}[(y-p)^2] = p(1-p)\\),
 
 $$I(\theta) = \frac{(p')^2}{p(1-p)}.$$
 
@@ -877,22 +877,22 @@ $$I(\theta) = \frac{(p')^2}{p(1-p)}.$$
 I run every estimator in the companion library on data simulated from a known generative model, with all seeds fixed, to confirm that the code implements the formulas in the text and that each formula recovers what it claims in the setting described. The checks and their results follow.
 
 - **Interval coverage** (400 benchmarks of 200 items in scenarios of 8, nominal 95 percent): naive 90.8 percent; clustered 94.8 percent.
-- **Design effect** (one benchmark from the same generator): deff 1.20; estimated \(\rho\) 0.028.
+- **Design effect** (one benchmark from the same generator): deff 1.20; estimated \\(\rho\\) 0.028.
 - **IRT recovery** (60 respondents, 300 items, 2PL joint MAP): correlation 0.99 for ability, 0.94 for difficulty, 0.62 for discrimination; converged.
-- **Targeted subset** (new respondent at \(\theta = 1.0\), 30 items): targeted \(0.89 \pm 0.25\); random \(1.13 \pm 0.44\); all 300 items \(0.97 \pm 0.14\).
-- **pass@\(k\)** (\(p = 0.15\), \(n = 20\), \(k = 5\), 20,000 replicates): estimate 0.558; truth 0.556.
-- **Time horizon** (60 tasks, 1 to 960 min, 8 runs; true \(h_{50} = 45\), \(\beta = 0.9\)): estimated \(h_{50} = 53.6\) minutes [43.1, 66.0]; \(\beta = 0.94\).
-- **Uplift power** (\(p_0 = 0.10\), \(p_1 = 0.25\), planned 80 percent power, 1,000 trials): \(n = 100\) per arm; empirical power 82.1 percent.
-- **Covariate adjustment** (120 per arm, \(p_0 = 0.2\), conditional odds ratio 2, 1,000 trials): power unadjusted 50.9 percent; adjusted 58.4 percent.
-- **O'Brien-Fleming bounds** (5 equally spaced looks, two-sided \(\alpha = 0.05\)): 4.870, 3.358, 2.680, 2.287, 2.034 (tables: 4.877, 3.357, 2.680, 2.290, 2.031).
-- **Continuous sample size** (80 percent power, \(\alpha = 0.05\)): \(d = 0.2\) needs 393; \(d = 0.5\) needs 63; \(d = 0.8\) needs 25 per arm.
-- **Minimum detectable effect** (50 per arm, \(p_0 = 0.10\)): 0.220.
+- **Targeted subset** (new respondent at \\(\theta = 1.0\\), 30 items): targeted \\(0.89 \pm 0.25\\); random \\(1.13 \pm 0.44\\); all 300 items \\(0.97 \pm 0.14\\).
+- **pass@\\(k\\)** (\\(p = 0.15\\), \\(n = 20\\), \\(k = 5\\), 20,000 replicates): estimate 0.558; truth 0.556.
+- **Time horizon** (60 tasks, 1 to 960 min, 8 runs; true \\(h_{50} = 45\\), \\(\beta = 0.9\\)): estimated \\(h_{50} = 53.6\\) minutes [43.1, 66.0]; \\(\beta = 0.94\\).
+- **Uplift power** (\\(p_0 = 0.10\\), \\(p_1 = 0.25\\), planned 80 percent power, 1,000 trials): \\(n = 100\\) per arm; empirical power 82.1 percent.
+- **Covariate adjustment** (120 per arm, \\(p_0 = 0.2\\), conditional odds ratio 2, 1,000 trials): power unadjusted 50.9 percent; adjusted 58.4 percent.
+- **O'Brien-Fleming bounds** (5 equally spaced looks, two-sided \\(\alpha = 0.05\\)): 4.870, 3.358, 2.680, 2.287, 2.034 (tables: 4.877, 3.357, 2.680, 2.290, 2.031).
+- **Continuous sample size** (80 percent power, \\(\alpha = 0.05\\)): \\(d = 0.2\\) needs 393; \\(d = 0.5\\) needs 63; \\(d = 0.8\\) needs 25 per arm.
+- **Minimum detectable effect** (50 per arm, \\(p_0 = 0.10\\)): 0.220.
 - **Rogan-Gladen** (true rate 0.12, Se 0.85, Sp 0.95, gold set 100 positives and 200 negatives): observed 0.146; corrected 0.120 [0.063, 0.170].
 - **Items to resolve** (threshold 0.5, one-sided 95 percent exact bounds): true 0.30 needs 30; 0.40 needs 80; 0.45 needs 285; 0.48 needs 1,705.
 - **Harness routing** (80 items, 4 samples, 31 `PUBLIC` items): 124 public lines.
 - **Refusal policy** (40 percent random refusal on `RESTRICTED` items, true expected score 0.718): missing 0.733; incorrect 0.644.
 - **Winner's curse** (100 items, equal true scores 0.5): best of 2 adds 2.8 points; of 4, 5.1; of 8, 7.1; of 16, 8.8.
-- **Items needed** (paired, \(p = 0.5\), no pairing benefit, 80 percent power): \(\delta = 0.10\) needs 393; 0.05 needs 1,570; 0.02 needs 9,812.
+- **Items needed** (paired, \\(p = 0.5\\), no pairing benefit, 80 percent power): \\(\delta = 0.10\\) needs 393; 0.05 needs 1,570; 0.02 needs 9,812.
 
 Two results deserve comment. The time-horizon estimate of 53.6 minutes is 19 percent above the true 45, but the bootstrap interval contains the truth and the overestimate is consistent with sampling error at 60 tasks. The covariate-adjustment gain is smaller than the continuous-outcome variance-reduction formula would suggest, because for binary outcomes with logistic regression part of the apparent gain comes from the change of estimand, and the simulation reports actual power in place of the approximation.
 
