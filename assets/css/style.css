@@ -565,11 +565,11 @@ nav {
 /* Research post: clean centered column with a sticky table of contents, no card */
 .wm-shell {
   display: grid;
-  grid-template-columns: 200px minmax(0, 720px);
-  gap: 72px;
-  justify-content: center;
-  max-width: 1040px;
-  margin: 0 auto;
+  grid-template-columns: 210px minmax(0, 720px);
+  column-gap: clamp(44px, 7vw, 120px);
+  margin: 0;
+  padding-left: clamp(20px, 6vw, 120px);
+  max-width: 1100px;
   align-items: start;
 }
 .wm-toc {

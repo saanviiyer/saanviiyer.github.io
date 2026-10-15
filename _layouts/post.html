@@ -105,7 +105,21 @@ layout: default
 
 {% if page.math %}
 <script>
-  window.MathJax = { tex: { displayMath: [['$$', '$$'], ['\\[', '\\]']], inlineMath: [['\\(', '\\)'], ['$', '$']], processEscapes: true } };
+  window.MathJax = { tex: {
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    inlineMath: [['\\(', '\\)'], ['$', '$']],
+    processEscapes: true,
+    macros: {
+      bm: ['\\boldsymbol{#1}', 1],
+      argmin: '\\operatorname*{arg\\,min}',
+      argmax: '\\operatorname*{arg\\,max}',
+      E: '\\mathbb{E}',
+      Var: '\\operatorname{Var}',
+      Cov: '\\operatorname{Cov}',
+      tr: '\\operatorname{tr}',
+      diag: '\\operatorname{diag}'
+    }
+  } };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 {% endif %}
