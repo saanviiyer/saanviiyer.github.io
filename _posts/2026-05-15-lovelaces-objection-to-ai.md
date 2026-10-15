@@ -3,6 +3,7 @@ layout: post
 title: "A Critical Evaluation on Lovelace's Objection to Artificial Intelligence"
 date: 2026-05-15
 tag: "Essay, Philosophy"
+section: nontechnical
 permalink: /thinking/lovelaces-objection-to-ai/
 excerpt: "Ada Lovelace argued that a machine can only originate something if it acts from a conscious self. An evaluation of that objection in the age of generative AI."
 ---

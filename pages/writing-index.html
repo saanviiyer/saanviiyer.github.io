@@ -43,35 +43,19 @@ permalink: /writing/
     </div>
     {% endfor %}
 
+    {% comment %} on-site essays (philosophy + older personal essays), tagged section: nontechnical {% endcomment %}
+    {% assign nt = site.posts | where: "section", "nontechnical" %}
+    {% for post in nt %}
     <div class="pub-row">
       <span class="pub-thumb" aria-hidden="true"></span>
       <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/thinking/transformative-experiences-change-our-brains/' | relative_url }}">Transformative Experiences Change Our Brains</a></h3>
-        <div class="pub-venue">essay, philosophy</div>
-        <div class="pub-links"><a href="{{ '/thinking/transformative-experiences-change-our-brains/' | relative_url }}">read</a></div>
+        <h3 class="pub-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <div class="pub-venue">{{ post.tag | downcase | replace: ' · ', ', ' | replace: '·', ',' }}</div>
+        <div class="pub-links"><a href="{{ post.url | relative_url }}">read</a></div>
       </div>
-      <div class="pub-year">2026</div>
+      <div class="pub-year">{{ post.date | date: "%Y" }}</div>
     </div>
-
-    <div class="pub-row">
-      <span class="pub-thumb" aria-hidden="true"></span>
-      <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/thinking/lovelaces-objection-to-ai/' | relative_url }}">A Critical Evaluation on Lovelace's Objection to Artificial Intelligence</a></h3>
-        <div class="pub-venue">essay, philosophy</div>
-        <div class="pub-links"><a href="{{ '/thinking/lovelaces-objection-to-ai/' | relative_url }}">read</a></div>
-      </div>
-      <div class="pub-year">2026</div>
-    </div>
-
-    <div class="pub-row">
-      <span class="pub-thumb" aria-hidden="true"></span>
-      <div class="pub-main">
-        <h3 class="pub-title"><a href="{{ '/thinking/do-animals-lack-minds/' | relative_url }}">Do Animals Lack Minds? A Critical Evaluation on Descartes' Claim</a></h3>
-        <div class="pub-venue">essay, philosophy</div>
-        <div class="pub-links"><a href="{{ '/thinking/do-animals-lack-minds/' | relative_url }}">read</a></div>
-      </div>
-      <div class="pub-year">2026</div>
-    </div>
+    {% endfor %}
 
   </div>
 </section>

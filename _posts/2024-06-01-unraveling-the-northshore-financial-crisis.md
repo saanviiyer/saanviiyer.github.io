@@ -3,6 +3,7 @@ layout: post
 title: "Unraveling the Financial Crisis in the Northshore School District"
 date: 2024-06-01
 tag: "Journalism"
+section: nontechnical
 permalink: /thinking/northshore-financial-crisis/
 excerpt: "Twenty-six million dollars in debt, beloved programs cut, and a district that wasn't saying much. Reporting on why, and what comes next."
 ---

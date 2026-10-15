@@ -3,6 +3,7 @@ layout: post
 title: "Do Animals Lack Minds? A Critical Evaluation on Descartes' Claim"
 date: 2026-04-11
 tag: "Essay, Philosophy"
+section: nontechnical
 permalink: /thinking/do-animals-lack-minds/
 excerpt: "Descartes claimed animals lack minds because they cannot communicate or solve new problems. A look at consciousness, language, and problem-solving across the animal kingdom."
 ---
