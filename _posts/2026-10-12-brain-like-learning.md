@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Brain-inspired Backprop-free Pretraining without Transformers"
+title: "Apical Dust: Brain-inspired Backprop-Free Pretraining"
 date: 2026-10-12
 tag: "Guide"
 section: technical
