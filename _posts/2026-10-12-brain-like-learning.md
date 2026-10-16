@@ -22,25 +22,21 @@ excerpt: "The brain learns continually from a forward process, which raises two 
 
 ## The brain learns from local signals
 
-My background is in neuroscience, and the starting point for all of this is a plain fact from systems neuroscience. **The cortex learns forward.** Backpropagation needs two things a biological circuit lacks. It needs the backward path to use the exact transpose of the forward weights, the weight-transport problem, and it needs a global error signal threaded precisely backward through every layer. Real synapses update from local quantities. Roughly presynaptic activity, postsynaptic activity, and a neuromodulatory third factor that stands in for reward or surprise. That is three-factor plasticity, and it is local in both space and time.
+My background is in neuroscience, and the starting point for all of this is a plain fact from systems neuroscience. **The cortex learns forward.** Backpropagation needs two things a biological circuit lacks. It needs the backward path to use the exact transpose of the forward weights, the weight-transport problem, and it needs a global error signal threaded precisely backward through every layer. Biological synapses update from local quantities. Roughly presynaptic activity, postsynaptic activity, and a neuromodulatory third factor that stands in for reward or surprise. That is three-factor plasticity, and it is local in both space and time.
 
 There is a fourth ingredient the brain uses that machine learning rarely copies. Top-down feedback arrives on a separate part of a cortical pyramidal neuron, the apical dendrite, and tells the cell which way to change. I will come back to it in the second half.
 
-Researchers usually frame this gap between brains and backpropagation as a problem for biological realism. It is just as interesting as a question about machine learning, and it splits into two questions. If the brain learns continually, across a lifetime, from a forward process and from a small sample of past experience, then whatever it is doing is a candidate solution to catastrophic forgetting, the failure where a network trained on a new task overwrites the weights that encoded the old one. And if a backprop-free rule can be pushed to train as well as backpropagation, then the brain's extra machinery might be the thing that pushes it there. The first half of this post tests the forgetting question and finds the answer small. The second half takes up the training question and finds something smaller but real.
-
-## Whether locality forgets less
+Researchers usually frame this gap between brains and backpropagation as a problem for biological plausibility. It is just as interesting as a question about machine learning, and it splits into two questions. If the brain learns continually, across a lifetime, from a forward process and from a small sample of past experience, then whatever it is doing is a candidate solution to catastrophic forgetting, the failure where a network trained on a new task overwrites the weights that encoded the old one. And if a backprop-free rule can be pushed to train as well as backpropagation, then the brain's extra machinery might be the thing that pushes it there. The first half of this post tests the forgetting question and finds the answer small. The second half takes up the training question and finds a smaller effect that holds up.
 
 The appealing version of the forgetting question is that locality itself buys retention. A backpropagation update couples every weight to every other through the global error, so learning a new task can move any weight that mattered for an old one. A local rule moves a weight only from signals available at that synapse, so the intuition goes, it should disturb unrelated structure less and forget less. Feedback alignment, direct feedback alignment, and predictive coding are the usual bio-plausible candidates, and reports somewhere credit all three with forgetting less than backpropagation.
 
 The trouble with that literature is a confound hiding in plain sight. **A rule that learns each new task less well also has less to forget.** If a method only reaches 70% on the new task where backpropagation reaches 90%, it has written less into the shared weights, so of course it overwrites less of the old task. Read on its own, its better retention is partly just weaker learning. Comparing forgetting across methods is valid only once you hold learning fixed. I was suspicious going in, because in most of the papers I read the local rule arrived bundled with something else, like sparsity or replay, and the write-ups credited the retention to locality anyway.
 
-## The three rules I tested
-
-Each rule assigns credit in a different way, sidestepping backpropagation's weight transport.
+Each of these three rules assigns credit in a different way, sidestepping backpropagation's weight transport.
 
 - **Feedback alignment** keeps the forward pass and sends the error backward through fixed random weights in place of the transpose of the forward weights, so the network learns from fixed random connections alone.
 - **Direct feedback alignment** goes further and sends the output error straight to each hidden layer through its own fixed random connection, skipping the layer-by-layer backward chain.
-- **Predictive coding** has each layer try to predict the activity of the layer below it, and the local mismatch between prediction and reality drives learning, which under some conditions approximates backpropagation using only local signals.
+- **Predictive coding** has each layer try to predict the activity of the layer below it, and the local mismatch between prediction and actual activity drives learning, which under some conditions approximates backpropagation using only local signals.
 
 All three are biologically motivated, and reports credit all three with helping on forgetting. The rest of this half asks whether that help holds up once the comparison is fair.
 
@@ -60,8 +56,6 @@ Within each seed, **backward transfer turned out to be almost a deterministic fu
   <figcaption><strong>The fair comparison.</strong> Backward transfer falls along one curve as a network learns each task better, so comparing a local rule against backpropagation trained to a higher accuracy makes the rule look like it forgets less. Slide the baseline down to the rule's own learning accuracy and the apparent edge collapses to the measured +0.21 points, while replay stays about 10.6 points above the curve. Axes are schematic. The matched edge (+0.21) and replay (+10.6) are measured on class-incremental Split-CIFAR-10.</figcaption>
 </figure>
 
-## What survives the fair comparison
-
 Matched this way, the bio-plausible rules stop looking special. Under matched learning accuracy, feedback alignment differed from backpropagation by -0.08 points, with a 95% interval of [-0.21, +0.05], and direct feedback alignment by -0.11, [-0.28, +0.06]. Both intervals contain zero, so **both rules forget at about the backpropagation rate once the baseline is tuned fairly.** Predictive coding retained 0.21 points more, [+0.11, +0.31], p = 0.001. I had said ahead of time that a local rule retaining better at matched learning would refute my hypothesis, so I report predictive coding as a refutation, and I note that 0.21 points is about a fifth of the instrument's own error and that the gap correction alone flips its sign. I read this as the locality advantage being an artifact of a baseline that was allowed to learn more. **Locality of credit assignment, the property people reach for, leaves forgetting about where it was.**
 
 ![Backward transfer against learning accuracy on Split-CIFAR-10 and Split-CIFAR-100, where local rules sit on the backpropagation curve and replay sits above it](/assets/images/engram-continual-learning/locality.png)
@@ -76,7 +70,7 @@ What reduces forgetting is old and simple. Replay, which I added as a positive c
 
 One limit belongs right next to that number. Split-CIFAR-10 with a growing head keeps very little to begin with, about 0.7 points, so the setup sits near a floor where little forgetting remains to prevent. When I rescored within each task's own classes to lift it off that floor the ordering held, with replay still ahead and the local rules matched, though the instrument then resolved retention only to about five points. Split-FashionMNIST was too noisy to serve as a quantitative instrument, at 12.29 points of held-out error, so I withhold retention differences from it. The defensible scope is Split-CIFAR-10 and Split-CIFAR-100 under this protocol.
 
-The honest conclusion from the continual-learning side is a null, and it is worth stating cleanly because the opposite is so often assumed. **A learning rule being local, or brain-like in its credit assignment, leaves catastrophic forgetting about where it was.** This matters past neuroscience. When a deployed model keeps training, through fine-tuning or reinforcement learning from human feedback, it can erase abilities and safety behaviors it had before, which is catastrophic forgetting with a deployment address. If your method claims to protect earlier behavior, the first question to ask is whether the comparison held learning of the new task fixed against backpropagation.
+The conclusion from the continual-learning side is a null, and it is worth stating cleanly because the opposite is so often assumed. **A learning rule being local, or brain-like in its credit assignment, leaves catastrophic forgetting about where it was.** This matters past neuroscience. When a deployed model keeps training, through fine-tuning or reinforcement learning from human feedback, it can erase abilities and safety behaviors it had before, which is catastrophic forgetting with a deployment address. If your method claims to protect earlier behavior, the first question to ask is whether the comparison held learning of the new task fixed against backpropagation.
 
 ## A more constructive question
 
@@ -92,13 +86,9 @@ I added one more cortical ingredient. Top-down feedback onto apical dendrites. E
 
 The rest of the post is that follow-up in detail. It is independent research, unaffiliated with Q Labs.
 
-## Why Dust is the point
-
 Dust looked familiar the moment I read it. It injects Gaussian noise into every layer's output, scores each token's noise by how much it lowered the loss, and forms the weight gradient from the reward-weighted noise. That is three-factor plasticity. Presynaptic activity, postsynaptic activity, and a neuromodulatory reward. The appeal for machine learning is concrete. A single forward pass tests thousands of perturbations at once, free of a backward pass and of weight transport, which is why it is competitive at pretraining where other zeroth-order methods stall. The deeper reason to look past the backward pass, in my notes, is that backpropagation needs continuous differentiable operations and so excludes discrete jumps, open loops, or external program execution.
 
 Their follow-up, the Noise speedrun, argues that another 1,000-fold gain will need credit assignment, optimizers and architectures designed together. This post is a small, independent contribution to the credit-assignment and optimizer parts of that program.
-
-## Where Dust spends its compute
 
 Dust adds Gaussian noise to the output of every linear layer, independently at every token. In my meeting notes, this is node perturbation, which differs from older methods like AGReL that perturb weights and suffer extreme variance across billions of parameters. It rewards each token's noise by how much that noise lowered the loss. Each token thus acts as one member of a population, and one forward pass tests thousands of perturbations. The reward-weighted noise estimates the error at each layer's output. The outer product of that error with the layer's input gives the weight gradient, which is the same update backprop forms.
 
@@ -125,8 +115,6 @@ $$
 Every step stays zeroth-order. I estimate the output error by perturbing the logits, which costs only one more cross-entropy evaluation. I fit the feedback weights by regressing Dust's noisy estimates on $$e_t$$. The noise in those estimates is independent of $$e_t$$, so it averages out of the fit.
 
 In my meeting notes, I state the same idea in biological terms. Pyramidal neurons get top-down feedback through apical dendrites, carrying approximate learned signals in place of exact gradients. A learned linear feedback map, fit by ridge regression against true output errors, serves as an unbiased control variate. It subtracts a predictive baseline, and it suppresses variance while leaving the estimate unbiased.
-
-## Three ways to use the feedback
 
 A prediction of the gradient can enter the update in three ways. The ways differ in how much they trust the prediction.
 
@@ -155,8 +143,6 @@ Every run fits on a laptop GPU.
 
 My Dust is a faithful but simplified reimplementation. It uses one noise scale (σ = 0.05) for every layer, and its layer norms use a fixed gain. In the first version, I credited attention keys and values with a discounted sum of future token losses (γ = 0.9). The paper scores them by alignment with the error at the attention output. Result 4 replaces my rule with the paper's. Absolute numbers will differ from the paper's numbers.
 
-## Result 1, the feedback makes every step look better
-
 First I measured the per-step cosine between each estimate and the backprop gradient on the same batch, at a partly trained checkpoint. The Dust paper uses the same alignment analysis. By this measure the feedback is a clear win. At K=16, **the precision-weighted estimate on the MLP input layer reaches 0.78, which is higher than Dust reaches at K=256.** Feedback alone does almost as well on most layers. The unbiased control variate falls between the two. Going in, I read Figure 3 as strong support for the feedback, and Result 2 is where that reading broke.
 
 <p class="fig-legend"><span style="color:#7059AE">&#9679;</span> Dust &nbsp; <span style="color:#2D5C9E">&#9679;</span> Apical (unbiased) &nbsp; <span style="color:#B8433B">&#9679;</span> Precision-weighted &nbsp; <span style="color:#9A7516">&#9679;</span> Feedback only</p>
@@ -164,8 +150,6 @@ First I measured the per-step cosine between each estimate and the backprop grad
 <img src="/assets/images/apical-dust/fig1.svg" alt="Per-step cosine to backprop against population for four estimators, across MLP input, attention output, and keys. The precision-weighted estimate is highest on the MLP, Dust lowest.">
 
 **Figure 3. Per-step alignment with backprop.** Cosine between each estimated weight gradient and the backprop gradient on the same batch, against population, averaged over layers of each type and 4 batches. Checkpoint is 300 backprop steps. Feedback fitted for 40 steps before measuring.
-
-## Result 2, the estimates that look best are biased
 
 Training disagreed with Figure 3. This was the result that surprised me most, since the estimate with the best per-step cosine trained the worst. At K=16, **the precision-weighted version trained worse than plain Dust, even with about three times the per-step cosine.** Per-step cosine mixes two kinds of error. Noise is fresh every step, and momentum averages it out over roughly ten steps. Bias points the same way every step, so momentum adds it up.
 
@@ -185,7 +169,7 @@ In my meeting notes, the corresponding action item is a bias check that measures
 
 ## The statistic that ranks estimators backwards
 
-Here is the finding I would put in front of the Dust team, because it changes a decision they make for real. I think it is the most useful thing I found here. The Dust paper shortlists hyperparameters by measuring the cosine similarity between an estimator's update and the true backpropagation gradient on a single batch. **That statistic ranked my estimators backwards.**
+Here is the finding I would put in front of the Dust team, because it changes a decision they make in practice. I think it is the most useful thing I found here. The Dust paper shortlists hyperparameters by measuring the cosine similarity between an estimator's update and the true backpropagation gradient on a single batch. **That statistic ranked my estimators backwards.**
 
 A feedback-weighted estimator triples per-step cosine on the MLP, from 0.26 to 0.78 at $$K=16$$, and **still trains worse, by 0.044 nats.** The reason is that its error points the same way every step, and momentum sums that bias up over training. A single-batch cosine misses this, because on any one step the biased estimator does point close to the gradient. What separates bias from noise is averaging. Average each estimator's updates over many batches and compare the average to backpropagation. Noise averages out and reveals the unbiased estimator. A biased estimator's average stays stuck at an angle however many batches you add.
 
@@ -202,8 +186,6 @@ A feedback-weighted estimator triples per-step cosine on the MLP, from 0.26 to 0
 If single-batch cosine is the filter that picks which estimator or hyperparameter to scale, it will prefer the biased one, which looks aligned every step and quietly accumulates error through momentum. The averaging test costs one extra loop and gives the right ordering. Recall that the control-variate estimator contrasted here is the feedback map fit by ridge regression against true output errors.
 
 The same bias story shows up in my meeting notes at NOISE scale, in the speedrun numbers above. My notes describe the same variance pattern at larger scale as well, with the control variate mattering most at 16 draws per token and becoming redundant at 256 draws, where raw noise averages out on its own. I report those meeting-notes numbers as what they are, and they need checking before anyone leans on them.
-
-## Result 3, the unbiased version trains better than Dust
 
 Kept unbiased, the feedback helps where Dust is noisiest. **Apical has lower test loss than Dust in every seed-paired comparison at K=16 and K=64.** It also varies less across seeds, which is what variance reduction should do. I had expected that from a control variate, and watching the seed spread shrink made me trust the mechanism more. At K=256 the advantage is gone. Apical wins 2 of 3 pairs, by -0.001 on average.
 
@@ -230,13 +212,9 @@ To express the K=16 gain as population, I interpolated Dust's loss log-linearly 
 
 In my meeting notes, the control variate substantially reduces variance at small virtual population sizes, for example 16 draws per token, and becomes redundant at large population sizes, for example 256 draws, where raw noise averages out naturally. That matches what I measured.
 
-## Does the gain survive matched compute?
-
 Equal population can still mean unequal cost, so I timed both methods. In the sweep, my first Apical implementation took about twice as long per run as Dust at K=16. At that price, Dust could double its population and match Apical. Almost all of the overhead was waste. The code repeated a clean forward pass and a logit jitter, computed split-half estimates even when they went unused, and inverted a 65-by-65 matrix that forced a GPU-to-CPU sync every step. The method itself adds one small matrix product per module plus the regression update. That is about 1% of the arithmetic of the perturbed forward passes.
 
 With the waste removed, the median step time of Apical relative to Dust, over three interleaved rounds, was 0.86x at K=16, 1.22x at K=64 and 0.95x at K=256. Other jobs shared the machine, so I read these times as equal within about 20%. The optimized code does the same math with a different random stream. One K=16 run with it reached 2.500, against 2.502 for the original code on the same seed. At K=16 the gain is worth about a doubling of population, which is well above a 20% cost, so **the gain survives matched compute.** My first implementation would have erased it.
-
-## Result 4, fixing Dust's credit, then adding feedback again
 
 The averaging test also locates the remaining bias in Dust itself. I ran the same averaging test on Dust's own estimates to see where its bias still sat. With 1024 independent estimates averaged on one batch, my original Dust reaches cosine 0.98 on queries, attention outputs and the MLP. **It reaches only 0.88 on keys and values and 0.71 on the token embedding.** Two credit rules explain the gap. First, my reimplementation credited keys and values with a discounted sum of downstream token losses, which is cruder than the paper's rule. Second, it credited each embedding only for its own token's loss. The Dust paper makes the same choice. As I read its Section 2.3, only keys, values, gates and value embeddings receive credit from future tokens. However, the embedding at token t enters the residual stream, and later tokens read it through attention, so its true gradient includes their losses.
 
