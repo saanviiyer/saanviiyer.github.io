@@ -22,7 +22,7 @@ video: ""  # TODO: Saanvi to add explainer video
   <div class="stat"><div class="n">oracle</div><div class="l">The lobe is assumed known, so the achievable EEG-guided number is lower</div></div>
 </div>
 
-<p class="pp-section-num">01 &middot; The Challenge</p>
+<p class="pp-section-num">01, The Challenge</p>
 <h2 class="pp-section-title">The slide number and the bedside number are different things</h2>
 
 <p>A clinical model is usually judged by a single benchmark number, and that number can be right while the conclusion drawn from it is wrong. A detector can look strong on average and still miss the hard cases a clinician actually needs help with, and a result that quietly assumes the answer is already known can read as if the model found it. In this work I measure a clinical model against the decision it would really support, and say out loud which assumptions each number rests on.</p>
@@ -44,12 +44,12 @@ video: ""  # TODO: Saanvi to add explainer video
   <p>When a method is told which lobe to search, its recovery numbers are an upper bound on what a deployable pipeline could achieve, because a deployable pipeline has to find the region first. Reporting the oracle number is useful, as long as it is read as the ceiling it is.</p>
 </div>
 
-<p class="pp-section-num">02 &middot; The Approach</p>
+<p class="pp-section-num">02, The Approach</p>
 <h2 class="pp-section-title">Report the achievable number, and label the assumptions</h2>
 
 <p>I separate what a method could do under ideal information from what it could do in practice, and I say which is which every time a number appears. Where a result depends on a region being known in advance, I report it as an upper bound under oracle localization, and I put the failure cases next to the gains. The standard is the same across all three threads: a number is only as trustworthy as the assumption printed beside it.</p>
 
-<p class="pp-section-num">03 &middot; Results</p>
+<p class="pp-section-num">03, Results</p>
 <h2 class="pp-section-title">Three threads, one standard of evidence</h2>
 
 <!-- ===================== Thread 1 ===================== -->

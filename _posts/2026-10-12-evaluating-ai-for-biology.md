@@ -66,7 +66,7 @@ The practical consequence is that benchmarks measure that number, a bulk correla
   <div class="sd-controls">
     <button id="sd-play" type="button">pause</button>
     <input id="sd-slider" type="range" min="1" max="100" value="100" aria-label="Selection cutoff (top k percent)">
-    <span class="sd-readout">top <b id="sd-k">100</b>% &middot; variance in selection value explained <b id="sd-r">0.70</b></span>
+    <span class="sd-readout">top <b id="sd-k">100</b>%, variance in selection value explained <b id="sd-r">0.70</b></span>
   </div>
   <figcaption><strong>Correlation decays where selection sharpens.</strong> Slide the cutoff from the whole assay toward the top 1%. The variance in selection value explained by the reported correlation falls from most of it to 0.16, so a leaderboard number that looks predictive in bulk tells you little about the handful of designs a campaign actually keeps. Anchored at the measured 0.50 (top 10%) and 0.16 (top 1%). The rest of the curve is schematic.</figcaption>
 </figure>

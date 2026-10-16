@@ -1,5 +1,5 @@
 ---
-title: Evaluating protein-design agents · Saanvi S. Subramanian
+title: Evaluating protein-design agents, Saanvi S. Subramanian
 permalink: /projects/protein-design-agents/
 ---
 
@@ -24,7 +24,7 @@ permalink: /projects/protein-design-agents/
 
 <div class="doc">
   <h1>Evaluating protein-design agents</h1>
-  <p class="doc-meta">Saanvi S. Subramanian &middot; poster, AgenticLS @ NeurIPS 2026 and AI for Science @ NeurIPS 2026</p>
+  <p class="doc-meta">Saanvi S. Subramanian, poster, AgenticLS @ NeurIPS 2026 and AI for Science @ NeurIPS 2026</p>
   <p class="doc-lead">A protein-design agent ranks thousands of candidates with a learned scorer, trusts that scorer because a benchmark reported a correlation, and keeps a proposal only if a verifier clears it. This page tests three of those components where measured ground truth exists.</p>
 
   <ul class="doc-nav">
@@ -34,7 +34,7 @@ permalink: /projects/protein-design-agents/
   </ul>
 
   <h2 id="scorer">The scorer compresses 78 distinct actions into one region</h2>
-  <p class="sec-venue">Action identifiability &middot; AgenticLS @ NeurIPS 2026</p>
+  <p class="sec-venue">Action identifiability, AgenticLS @ NeurIPS 2026</p>
   <p>An agent can only choose between actions its scorer keeps apart. Using the 78 COSMIC single-base-substitution signatures as a controlled action space, each action is executed on a coding sequence, embedded with ESM-2, and scored by distance to a target Pfam-domain centroid. Across 3,003 signature pairs, median pairwise distance falls from 0.815 in COSMIC spectrum space to 0.0068 between ESM-2 outcome regions, a <span class="key">120x compression</span>, and a composition-matched control reproduces the destinations.</p>
   <p>A learned policy trained to name which of the 78 signatures produced a given embedding shift reaches <span class="key">7.55% top-1 accuracy</span> on a protein-grouped split, against 1.28% for uniform chance and 6.12% for a nearest-neighbor baseline. Split-conformal prediction reaches 92.2% coverage only by returning 66.8 of 78 actions on average. The scorer carries a real signal and still cannot single out a specific action.</p>
 
@@ -54,7 +54,7 @@ permalink: /projects/protein-design-agents/
   </figure>
 
   <h2 id="proxy">The in-silico proxy ranks below counting mutations</h2>
-  <p class="sec-venue">Gauntlet &middot; AI for Science @ NeurIPS 2026</p>
+  <p class="sec-venue">Gauntlet, AI for Science @ NeurIPS 2026</p>
   <p>Before an agent ranks designs with a proxy, the proxy has to beat a trivial baseline on measured outcomes. On 504 measured PET-hydrolase variants across 25 studies, a zero-shot ESM-2 650M score ranks activity at a within-study Spearman of <span class="key">0.01</span>, below a hydropathy feature and well below a plain mutation count at <span class="key">0.25</span>. On the property a campaign would use it for, the expensive model is the weakest of four scorers.</p>
 
   <figure>

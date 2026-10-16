@@ -2,7 +2,7 @@
 layout: post
 title: "If I Were Grand Poobah of the Earth"
 date: 2021-09-28
-tag: "Essay · Environment"
+tag: "Essay, Environment"
 section: nontechnical
 permalink: /writing/grand-poobah-of-the-earth/
 redirect_from:

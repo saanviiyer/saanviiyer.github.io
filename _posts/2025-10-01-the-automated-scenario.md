@@ -2,7 +2,7 @@
 layout: post
 title: "The Automated Scenario"
 date: 2025-10-01
-tag: "Essay · AI & ethics"
+tag: "Essay, AI & ethics"
 section: nontechnical
 permalink: /writing/the-automated-scenario/
 redirect_from:

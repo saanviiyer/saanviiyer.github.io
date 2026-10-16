@@ -1,5 +1,5 @@
 ---
-title: Speech in ultrasound and in silico · Saanvi S. Subramanian
+title: Speech in ultrasound and in silico, Saanvi S. Subramanian
 permalink: /playground/speech-ultrasound/
 description: One speech experiment run through functional ultrasound of auditory cortex and through Meta's TRIBE v2 brain foundation model, with interactive results.
 ---
@@ -58,7 +58,7 @@ description: One speech experiment run through functional ultrasound of auditory
 
   <!-- 1. Onset-shift explorer -->
   <section class="su-fig" id="fig-onset" hidden>
-    <h2>1 &middot; Onset-shift explorer</h2>
+    <h2>1, Onset-shift explorer</h2>
     <p class="su-sub">The measured fUSI signal in auditory cortex, with the fitted Glover model overlaid for a chosen onset shift. The original pipeline assumed &minus;1.6 s; the data prefer +2.8 s.</p>
     <div class="su-panel">
       <div class="su-canvas-wrap"><canvas id="c-onset" height="300" role="img" aria-label="Measured fUSI ROI signal over time with task blocks shaded and the fitted model overlaid"></canvas></div>
@@ -72,7 +72,7 @@ description: One speech experiment run through functional ultrasound of auditory
         <label for="s-onset" class="su-grouplabel">shift</label>
         <input id="s-onset" class="su-slider" type="range" min="-6" max="6" step="0.2" value="2.8" aria-label="Onset shift in seconds">
       </div>
-      <div class="su-readout">shift <b id="r-onset-shift">+2.8 s</b> &middot; variance explained R&sup2; <b id="r-onset-r2">&ndash;</b></div>
+      <div class="su-readout">shift <b id="r-onset-shift">+2.8 s</b>, variance explained R&sup2; <b id="r-onset-r2">&ndash;</b></div>
       <div class="su-canvas-wrap" style="margin-top:12px"><canvas id="c-onset-r2" height="150" role="img" aria-label="R squared as a function of onset shift, with a marker at the current shift"></canvas></div>
       <div class="su-legend">
         <span><i class="su-swatch" style="background:var(--berry)"></i> measured fUSI</span>
@@ -85,7 +85,7 @@ description: One speech experiment run through functional ultrasound of auditory
 
   <!-- 2. Response shapes -->
   <section class="su-fig" id="fig-shapes" hidden>
-    <h2>2 &middot; Response shapes</h2>
+    <h2>2, Response shapes</h2>
     <p class="su-sub">Each response peak-normalized over 0&ndash;25 s, with its center of mass marked (computed over 0&ndash;40 s). The measured ultrasound response is slower and broader than the fMRI convention; TRIBE's prediction is faster.</p>
     <div class="su-panel">
       <div class="su-canvas-wrap"><canvas id="c-shapes" height="300" role="img" aria-label="Three peak-normalized response shapes with their centers of mass marked"></canvas></div>
@@ -94,13 +94,13 @@ description: One speech experiment run through functional ultrasound of auditory
         <button class="su-toggle" data-curve="fusi" aria-pressed="true" type="button">fUSI measured</button>
         <button class="su-toggle" data-curve="tribe" aria-pressed="true" type="button">TRIBE predicted</button>
       </div>
-      <div class="su-readout" id="r-shapes">center of mass: fMRI 5.3 s &middot; fUSI 7.3 s &middot; TRIBE 3.2 s</div>
+      <div class="su-readout" id="r-shapes">center of mass: fMRI 5.3 s, fUSI 7.3 s, TRIBE 3.2 s</div>
     </div>
   </section>
 
   <!-- 3. What does the model treat as speech? -->
   <section class="su-fig" id="fig-treat" hidden>
-    <h2>3 &middot; What does the model treat as speech?</h2>
+    <h2>3, What does the model treat as speech?</h2>
     <p class="su-sub">TRIBE's block-locked prediction for a control condition against the matched speech block. Retention is control response divided by speech response: 1 means the model treats the control like speech, 0 means it ignores it. These are model predictions, not brain measurements.</p>
     <div class="su-panel">
       <div class="su-controls" role="group" aria-label="Control condition">
@@ -140,7 +140,7 @@ description: One speech experiment run through functional ultrasound of auditory
 
   <!-- 4. Does hearing the words help? -->
   <section class="su-fig" id="fig-words" hidden>
-    <h2>4 &middot; Does hearing the words help?</h2>
+    <h2>4, Does hearing the words help?</h2>
     <p class="su-sub">Change in TRIBE's retention when the text pathway is added, by control. Each bar is labeled with the fraction of words a transcriber recovered. Bars whose 95% interval excludes zero are solid; the rest are faded. Intact is the null check.</p>
     <div class="su-panel">
       <div class="su-controls" role="group" aria-label="Region">
@@ -292,7 +292,7 @@ description: One speech experiment run through functional ultrasound of auditory
         label(ctx,cu.com.toFixed(1)+'s',mx,A.Y(1.02)-6,'center',cu.color,10);
       });
       label(ctx,'time (s)',w/2,h-8,'center'); label(ctx,'peak-normalized',34,A.T-2,'left');
-      document.getElementById('r-shapes').textContent='center of mass: fMRI '+curves.glover.com.toFixed(1)+' s · fUSI '+curves.fusi.com.toFixed(1)+' s · TRIBE '+curves.tribe.com.toFixed(1)+' s';
+      document.getElementById('r-shapes').textContent='center of mass: fMRI '+curves.glover.com.toFixed(1)+' s, fUSI '+curves.fusi.com.toFixed(1)+' s, TRIBE '+curves.tribe.com.toFixed(1)+' s';
     }
     Array.prototype.forEach.call(document.querySelectorAll('#fig-shapes .su-toggle'),function(btn){
       btn.addEventListener('click',function(){ var k=btn.getAttribute('data-curve'); on[k]=!on[k]; btn.setAttribute('aria-pressed',on[k]?'true':'false'); draw(); });
@@ -337,7 +337,7 @@ description: One speech experiment run through functional ultrasound of auditory
     }
     function readout(){ var e=retIdx[cond+'|'+roi]; var el=document.getElementById('r-treat');
       if(!e){ el.innerHTML='retention <b>–</b>'; return; }
-      el.innerHTML='retention <b>'+e.retention.toFixed(2)+'</b> (95% CI '+e.ci_lo.toFixed(2)+' to '+e.ci_hi.toFixed(2)+') · 1 = treated like speech, 0 = ignored';
+      el.innerHTML='retention <b>'+e.retention.toFixed(2)+'</b> (95% CI '+e.ci_lo.toFixed(2)+' to '+e.ci_hi.toFixed(2)+'), 1 = treated like speech, 0 = ignored';
     }
     function drawAll(){ drawResp(); drawSpec(); readout(); }
     function wire(sel,attr,set){ Array.prototype.forEach.call(document.querySelectorAll(sel),function(btn){ btn.addEventListener('click',function(){

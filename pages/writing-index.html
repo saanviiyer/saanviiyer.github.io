@@ -1,5 +1,5 @@
 ---
-title: Writing · Saanvi S. Subramanian
+title: Writing, Saanvi S. Subramanian
 permalink: /writing/
 ---
 
@@ -21,6 +21,16 @@ permalink: /writing/
       <div class="pub-year">{{ post.date | date: "%Y" }}</div>
     </div>
     {% endfor %}
+
+    <div class="pub-row">
+      <a class="pub-thumb" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener"></a>
+      <div class="pub-main">
+        <h3 class="pub-title"><a href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">Integrated Core RFP, ML-guided directed evolution of PETases</a></h3>
+        <div class="pub-venue">research proposal, Spring 2026</div>
+        <div class="pub-links"><a href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">read</a></div>
+      </div>
+      <div class="pub-year">2026</div>
+    </div>
 
   </div>
 
@@ -50,7 +60,7 @@ permalink: /writing/
       <span class="pub-thumb" aria-hidden="true"></span>
       <div class="pub-main">
         <h3 class="pub-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-        <div class="pub-venue">{{ post.tag | downcase | replace: ' · ', ', ' | replace: '·', ',' }}</div>
+        <div class="pub-venue">{{ post.tag | downcase }}</div>
         <div class="pub-links"><a href="{{ post.url | relative_url }}">read</a></div>
       </div>
       <div class="pub-year">{{ post.date | date: "%Y" }}</div>

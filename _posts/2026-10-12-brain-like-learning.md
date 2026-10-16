@@ -194,7 +194,7 @@ A feedback-weighted estimator triples per-step cosine on the MLP, from 0.26 to 0
   <div class="cm-controls">
     <button id="cm-play" type="button">pause</button>
     <input id="cm-slider" type="range" min="1" max="200" value="1" aria-label="Number of batches averaged">
-    <span class="cm-readout">averaged cosine to backprop &middot; feedback-weighted <b id="cm-a">0.00</b> &middot; control variate <b id="cm-b">0.00</b></span>
+    <span class="cm-readout">averaged cosine to backprop, feedback-weighted <b id="cm-a">0.00</b>, control variate <b id="cm-b">0.00</b></span>
   </div>
   <figcaption><strong>Why single-batch cosine misleads.</strong> Both estimators are noisy, so on one batch the feedback-weighted update (pink) often points closer to the true backprop gradient (grey) than the unbiased control variate (berry). Average the updates over many batches and it flips. The control variate's average converges onto the gradient, while the feedback-weighted average stays locked at an angle, because its error is a systematic bias. Vectors are schematic. The backwards ranking and the averaging fix are the measured result.</figcaption>
 </figure>

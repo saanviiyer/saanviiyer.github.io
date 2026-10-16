@@ -2,7 +2,7 @@
 layout: post
 title: "The Effect of Isolation on the Perception of Nature in Frankenstein"
 date: 2023-01-03
-tag: "Essay · Literature"
+tag: "Essay, Literature"
 section: nontechnical
 permalink: /writing/isolation-and-nature-in-frankenstein/
 redirect_from:

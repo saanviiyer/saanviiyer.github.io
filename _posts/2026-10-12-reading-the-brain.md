@@ -375,7 +375,7 @@ Here is where multimodality stops being free. When I fuse a prior at the strengt
   <div class="mm-controls">
     <button id="mm-play" type="button">pause</button>
     <input id="mm-slider" type="range" min="50" max="100" value="90" aria-label="Accuracy of the localization prior">
-    <span class="mm-readout">prior accuracy <b id="mm-acc">90%</b> &middot; lesions recovered beyond baseline <b id="mm-rec">~0</b></span>
+    <span class="mm-readout">prior accuracy <b id="mm-acc">90%</b>, lesions recovered beyond baseline <b id="mm-rec">~0</b></span>
   </div>
   <figcaption><strong>The two measured anchors tell the story.</strong> A 90 percent prior breaks even at p approximately 0.55, with lesions recovered beyond baseline near zero. A perfect prior recovers 14 of 25. The curve between those anchors is schematic.</figcaption>
 </figure>

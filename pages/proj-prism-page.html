@@ -29,14 +29,14 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
   <div class="stat"><div class="n">0.94 &rarr; 0.775%</div><div class="l">Probe AUC on familiar signatures, top-1 accuracy on held-out ones</div></div>
 </div>
 
-<p class="pp-section-num">01 &middot; The Challenge</p>
+<p class="pp-section-num">01, The Challenge</p>
 <h2 class="pp-section-title">Why it matters where a model's embedding moves</h2>
 
 <p>Most protein machine learning now runs through embeddings. A protein language model is trained on millions of natural protein sequences, and it learns to map any sequence to a vector, called an embedding, that packs in much of what the model knows about proteins. Because that vector is so informative, labs increasingly read function, stability, and family membership off it rather than measuring those things in an experiment. That habit raises a direct question: if you take a biological process that changes DNA, apply it to the gene for a protein, and watch where the protein's embedding moves, does the movement tell you what the process did to the protein?</p>
 
 <p>A mutational signature is a clean way to ask this. A mutational process, such as a kind of DNA damage or a faulty repair pathway, leaves a characteristic pattern of base changes behind, and the COSMIC catalogue lists 78 of these single-base-substitution signatures. If applying one signature to a gene consistently pushes the protein toward a single family of proteins in the model's space, that would be a readout of functional consequence from sequence alone, with no experiment needed. If instead the plainest properties of the sequence reproduce it, that is a warning that reading biology off the geometry of an embedding is easy to get wrong. The reason to care either way is that the same move, reading a conclusion off where an embedding sits, now sits under a lot of protein and drug design, and it is only as trustworthy as the controls behind it. PRISM runs that test and then runs the controls that decide which of the two it is.</p>
 
-<p class="pp-section-num">02 &middot; The Approach</p>
+<p class="pp-section-num">02, The Approach</p>
 <h2 class="pp-section-title">The setup, before any result</h2>
 
 <p>I want to start with what the pipeline measures, in plain terms, because every claim later depends on it. A mutational signature gives, for each possible base change in its local three-letter context, how likely that change is under some process. For each signature I walk a protein-coding sequence and draw substitutions from those probabilities, which gives a set of mutants that the process would tend to produce. I translate each mutant into protein and embed both the wild type, the original protein, and the mutants with ESM-2, a protein language model that turns a sequence into a fixed vector. I then compare each cloud of mutant vectors against a library of Pfam family centroids, where Pfam is a catalogue of protein families and a centroid is the average vector of a family, so a shift toward a centroid means the mutants look more like that family to the model.</p>
@@ -71,7 +71,7 @@ thesis: "A protein model's embedding can move in a consistent, repeatable direct
 </table>
 </div>
 
-<p class="pp-section-num">03 &middot; Results</p>
+<p class="pp-section-num">03, Results</p>
 <h2 class="pp-section-title">Three questions, asked in order</h2>
 
 <section class="pp-thread" id="rq1">
