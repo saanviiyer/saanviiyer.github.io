@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Apical Dust"
+title: "Brain-inspired Backprop-free Pretraining without Transformers"
 date: 2026-10-12
 tag: "Guide"
 section: technical
@@ -29,7 +29,7 @@ Researchers usually frame this gap between brains and backpropagation as a probl
 
 ## Whether locality forgets less
 
-The appealing version of the forgetting question is that locality itself buys retention. A backpropagation update couples every weight to every other through the global error, so learning a new task can move any weight that mattered for an old one. A local rule moves a weight only from signals available at that synapse, so, the intuition goes, it should disturb unrelated structure less and forget less. Feedback alignment, direct feedback alignment, and predictive coding are the usual bio-plausible candidates, and reports somewhere credit all three with forgetting less than backpropagation.
+The appealing version of the forgetting question is that locality itself buys retention. A backpropagation update couples every weight to every other through the global error, so learning a new task can move any weight that mattered for an old one. A local rule moves a weight only from signals available at that synapse, so the intuition goes, it should disturb unrelated structure less and forget less. Feedback alignment, direct feedback alignment, and predictive coding are the usual bio-plausible candidates, and reports somewhere credit all three with forgetting less than backpropagation.
 
 The trouble with that literature is a confound hiding in plain sight. **A rule that learns each new task less well also has less to forget.** If a method only reaches 70% on the new task where backpropagation reaches 90%, it has written less into the shared weights, so of course it overwrites less of the old task. Read on its own, its better retention is partly just weaker learning. Comparing forgetting across methods is valid only once you hold learning fixed. I was suspicious going in, because in most of the papers I read the local rule arrived bundled with something else, like sparsity or replay, and the write-ups credited the retention to locality anyway.
 
@@ -47,7 +47,7 @@ All three are biologically motivated, and reports credit all three with helping 
 
 So the first thing to build is a measuring instrument. I weakened backpropagation across eleven settings that vary only the number of epochs and the learning rate, holding out any mechanism that protects old tasks, and measured backward transfer, the change in accuracy on earlier tasks after training on later ones, as a function of how well the network learned the new task. The task is class-incremental Split-CIFAR-10, five tasks of two classes each with a single growing head and no task labels at test time, which is the hard version of the problem, and I ran Split-CIFAR-100 and Split-FashionMNIST as replications. Every arm trains the same two-layer network, so the learning rule is the only thing that changes.
 
-Within each seed, **backward transfer turned out to be almost a deterministic function of learning accuracy, with an $R^2$ of 0.995.** I was surprised it was that tight. Holding out each setting in turn, that relationship predicts backward transfer to a mean absolute error of 1.09 points over 224 held-out predictions, which tells me how small a difference I can actually trust. That tight relationship is the instrument. With it in hand I scored each rule against backpropagation at the same learning accuracy, tuned the baseline as hard as the rule, and corrected each remaining difference for the small accuracy gap left over.
+Within each seed, **backward transfer turned out to be almost a deterministic function of learning accuracy, with an $$R^2$$ of 0.995.** I was surprised it was that tight. Holding out each setting in turn, that relationship predicts backward transfer to a mean absolute error of 1.09 points over 224 held-out predictions, which tells me how small a difference I can actually trust. That tight relationship is the instrument. With it in hand I scored each rule against backpropagation at the same learning accuracy, tuned the baseline as hard as the rule, and corrected each remaining difference for the small accuracy gap left over.
 
 <figure class="ba-fig">
   <div class="ba-wrap"><canvas id="ba-plot"></canvas></div>
@@ -67,7 +67,7 @@ Matched this way, the bio-plausible rules stop looking special. Under matched le
 
 **Figure 1.** Backward transfer against learning accuracy on Split-CIFAR-10 and Split-CIFAR-100. The backpropagation ladder traces the trade-off between learning a new task and forgetting earlier ones, so local rules that fall on the curve forget about as much as backpropagation at a matched learning accuracy, and only replay sits above it. Locality moves you along the trade-off. It does not shift the trade-off itself.
 
-What reduces forgetting is old and simple. Replay, which I added as a positive control, rehearses a small sample of earlier data while learning the new task, and **it improved retention by 10.6 points, [+10.0, +11.1], about fifty times the predictive-coding effect.** Rehearsal accounts for the gain. This matches a plain reading of the brain too. The hippocampus replays experience during rest and sleep, and replay is arguably the most clearly established biological mechanism for retention.
+What reduces forgetting is old and simple. Replay, which I added as a positive control, rehearses a small sample of earlier data while learning the new task, and **it improved retention by 10.6 points, [+10.0, +11.1], about fifty times the predictive-coding effect.** Rehearsal accounts for the gain. This matches a plain reading of the brain too. The hippocampus replays experience during rest and sleep, and replay is among the most clearly established biological mechanisms for retention.
 
 ![Departure from the null for each learning rule, with and without replay, where the rules sit within the null band and every replay arm is about ten points above it](/assets/images/engram-continual-learning/neurreps.png)
 
@@ -204,7 +204,7 @@ The same bias story shows up in my meeting notes at NOISE scale, in the speedrun
 
 ## Result 3, the unbiased version trains better than Dust
 
-Kept unbiased, the feedback helps where Dust is noisiest. **Apical has lower test loss than Dust in every seed-paired comparison at K=16 and K=64.** It also varies less across seeds, which is what variance reduction should do. I had expected exactly that from a control variate, and watching the seed spread shrink made me trust the mechanism more. At K=256 the advantage is gone. Apical wins 2 of 3 pairs, by -0.001 on average.
+Kept unbiased, the feedback helps where Dust is noisiest. **Apical has lower test loss than Dust in every seed-paired comparison at K=16 and K=64.** It also varies less across seeds, which is what variance reduction should do. I had expected that from a control variate, and watching the seed spread shrink made me trust the mechanism more. At K=256 the advantage is gone. Apical wins 2 of 3 pairs, by -0.001 on average.
 
 | Method | K = 16 | K = 64 | K = 256 |
 | --- | --- | --- | --- |
