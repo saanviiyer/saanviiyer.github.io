@@ -4,7 +4,9 @@ title: "By Day a Student, By Night a Codebuster"
 date: 2025-07-25
 tag: "Cryptography"
 section: nontechnical
-permalink: /thinking/one-shift-away/
+permalink: /writing/one-shift-away/
+redirect_from:
+  - /thinking/one-shift-away/
 excerpt: "J'N B DPEFCVTUFS. On cracking ciphers, and why creativity is often just seeing what is already there in a new way."
 ---
 

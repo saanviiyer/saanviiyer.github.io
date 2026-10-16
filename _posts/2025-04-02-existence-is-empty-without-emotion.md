@@ -4,7 +4,9 @@ title: "Étrange, Existence Is Empty Without Emotion"
 date: 2025-04-02
 tag: "Essay · Literature"
 section: nontechnical
-permalink: /thinking/existence-is-empty-without-emotion/
+permalink: /writing/existence-is-empty-without-emotion/
+redirect_from:
+  - /thinking/existence-is-empty-without-emotion/
 excerpt: "Reading Camus' The Stranger through the lens of anomie: a life without emotional connection is where existence goes hollow."
 ---
 

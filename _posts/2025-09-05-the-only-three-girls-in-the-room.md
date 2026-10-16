@@ -2,9 +2,11 @@
 layout: post
 title: "The Only Three Girls in the Room"
 date: 2025-09-05
-tag: "Diversity in tech"
+tag: "Why is diversity important?"
 section: nontechnical
-permalink: /thinking/only-three-girls-in-the-room/
+permalink: /writing/only-three-girls-in-the-room/
+redirect_from:
+  - /thinking/only-three-girls-in-the-room/
 excerpt: "In 9th grade I was one of three girls in a coding class of 30. Founding a SWENext club, and learning that technology reflects the values of its creators."
 ---
 

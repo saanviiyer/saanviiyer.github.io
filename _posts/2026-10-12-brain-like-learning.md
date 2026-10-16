@@ -7,8 +7,9 @@ section: technical
 rank: 4
 math: true
 thumb: /assets/images/apical-dust/fig3.svg
-permalink: /thinking/brain-like-learning/
+permalink: /writing/brain-like-learning/
 redirect_from:
+  - /thinking/brain-like-learning/
   - /thinking/apical-dust/
   - /thinking/brain-like-algorithms/
   - /thinking/brain-inspired-algorithms/

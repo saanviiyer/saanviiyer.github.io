@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<div class="wm-shell">
+<div class="wm-shell{% if page.section != 'technical' %} wm-notoc{% endif %}">
   <aside class="wm-toc" aria-label="On this page">
     <p class="wm-toc-label">on this page</p>
     <div id="wmTocNav"></div>
@@ -40,6 +40,8 @@ layout: default
   if (heads.length < 2) {
     var aside = document.querySelector('.wm-toc');
     if (aside) aside.style.display = 'none';
+    var shell = document.querySelector('.wm-shell');
+    if (shell) shell.classList.add('wm-notoc');
     return;
   }
   var links = [];

@@ -7,8 +7,9 @@ section: technical
 rank: 3
 math: true
 thumb: /assets/images/biology-lm-interpretability/fig_depth.png
-permalink: /thinking/interpretability/
+permalink: /writing/interpretability/
 redirect_from:
+  - /thinking/interpretability/
   - /thinking/outside-the-blackbox/
   - /thinking/biology-lm-interpretability/
   - /thinking/the-probe-works-and-the-understanding-is-not-there/

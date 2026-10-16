@@ -87,7 +87,7 @@ thesis: "An evaluation is only trustworthy if it still means what it claims once
 <section class="pp-thread" id="biologos">
   <h3 class="pp-thread-title">a genomic model does not clear a substitution matrix</h3>
   <p><span class="venue-badge">personal site</span></p>
-  <p class="bm-links"><a href="{{ '/thinking/biologos-transfer/' | relative_url }}">Blog</a><a href="https://github.com/saanviiyer/biologos" target="_blank" rel="noopener">Code</a></p>
+  <p class="bm-links"><a href="{{ '/writing/evaluating-ai-for-biology/' | relative_url }}">Blog</a><a href="https://github.com/saanviiyer/biologos" target="_blank" rel="noopener">Code</a></p>
   <p>DNA and protein are two encodings of one molecule, so i matched a genomic model and a protein model on the same 25 deep mutational scanning assays. a genomic model at Evo 2 7B scale reaches a mean Spearman of 0.266, which is statistically indistinguishable from the BLOSUM62 substitution matrix at 0.228, is beaten by five chemical features, and sits well below ESM-2 650M at 0.466. the Nucleotide Transformer family carries no signal at any scale i tested. this matters because the hope behind a genomic model is that reading the DNA gives you the protein's function for free, and here the DNA model does not beat a fixed substitution table, so the transfer people assume is there does not clear a baseline that costs nothing.</p>
   <figure class="pp-fig">
     <img src="{{ '/assets/images/biologos-transfer/spearman-comparison.png' | relative_url }}" alt="Evo 2 7B at 0.266 overlapping BLOSUM62 at 0.228, both well below ESM-2 at 0.466">
@@ -99,7 +99,7 @@ thesis: "An evaluation is only trustworthy if it still means what it claims once
 <section class="pp-thread" id="wmdp">
   <h3 class="pp-thread-title">a safety benchmark is partly answerable without the question</h3>
   <p><span class="venue-badge">personal site</span></p>
-  <p class="bm-links"><a href="{{ '/thinking/wmdp-bio-audit/' | relative_url }}">Blog</a></p>
+  <p class="bm-links"><a href="{{ '/writing/evaluating-ai-for-biology/' | relative_url }}">Blog</a></p>
   <p>a safety benchmark is only meaningful if its score reflects knowledge rather than how the options were written, so i scored WMDP-Bio with rules that never read the question. always choosing the longest of the four options scores 46.5% against 25% chance, and a classifier trained on the option text alone reaches 34.6%, so part of the score is an answer-writing artifact. across all 57 MMLU subjects run through the same battery, WMDP-Bio sits at the 96.5th percentile on option-only solvability. this matters because people use a safety benchmark to certify that a model does or does not hold dangerous knowledge, and a score a model can reach partly by reading the answer shapes rather than the question inflates that certificate in both directions. this reports aggregate findings only, with no item text and no recipe for exploiting the artifact.</p>
   <figure class="pp-fig">
     <img src="{{ '/assets/images/wmdp-bio-audit/option-only.png' | relative_url }}" alt="Longest-answer rule 46.5 percent and question-blind classifier 34.6 percent against 25 percent chance">

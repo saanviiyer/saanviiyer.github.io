@@ -4,7 +4,9 @@ title: "The Automated Scenario"
 date: 2025-10-01
 tag: "Essay · AI & ethics"
 section: nontechnical
-permalink: /thinking/the-automated-scenario/
+permalink: /writing/the-automated-scenario/
+redirect_from:
+  - /thinking/the-automated-scenario/
 excerpt: "Should we devote resources to an AI-powered 'automated scenario' for science? Weighing the promise and the peril, and arguing for careful, human-supervised investment."
 ---
 

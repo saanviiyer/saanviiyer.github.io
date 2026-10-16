@@ -4,7 +4,9 @@ title: "Transformative Experiences Change Our Brains"
 date: 2026-05-31
 tag: "Essay, Philosophy"
 section: nontechnical
-permalink: /thinking/transformative-experiences-change-our-brains/
+permalink: /writing/transformative-experiences-change-our-brains/
+redirect_from:
+  - /thinking/transformative-experiences-change-our-brains/
 excerpt: "L.A. Paul argues a transformative experience makes you a new self. Extending her argument with the neurobiological evidence that this new self is physically instantiated in a reorganized brain."
 ---
 

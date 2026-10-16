@@ -4,7 +4,9 @@ title: "If I Were Grand Poobah of the Earth"
 date: 2021-09-28
 tag: "Essay · Environment"
 section: nontechnical
-permalink: /thinking/grand-poobah-of-the-earth/
+permalink: /writing/grand-poobah-of-the-earth/
+redirect_from:
+  - /thinking/grand-poobah-of-the-earth/
 excerpt: "A 9th-grade environmental science position paper, delivered as a mock campaign speech: a two-part plan to shrink our ecological footprint through technology and affluence."
 ---
 

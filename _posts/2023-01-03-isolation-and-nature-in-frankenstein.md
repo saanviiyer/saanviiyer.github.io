@@ -4,7 +4,9 @@ title: "The Effect of Isolation on the Perception of Nature in Frankenstein"
 date: 2023-01-03
 tag: "Essay · Literature"
 section: nontechnical
-permalink: /thinking/isolation-and-nature-in-frankenstein/
+permalink: /writing/isolation-and-nature-in-frankenstein/
+redirect_from:
+  - /thinking/isolation-and-nature-in-frankenstein/
 excerpt: "Victor Frankenstein notices the beauty of nature only when he is among the people he loves. A reading of isolation, companionship, and mental health."
 ---
 

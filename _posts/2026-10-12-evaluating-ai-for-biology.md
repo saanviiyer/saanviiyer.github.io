@@ -7,8 +7,9 @@ section: technical
 rank: 2
 math: true
 thumb: /assets/images/eval-biology-article/winners-curse.png
-permalink: /thinking/evaluating-ai-for-biology/
+permalink: /writing/evaluating-ai-for-biology/
 redirect_from:
+  - /thinking/evaluating-ai-for-biology/
   - /thinking/how-to-evaluate-ai-models-for-biology/
   - /thinking/bio-evals-guide/
   - /thinking/wmdp-bio-audit/

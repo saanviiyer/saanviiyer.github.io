@@ -6,7 +6,9 @@ tag: "Essay"
 section: technical
 rank: 5
 thumb: /assets/images/eval-biology-article/winners-curse.png
-permalink: /thinking/scientific-superintelligence/
+permalink: /writing/scientific-superintelligence/
+redirect_from:
+  - /thinking/scientific-superintelligence/
 excerpt: "Reasoning improved fastest where answers are cheap to verify. Science is the opposite: the verifier is slow, expensive, and often absent. The bottleneck to scientific superintelligence is not search, it is knowing when a claim is true."
 ---
 

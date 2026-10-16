@@ -1,10 +1,12 @@
 ---
 layout: post
-title: "How Choir Changed the Way I Hear the World"
+title: "My love for choir"
 date: 2025-08-20
 tag: "Music"
 section: nontechnical
-permalink: /thinking/how-choir-changed-the-way-i-hear/
+permalink: /writing/how-choir-changed-the-way-i-hear/
+redirect_from:
+  - /thinking/how-choir-changed-the-way-i-hear/
 excerpt: "I joined choir to fill an arts credit. It ended up teaching me that the patterns I admire in science live in music too."
 ---
 

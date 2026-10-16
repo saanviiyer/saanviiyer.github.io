@@ -7,8 +7,9 @@ section: technical
 rank: 1
 math: true
 thumb: /assets/images/bci-foundations/decoders.png
-permalink: /thinking/reading-the-brain/
+permalink: /writing/reading-the-brain/
 redirect_from:
+  - /thinking/reading-the-brain/
   - /thinking/clinical-bci-localization/
   - /thinking/medical-ai-multimodality/
   - /thinking/bci-foundations/
