@@ -21,7 +21,7 @@ excerpt: "Every output-level evaluation I have stress-tested fails the moment a 
 
 ## The pattern, scores break under use
 
-Start with the mechanism that shows up everywhere, the winner's curse. Write any score as the true quality plus an error term,
+Start with the mechanism that recurs across them, the winner's curse. Write any score as the true quality plus an error term,
 
 $$ s = f^{*} + \varepsilon. $$
 
@@ -43,7 +43,7 @@ The more you search, the more error dominates the score. **A proxy that looks tr
 
 This happens in practice. On 504 measured PET-hydrolase variants, a zero-shot ESM-2 650M score ranks activity at a within-study Spearman of 0.01, below a plain mutation count at 0.25. **The expensive model is the weakest scorer on the task it is sold for.** Reported benchmark correlation explains half the variance in top-10% selection value and only 16% at top-1%, so the number decays as selection sharpens. And when the evaluator becomes a component of an agent, it becomes an attack surface. A scorer that memorizes the measured outcomes clears a trust gate at AUROC 0.991 and adds nothing, because the gate scored it on data it had already seen.
 
-The usual response is to patch the benchmark. Add harder examples, de-duplicate, re-weight. That helps a specific leak and misses the shape of the problem. A safety benchmark makes the point cleanly. On a hazardous-knowledge multiple-choice set, **a rule that skips the question and picks the longest of four options scores 46.5% against 25% chance**, and a classifier trained on the answer text alone reaches 34.6%. Part of the score is an artifact of how the options were written, so a model's number is an upper bound on what it knows until that artifact is subtracted, and a drop in the number under an intervention, on its own, is weak evidence that the intervention removed knowledge.
+The usual response is to patch the benchmark. Add harder examples, de-duplicate, re-weight. That helps a specific leak and misses the general problem. A safety benchmark makes the point cleanly. On a hazardous-knowledge multiple-choice set, **a rule that skips the question and picks the longest of four options scores 46.5% against 25% chance**, and a classifier trained on the answer text alone reaches 34.6%. Part of the score is an artifact of how the options were written, so a model's number is an upper bound on what it knows until that artifact is subtracted, and a drop in the number under an intervention, on its own, is weak evidence that the intervention removed knowledge.
 
 Every one of these failures lives at the output. The score reads a model's emissions, the benchmark summarizes emissions over a corpus, the gate reads emitted outcomes. Each stops at the emission and passes over the computation behind it. That is the ceiling. An output-level evaluation reads a solved task and a shortcut to the same output as identical, and **a shortcut is what an optimizer finds first.**
 
@@ -85,7 +85,7 @@ So I now want three kinds of evidence before I make a strong claim about what a 
 
 ## Inside a protein language model, where function becomes accessible
 
-The second attempt goes further inside the model. If a probe reading the output embedding is reading the wrong place, then the obvious question is where the right place is. At what depth does intervening along a fitted functional direction move the model's own output representation, and once the information is there, does it localise into individual sparse features or spread across many?
+The second attempt goes further inside the model. If a probe reading the output embedding is reading the wrong place, then the question is where the right place is. At what depth does intervening along a fitted functional direction move the model's own output representation, and once the information is there, does it localise into individual sparse features or spread across many?
 
 The functional target is deep mutational scanning fitness across ten ProteinGym assays, 72 to 212 residues. The direction is the difference between mean activations of high- and low-fitness variants, fitted on training proteins only, centred within each protein. Absent that centring, the between-protein offset dominates and the fitted direction becomes a protein detector. I inject the direction with a forward hook at a chosen layer, so the perturbation has to propagate through every remaining layer to reach the readout. **Everything then depends on the control.** I use three nulls at matched norm, a random Gaussian direction, a direction orthogonal to the fitted one, and the unweighted mean activation. The third is the stiff one, because adding any large in-distribution shift moves embeddings somewhere, and only a control that also moves them tests the hypothesis. That third null is the one I learned to trust, and it is the one that later flipped half my results.
 

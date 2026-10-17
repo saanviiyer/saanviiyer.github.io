@@ -16,7 +16,7 @@ excerpt: "Reasoning improved fastest where answers are cheap to verify. Science 
 
 ## Reasoning is propose-and-verify
 
-Strip a modern reasoning system down and it is a search with a judge. The model proposes candidate steps or whole solutions, and a verifier scores them, so training and inference can both spend compute generating many attempts and keeping the ones that check out. **Where that judge is cheap and reliable, the loop is extraordinary.** A unit test passes or fails, a theorem prover closes the goal or leaves it open, and the model can be pushed hard against a signal that stays reliable. I take the last few years of reasoning progress as mostly a story about where that reliable signal was cheap to get.
+Strip a modern reasoning system down and it is a search with a judge. The model proposes candidate steps or whole solutions, and a verifier scores them, so training and inference can both spend compute generating many attempts and keeping the ones that check out. **Where that judge is cheap and reliable, the loop is extraordinary.** A unit test passes or fails, a theorem prover closes the goal or leaves it open, and the model can be pushed hard against a signal that stays reliable. I take the last few years of reasoning progress as mostly a matter of where that reliable signal was cheap to get.
 
 <figure class="ss-fig">
   <div class="ss-wrap"><canvas id="ss-plot"></canvas></div>
