@@ -1143,6 +1143,13 @@ footer a:hover { text-decoration: underline; }
 .bm-links a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.03em; text-transform: uppercase; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 6px 14px; text-decoration: none; }
 .bm-links a:hover { background: var(--accent-soft); }
 .venue-badge { display: inline-block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 3px 8px; margin: 2px 4px 2px 0; }
+/* Project masthead: center authors, venues, links, hook and thesis under the title (spectral-style). */
+.rp-masthead .bm-authors { font-family: var(--sans); font-size: 0.95rem; color: var(--ink); margin: 16px 0 0; }
+.rp-masthead .bm-affil { margin: 4px 0 0; }
+.rp-masthead .bm-venues { margin: 16px 0 0; }
+.rp-masthead .bm-links { justify-content: center; margin: 20px 0 0; }
+.rp-masthead .bm-hook { margin: 22px auto 0; max-width: 58ch; }
+.rp-masthead .bm-thesis { margin: 14px auto 0; max-width: 58ch; }
 .bm-video { margin-top: 24px; aspect-ratio: 16 / 9; width: 100%; border-radius: 12px; border: 1px dashed var(--read-card-edge); display: flex; align-items: center; justify-content: center; color: var(--muted); font-family: var(--mono); font-size: 0.72rem; text-align: center; padding: 0 20px; }
 
 .pp-body { max-width: 880px; margin: 0 auto; }
@@ -1473,4 +1480,191 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
   .research-post .rp-reveal,
   .research-post .rp-reveal.rp-h2::after { animation: none !important; }
   .research-post .rp-body p > img { transition: none; }
+}
+
+/* ===================================================================
+   nv-* : research-blog components in the style of a lab research page
+   (metadata masthead, contents card, margin sidenotes, study table,
+   stepped walkthrough, numbered references).
+   ADDITIVE BY CONSTRUCTION: every element is a normal flow element
+   with normal color and opacity. If this stylesheet fails to load,
+   each piece still renders as readable prose. Nothing is hidden by
+   CSS and nothing waits on JavaScript to become visible.
+   =================================================================== */
+
+:root {
+  --nv-rule: rgba(17, 17, 17, 0.12);
+  --nv-muted: #5c5c5c;
+  --nv-label: #8a8a8a;
+  --nv-accent: #a8324a;
+  --nv-tint: rgba(168, 50, 74, 0.05);
+}
+
+/* ---- metadata masthead: AUTHORS / AFFILIATIONS / PUBLISHED -------- */
+.nv-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.1rem 2rem;
+  margin: 1.6rem 0 0;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--nv-rule);
+  border-bottom: 1px solid var(--nv-rule);
+}
+.nv-meta-col { min-width: 0; }
+.nv-meta-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nv-label);
+}
+.nv-meta-val { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+.nv-meta-val span { display: block; }
+
+/* ---- contents card ------------------------------------------------ */
+.nv-contents {
+  margin: 2rem 0;
+  padding: 1.1rem 1.3rem 1.2rem;
+  border: 1px solid var(--nv-rule);
+  border-radius: 3px;
+}
+.nv-contents > p {
+  margin: 0 0 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nv-label);
+}
+.nv-contents ol { margin: 0; padding-left: 1.1rem; columns: 2; column-gap: 2rem; }
+.nv-contents li { margin: 0.2rem 0; font-size: 0.9rem; break-inside: avoid; }
+@media (max-width: 620px) { .nv-contents ol { columns: 1; } }
+
+/* ---- margin sidenotes -------------------------------------------- */
+.nv-mark {
+  font-size: 0.72em;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--nv-accent);
+  font-weight: 650;
+  padding-left: 0.1em;
+}
+.nv-note {
+  display: block;
+  margin: 0.9rem 0;
+  padding: 0.7rem 0.9rem;
+  border-left: 2px solid var(--nv-accent);
+  background: var(--nv-tint);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--nv-muted);
+}
+.nv-note .nv-mark { padding-right: 0.25em; padding-left: 0; }
+@media (min-width: 1180px) {
+  .nv-note {
+    float: right;
+    clear: right;
+    width: 15rem;
+    margin: 0.3rem -17rem 1rem 1.5rem;
+    padding: 0 0 0 0.85rem;
+    background: none;
+  }
+}
+
+/* ---- collapsible aside -------------------------------------------- */
+.nv-details {
+  margin: 1.5rem 0;
+  border: 1px solid var(--nv-rule);
+  border-radius: 3px;
+  padding: 0 1.1rem;
+}
+.nv-details > summary {
+  cursor: pointer;
+  padding: 0.8rem 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  list-style: none;
+}
+.nv-details > summary::-webkit-details-marker { display: none; }
+.nv-details > summary::before { content: "\2192"; color: var(--nv-accent); padding-right: 0.5rem; }
+.nv-details[open] > summary { border-bottom: 1px solid var(--nv-rule); }
+.nv-details > :not(summary) { font-size: 0.9rem; }
+.nv-details > :last-child { margin-bottom: 1rem; }
+
+/* ---- study table --------------------------------------------------- */
+.nv-table-wrap { margin: 1.8rem 0; overflow-x: auto; }
+.nv-table-cap {
+  margin: 0 0 0.5rem;
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nv-label);
+}
+table.nv-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+table.nv-table th {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1.5px solid var(--nv-rule);
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nv-label);
+  white-space: nowrap;
+}
+table.nv-table td {
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid var(--nv-rule);
+  vertical-align: top;
+  line-height: 1.45;
+}
+table.nv-table tr.nv-ours td { background: var(--nv-tint); font-weight: 500; }
+.nv-chip {
+  display: inline-block;
+  padding: 0.1rem 0.42rem;
+  border: 1px solid var(--nv-rule);
+  border-radius: 2px;
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--nv-muted);
+  white-space: nowrap;
+}
+.nv-chip-no { border-color: var(--nv-accent); color: var(--nv-accent); }
+
+/* ---- stepped walkthrough ------------------------------------------ */
+.nv-steps { margin: 1.8rem 0; border-top: 1px solid var(--nv-rule); }
+.nv-step {
+  display: grid;
+  grid-template-columns: 2.1rem 1fr;
+  gap: 0 0.9rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--nv-rule);
+}
+.nv-step-n {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  color: var(--nv-accent);
+  padding-top: 0.15rem;
+}
+.nv-step-b { margin: 0; font-size: 0.9rem; line-height: 1.55; }
+.nv-step-b strong { display: block; margin-bottom: 0.15rem; }
+
+/* ---- numbered references ------------------------------------------ */
+ol.nv-refs { margin: 1.2rem 0 0; padding-left: 1.6rem; }
+ol.nv-refs li { margin: 0.55rem 0; font-size: 0.85rem; line-height: 1.5; color: var(--nv-muted); }
+ol.nv-refs li b { color: #111; font-weight: 600; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nv-rule: rgba(255, 255, 255, 0.16);
+    --nv-muted: #b4b4b4;
+    --nv-label: #8f8f8f;
+    --nv-tint: rgba(232, 120, 145, 0.08);
+    --nv-accent: #e87891;
+  }
+  :root:not([data-theme="light"]) ol.nv-refs li b { color: #f2f2f2; }
 }

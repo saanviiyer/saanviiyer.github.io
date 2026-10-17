@@ -1,28 +1,55 @@
 ---
 layout: default
 ---
-<article class="pp-wrap" id="top">
-  <div class="bm-head">
-    <p class="bm-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
-    <h1 class="bm-title">{{ page.title }}</h1>
-    <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
-    {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
-    {% if page.venues %}<p class="bm-venues">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
-    {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
-    {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
-    {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
-  </div>
+<div class="rp-progress" id="rpProgress" aria-hidden="true"></div>
 
-  <nav class="pp-toc" id="ppToc" aria-label="On this page"></nav>
+<header class="rp-masthead" id="top">
+  <p class="rp-eyebrow"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
+  <h1 class="rp-title">{{ page.title }}</h1>
+  <p class="bm-authors">{{ page.authors | default: "Saanvi S. Subramanian" }}</p>
+  {% if page.affiliation %}<p class="bm-affil">{{ page.affiliation }}</p>{% endif %}
+  {% if page.venues %}<p class="bm-venues">{% for v in page.venues %}<span class="venue-badge">{{ v }}</span>{% endfor %}</p>{% endif %}
+  {% if page.links %}<p class="bm-links">{% for l in page.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>{% endfor %}</p>{% endif %}
+  {% if page.hook %}<p class="bm-hook">{{ page.hook }}</p>{% endif %}
+  {% if page.thesis %}<p class="bm-thesis">{{ page.thesis }}</p>{% endif %}
+</header>
 
-  <div class="pp-body">
-    {{ content }}
-  </div>
-</article>
+<div class="wm-shell" id="ppShell">
+  <aside class="wm-toc" aria-label="On this page">
+    <p class="wm-toc-label">on this page</p>
+    <nav id="ppToc"></nav>
+  </aside>
 
-<p class="pp-back"><a href="{{ '/projects/' | relative_url }}">&larr; all projects</a></p>
+  <article class="research-post">
+    <div class="rp-body pp-body">
+      {{ content }}
+    </div>
+    <p class="post-back"><a href="{{ '/projects/' | relative_url }}">&larr; all projects</a></p>
+  </article>
+</div>
 
 <script>
+/* Thin reading-progress bar driven by scroll. Additive: if it never runs the
+   bar stays at zero width and the page reads fine. */
+(function () {
+  var bar = document.getElementById('rpProgress');
+  if (!bar) return;
+  function update() {
+    var h = document.documentElement;
+    var max = (h.scrollHeight - h.clientHeight) || 1;
+    var pct = Math.min(100, Math.max(0, (h.scrollTop || document.body.scrollTop) / max * 100));
+    bar.style.width = pct + '%';
+  }
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+})();
+</script>
+
+<script>
+/* Build the sticky "on this page" list from the project's thread sections.
+   If there are fewer than two real sections, hide the sidebar and let the
+   article use the full centered column. */
 (function () {
   var toc = document.getElementById("ppToc");
   if (!toc) return;
@@ -33,6 +60,15 @@ layout: default
   });
   if (document.getElementById("takeaways")) links.push({ href: "#takeaways", label: "Takeaways" });
   if (document.getElementById("cite")) links.push({ href: "#cite", label: "Cite" });
+
+  if (links.length < 2) {
+    var aside = document.querySelector('.wm-toc');
+    if (aside) aside.style.display = 'none';
+    var shell = document.getElementById('ppShell');
+    if (shell) shell.classList.add('wm-notoc');
+    return;
+  }
+
   toc.innerHTML = links.map(function (l) { return '<a href="' + l.href + '">' + l.label + "</a>"; }).join("");
   var map = {};
   toc.querySelectorAll("a").forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
@@ -41,8 +77,8 @@ layout: default
       es.forEach(function (e) {
         var a = map[e.target.id];
         if (a && e.isIntersecting) {
-          toc.querySelectorAll("a").forEach(function (x) { x.classList.remove("on"); });
-          a.classList.add("on");
+          toc.querySelectorAll("a").forEach(function (x) { x.classList.remove("active"); });
+          a.classList.add("active");
         }
       });
     }, { rootMargin: "-25% 0px -70% 0px" });
