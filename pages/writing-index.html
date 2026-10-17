@@ -10,7 +10,7 @@ permalink: /writing/
 
     {% comment %} best-to-worst order via the `rank` field in each post's front matter (1 = best) {% endcomment %}
     {% assign tech = site.posts | where: "section", "technical" | sort: "rank" %}
-    {% for post in tech %}
+    {% for post in tech %}{% unless post.url contains 'salinity-detector' %}
     <div class="pub-row">
       <a class="pub-thumb" href="{{ post.url | relative_url }}">{% if post.thumb %}<img src="{{ post.thumb | relative_url }}" alt="{{ post.title }}">{% endif %}</a>
       <div class="pub-main">
@@ -20,7 +20,7 @@ permalink: /writing/
       </div>
       <div class="pub-year">{{ post.date | date: "%Y" }}</div>
     </div>
-    {% endfor %}
+    {% endunless %}{% endfor %}
 
     <div class="pub-row">
       <a class="pub-thumb" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener"></a>
@@ -31,6 +31,20 @@ permalink: /writing/
       </div>
       <div class="pub-year">2026</div>
     </div>
+
+    {% comment %} Science Olympiad detector sits last in the technical list, below the proposal {% endcomment %}
+    {% assign det = site.posts | where: "section", "technical" | where_exp: "p", "p.url contains 'salinity-detector'" | first %}
+    {% if det %}
+    <div class="pub-row">
+      <a class="pub-thumb" href="{{ det.url | relative_url }}">{% if det.thumb %}<img src="{{ det.thumb | relative_url }}" alt="{{ det.title }}">{% endif %}</a>
+      <div class="pub-main">
+        <h3 class="pub-title"><a href="{{ det.url | relative_url }}">{{ det.title }}</a></h3>
+        <div class="pub-venue">essay, personal site</div>
+        <div class="pub-links"><a href="{{ det.url | relative_url }}">read</a></div>
+      </div>
+      <div class="pub-year">{{ det.date | date: "%Y" }}</div>
+    </div>
+    {% endif %}
 
   </div>
 

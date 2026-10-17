@@ -563,26 +563,36 @@ nav {
 .post-list-archive .post-card h3 { font-size: 1.18rem; }
 
 /* Research post: clean centered column with a sticky table of contents, no card */
+/* Symmetric three-column grid: the reading column (center) is centered in the
+   viewport, with the TOC sitting in a balanced left gutter. The right gutter
+   mirrors the left, so there is no dead zone on one side. */
 .wm-shell {
   display: grid;
-  grid-template-columns: 210px minmax(0, 920px);
-  column-gap: clamp(44px, 7vw, 120px);
-  margin: 0;
-  padding-left: clamp(20px, 6vw, 120px);
-  max-width: 1260px;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 720px) minmax(180px, 1fr);
+  column-gap: clamp(28px, 3.5vw, 64px);
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0;
   align-items: start;
 }
-.wm-shell.wm-notoc {
-  grid-template-columns: minmax(0, 880px);
-  padding-left: 0;
-  margin: 0 auto;
-  max-width: 900px;
-}
 .wm-toc {
+  grid-column: 1;
+  justify-self: end;
+  width: 210px;
   position: sticky;
   top: 108px;
   align-self: start;
 }
+.research-post { grid-column: 2; }
+/* No sidebar: a single reading column, centered. */
+.wm-shell.wm-notoc {
+  grid-template-columns: minmax(0, 720px);
+  justify-content: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.wm-shell.wm-notoc .wm-toc { display: none; }
 .wm-toc-label { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
 .wm-toc #wmTocNav { display: block; }
 .wm-toc a { display: block; width: 100%; box-sizing: border-box; font-family: var(--sans); font-size: 0.8rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 7px 0 7px 14px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; }
@@ -633,7 +643,7 @@ nav {
 .post-back a { color: var(--accent); font-family: var(--sans); font-size: 0.7rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.06em; }
 .post-back a:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 980px) {
-  .wm-shell { grid-template-columns: minmax(0, 720px); gap: 0; }
+  .wm-shell, .wm-shell.wm-notoc { grid-template-columns: minmax(0, 720px); justify-content: center; column-gap: 0; }
   .wm-toc { display: none; }
 }
 
