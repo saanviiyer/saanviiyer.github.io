@@ -84,7 +84,7 @@ The Arduino drives a 16x2 LCD that prints the measured voltage on the top line a
   <figcaption><strong>Figure 2.</strong> Our labeled photo of the finished device. The bent-glass salt bridge sits at the upper left, the HX711 chip sits in a socket on the breadboard, and the Arduino Uno drives the 16x2 LCD and the indicator LEDs. We epoxied the whole build to a wooden board.</figcaption>
 </figure>
 
-Here is the heart of the Arduino sketch. It averages ten readings from the HX711, holds the value steady when it drifts by less than half a percent to stop slow creep, converts the raw count to microvolts, and lights the LED for whichever band the reading falls in.
+Here is the main loop of the Arduino sketch. It averages ten readings from the HX711, holds the value steady when it drifts by less than half a percent to stop slow creep, converts the raw count to microvolts, and lights the LED for whichever band the reading falls in.
 
 ```cpp
 #include "HX711.h"
@@ -127,9 +127,9 @@ void loop() {
 }
 ```
 
-## Calibration took the season
+## Calibration
 
-Wiring the device took an afternoon. Turning its readings into true salinity took the rest of the season. A raw voltage means nothing until you know what concentration produced it, so we mixed samples at concentrations we knew, read the voltage for each one, and recorded the pairs. That table is the calibration.
+The wiring was quick. Most of the season went into turning the voltage readings into salinity numbers. A raw voltage means nothing until you know what concentration produced it, so we mixed samples at concentrations we knew, read the voltage for each one, and recorded the pairs. That table is the calibration.
 
 Our early attempts were rough. On one of the first full calibration runs, ten samples gave a scatter that barely trended at all, and the line of best fit explained only about a fifth of the variation (R-squared near 0.22). The points sat in almost a cloud, which told us the device was picking up as much noise as signal.
 
@@ -157,10 +157,10 @@ By the end, a clean calibration sweep looked like this, with voltage in microvol
   <figcaption><strong>Figure 4.</strong> The same device after the fixes. Seven known samples fall close to a straight line through the origin, a little more than half a ppm for every microvolt.</figcaption>
 </figure>
 
-Across the full sweep the relationship held close to a straight line through the origin. **1770 microvolts mapped to about 954 ppm**, a little more than half a ppm for every microvolt, and the intermediate points sat near that same slope. The jump from a cloud of points to a line I could trust is the part of the project I am most proud of, and it is the part nobody sees when they look at the finished board.
+Across the full sweep the relationship held close to a straight line through the origin. **1770 microvolts mapped to about 954 ppm**, a little more than half a ppm for every microvolt, and the intermediate points sat near that same slope. Turning that cloud of points into a line I could trust is the part of the project I am most proud of.
 
-## What I took away
+## What I learned
 
-I learned that building the sensor is the easy half. The salt bridge and the electronics came together once I understood what each piece did. The measurement itself is the hard half, the slow work of making a reading mean the same thing twice. I spent far more hours mixing known samples and plotting voltage against concentration than I spent soldering.
+Building the sensor was the quick part. The salt bridge and the electronics worked once I understood what each piece did. The measurement took much longer. I spent far more hours mixing known samples and plotting voltage against concentration than I spent soldering.
 
-I also learned to trust the chemistry when the data looked wrong. When our first scatterplots refused to line up, I went back to the fact that a concentration cell follows a log curve, so a straight-line fit was always going to fail. Letting the Nernst equation set the shape of the fit turned the noise into a calibration I could stand behind. I carried that habit, letting the physics set the form of the model before I fit anything, out of Detector Building and into every measurement project since.
+The calibration also taught me to check the chemistry when the numbers looked off. Our first scatterplots had no clear trend, and the reason was that a concentration cell follows a log curve, so a straight-line fit could not work. Fitting against the log of the voltage fixed it. Now I check what shape the physics predicts before I fit a model to anything.
