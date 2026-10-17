@@ -1,18 +1,110 @@
 ---
-title: white-box evaluation, Saanvi S. Subramanian
+layout: project
+title: "white-box evaluation"
 permalink: /pages/projects/white-box-evaluation/
+affiliation: "Caltech"
+hook: "Interpreting functional representations in biology language models."
+thesis: "Function is causally accessible only in a narrow interior band of ESM-2, the sparse feature attribution selects is not the feature that carries the effect, and five of twelve claims invert once the control is named."
+links:
+  - label: "Blog"
+    url: "/writing/interpretability/"
+  - label: "Demo"
+    url: "/pages/demos/selection-under-optimization/"
 ---
 
-<div class="page-header">
-  <h1>white-box evaluation</h1>
+<p class="proj-blurb">An output-level evaluation is gameable and incomplete, because the
+output is a projection of what the model actually did. The complement is reading the
+computation. This project does that inside protein and nucleotide language models, and
+most of the work turns out to be building an instrument you can trust.</p>
+
+<p class="proj-blurb">The biosecurity boundary is fixed first and does not move: only
+benign, already-measured proteins, no new sequences generated, no wet-lab validation,
+and no reusable steering probe released.</p>
+
+<h2>Three questions</h2>
+
+<p><strong>Where</strong> does functional information become causally accessible inside
+ESM-2 &mdash; at what depth does intervening along a fitted functional direction move the
+model's own output representation? <strong>How</strong> is it organised there &mdash; is
+the sparse dictionary element attribution selects the element that carries the effect?
+And for nucleotide models, <strong>do the tests we would use to answer the first two
+discriminate at all?</strong></p>
+
+<h2>What the measurements say</h2>
+
+<div class="nv-table-wrap">
+<p class="nv-table-cap">Headline results, each beside the control it has to clear</p>
+<table class="nv-table">
+<thead><tr><th>Claim</th><th>Effect</th><th>Against its control</th></tr></thead>
+<tbody>
+<tr><td>A fitted fitness direction is specifically causal near depth 0.73</td><td>+0.0933 at layer 24 of 33</td><td><span class="nv-chip">holds</span> 12/12 held-out proteins at layer 20</td></tr>
+<tr><td>The band's <em>location</em> is pinned down</td><td>&mdash;</td><td><span class="nv-chip nv-chip-no">partial</span> one twelve-protein interval only</td></tr>
+<tr><td>The output layer destroys the effect</td><td>95&times; collapse</td><td><span class="nv-chip">architectural</span> emb_layer_norm_after</td></tr>
+<tr><td>Depth 0.97 is where function lives</td><td>z = 16.24</td><td><span class="nv-chip nv-chip-no">inverts</span> loses to its own stiffer null</td></tr>
+<tr><td>The decoder-aligned atom carries the effect</td><td>&minus;0.004 to +0.008</td><td><span class="nv-chip nv-chip-no">fails</span> vs +0.0389 supervised</td></tr>
+<tr><td>Some single atom carries the effect</td><td>77&ndash;95%</td><td><span class="nv-chip">clears</span> at cosines as low as &minus;0.39</td></tr>
+<tr><td>Mean-pooled activations explain intervention outcomes</td><td>AUC 0.4931</td><td><span class="nv-chip nv-chip-no">chance</span></td></tr>
+<tr><td>HyenaDNA represents reading frame</td><td>+0.00058</td><td><span class="nv-chip nv-chip-no">fails</span> an order-0 Markov chain passes</td></tr>
+</tbody>
+</table>
 </div>
 
-<p class="proj-blurb">A white-box evaluation for protein models. It ranks fixed sets of already-measured benign variants, recovers the assay property with linear probes on a model's internal activations, and holds out whole families to check that the signal transfers rather than shortcutting.</p>
-<p class="proj-blurb">The biosecurity boundary is fixed first: only benign, already-measured proteins, no new sequences, and no reusable steering probe.</p>
+<p><strong>Five of the twelve substantive claims invert once the control is named</strong>,
+and none of the inversions is exotic: a conventional null, a conventional readout, an
+unbounded metric, a dose-response measured inside its linear regime, a test named for a
+capability it does not measure. Each of them was mine.</p>
 
-<p class="preprint-links">
-  <a href="{{ '/writing/interpretability/' | relative_url }}">Blog</a>
-  <a href="{{ '/pages/demos/selection-under-optimization/' | relative_url }}">Demo</a>
-</p>
+<h2>The instrument is the hard part</h2>
 
-<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; all projects</a></p>
+<p>Three results drove that home. A reading-frame test I built is passed by an
+<strong>order-0 Markov chain that cannot represent a codon</strong>, and failed by
+HyenaDNA; the aperiodic control shows the test responds to position-modulo-three
+periodicity, not to frame. An entropy-steering direction transplanted to HyenaDNA is
+specific by a wide margin &mdash; &minus;0.984 nats against +0.05 for every null &mdash;
+yet <strong>0 of 250 steered cells lower entropy while accuracy holds</strong>, with
+accuracy falling to 0.257 against a chance rate of 0.25. It manufactures confidence
+without correctness. And a &ldquo;protein-disjoint&rdquo; split in my own sweep turned out
+to be disjoint in assay identifier, not in parent sequence: widening the panel admitted
+three independent beta-lactamase studies of one protein, putting the same sequence on
+both sides.</p>
+
+<span class="nv-note"><span class="nv-mark">&dagger;</span> That last one had been latent
+rather than wrong. Every reported run caps sequence length at 260 residues, which excludes
+a 286-residue protein by accident rather than by design. A label on a split is not a
+property of it.</span>
+
+<h2>Measurement gates</h2>
+
+<p>Eleven gates came out of closing those holes, each attributed to the experiment that
+paid for it. Gates 1 to 4 were violated by my own pipeline before they were written down.
+Three of those four share a single cause I did not see until they were on paper: they are
+all questions about the <em>dose</em>, and they only arise because the intervention is
+parameterised additively as <code>h + &alpha;v</code>. The standard causal test has no
+&alpha; at all.</p>
+
+<div class="nv-steps">
+<div class="nv-step"><div class="nv-step-n">01</div><p class="nv-step-b"><strong>Name which null and which readout.</strong> A matched-norm random direction is near-orthogonal to any fixed target in high dimension. The competing control is the generic mean shift.</p></div>
+<div class="nv-step"><div class="nv-step-n">05</div><p class="nv-step-b"><strong>Noise ceiling before null.</strong> A measured split-half ceiling of 0.71 to 0.85, flat across depth, so a negative result means the direction failed and not that the signal was absent.</p></div>
+<div class="nv-step"><div class="nv-step-n">08</div><p class="nv-step-b"><strong>Cluster, not row, as the statistical unit.</strong> The parent protein, not the assay &mdash; which is exactly what the beta-lactamase leak violated.</p></div>
+<div class="nv-step"><div class="nv-step-n">11</div><p class="nv-step-b"><strong>Run the test on a model that cannot hold the representation.</strong> A null <em>sequence</em> says what a model does on degraded input. A null <em>model</em> says whether the test needs the capability it is named for.</p></div>
+</div>
+
+<details class="nv-details">
+<summary>What is deliberately not claimed</summary>
+<p>Not that genomic language models fail to represent reading frame &mdash; only that this
+test cannot tell, so a verdict from it is evidence either way. Not that Markov chains are
+good models of coding sequence; that is a claim about the test. Absolute recovery never
+exceeds ten percent of the real difference, so the dominant fact about function in these
+representations is how little of it any extractable direction accounts for.</p>
+<p>The title is broader than the causal evidence: two modalities are studied and only one
+is intervened in, so the depth findings should be read as protein findings until an
+intervention exists on the nucleotide side.</p>
+</details>
+
+<h2>Status</h2>
+
+<p>An eight-page submission is drafted against the ICML main-track format, with the
+measurement ledger, the eleven gates and the full limitations list in appendices. Open
+work: a wider protein panel to pin the band's location, an interchange reformulation that
+removes the dose parameter entirely, a learned direction to replace difference-in-means,
+and a top-k attribution sweep to replace a best-of-39 single-atom scan.</p>

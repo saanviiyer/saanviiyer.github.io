@@ -1524,6 +1524,20 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
 
 /* ---- contents card ------------------------------------------------ */
 .nv-contents {
+  /* The site's global `nav` rule is written for the sticky site header
+     (display:flex, height:78px, position:sticky, backdrop-filter). Neutralise
+     all of it so this card cannot inherit a fixed height and overlap the
+     heading that follows. */
+  display: block;
+  height: auto;
+  position: static;
+  align-items: initial;
+  justify-content: initial;
+  background: none;
+  border-bottom: none;
+  backdrop-filter: none;
+  z-index: auto;
+  top: auto;
   margin: 2rem 0;
   padding: 1.1rem 1.3rem 1.2rem;
   border: 1px solid var(--nv-rule);

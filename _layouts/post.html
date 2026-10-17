@@ -7,6 +7,34 @@ layout: default
   <p class="rp-eyebrow"><a href="{{ '/writing/' | relative_url }}">&larr; writing</a>{% if page.tag %}, {{ page.tag }}{% endif %}, {{ page.date | date: "%b %-d, %Y" }}</p>
   <h1 class="rp-title">{{ page.title }}</h1>
   {% if page.dek %}<p class="rp-dek">{{ page.dek }}</p>{% endif %}
+  {%- comment -%}
+    Lab-style metadata block. Renders only when a post declares `authors`,
+    so every existing post is untouched. Purely additive.
+  {%- endcomment -%}
+  {% if page.authors %}
+  <div class="nv-meta">
+    <div class="nv-meta-col">
+      <p class="nv-meta-label">Authors</p>
+      <p class="nv-meta-val">{% for a in page.authors %}<span>{{ a }}</span>{% endfor %}</p>
+    </div>
+    {% if page.affiliations %}
+    <div class="nv-meta-col">
+      <p class="nv-meta-label">Affiliations</p>
+      <p class="nv-meta-val">{% for a in page.affiliations %}<span>{{ a }}</span>{% endfor %}</p>
+    </div>
+    {% endif %}
+    <div class="nv-meta-col">
+      <p class="nv-meta-label">Published</p>
+      <p class="nv-meta-val"><span>{{ page.date | date: "%B %-d, %Y" }}</span>{% if page.updated %}<span>updated {{ page.updated | date: "%B %-d, %Y" }}</span>{% endif %}</p>
+    </div>
+    {% if page.artifact %}
+    <div class="nv-meta-col">
+      <p class="nv-meta-label">Artifact</p>
+      <p class="nv-meta-val"><span>{{ page.artifact }}</span></p>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
   {% if page.image %}
   <figure class="rp-hero">
     <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">

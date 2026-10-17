@@ -6,6 +6,13 @@ tag: "Guide"
 section: technical
 rank: 3
 math: true
+dek: "An evaluation defined on outputs is gameable and incomplete. Reading the computation is the complement, and inside a protein language model the instrument turns out to be the hard part."
+authors:
+  - Saanvi S. Subramanian
+affiliations:
+  - Caltech
+artifact: "ESM-2 650M, HyenaDNA, 10 DMS assays"
+updated: 2026-10-17
 thumb: /assets/images/biology-lm-interpretability/fig_depth.png
 permalink: /writing/interpretability/
 redirect_from:
@@ -18,6 +25,20 @@ excerpt: "Every output-level evaluation I have stress-tested fails the moment a 
 ---
 
 **TL;DR.** I have spent a while trying to break evaluations, and the same thing happens every time. A score looks healthy on a fixed dataset and stops meaning anything the moment a model or a search optimizes against it. A zero-shot protein score ranks below counting mutations. A benchmark correlation stops predicting which designs a campaign should keep. A verifier certifies a scorer that memorized the answers. A rule that skips the question still half-answers a safety benchmark. These share one structural fact. An evaluation defined on outputs is gameable and incomplete, because the output is a projection of what the model actually did. The complement is interpretability, reading the computation behind the emission. Interpretability is easy to overread too. A probe that hits AUC 0.94 collapses on held-out mechanisms, and inside a protein language model function stays causally accessible only in a narrow interior band, where five of my twelve claims invert once I name the control. So the version I am left with is a white-box evaluation with its controls named first, and most of the work is in the instrument.
+
+<div class="nv-contents" role="navigation" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#the-pattern-scores-break-under-use">Scores break under use</a></li>
+    <li><a href="#the-complement-read-the-computation">Read the computation</a></li>
+    <li><a href="#the-probe-works-the-understanding-is-missing">The probe works, the understanding is missing</a></li>
+    <li><a href="#inside-a-protein-language-model-where-function-becomes-accessible">Where function becomes accessible</a></li>
+    <li><a href="#how-this-sits-against-the-sae-literature">Against the SAE literature</a></li>
+    <li><a href="#a-white-box-evaluation-for-protein-models">A white-box evaluation</a></li>
+    <li><a href="#what-this-adds-up-to">What this adds up to</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</div>
 
 ## The pattern, scores break under use
 
@@ -139,6 +160,62 @@ Any model with that periodicity scores as representing reading frame, and a mode
 
 Reading down the effect column of this work it looks like a set of small positive findings. **Reading across to the control column, five of twelve invert.** The inversions are mundane, a conventional null, a conventional readout, an unbounded metric, a dose-response inside its linear regime, and each one is individually defensible. The practical version is to put a zero-parameter baseline beside every number. A single unfitted BLOSUM62 feature decodes fitness at 0.165 against ESM-2's 0.203, and the model's figure is a maximum over 33 layers chosen on the same held-out proteins it is scored on.
 
+## How this sits against the SAE literature
+
+Sparse autoencoders are the standard instrument for asking how a representation
+is organised, and the bio-foundation-model literature has grown fast enough to
+have a survey of its own.<span class="nv-mark">1</span> Reading across it, the
+thing I keep noticing is not the dictionaries. It is what counts as validation.
+
+<div class="nv-table-wrap">
+<p class="nv-table-cap">Table 1 &middot; What each study validates against</p>
+<table class="nv-table">
+<thead><tr><th>Study</th><th>Model</th><th>Validated against</th><th>Control reported</th></tr></thead>
+<tbody>
+<tr><td>InterPLM<span class="nv-mark">2</span></td><td>ESM-2 8M&ndash;3B</td><td>Swiss-Prot annotations, LLM descriptions</td><td><span class="nv-chip">annotation overlap</span></td></tr>
+<tr><td>Adams et al.<span class="nv-mark">1</span></td><td>ESM-2 650M</td><td>InterPro families, coevolution, human preference</td><td><span class="nv-chip">annotation overlap</span></td></tr>
+<tr><td>Gujral et al.<span class="nv-mark">1</span></td><td>ESM-2 650M</td><td>GO enrichment, LLM interpretation</td><td><span class="nv-chip">enrichment</span></td></tr>
+<tr><td>Parsan et al.<span class="nv-mark">1</span></td><td>ESM-2 3B</td><td>UniProt, contact prediction, ESMFold steering</td><td><span class="nv-chip">annotation overlap</span></td></tr>
+<tr><td>Villegas Garcia &amp; Ansuini<span class="nv-mark">3</span></td><td>ESM-2 8M</td><td>Zinc-finger motifs in generated sequences</td><td><span class="nv-chip">random latent</span></td></tr>
+<tr><td>Guan et al.<span class="nv-mark">1</span></td><td>HyenaDNA-small-32k</td><td>JASPAR motifs</td><td><span class="nv-chip">annotation overlap</span></td></tr>
+<tr class="nv-ours"><td>This work</td><td>ESM-2 650M, HyenaDNA</td><td>A measured DMS fitness contrast, reproduced inside the representation</td><td><span class="nv-chip nv-chip-no">mean-shift null + measured ceiling</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<span class="nv-note"><span class="nv-mark">&dagger;</span> Validation columns
+for the studies I did not read end to end are as the survey catalogues them, not
+as I verified them. The point of the table is the shape of the column, not a
+score for anyone's paper.</span>
+
+Almost everything in that last column is an *overlap* statistic. A feature fires
+where an annotation says it should, so the feature is given the annotation's
+name. That is a real finding about where a feature fires. It is not a finding
+about whether the model computes with it, and the two come apart more often than
+I expected: the most decoder-aligned atom in my dictionary, at cosine 0.734 to
+0.763, is also the most responsive one, and it carries almost none of the
+causal effect, while atoms at cosines as low as &minus;0.39 recover 77 to 95
+percent of it.<span class="nv-mark">&dagger;</span>
+
+The survey's own closing line is that the field still lacks the benchmarks and
+null models it needs. I read that as the whole problem. Most of what I have
+built here is null models.
+
+<details class="nv-details">
+<summary>Why a matched-norm random direction is the wrong null</summary>
+<p>In 1280 dimensions, a random unit vector is close to orthogonal to any fixed
+target direction. So the expected overlap between a random direction and the
+real high-minus-low difference is near zero, and almost any fitted direction
+clears it. Beating a random direction is therefore cheap, and a large margin
+over one is not evidence of specificity.</p>
+<p>The control that actually competes is the generic mean shift: take the
+unweighted mean activation and inject that. It has the same norm, it is not
+random, and it carries whatever generic structure the layer has. In my sweep the
+difference is not cosmetic. Selecting a layer by <em>z</em>-score against the
+random null picks the single layer where the fitted direction <em>loses</em> to
+the mean shift, at z = 16.24.</p>
+</details>
+
 ## A white-box evaluation for protein models
 
 The third piece is the proposal those two case studies argue for. I want a white-box evaluation for protein models in three parts. Rank fixed sets of already-measured benign variants, recover the assay property with linear probes on internal activations, and hold out whole families to check that the signal transfers. People usually judge a protein model by whether its score correlates with a measured property across a benchmark, and that test can pass for the wrong reason, because the model can rank sequences using a feature that happens to line up with the property on familiar data. A white-box evaluation looks inside the model, and asks whether the property is recoverable from the model's internal activations and whether that recovery survives a shift to unfamiliar proteins.
@@ -213,3 +290,27 @@ The shared question across all of it, protein design, world models, alignment, i
   window.addEventListener('resize',resize); resize(); loop();
 })();
 </script>
+
+## References
+
+<ol class="nv-refs">
+<li><b>Interpreting Bio-Foundation Models with Sparse Autoencoders.</b>
+Wilber, J. and Shimko, T. NVIDIA Research, 2026.
+<a href="https://research.nvidia.com/labs/dbr/blog/bio-sae/">research.nvidia.com</a>
+&mdash; the survey table this post's Table 1 draws its catalogue from.</li>
+<li><b>InterPLM: Discovering interpretable features in protein language models via sparse autoencoders.</b>
+Simon, E. and Zou, J. Nature Methods, 2025.</li>
+<li><b>Interpreting and steering protein language models through sparse autoencoders.</b>
+Villegas Garcia, E. N. and Ansuini, A. arXiv:2502.09135, 2025.</li>
+<li><b>The geometry of hidden representations of large transformer models.</b>
+Valeriani, L., Doimo, D., Cuturello, F., Laio, A., Ansuini, A. and Cazzaniga, A.
+Advances in Neural Information Processing Systems 36, 2023.</li>
+<li><b>Estimating the intrinsic dimension of datasets by a minimal neighborhood information.</b>
+Facco, E., d'Errico, M., Rodriguez, A. and Laio, A. Scientific Reports 7(1):12140, 2017.</li>
+<li><b>CausalGym: Benchmarking causal interpretability methods on linguistic tasks.</b>
+Arora, A., Jurafsky, D. and Potts, C. ACL 2024, pages 14638&ndash;14663.</li>
+<li><b>Finding alignments between interpretable causal variables and distributed neural representations.</b>
+Geiger, A., Wu, Z., Potts, C., Icard, T. and Goodman, N. D. arXiv:2303.02536, 2023.</li>
+<li><b>Sparse autoencoders trained on the same data learn different features.</b>
+Paulo, G. and Belrose, N. arXiv:2501.16615, 2025.</li>
+</ol>
