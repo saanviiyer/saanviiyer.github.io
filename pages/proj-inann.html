@@ -1,22 +1,16 @@
 ---
-title: inann, Saanvi S. Subramanian
+layout: project
+title: "inann"
 permalink: /pages/projects/inann/
+links:
+  - label: "Live demo"
+    url: "https://saanviiyer.github.io/inann/"
+  - label: "Lab"
+    url: "https://saanviiyer.github.io/inann/#lab"
+  - label: "Code"
+    url: "https://github.com/saanviiyer/inann"
 ---
 
-<div class="page-header">
-  <h1>inann</h1>
-</div>
-
 <p class="proj-blurb">inann (in a neural network) is a browser tool for looking inside a trained network. It started in my Learning Systems (CS156) class, where I watched the Perceptron Learning Algorithm nudge one line per mistake and could see every nudge. Real networks make the same kind of update across thousands of weights, and the steps disappear from view. inann lays a network out in 3D, one floor per layer, so you can see what each unit responds to, test what it causes, and split a layer into readable features.</p>
-
 <p class="proj-blurb">The Tour walks through a small digit network in nine chapters: activations climbing the layers, feature visualization, adversarial nudges and occlusion, Neuronpedia-style feature rooms, steering, a sparse autoencoder against the raw neurons, and latent space. The Lab takes any ONNX model in the browser, with no install and no server. It shows every layer as a room and gives each unit its statistics, exact incoming contributions and a clamp. It also trains a sparse autoencoder in a background thread and adds activation patching, occlusion maps and a guided walk-through.</p>
-
 <p class="proj-blurb">The newest chapter hangs a thermometer on every layer, after Alain and Bengio's linear classifier probes. Each layer gets a straight-line reader trained on its frozen activations, and the page shows the controls next to the score. On the Tour network, raw pixels already give 89.9% held-out accuracy and the best layer gives 96.4%, so most of each bar was there before any layer did work. A probe on the first conv layer can memorise 98.1% of shuffled labels on its training digits. A copy of the network with shuffled weights still reads 89.9% at that layer. So a high probe score alone says little. A steering test asks whether the network uses what the probe found. Adding the dense layer's mass-mean direction for a digit turns 52.7% of held-out digits into that digit, against 1.4% for a random direction of the same length.</p>
-
-<p class="preprint-links">
-  <a href="https://saanviiyer.github.io/inann/" target="_blank" rel="noopener">Live demo</a>
-  <a href="https://saanviiyer.github.io/inann/#lab" target="_blank" rel="noopener">Lab</a>
-  <a href="https://github.com/saanviiyer/inann" target="_blank" rel="noopener">Code</a>
-</p>
-
-<p class="post-back"><a href="{{ '/pages/portfolio/' | relative_url }}#projects">&larr; all projects</a></p>

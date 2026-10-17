@@ -1,5 +1,6 @@
 ---
-title: Evaluating protein-design agents, Saanvi S. Subramanian
+layout: project
+title: "Evaluating protein-design agents"
 permalink: /projects/protein-design-agents/
 ---
 
@@ -23,15 +24,8 @@ permalink: /projects/protein-design-agents/
 </style>
 
 <div class="doc">
-  <h1>Evaluating protein-design agents</h1>
-  <p class="doc-meta">Saanvi S. Subramanian, poster, AgenticLS @ NeurIPS 2026 and AI for Science @ NeurIPS 2026</p>
+  <p class="doc-meta">poster, AgenticLS @ NeurIPS 2026 and AI for Science @ NeurIPS 2026</p>
   <p class="doc-lead">A protein-design agent ranks thousands of candidates with a learned scorer, trusts that scorer because a benchmark reported a correlation, and keeps a proposal only if a verifier clears it. This page tests three of those components where measured ground truth exists.</p>
-
-  <ul class="doc-nav">
-    <li><a href="#scorer">Scorer resolution</a></li>
-    <li><a href="#verifier">Verifier</a></li>
-    <li><a href="#proxy">In-silico vs measured</a></li>
-  </ul>
 
   <h2 id="scorer">The scorer compresses 78 distinct actions into one region</h2>
   <p class="sec-venue">Action identifiability, AgenticLS @ NeurIPS 2026</p>
@@ -64,6 +58,4 @@ permalink: /projects/protein-design-agents/
 
   <h2>What the three share</h2>
   <p>Each component is a measurement read off a static corpus, and each stops meaning what it claims once an optimizer selects on it. A scorer that cannot resolve the actions, a gate scored in sample, and a proxy that loses to counting all pass their headline check and fail where the agent uses them.</p>
-
-  <p class="doc-back"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
 </div>

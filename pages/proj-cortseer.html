@@ -1,5 +1,6 @@
 ---
-title: CortSeer, Saanvi S. Subramanian
+layout: project
+title: "CortSeer: an anatomical prior recovers FCD lesions MRI misses"
 permalink: /projects/cortseer/
 ---
 
@@ -23,18 +24,10 @@ permalink: /projects/cortseer/
 </style>
 
 <div class="doc">
-  <h1>CortSeer: an anatomical prior recovers FCD lesions MRI misses</h1>
-  <p class="doc-meta">Saanvi S. Subramanian, Caltech SURF, with the LENS lab (Lab for Early-Age Neuroimaging at Stanford)</p>
+  <p class="doc-meta">Caltech SURF, with the LENS lab (Lab for Early-Age Neuroimaging at Stanford)</p>
   <p class="doc-meta">oral, ECCV AI for Medical 3D Vision workshop (AI4M3D), September 2026</p>
   <!-- TODO (venue): the CortSeer repo itself does not contain the ECCV / AI4M3D / oral / Sept-2026 claim; it is stated on the existing clinical-ml page and listed in PROJECT_INVENTORY as "accepted, oral, ai4m3d.github.io schedule". Confirm against the official program listing or acceptance email before relying on this. -->
   <p class="doc-lead">Focal cortical dysplasia is a surgically treatable cause of drug-resistant epilepsy, and many confirmed lesions are missed on conventional MRI. CortSeer asks whether restricting a trained 3D segmentation to an anatomical localization zone, a stand-in for the region an EEG-guided workup would indicate, can recover the lesions an image-only model misses.</p>
-
-  <ul class="doc-nav">
-    <li><a href="#method">Method</a></li>
-    <li><a href="#result">Result</a></li>
-    <li><a href="#bound">Why it is an upper bound</a></li>
-    <li><a href="#limits">Limitations</a></li>
-  </ul>
 
   <h2 id="method">Method: zone-restricted recovery over a trained detector</h2>
   <p>The detector is a 3D nnU-Net trained on FLAIR volumes with five-fold cross-validation. On top of its output, the recovery stage adds no training: SynthSeg parcellation defines anatomical zones, the search is restricted to the suspected zone, and a multi-peak search looks for several candidate peaks there rather than trusting a single maximum. Two null baselines calibrate the recovery: shuffling the detector's probabilities inside each zone, and drawing a random connected cluster of matched size inside the zone.</p>
@@ -53,6 +46,4 @@ permalink: /projects/cortseer/
 
   <h2 id="limits">Limitations</h2>
   <p>The localization zone is simulated from the confirmed lesion lobe, not from a measured EEG report or raw signal, so every recovery number is a ceiling a measured prior would approach. The recovery stage has no held-out split or external test set yet, and a documented-only, FCD-only retrain of the detector has not been run, since 18 of the confirmed-FCD cases were in the detector's training data. The numbers on this page are the 14-of-25 framing on the 175-case confirmed-FCD cohort; a separate journal manuscript frames the same work on a 231-case all-comers cohort with different denominators, and the two should not be mixed.</p>
-
-  <p class="doc-back"><a href="{{ '/projects/' | relative_url }}">&larr; projects</a></p>
 </div>
