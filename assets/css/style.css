@@ -594,7 +594,7 @@ nav {
 }
 .wm-shell.wm-notoc .wm-toc { display: none; }
 .wm-toc-label { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
-.wm-toc #wmTocNav { display: block; }
+.wm-toc #wmTocNav, .wm-toc nav { display: block; }
 .wm-toc a { display: block; width: 100%; box-sizing: border-box; font-family: var(--sans); font-size: 0.8rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 7px 0 7px 14px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; }
 .wm-toc a:hover { color: var(--ink); }
 .wm-toc a.active { color: var(--accent); border-left-color: var(--accent); }
