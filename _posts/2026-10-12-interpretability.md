@@ -112,6 +112,26 @@ The functional target is deep mutational scanning fitness across ten ProteinGym 
 
 **The specific effect is confined to a band near three-quarter depth.** Two independently constructed contrasts, built from different definitions of high and low fitness, agree that an interior maximum exists there.
 
+<details class="nv-details" open>
+<summary>Update, 18 October 2026: I re-ran this wider, and the location did not hold</summary>
+<p>On roughly double the held-out panel &mdash; 22 proteins, 11 test, all 15 layers
+on an A100 &mdash; the <em>number</em> reproduces almost exactly. Restricted to the
+nine test proteins in the original length range, layer 24 gives <strong>+0.0929</strong>
+against the +0.0933 above. But its interval is [&minus;0.1393, +0.3922], and of the
+eight layers whose intervals exclude zero, <strong>none is in the band</strong>.</p>
+<p>Two things make it worse. The margin is confounded with how close the injection is
+to the readout (rank correlation &minus;0.873): a perturbation injected one layer from
+the output barely has to survive any computation. And under an intervention with
+<em>no dose parameter</em>, where the displacement comes from real paired variants and
+every null is held to the same edit magnitude, every band layer has a <strong>negative</strong>
+margin, with only depths 0.48 and 0.61 clearing zero.</p>
+<p>So the honest version is narrower than the sentence above: a fitted direction beats
+a generic shift somewhere in the interior, the effect is small, and it resolves nearer
+half depth. I have left the original claim in place rather than editing it away. This
+post is about claims that invert once the control is named, and it would be strange to
+exempt its own.</p>
+</details>
+
 <img src="/assets/images/biology-lm-interpretability/fig_depth.png" alt="Directional margin over the mean-shift null against relative depth, two independent contrast definitions, both peaking near three-quarter depth and going negative near the output">
 
 **Figure 2.** Both constructions find the interior maximum. They disagree in sign about the output region, so I report a band, with no claim about a global optimum.
