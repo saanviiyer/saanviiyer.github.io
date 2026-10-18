@@ -28,9 +28,9 @@ venues:
   the authoritative path for each paper is recorded in <code>review/MANIFEST.tsv</code>: for threads 1 and 3,
   <code>RESEARCH/gauntlet/papers/{verify_agents,tae,gem_bio}/main.tex</code>; for thread 2,
   <code>RESEARCH/AITHYRA/gabriela/saanvi/papers/agenticls_short_prism.tex</code>.
-  the content used here is the <em>better</em> content — the review copy of verify_agents (4 Oct) withdraws a
+  the content used here is the <em>better</em> content, the review copy of verify_agents (4 Oct) withdraws a
   damage-against-truthful-value correlation of r = +0.993 on 14 of 14 tasks that the authoritative source
-  (17 Aug) still asserts — but those revisions exist only in a copy that <code>make_review.sh</code>
+  (17 Aug) still asserts, but those revisions exist only in a copy that <code>make_review.sh</code>
   regenerates, and <code>--check</code> cannot see them because it compares each source against its recorded
   hash and never checks whether a copy was edited.
   as of 8 Oct the 4 Oct text is preserved verbatim inside the authoritative directory as
@@ -233,7 +233,7 @@ and here they came apart every time they were.</p>
   </div>
 
   <p class="why-box" style="background:none;border:none;padding-left:0;">the poster also reports four further
-  verifier pathologies measured against ground truth — a sampled stochastic baseline that biases the comparison
+  verifier pathologies measured against ground truth, a sampled stochastic baseline that biases the comparison
   toward itself (decision accuracy 43.1% to 56.9% once the expectation is used), verifier selection that does
   not survive held-out tasks (the incumbent rule moves from second to last across 35 held-out scans), a
   protocol mismatch worth about a fifth of the observed gap, and a gate statistic whose resolution cannot
@@ -267,7 +267,7 @@ and here they came apart every time they were.</p>
   <p><span class="venue-badge">NeurIPS AgenticLS 2026</span><span class="venue-badge">Sole author</span></p>
   <p class="todo-note">[TODO: Saanvi to add the AgenticLS OpenReview link. also decide whether this page or
   <a href="{{ '/pages/projects/action-identifiability/' | relative_url }}">the action-identifiability stub</a>
-  is the canonical home for this thread — right now the stub says MoML 2026 and this says AgenticLS, and both
+  is the canonical home for this thread, right now the stub says MoML 2026 and this says AgenticLS, and both
   cannot be the whole story.]</p>
 
   <p>the previous thread asks whether the verifier can be trusted. this one asks something earlier: whether the
@@ -277,7 +277,7 @@ and here they came apart every time they were.</p>
   activation steering, and compares the enacted direction against the displacement the measured mutation caused.
   if two processes reach the same destination, no amount of calibration recovers the difference.</p>
 
-  <p>three biologically distinct processes — SBS1 (clock-like), SBS7a (UV), SBS2 (APOBEC) — land at pairwise
+  <p>three biologically distinct processes, SBS1 (clock-like), SBS7a (UV), SBS2 (APOBEC), land at pairwise
   cosine distance at or below 0.011, while SBS17a sits out at 0.04 to 0.08. the catalogue confusion is not
   just COSMIC's own structure: SBS2 and SBS7a do have similar spectra at cosine 0.71, but SBS2 and SBS1 are
   near-orthogonal in COSMIC at cosine 0.02 and still merge in ESM-2. the representation is collapsing a
@@ -347,9 +347,9 @@ and here they came apart every time they were.</p>
     spectra are near-orthogonal at cosine 0.02. that cell is the one to read.</figcaption>
   </figure>
 
-  <p class="todo-note">[TODO: Saanvi to decide whether the capability results — 26.2% recommender top-1 against 1.3% for the strongest frequency
+  <p class="todo-note">[TODO: Saanvi to decide whether the capability results, 26.2% recommender top-1 against 1.3% for the strongest frequency
   baseline, falling to near chance on held-out targets and processes, and SBS17a enacted at cosine 0.53
-  &plusmn; 0.03 — belong on this page at all, or whether they are context that invites the reader to score the
+  &plusmn; 0.03, belong on this page at all, or whether they are context that invites the reader to score the
   agent when the point is to score the representation.]</p>
 
   <div class="limitations">
@@ -380,7 +380,7 @@ and here they came apart every time they were.</p>
   actually reports. protein benchmarks report Spearman correlation between model scores and measured outcomes,
   which summarises ranking quality over an entire assay. a design campaign does something else: it takes the
   top few candidates and tests them. those are different quantities, and the question is how much the first
-  tells you about the second. 70 units across four corpora — 41 ProteinGym scans, 16 SSMuLA combinatorial
+  tells you about the second. 70 units across four corpora, 41 ProteinGym scans, 16 SSMuLA combinatorial
   libraries, three Rubisco kinetic axes from 8,760 single mutants, and 10 PETML plastic-degradation campaigns.</p>
 
   <div class="stat-callout"><div class="sc-num">0.50 &rarr; 0.16</div><div class="sc-lab">variance in selection value explained by reported correlation, from the top 10% (&rho; = +0.707) to the top 1% (&rho; = +0.404), across 60 units</div></div>
@@ -419,7 +419,7 @@ and here they came apart every time they were.</p>
     signal, correlation and selection improve together: across 12 assays and three cross-validation schemes on
     identical folds, mean selection gain is +0.035 at both cutoffs against a bulk correlation gain of +0.031.
     a blanket claim that correlation is invalid would exceed the evidence. the narrower attribution problem
-    survives though — per-unit correlation and selection gains track at top-10% (&rho; = +0.679) but not at
+    survives though, per-unit correlation and selection gains track at top-10% (&rho; = +0.679) but not at
     top-1% (&rho; = +0.168, p = 0.33), so an aggregate correlation gain does not identify which assays improved
     at a sharp cutoff.</p>
   </div>
@@ -511,7 +511,7 @@ applies. if nobody has computed the second one, that is the finding.</p>
   LLM-driven agent, so transfer to the systems the framing is aimed at is untested. the domain is protein
   function throughout, which is what makes ground truth available and also what limits the scope. and the
   release ledger has GEM-Bio on venue hold, Trust-AI-Eval conditional, AgenticLS as position-only after the
-  matched-compute control, and Verify-Agents conditional on a citation check — so none of these numbers should
+  matched-compute control, and Verify-Agents conditional on a citation check, so none of these numbers should
   be quoted outside their papers yet.</p>
 </div>
 
