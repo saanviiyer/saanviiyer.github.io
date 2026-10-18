@@ -4,7 +4,7 @@ title: "white-box evaluation"
 permalink: /pages/projects/white-box-evaluation/
 affiliation: "Caltech"
 hook: "Interpreting functional representations in biology language models."
-thesis: "Function is causally accessible only in a narrow interior band of ESM-2, the sparse feature attribution selects is not the feature that carries the effect, and five of twelve claims invert once the control is named."
+thesis: "Function is causally accessible at an interior depth of ESM-2 that a wider replication does not resolve, the sparse feature attribution selects is not the feature that carries the effect, and six of twelve claims invert once the control is named."
 links:
   - label: "Blog"
     url: "/writing/interpretability/"
@@ -37,7 +37,7 @@ discriminate at all?</strong></p>
 <table class="nv-table">
 <thead><tr><th>Claim</th><th>Effect</th><th>Against its control</th></tr></thead>
 <tbody>
-<tr><td>A fitted fitness direction is specifically causal near depth 0.73</td><td>+0.0933 at layer 24 of 33</td><td><span class="nv-chip nv-chip-no">value replicates, location does not</span> see update below</td></tr>
+<tr><td>A fitted fitness direction is specifically causal at an interior depth</td><td>+0.0933 at layer 24 of 33</td><td><span class="nv-chip nv-chip-no">value replicates, location does not</span> see update below</td></tr>
 <tr><td>The band's <em>location</em> is pinned down</td><td>&mdash;</td><td><span class="nv-chip nv-chip-no">partial</span> one twelve-protein interval only</td></tr>
 <tr><td>The output layer destroys the effect</td><td>95&times; collapse</td><td><span class="nv-chip">architectural</span> emb_layer_norm_after</td></tr>
 <tr><td>Depth 0.97 is where function lives</td><td>z = 16.24</td><td><span class="nv-chip nv-chip-no">inverts</span> loses to its own stiffer null</td></tr>
@@ -49,7 +49,7 @@ discriminate at all?</strong></p>
 </table>
 </div>
 
-<p><strong>Five of the twelve substantive claims invert once the control is named</strong>,
+<p><strong>Six of the twelve substantive claims invert once the control is named</strong>,
 and none of the inversions is exotic: a conventional null, a conventional readout, an
 unbounded metric, a dose-response measured inside its linear regime, a test named for a
 capability it does not measure. Each of them was mine.</p>
