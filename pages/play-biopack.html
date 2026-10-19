@@ -1,0 +1,300 @@
+---
+title: BioPack demo, Saanvi S. Subramanian
+permalink: /playground/biopack/
+---
+
+<style>
+  .bp-wrap { max-width: 1100px; margin: 0 auto; }
+  .bp-head { margin-bottom: 20px; }
+  .bp-title { font-family: var(--sans); font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .bp-sub { font-family: var(--sans); font-size: 1.02rem; line-height: 1.55; color: var(--muted); max-width: 70ch; margin: 0 0 14px; }
+  .bp-demo-note { font-family: var(--sans); font-size: 0.82rem; line-height: 1.5; color: var(--ink); background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 10px 14px; max-width: 74ch; margin: 0 0 8px; }
+  .bp-links a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.03em; color: var(--accent); text-decoration: none; margin-right: 16px; }
+  .bp-links a:hover { text-decoration: underline; }
+
+  .bp-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 22px; margin-top: 22px; align-items: start; }
+  @media (max-width: 820px) { .bp-grid { grid-template-columns: minmax(0, 1fr); } }
+
+  .bp-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: transparent; }
+  .bp-card h3 { font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+
+  .bp-row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
+  .bp-row label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .bp-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .bp-seg button { font-family: var(--mono); font-size: 0.68rem; padding: 6px 11px; background: transparent; color: var(--muted); border: none; cursor: pointer; }
+  .bp-seg button.on { background: var(--accent); color: #fff; }
+  select.bp-select, input.bp-input { font-family: var(--sans); font-size: 0.92rem; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--ink); }
+  input.bp-input { width: 120px; }
+  .bp-btn { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 8px 14px; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 999px; cursor: pointer; }
+  .bp-btn:hover { background: var(--accent-soft); }
+
+  #bp-viewer { position: relative; width: 100%; height: 420px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  #bp-viewer .bp-viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); padding: 20px; }
+  .bp-meta { font-family: var(--sans); font-size: 0.86rem; line-height: 1.5; color: var(--muted); margin: 12px 0 0; }
+  .bp-meta strong { color: var(--ink); }
+
+  .bp-synthetic { display: inline-block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--berry); border: 1px solid var(--berry); border-radius: 5px; padding: 2px 6px; margin-left: 8px; vertical-align: middle; }
+
+  .bp-stat { margin: 0 0 16px; }
+  .bp-stat .bp-stat-top { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--sans); font-size: 0.86rem; color: var(--ink); }
+  .bp-stat .bp-stat-val { font-family: var(--mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .bp-bar { height: 7px; border-radius: 4px; background: var(--accent-soft); margin-top: 6px; position: relative; overflow: hidden; }
+  .bp-bar > span { position: absolute; top: 0; bottom: 0; left: 0; background: var(--accent); border-radius: 4px; }
+  .bp-bar.err > span { background: var(--robin); opacity: 0.55; }
+  .bp-cap { font-family: var(--sans); font-size: 0.74rem; line-height: 1.45; color: var(--muted); margin: 4px 0 0; }
+
+  .bp-result { font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
+  .bp-result.ok { background: var(--accent-soft); color: var(--ink); }
+  .bp-result.refuse { background: rgba(168,50,74,0.10); color: var(--ink); border-left: 3px solid var(--berry); }
+  .bp-result .bp-reason { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--berry); display: block; margin-bottom: 4px; }
+  .bp-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .bp-chip { font-family: var(--mono); font-size: 0.64rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 4px 9px; cursor: pointer; }
+  .bp-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .bp-foot { margin-top: 24px; font-family: var(--sans); font-size: 0.86rem; line-height: 1.6; color: var(--muted); max-width: 78ch; }
+  .bp-foot a { color: var(--accent); }
+  .bp-gatelist { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); line-height: 1.7; margin: 8px 0 0; padding-left: 1.1rem; }
+</style>
+
+<section class="bp-wrap">
+  <div class="bp-head">
+    <p class="bp-sub" style="margin-bottom:6px;"><a href="{{ '/playground/' | relative_url }}" style="color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:0.72rem;">&larr; playground</a></p>
+    <h1 class="bp-title">BioPack</h1>
+    <p class="bp-sub">A forward-only workspace for protein structure and stability on a small, bounded panel of well-characterised benign proteins. BioPack takes a protein and a single mutation and returns a stability estimate, or a refusal that says where the query first fell outside what the panel and the calibration data support. It has no sequence design and no optimisation loop, on purpose.</p>
+    <div class="bp-demo-note"><strong>This is a demo.</strong> The structures below are real deposited PDB coordinates for the panel proteins, but every model output on this page (the stability estimate, the cross-model agreement, the calibration curve) is a synthetic placeholder generated in your browser for illustration. None of it is a real prediction or biological evidence.</div>
+    <p class="bp-links"><a href="https://github.com/saanviiyer/biopack" target="_blank" rel="noopener">biopack repository</a><a href="{{ '/playground/' | relative_url }}">more playground</a></p>
+  </div>
+
+  <div class="bp-grid">
+    <!-- LEFT: viewer -->
+    <div>
+      <div class="bp-card">
+        <h3>molecular viewer</h3>
+        <div class="bp-row">
+          <label for="bp-protein">panel protein</label>
+          <select id="bp-protein" class="bp-select"></select>
+        </div>
+        <div class="bp-row">
+          <label>background</label>
+          <div class="bp-seg" id="bp-bg">
+            <button data-bg="light" class="on">light</button>
+            <button data-bg="dark">dark</button>
+            <button data-bg="white">white</button>
+          </div>
+          <label style="margin-left:10px;">style</label>
+          <div class="bp-seg" id="bp-style">
+            <button data-style="cartoon" class="on">cartoon</button>
+            <button data-style="surface">surface</button>
+            <button data-style="stick">sticks</button>
+          </div>
+        </div>
+        <div id="bp-viewer"><div class="bp-viewer-msg">loading structure&hellip;</div></div>
+        <p class="bp-meta" id="bp-meta"></p>
+      </div>
+    </div>
+
+    <!-- RIGHT: query + analysis -->
+    <div>
+      <div class="bp-card" style="margin-bottom:18px;">
+        <h3>forward query, with refusals</h3>
+        <div class="bp-row">
+          <input id="bp-acc" class="bp-input" style="width:96px;" placeholder="P06654">
+          <input id="bp-mut" class="bp-input" style="width:84px;" placeholder="T2A">
+          <button class="bp-btn" id="bp-run">estimate</button>
+        </div>
+        <div id="bp-result"></div>
+        <div class="bp-chips" id="bp-examples"></div>
+      </div>
+
+      <div class="bp-card">
+        <h3>analysis panels <span class="bp-synthetic">synthetic</span></h3>
+        <div class="bp-stat">
+          <div class="bp-stat-top"><span>predicted &Delta;&Delta;G (forward)</span><span class="bp-stat-val" id="bp-ddg">&mdash;</span></div>
+          <div class="bp-bar err"><span id="bp-ddgbar" style="width:0;"></span></div>
+          <p class="bp-cap">A single-point stability estimate with an error bar. Placeholder values, not calibrated kcal/mol.</p>
+        </div>
+        <div class="bp-stat">
+          <div class="bp-stat-top"><span>cross-model agreement</span><span class="bp-stat-val" id="bp-agree">&mdash;</span></div>
+          <div class="bp-bar"><span id="bp-agreebar" style="width:0;"></span></div>
+          <p class="bp-cap">How closely two stand-in models land on the same answer. Placeholder.</p>
+        </div>
+        <div class="bp-stat" style="margin-bottom:4px;">
+          <div class="bp-stat-top"><span>calibration</span><span class="bp-stat-val" id="bp-calib">&mdash;</span></div>
+          <svg id="bp-calib-svg" viewBox="0 0 220 120" width="100%" height="120" style="margin-top:8px;" aria-label="Synthetic calibration curve"></svg>
+          <p class="bp-cap">Predicted confidence against observed accuracy on the panel. Placeholder curve.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bp-foot">
+    <p>The six refusal reasons are the real contribution of BioPack: a query is answered only after it clears every gate, and the refusal names the first one it fails.</p>
+    <ul class="bp-gatelist">
+      <li>off panel &mdash; the accession is not one of the panel proteins</li>
+      <li>position out of range &mdash; the mutation position exceeds the sequence length</li>
+      <li>wildtype mismatch &mdash; the stated wild-type residue does not match the parent</li>
+      <li>no calibration &mdash; the query lies outside the region with reference data</li>
+      <li>below noise floor &mdash; the effect asked about is smaller than the assay floor</li>
+      <li>model unavailable &mdash; the backend could not be reached</li>
+    </ul>
+    <p style="margin-top:14px;">This page runs entirely in your browser on GitHub Pages. The live research version needs a Python backend to run the real stability models and the calibration arm; the repository at <a href="https://github.com/saanviiyer/biopack" target="_blank" rel="noopener">github.com/saanviiyer/biopack</a> has the forward-only API, the frozen benign panel, and the gates. The wild-type, calibration, noise-floor and model-backend checks run there, not in this static demo.</p>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/3dmol@2.1.0/build/3Dmol-min.js"></script>
+<script>
+(function () {
+  // The frozen benign Class B panel, from biopack/inputs/panel.py. Each protein is
+  // a published, extensively characterised lab protein; the PDB ids are real
+  // deposited structures of those proteins. Lengths are the standard construct
+  // lengths and are used only for the position-out-of-range gate in this demo.
+  var PANEL = [
+    { acc: "P06654", name: "Protein G domain B1 (GB1)", pdb: "1PGB", len: 56,  ref: "Olson 2014 DMS; Nisthal 2019 ddG" },
+    { acc: "P00720", name: "T4 lysozyme",               pdb: "2LZM", len: 164, ref: "Matthews ddG series; ProTherm" },
+    { acc: "P0CG47", name: "Ubiquitin",                 pdb: "1UBQ", len: 76,  ref: "Roscoe 2013 DMS; ProTherm" },
+    { acc: "P00648", name: "Barnase",                   pdb: "1BNI", len: 110, ref: "Fersht folding thermodynamics; ProTherm" },
+    { acc: "P0ABQ4", name: "Dihydrofolate reductase (E. coli)", pdb: "1RX2", len: 159, ref: "public combinatorial assay" },
+    { acc: "P00573", name: "T7 RNA polymerase",         pdb: "1QLN", len: 883, ref: "public combinatorial assay" }
+  ];
+  var AA = "ACDEFGHIKLMNPQRSTVWY";
+  var MUT_RE = /^([ACDEFGHIKLMNPQRSTVWY])(\d+)([ACDEFGHIKLMNPQRSTVWY])$/;
+
+  var el = function (id) { return document.getElementById(id); };
+  var viewer = null, cur = PANEL[0], bg = "light", style = "cartoon";
+
+  // --- molecular viewer -------------------------------------------------------
+  var BG = { light: "0xf6f3ee", dark: "0x161016", white: "0xffffff" };
+  function viewerReady() { return typeof window.$3Dmol !== "undefined"; }
+
+  function initViewer() {
+    if (!viewerReady()) {
+      el("bp-viewer").innerHTML = '<div class="bp-viewer-msg">The 3D viewer could not load (it needs the 3Dmol library). The analysis and refusal panels still work.</div>';
+      return;
+    }
+    el("bp-viewer").innerHTML = "";
+    viewer = window.$3Dmol.createViewer(el("bp-viewer"), { backgroundColor: BG[bg] });
+    loadStructure();
+  }
+
+  function applyStyle() {
+    if (!viewer) return;
+    viewer.setStyle({}, {});
+    if (style === "cartoon") viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+    else if (style === "stick") viewer.setStyle({}, { stick: { radius: 0.18, colorscheme: "default" } });
+    else if (style === "surface") {
+      viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+      try { viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { opacity: 0.72, color: "white" }); } catch (e) {}
+    }
+    viewer.render();
+  }
+
+  function loadStructure() {
+    if (!viewer) return;
+    el("bp-viewer").querySelector(".bp-viewer-msg") && (el("bp-viewer").querySelector(".bp-viewer-msg").textContent = "loading " + cur.pdb + "…");
+    viewer.clear();
+    window.$3Dmol.download("pdb:" + cur.pdb, viewer, {}, function () {
+      applyStyle();
+      viewer.zoomTo();
+      viewer.render();
+    });
+  }
+
+  // --- deterministic synthetic outputs (clearly placeholders) -----------------
+  function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0); }
+  function rand01(seed) { var x = Math.sin(seed) * 43758.5453; return x - Math.floor(x); }
+
+  function fillPanels(acc, mutToken) {
+    var seed = hash(acc + ":" + (mutToken || "wt"));
+    var ddg = (rand01(seed) * 6 - 3);            // placeholder ddG in [-3, 3]
+    var err = 0.4 + rand01(seed + 1) * 1.1;       // placeholder error bar
+    var agree = 0.45 + rand01(seed + 2) * 0.5;    // placeholder agreement [0.45, 0.95]
+    var calib = 0.6 + rand01(seed + 3) * 0.35;    // placeholder calibration score
+
+    el("bp-ddg").textContent = (ddg >= 0 ? "+" : "") + ddg.toFixed(2) + " ± " + err.toFixed(2);
+    el("bp-ddgbar").style.width = Math.min(100, (Math.abs(ddg) / 3) * 100) + "%";
+    el("bp-agree").textContent = agree.toFixed(2);
+    el("bp-agreebar").style.width = (agree * 100) + "%";
+    el("bp-calib").textContent = calib.toFixed(2);
+    drawCalib(seed, calib);
+  }
+
+  function drawCalib(seed, calib) {
+    var svg = el("bp-calib-svg");
+    var W = 220, H = 120, pad = 18;
+    var pts = [];
+    for (var i = 0; i <= 8; i++) {
+      var x = i / 8;
+      var noise = (rand01(seed + 10 + i) - 0.5) * (1 - calib) * 0.9;
+      var y = Math.max(0, Math.min(1, x + noise));
+      pts.push([pad + x * (W - 2 * pad), (H - pad) - y * (H - 2 * pad)]);
+    }
+    var acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#9c1c8c';
+    var line = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.innerHTML =
+      '<line x1="' + pad + '" y1="' + (H - pad) + '" x2="' + (W - pad) + '" y2="' + pad + '" stroke="#999" stroke-dasharray="3 3" stroke-width="1"/>' +
+      '<path d="' + line + '" fill="none" stroke="' + acc + '" stroke-width="2"/>' +
+      pts.map(function (p) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.6" fill="' + acc + '"/>'; }).join("") +
+      '<text x="' + pad + '" y="' + (H - 4) + '" font-size="8" fill="#999" font-family="monospace">predicted confidence →</text>';
+  }
+
+  // --- forward query with the real refusal cascade ----------------------------
+  function onPanel(acc) { for (var i = 0; i < PANEL.length; i++) if (PANEL[i].acc === acc) return PANEL[i]; return null; }
+
+  function runQuery() {
+    var acc = (el("bp-acc").value || "").trim().toUpperCase();
+    var tok = (el("bp-mut").value || "").trim().toUpperCase();
+    var out = el("bp-result");
+    if (!acc) { out.innerHTML = ""; return; }
+
+    var p = onPanel(acc);
+    if (!p) { refuse(out, "off panel", "The accession " + acc + " is not one of the six panel proteins. BioPack answers only on its frozen benign panel."); fillPanels(acc, tok); return; }
+
+    // load this protein into the viewer too
+    var idx = PANEL.indexOf(p);
+    if (p !== cur) { cur = p; el("bp-protein").value = idx; setMeta(); loadStructure(); }
+
+    var m = tok.match(MUT_RE);
+    if (!tok) { out.innerHTML = '<div class="bp-result ok">On panel. Enter a mutation like <code>T2A</code> (wild-type, position, mutant) to run a forward estimate.</div>'; return; }
+    if (!m) { refuse(out, "not a mutation", "\"" + tok + "\" is not a valid mutation token. Use a wild-type residue, a position, and a mutant residue, for example T2A."); return; }
+
+    var pos = parseInt(m[2], 10);
+    if (pos < 1 || pos > p.len) { refuse(out, "position out of range", "Position " + pos + " exceeds the length of " + p.name + " (" + p.len + " residues)."); fillPanels(acc, tok); return; }
+
+    // passes the client-side gates: show a synthetic estimate and name the gates that run in the package
+    ok(out, p, m);
+    fillPanels(acc, tok);
+  }
+
+  function refuse(out, reason, detail) {
+    out.innerHTML = '<div class="bp-result refuse"><span class="bp-reason">refused, ' + reason + '</span>' + detail + '</div>';
+  }
+  function ok(out, p, m) {
+    out.innerHTML = '<div class="bp-result ok"><strong>' + m[0] + ' on ' + p.name + '</strong> clears the panel, format and range gates. The estimate on the right is a <strong>synthetic placeholder</strong>. The real package then runs the wild-type, calibration, noise-floor and model-backend gates before it returns a number.</div>';
+  }
+
+  // --- wiring -----------------------------------------------------------------
+  function setMeta() {
+    el("bp-meta").innerHTML = "<strong>" + cur.name + "</strong> &middot; " + cur.acc + " &middot; PDB " + cur.pdb + " &middot; " + cur.len + " aa<br>reference data: " + cur.ref;
+  }
+  function buildSelect() {
+    el("bp-protein").innerHTML = PANEL.map(function (p, i) { return '<option value="' + i + '">' + p.name + '</option>'; }).join("");
+  }
+  function buildExamples() {
+    var ex = [["P06654", "T2A"], ["P0CG47", "L8R"], ["P00648", "A43V"], ["ZZZZZZ", "A1G"], ["P06654", "T999A"]];
+    el("bp-examples").innerHTML = ex.map(function (e) { return '<span class="bp-chip" data-acc="' + e[0] + '" data-mut="' + e[1] + '">' + e[0] + " " + e[1] + "</span>"; }).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    buildSelect(); buildExamples(); setMeta();
+    el("bp-protein").addEventListener("change", function () { cur = PANEL[+this.value]; setMeta(); loadStructure(); });
+    el("bp-bg").addEventListener("click", function (e) { if (e.target.dataset.bg) { bg = e.target.dataset.bg; [].forEach.call(this.children, function (b) { b.classList.toggle("on", b.dataset.bg === bg); }); if (viewer) { viewer.setBackgroundColor(BG[bg]); viewer.render(); } } });
+    el("bp-style").addEventListener("click", function (e) { if (e.target.dataset.style) { style = e.target.dataset.style; [].forEach.call(this.children, function (b) { b.classList.toggle("on", b.dataset.style === style); }); loadStructure(); } });
+    el("bp-run").addEventListener("click", runQuery);
+    el("bp-mut").addEventListener("keydown", function (e) { if (e.key === "Enter") runQuery(); });
+    el("bp-acc").addEventListener("keydown", function (e) { if (e.key === "Enter") runQuery(); });
+    el("bp-examples").addEventListener("click", function (e) { var c = e.target.closest(".bp-chip"); if (!c) return; el("bp-acc").value = c.dataset.acc; el("bp-mut").value = c.dataset.mut; runQuery(); });
+    initViewer();
+    fillPanels(cur.acc, "");
+  });
+})();
+</script>
