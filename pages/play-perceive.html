@@ -1,0 +1,1805 @@
+---
+layout: null
+title: Perceive
+permalink: /playground/perceive/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Three browser labs on whether a world model keeps a stable picture of physical reality.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+{% raw %}
+<title>Perceive</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300..800&display=swap">
+<style>
+/* Layout: an app shell. Sticky tab bar; each lab is a workspace with a control rail on the
+   left and the live canvases filling the stage. Long-form text lives in drawers and About. */
+:root {
+  --paper: #f5f4ef;
+  --panel: #edebe3;
+  --ink: #000000;
+  --body: #26251f;
+  --muted: #6e6e69;
+  --faint: #8b8a80;
+  --rule: #dddcd2;
+  --accent: #d8ae3c;
+  --accent-ink: #8a6512;
+  --good: #3f6b45;
+  --warn: #9a6a12;
+  --bad: #a3392a;
+  --map-lo: #ebe8dd;
+  --map-mid: #d8ae3c;
+  --map-hi: #3b2a08;
+  --serif: "League Spartan", "Avenir Next", Futura, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sans: "League Spartan", "Avenir Next", Futura, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "League Spartan", "Avenir Next", Futura, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --gutter: 9.5rem;
+  --measure: 36rem;
+  --wide: 74rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #15140f; --panel: #1d1c16; --ink: #f5f4ef; --body: #d9d7cc; --muted: #a29f93;
+    --faint: #7b796e; --rule: #33312a; --accent: #d8ae3c; --accent-ink: #e2bf62;
+    --good: #86b58f; --warn: #e2ac4c; --bad: #e57f6b;
+    --map-lo: #24221b; --map-mid: #b48d27; --map-hi: #f6e2a6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #15140f; --panel: #1d1c16; --ink: #f5f4ef; --body: #d9d7cc; --muted: #a29f93;
+  --faint: #7b796e; --rule: #33312a; --accent: #d8ae3c; --accent-ink: #e2bf62;
+  --good: #86b58f; --warn: #e2ac4c; --bad: #e57f6b;
+  --map-lo: #24221b; --map-mid: #b48d27; --map-hi: #f6e2a6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--body);
+  font: 400 17px/1.6 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: var(--wide); margin: 0 auto; }
+header.bar {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding-block: 1.6rem 1.1rem; border-bottom: 1px solid var(--rule);
+}
+.mark { font: 500 13px/1 var(--mono); letter-spacing: .14em; color: var(--ink); text-decoration: none; }
+.mark span { color: var(--faint); }
+nav { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+nav a { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--ink); }
+
+.hero { padding-block: 4.5rem 3rem; border-bottom: 1px solid var(--rule); }
+h1 { font: 400 clamp(2.4rem, 6vw, 4rem)/1.05 var(--serif); color: var(--ink); margin: 0 0 1.6rem; text-wrap: balance; max-width: 15ch; letter-spacing: -.01em; }
+h1 em { font-style: italic; }
+.lede { max-width: var(--measure); margin: 0; }
+.byline { margin-top: 1.6rem; font: 400 11px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.byline b { color: var(--ink); font-weight: 500; }
+
+section.row { display: grid; grid-template-columns: var(--gutter) minmax(0, 1fr); gap: 0 2rem; padding-block: 3rem; border-bottom: 1px solid var(--rule); }
+.label { font: 500 11px/1.8 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+.label small { display: block; color: var(--faint); font-weight: 400; letter-spacing: .08em; }
+.prose { max-width: var(--measure); }
+.prose p { margin: 0 0 1rem; }
+h2 { font: 400 clamp(1.6rem, 3.4vw, 2.3rem)/1.15 var(--serif); color: var(--ink); margin: 0 0 1rem; text-wrap: balance; }
+h3 { font: 600 1rem/1.3 var(--sans); color: var(--ink); margin: 0 0 .35rem; }
+.mono { font-family: var(--mono); }
+.note { font-size: 15px; color: var(--muted); }
+
+/* ---------- Lab ---------- */
+.lab { display: grid; gap: 1.5rem; min-width: 0; }
+.stage { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0, .78fr); gap: 1rem; align-items: start; }
+.view { min-width: 0; }
+.view-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; margin-bottom: .45rem; }
+.tag { font: 500 10.5px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.tag i { font-style: normal; color: var(--faint); }
+.view canvas { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 4 / 3; background: var(--panel); border: 1px solid var(--rule); }
+.view canvas#map { aspect-ratio: 1 / 1; cursor: crosshair; }
+.view.model canvas { border-color: var(--accent); }
+.progress { height: 2px; background: var(--rule); margin-top: .5rem; position: relative; overflow: hidden; }
+.progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
+.readout { font: 400 11px/1.5 var(--mono); color: var(--muted); margin-top: .4rem; font-variant-numeric: tabular-nums; min-height: 1.5em; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr)); gap: 1rem 1.6rem; padding: 1.2rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.ctl { display: grid; gap: .3rem; min-width: 0; }
+.ctl label { display: flex; justify-content: space-between; gap: .5rem; font: 500 10.5px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ctl output { color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.ctl .hint { font-size: 13px; color: var(--faint); line-height: 1.35; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+select { font: 400 15px var(--sans); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); padding: .4rem .5rem; border-radius: 0; width: 100%; }
+.actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+button {
+  font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  padding: .8rem 1.1rem; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; border-radius: 0;
+}
+button.primary { background: var(--ink); color: var(--paper); }
+button.primary:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+button:not(.primary):hover { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: default; }
+
+/* Results */
+.verdict { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .3rem 1rem; align-items: baseline; padding: 1.1rem 0 .2rem; }
+.pill { font: 500 10.5px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; padding: .45rem .6rem; border: 1px solid currentColor; white-space: nowrap; }
+.pill.good { color: var(--good); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); } .pill.idle { color: var(--faint); }
+.verdict h3 { font: 400 1.5rem/1.2 var(--serif); margin: 0; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.metric { padding: 1rem 1rem 1rem 0; display: grid; gap: .2rem; align-content: start; }
+.metric + .metric { padding-left: 1rem; border-left: 1px solid var(--rule); }
+.metric .k { font: 500 10.5px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.metric .v { font: 400 2.1rem/1.1 var(--serif); color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
+.metric .v small { font: 400 14px var(--sans); color: var(--muted); margin-left: .2rem; }
+.metric .d { font-size: 13.5px; color: var(--muted); line-height: 1.35; }
+.panels { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 2rem; }
+.panel { min-width: 0; }
+.panel .cap { font-size: 14px; color: var(--muted); margin: .4rem 0 0; line-height: 1.45; }
+.chart { width: 100%; overflow-x: auto; }
+.chart svg { display: block; width: 100%; height: auto; min-width: 320px; }
+.chart text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+.chart .axis { stroke: var(--rule); }
+.chart .grid { stroke: var(--rule); stroke-dasharray: 2 3; }
+.chart .gt { stroke: var(--ink); fill: none; stroke-width: 1.6; }
+.chart .gtd { fill: var(--ink); }
+.chart .wm { stroke: var(--accent-ink); fill: none; stroke-width: 2; }
+.chart .wmd { fill: var(--accent-ink); }
+.chart .floor { stroke: var(--faint); stroke-dasharray: 4 4; fill: none; }
+.chart .hz { stroke: var(--bad); stroke-width: 1; }
+.chart .ep { stroke: var(--faint); stroke-width: 1; stroke-dasharray: 1 3; }
+.chart .lbl-ink { fill: var(--ink); }
+.chart .lbl-acc { fill: var(--accent-ink); }
+.chart .lbl-bad { fill: var(--bad); }
+.legend { display: flex; gap: 1.2rem; flex-wrap: wrap; font: 400 11px/1.4 var(--mono); color: var(--muted); margin-top: .3rem; }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: .4rem; background: var(--c); }
+
+.maps { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: .35rem .4rem; align-items: center; }
+.maps .h { font: 500 9.5px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.maps .u { font: 500 10px/1.2 var(--mono); color: var(--ink); white-space: nowrap; }
+.maps .u small { display: block; color: var(--faint); font-weight: 400; }
+.maps canvas { width: 100%; max-width: 100%; aspect-ratio: 1/1; display: block; image-rendering: pixelated; border: 1px solid var(--rule); }
+.maps .r { font: 400 10px/1.2 var(--mono); color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.scale { display: flex; align-items: center; gap: .5rem; font: 400 10px var(--mono); color: var(--faint); margin-top: .5rem; }
+.scale i { flex: 0 0 90px; height: 6px; background: linear-gradient(90deg, var(--map-lo), var(--map-mid), var(--map-hi)); }
+
+.reasoning { border-top: 1px solid var(--rule); padding-top: 1.2rem; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1.6rem; }
+.reasoning ol, .reasoning ul { margin: 0; padding-left: 1.2rem; }
+.reasoning li { margin-bottom: .55rem; font-size: 15.5px; }
+.reasoning li b { color: var(--ink); font-weight: 600; }
+.reasoning .log { font: 400 12px/1.6 var(--mono); color: var(--muted); max-height: 11rem; overflow: auto; border-left: 2px solid var(--accent); padding-left: .8rem; font-variant-numeric: tabular-nums; }
+
+/* Method + pipeline */
+.defs { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1.6rem 2.4rem; max-width: 52rem; }
+.defs > div { min-width: 0; }
+.defs .bio { font: 500 10.5px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: .25rem; }
+.defs p { margin: 0; font-size: 15.5px; }
+.formula { font: 400 13px/1.5 var(--mono); color: var(--ink); background: var(--panel); padding: .5rem .7rem; margin-top: .5rem; overflow-x: auto; white-space: nowrap; }
+.pipeline { list-style: none; padding: 0; margin: 1.6rem 0 0; display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-top: 1px solid var(--ink); max-width: 60rem; counter-reset: step; }
+.pipeline li { padding: .9rem 1rem 0 0; counter-increment: step; min-width: 0; }
+.pipeline li + li { padding-left: 1rem; border-left: 1px solid var(--rule); }
+.pipeline li::before { content: counter(step, decimal-leading-zero); font: 500 10.5px var(--mono); color: var(--accent-ink); display: block; margin-bottom: .4rem; letter-spacing: .1em; }
+.pipeline p { font-size: 14.5px; margin: 0; color: var(--body); }
+.work { display: grid; gap: 0; max-width: 52rem; }
+.work article { display: grid; grid-template-columns: 11rem minmax(0,1fr); gap: 1.4rem; padding-block: 1.1rem; border-top: 1px solid var(--rule); }
+.work article:first-child { border-top: 0; padding-top: 0; }
+.work .venue { font: 400 11px/1.6 var(--mono); color: var(--muted); letter-spacing: .04em; }
+.work .venue b { display: block; color: var(--ink); font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.work p { margin: 0; font-size: 15.5px; }
+.work .link { font: 400 12.5px var(--mono); color: var(--accent-ink); margin-top: .35rem; }
+.plan { counter-reset: p; list-style: none; padding: 0; margin: 0; max-width: var(--measure); }
+.plan li { counter-increment: p; display: grid; grid-template-columns: 3.2rem minmax(0,1fr); padding-block: .8rem; border-top: 1px solid var(--rule); }
+.plan li::before { content: "WK " counter(p); font: 500 10.5px/2 var(--mono); letter-spacing: .08em; color: var(--accent-ink); }
+.plan li p { margin: 0; }
+footer { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1.6rem 2.4rem; font: 400 11px/1.6 var(--mono); color: var(--muted); letter-spacing: .06em; }
+
+@media (max-width: 980px) {
+  .stage { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .stage .view.top { grid-column: 1 / -1; max-width: 26rem; }
+  .panels, .reasoning { grid-template-columns: minmax(0,1fr); }
+  .pipeline { grid-template-columns: minmax(0,1fr); }
+  .pipeline li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 760px) {
+  section.row { grid-template-columns: minmax(0,1fr); gap: .8rem; padding-block: 2.2rem; }
+  .metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .metric:nth-child(3) { border-left: 0; padding-left: 0; }
+  .metric:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .defs { grid-template-columns: minmax(0,1fr); }
+  .work article { grid-template-columns: minmax(0,1fr); gap: .4rem; }
+  .hero { padding-block: 3rem 2.2rem; }
+}
+@media (max-width: 520px) {
+  .stage { grid-template-columns: minmax(0,1fr); }
+  .stage .view.top { max-width: none; }
+}
+
+/* ---------- Compass (connectome lab) ---------- */
+.cx-stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.6rem; align-items: start; }
+.cx-stage canvas#cxCircuit { aspect-ratio: 440 / 400; }
+.cx-side { display: grid; gap: 1rem; min-width: 0; }
+.cx-side canvas#cxArena { aspect-ratio: 600 / 56; }
+.cx-dialrow { display: grid; grid-template-columns: 11rem minmax(0,1fr); gap: 1.2rem; align-items: center; }
+.cx-dialrow canvas { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; display: block; }
+.cx-legend p { margin: 0 0 .4rem; font-size: 14.5px; }
+.cx-legend .sw { display: inline-block; width: 18px; height: 3px; background: var(--c); vertical-align: middle; margin-right: .5rem; }
+.cx-chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+.chip { font: 500 10.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: .55rem .75rem; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); }
+.chip::before { content: "○ "; color: var(--faint); }
+.chip[aria-pressed="true"] { border-color: var(--bad); color: var(--bad); text-decoration: line-through; }
+.chip[aria-pressed="true"]::before { content: "✕ "; color: var(--bad); }
+.cx-controls { grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr)); }
+.cx-metrics { grid-template-columns: repeat(5, minmax(0,1fr)); }
+.cx-scrub { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .45rem; }
+.cx-wide { display: block; width: 100%; max-width: 100%; height: auto; }
+.tablewrap { overflow-x: auto; border-top: 1px solid var(--ink); }
+table.atlas { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14.5px; }
+.atlas th { font: 500 10px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: .6rem .7rem .6rem 0; border-bottom: 1px solid var(--rule); }
+.atlas td { padding: .65rem .7rem .65rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--body); }
+.atlas td b { color: var(--ink); font-weight: 600; }
+.atlas .n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.atlas td.ok { color: var(--good); } .atlas td.warn { color: var(--warn); } .atlas td.bad { color: var(--bad); }
+.atlas td:nth-child(3) { color: var(--accent-ink); }
+@media (max-width: 980px) { .cx-stage { grid-template-columns: minmax(0,1fr); } .cx-metrics { grid-template-columns: repeat(3, minmax(0,1fr)); } .cx-metrics .metric:nth-child(4) { border-left: 0; padding-left: 0; } .cx-metrics .metric:nth-child(n+4) { border-top: 1px solid var(--rule); } }
+@media (max-width: 520px) { .cx-dialrow { grid-template-columns: 8rem minmax(0,1fr); } .cx-metrics { grid-template-columns: repeat(2, minmax(0,1fr)); } .cx-metrics .metric:nth-child(n) { border-left: 0; padding-left: 0; } .cx-metrics .metric:nth-child(even) { border-left: 1px solid var(--rule); padding-left: 1rem; } .cx-metrics .metric:nth-child(n+3) { border-top: 1px solid var(--rule); } }
+
+/* ---------- RoBoWoMo lab ---------- */
+.rb-models { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); border: 1px solid var(--rule); }
+.rb-model { display: grid; gap: .25rem; text-align: left; padding: .8rem 1rem; border: 0; border-radius: 0; background: var(--paper); color: var(--ink); text-transform: none; letter-spacing: 0; font: 400 15px/1.3 var(--sans); }
+.rb-model + .rb-model { border-left: 1px solid var(--rule); }
+.rb-model b { font: 600 15px/1.2 var(--sans); }
+.rb-model span { font: 400 11px/1.3 var(--mono); color: var(--muted); }
+.rb-model[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.rb-model[aria-checked="true"] span { color: var(--accent); }
+.rb-stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+.rb-stage canvas#rbArena { aspect-ratio: 660 / 440; outline-offset: 3px; }
+.rb-side { display: grid; gap: .8rem; min-width: 0; }
+.rb-side canvas#rbRing { aspect-ratio: 1 / 1; }
+.rb-dialrow { display: grid; grid-template-columns: 8.5rem minmax(0,1fr); gap: 1rem; align-items: center; }
+.rb-dialrow canvas { width: 100%; max-width: 100%; aspect-ratio: 1/1; display: block; }
+.rb-controls { grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); }
+#rbHold.on { background: var(--accent); border-color: var(--accent); color: #000; }
+.rb-try { margin: 0; padding-left: 1.2rem; }
+.rb-try li { margin-bottom: .6rem; font-size: 15.5px; }
+.rb-try b { color: var(--ink); }
+@media (max-width: 980px) { .rb-stage { grid-template-columns: minmax(0,1fr); } .rb-side { grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; } }
+@media (max-width: 600px) { .rb-models { grid-template-columns: minmax(0,1fr); } .rb-model + .rb-model { border-left: 0; border-top: 1px solid var(--rule); } .rb-side { grid-template-columns: minmax(0,1fr); } }
+
+/* ---------- App shell ---------- */
+[hidden] { display: none !important; }
+#rbScatter svg { max-width: 760px; }
+.app { max-width: 1480px; margin: 0 auto; }
+.appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--paper); display: flex; align-items: center; gap: .6rem 1.6rem; flex-wrap: wrap; padding-block: .8rem; border-bottom: 1px solid var(--rule); }
+.tabs { display: flex; flex-wrap: wrap; gap: .25rem; flex: 1; }
+.tabs a { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: .65rem .85rem; border: 1px solid transparent; }
+.tabs a i { font-style: normal; color: var(--faint); margin-right: .5rem; }
+.tabs a:hover { color: var(--ink); }
+.tabs a[aria-selected="true"] { color: var(--ink); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+.tabs a[aria-selected="true"] i { color: var(--accent-ink); }
+.who { font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--muted); }
+.pane { display: grid; grid-template-columns: 19rem minmax(0, 1fr); gap: 2rem; padding-block: 1.4rem 3rem; align-items: start; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4.2rem); max-height: calc(100vh - 5.2rem); overflow-y: auto; display: grid; gap: 1rem; padding-right: .5rem; min-width: 0; scrollbar-width: thin; }
+.rail-head { display: grid; gap: .45rem; }
+.eyebrow { font: 500 10.5px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent-ink); }
+.rail-head h2 { font: 400 1.55rem/1.15 var(--serif); color: var(--ink); margin: 0; text-wrap: balance; }
+.rail-head p { margin: 0; font-size: 14.5px; line-height: 1.45; color: var(--muted); }
+.rail-group { display: grid; gap: .85rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.rail .actions button { padding: .7rem .8rem; }
+.rail .verdict { grid-template-columns: minmax(0,1fr); gap: .45rem; padding: 0; }
+.rail .verdict .pill { justify-self: start; }
+.rail .verdict h3 { font: 400 1.12rem/1.25 var(--serif); }
+.mlist { display: grid; }
+.mlist .metric { grid-template-columns: minmax(0,1fr) auto; gap: .1rem .8rem; align-items: baseline; padding: .55rem 0; border-top: 1px solid var(--rule); }
+.mlist .metric + .metric { padding-left: 0; border-left: 0; }
+.mlist .metric .v { font-size: 1.45rem; text-align: right; }
+.mlist .metric .v small { font-size: 12px; }
+.mlist .metric .d { grid-column: 1 / -1; font-size: 12.5px; }
+details.how { border-top: 1px solid var(--rule); padding-top: .8rem; font-size: 14px; line-height: 1.5; }
+details.how summary { font: 500 10.5px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); cursor: pointer; list-style: none; }
+details.how summary::before { content: "+ "; color: var(--accent-ink); }
+details.how[open] summary::before { content: "− "; }
+details.how p { margin: .6rem 0 0; color: var(--body); }
+details.how b { color: var(--ink); }
+.stage-main { display: grid; gap: 1.2rem; min-width: 0; }
+.card { border: 1px solid var(--rule); padding: .9rem 1rem 1rem; min-width: 0; }
+.tag i { font-style: normal; color: var(--faint); }
+.why { margin: 0; padding-left: 1.2rem; }
+.why li { margin-bottom: .55rem; font-size: 14.5px; }
+.why li b { color: var(--ink); font-weight: 600; }
+.log { font: 400 12px/1.6 var(--mono); color: var(--muted); max-height: 12rem; overflow: auto; border-left: 2px solid var(--accent); padding-left: .8rem; font-variant-numeric: tabular-nums; }
+.rail .rb-models { grid-template-columns: minmax(0,1fr); }
+.rail .rb-model + .rb-model { border-left: 0; border-top: 1px solid var(--rule); }
+.rail .rb-model { padding: .65rem .8rem; }
+button.hold { width: 100%; padding: 1rem; display: flex; justify-content: center; gap: .6rem; align-items: center; }
+kbd { font: 500 10px/1 var(--mono); border: 1px solid currentColor; padding: .2rem .35rem; opacity: .75; }
+.rail .cx-chips .chip { flex: 1 1 auto; }
+.pane.about { display: block; }
+.about-inner { max-width: 62rem; display: grid; gap: 1.2rem; padding-block: 1rem; }
+.about-title { font: 400 clamp(1.9rem, 4vw, 2.8rem)/1.1 var(--serif); color: var(--ink); margin: 0; text-wrap: balance; max-width: 20ch; }
+.about-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 2rem; border-top: 1px solid var(--rule); padding-top: 1.4rem; margin-top: .6rem; }
+.about-grid p { font-size: 15.5px; }
+.steps { margin: .6rem 0 0; padding-left: 1.2rem; }
+.steps li { margin-bottom: .5rem; font-size: 15px; }
+.steps b { color: var(--ink); }
+.about-sub { margin-top: 1rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); }
+@media (max-width: 1100px) { .pane { grid-template-columns: 16.5rem minmax(0,1fr); gap: 1.4rem; } .stage { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } .stage .view.top { grid-column: 1 / -1; max-width: 24rem; } }
+@media (max-width: 860px) {
+  .pane { grid-template-columns: minmax(0,1fr); }
+  .rail { display: contents; }
+  .rail-head { order: 0; } .stage-main { order: 1; } .rail-group { order: 2; } details.how { order: 3; }
+  .pane { gap: 1.1rem; }
+  .about-grid { grid-template-columns: minmax(0,1fr); }
+  .who { display: none; }
+}
+
+/* ---------- Perceive: type and intro bands ---------- */
+body { font-size: 17.5px; line-height: 1.55; }
+h1, h2, h3, .rail-head h2, .about-title, .metric .v, .verdict h3 { font-weight: 700; letter-spacing: -0.01em; }
+.tag, .eyebrow, .ctl label, button, .chip, .pill, .metric .k, .tabs a, .maps .h, .legend, .readout, .atlas th, .work .venue, .who { font-weight: 600; letter-spacing: .04em; }
+.mark { font-size: 19px; font-weight: 800; letter-spacing: .08em; }
+.tabs a { font-size: 13px; }
+.tag i { margin-left: .45em; font-weight: 500; }
+.intro { grid-column: 1 / -1; display: grid; gap: 1rem; padding-bottom: 1.6rem; border-bottom: 1px solid var(--rule); }
+.intro .kicker { margin: 0; font-weight: 700; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-ink); }
+.intro h1 { margin: 0; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.02; max-width: 22ch; color: var(--ink); text-wrap: balance; }
+.intro .opener { margin: 0; max-width: 72ch; font-size: 1.12rem; line-height: 1.55; color: var(--ink); }
+.intro-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 2.4rem; max-width: 70rem; }
+.intro-cols h2 { margin: 0 0 .35rem; font-size: 1.08rem; color: var(--ink); }
+.intro-cols p { margin: 0; font-size: 16px; line-height: 1.6; }
+details.abstract { max-width: 70rem; border-left: 3px solid var(--accent); padding: .2rem 0 .2rem 1rem; }
+details.abstract summary { cursor: pointer; font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); }
+details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-width: 80ch; }
+.rail-head p { font-size: 15px; }
+@media (max-width: 860px) { .intro { order: -1; } .intro-cols { grid-template-columns: minmax(0,1fr); } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <header class="appbar">
+    <a class="mark" href="#lab">PERCEIVE</a>
+    <nav class="tabs" role="tablist" aria-label="Labs">
+      <a role="tab" href="#lab" data-tab="lab">Generated worlds</a>
+      <a role="tab" href="#robowomo" data-tab="robowomo">RoBoWoMo</a>
+      <a role="tab" href="#compass" data-tab="compass">Fly compass</a>
+      <a role="tab" href="#about" data-tab="about">About</a>
+    </nav>
+    <a class="who" href="/playground/">Saanvi S. Subramanian, playground</a>
+  </header>
+
+  <!-- ================= GENERATED WORLDS ================= -->
+  <section class="pane" id="pane-lab" role="tabpanel" aria-label="Generated worlds">
+    <header class="intro">
+      <p class="kicker">Perceive</p>
+      <h1>World models that keep a stable picture of physical reality</h1>
+      <p class="opener">I'm excited about world models and about building more aligned simulations of physical reality, for applications in robotics and scientific reasoning. The world doesn't operate through language. It follows physical laws and constructs, and models that can understand them are better equipped to address the world's critical needs. Perceive is three small labs that run in the browser. Each one asks whether a model holds a stable, physically faithful picture of its world, using measurements borrowed from neuroscience.</p>
+      <div class="intro-cols">
+        <div><h2>Generated worlds: what this is</h2><p>A simulated 3D room is rendered twice along the same camera path. One render comes from a ground-truth simulator. The other comes from a stand-in world model that predicts the room from the agent's actions alone and forgets objects that stay out of view too long. The audit reads only the rendered frames and reports how long the model's picture of the room stays consistent, using the place-field analyses used to study the hippocampus. The stand-in model is synthetic and its failures are planted on purpose, so this lab tests the measurement itself. It has not yet been run on a real video world model.</p></div>
+        <div><h2>Why I looked at it</h2><p>A robot trained inside a generated world needs that world to still be there when it turns around. Frame-quality scores do not check this, because they judge short clips and never ask about the return trip. From neurobiology, the standard test for whether an animal holds a stable map is whether its place cells keep the same firing fields when it comes back to an unchanged room. I wanted to see whether the same test gives a useful number for generated environments.</p></div>
+      </div>
+    </header>
+    <aside class="rail">
+      <div class="rail-head"><span class="eyebrow">Controls</span><p>Pick a world model, change how it forgets, and run the audit.</p></div>
+      <div class="rail-group">
+        <div class="ctl">
+          <label for="preset">World model</label>
+          <select id="preset">
+            <option value="gt">Perfect simulator (reference)</option>
+            <option value="long">Long-context world model</option>
+            <option value="typical" selected>Typical video world model</option>
+            <option value="short">Short-context world model</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div class="ctl"><label for="H">Off-screen memory <output id="oH"></output></label><input type="range" id="H" min="10" max="610" step="10"></div>
+        <div class="ctl"><label for="rate">Re-imagination rate <output id="oRate"></output></label><input type="range" id="rate" min="0" max="0.15" step="0.005"></div>
+        <div class="ctl"><label for="drift">Camera drift <output id="oDrift"></output></label><input type="range" id="drift" min="0" max="3" step="0.1"></div>
+        <div class="ctl"><label for="noise">Frame noise <output id="oNoise"></output></label><input type="range" id="noise" min="0" max="0.12" step="0.005"></div>
+        <div class="ctl"><label for="N">Rollout length <output id="oN"></output></label><input type="range" id="N" min="600" max="2400" step="200"></div>
+        <div class="ctl"><label for="E">Training episode <output id="oE"></output></label><input type="range" id="E" min="50" max="1000" step="25"></div>
+        <div class="actions">
+          <button class="primary" id="run">Run audit</button>
+          <button id="layout">New room</button>
+          <button id="undo">Remove object</button>
+        </div>
+      </div>
+      <div class="rail-group">
+        <div class="verdict"><span class="pill idle" id="pill">Running</span><h3 id="vtitle">Auditing the default rollout…</h3></div>
+        <div class="mlist">
+          <div class="metric"><span class="k">Memory horizon</span><span class="v" id="mH">–</span><span class="d" id="mHd">Revisit gap at which the model has lost a fifth of its short-gap consistency.</span></div>
+          <div class="metric"><span class="k">Remapping index</span><span class="v" id="mR">–</span><span class="d" id="mRd">0 = as stable as the simulator, 1 = no better than shuffled.</span></div>
+          <div class="metric"><span class="k">Place-coding units</span><span class="v" id="mP">–</span><span class="d" id="mPd">Significant spatial information, simulator → model.</span></div>
+          <div class="metric"><span class="k">Planted failures</span><span class="v" id="mE">–</span><span class="d" id="mEd">Logged by the stand-in model; a real model has no such log.</span></div>
+        </div>
+      </div>
+      <details class="how">
+        <summary>How it works</summary>
+        <p>The world model here is a controlled stand-in. It re-imagines objects that stay out of view past the memory limit, and its camera drifts. Planting known failures shows whether the audit catches them before it is pointed at a real checkpoint.</p>
+        <p><b>View cells.</b> Frames are downsampled to 24×18 colour pixels. 64 units each respond to one reference view, exp(−(1−cos)/τ). One bank reads both sources.</p>
+        <p><b>Spatial information.</b> Skaggs bits over a 10×10 room grid, against 40 circular shifts of each activity trace.</p>
+        <p><b>Remapping.</b> Split-half rate-map correlation, scaled between the simulator (0) and a shuffle null (1). The room never changes, so any change is spurious.</p>
+        <p><b>Memory horizon.</b> Revisit pairs within 30 cm and 13°, binned by gap and normalised by the simulator's own fall-off.</p>
+      </details>
+    </aside>
+    <div class="stage-main">
+      <div class="stage">
+        <div class="view"><div class="view-head"><span class="tag">Simulator <i>ground truth</i></span></div><canvas id="vGT" width="320" height="240" aria-label="Egocentric view rendered by the simulator"></canvas></div>
+        <div class="view model"><div class="view-head"><span class="tag">World model <i>open-loop rollout</i></span></div><canvas id="vWM" width="320" height="240" aria-label="Egocentric view rendered by the world model"></canvas></div>
+        <div class="view top"><div class="view-head"><span class="tag">Top-down <i>click to place objects</i></span></div><canvas id="map" width="360" height="360" aria-label="Top-down map of the room, agent path and the model's belief about each object"></canvas></div>
+      </div>
+      <div><div class="progress" aria-hidden="true"><i id="prog"></i></div><div class="readout" id="readout">Loading renderer…</div></div>
+      <div class="panels">
+        <div class="card">
+          <div class="tag">Revisit consistency vs. time since last visit</div>
+          <div class="chart" id="chart"></div>
+          <div class="legend"><span style="--c:var(--ink)">simulator</span><span style="--c:var(--accent-ink)">world model</span><span style="--c:var(--faint)">different-place floor</span><span style="--c:var(--bad)">memory horizon</span></div>
+        </div>
+        <div class="card">
+          <div class="tag">Place fields, first half vs. second half</div>
+          <div class="maps" id="maps"></div>
+          <div class="scale"><span>low</span><i></i><span>high</span><span style="margin-left:auto">worst 4 of 64 units, r = split-half</span></div>
+        </div>
+      </div>
+      <div class="panels">
+        <div class="card"><div class="tag" style="margin-bottom:.6rem">Read-out</div><ol class="why" id="why"><li>Waiting for the audit to finish.</li></ol></div>
+        <div class="card"><div class="tag" style="margin-bottom:.6rem">Planted-failure log <i>validation only</i></div><div class="log" id="log">No events yet.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROBOWOMO ================= -->
+  <section class="pane" id="pane-robowomo" role="tabpanel" aria-label="RoBoWoMo" hidden>
+    <header class="intro">
+      <p class="kicker">RoBoWoMo</p>
+      <h1>A heading variable that a world model builds on its own</h1>
+      <div class="intro-cols">
+        <div><h2>What this is</h2><p>Three of the world models from my RoBoWoMo study, loaded from their trained checkpoints and running live in the browser. Each is a small recurrent network (a GRU with 128 units) trained only to predict a robot's next range-sensor reading in a 2.2 by 1.4 m arena. None of them is ever given the robot's heading. The three differ only in training: observations withheld in stretches (blackout), always observed, or blackout with the action stream scrambled in time (a control that cannot integrate motion). You can black out the sensors and watch whether each network keeps track of which way the robot faces.</p></div>
+        <div><h2>Why I looked at it</h2><p>Head-direction cells in the rodent brain keep a sense of heading in the dark by integrating self-motion. I wanted to know whether a predictive world model builds a comparable variable without being told to, and how to tell a real one from structure that only looks like one. A ring-shaped cloud of hidden states appears even in controls that cannot integrate, so the study measures how faithfully the ring tracks true heading where the model has to integrate.</p></div>
+      </div>
+      <details class="abstract" open><summary>Abstract, RoBoWoMo workshop at IEEE IROS 2026</summary><p>A world model is a recurrent model trained to predict its own next observation, and to predict well when the world is partly hidden it has to hold an internal state. The interesting question is what that state becomes. If it becomes a clean variable that lines up with something concrete, like which way the agent is facing, you can read it, trust it, and steer it. If it stays a tangle, the model can still predict while carrying nothing you can use. I train action-conditioned world models on a robot's range sensors with no access to its heading, and a steerable heading variable appears only under partial observability: the lowest-fidelity blackout model tracks true heading at a ring-coordinate fidelity of 0.860 while the best control reaches only 0.613, so the two groups separate with no overlap, and the variable behaves like a continuous attractor that is steered causally. A companion study pushes the same question further, showing that a probe can read a coordinate out of the latent state that the dynamics set aside, and that the coordinates the dynamics do use are set by what the observation makes separable, not by the number of actuators.</p></details>
+    </header>
+    <aside class="rail">
+      <div class="rail-head"><span class="eyebrow">Controls</span><p>Choose a trained model, then hold the button to black out its sensors.</p></div>
+      <div class="rail-group">
+        <div class="rb-models" role="radiogroup" aria-label="World model">
+          <button class="rb-model" role="radio" data-m="dark" aria-checked="true"><b>Blackout-trained</b><span id="rbDescDark">GRU, seed 0</span></button>
+          <button class="rb-model" role="radio" data-m="lit" aria-checked="false"><b>Always observed</b><span id="rbDescLit">GRU, seed 0</span></button>
+          <button class="rb-model" role="radio" data-m="shuffle" aria-checked="false"><b>Shuffled actions</b><span id="rbDescShuffle">GRU, seed 0, control</span></button>
+        </div>
+        <button class="primary hold" id="rbHold">Hold to black out <kbd>B</kbd></button>
+        <div class="ctl"><label for="rbSched">Blackouts</label>
+          <select id="rbSched"><option value="test">Test regime (random, mean 12 steps)</option><option value="long">One long blackout every 120 steps</option><option value="manual">Only while held</option></select></div>
+        <div class="ctl"><label for="rbDrive">Driving</label>
+          <select id="rbDrive"><option value="auto">Autopilot (training policy)</option><option value="keys">Keyboard: click arena, ← ↑ →</option></select></div>
+        <div class="ctl"><label for="rbSpeed">Speed <output id="oRbSpeed"></output></label><input type="range" id="rbSpeed" min="4" max="40" step="1" value="14"></div>
+        <div class="actions"><button id="rbPause">Pause</button><button id="rbReset">Reset</button></div>
+      </div>
+      <div class="rail-group">
+        <div class="mlist">
+          <div class="metric"><span class="k">Steps in blackout</span><span class="v" id="rbM1">0</span></div>
+          <div class="metric"><span class="k">Heading error now</span><span class="v" id="rbM2">–</span></div>
+          <div class="metric"><span class="k">Median, deep blackout</span><span class="v" id="rbM3">–</span><span class="d">≥ 5 steps into a blackout, this session. The paper's metric.</span></div>
+          <div class="metric"><span class="k">Prediction error</span><span class="v" id="rbM4">–</span><span class="d">MSE of the predicted next reading while blind.</span></div>
+        </div>
+      </div>
+      <details class="how">
+        <summary>How it works</summary>
+        <p><b>Blackout</b> training withheld observations for stretches, forcing the model to integrate its actions. <b>Always observed</b> never withheld anything. <b>Shuffled actions</b> had the same blackouts, but its actions were scrambled in time, so it is the matched null.</p>
+        <p><b>Try:</b> hold B on the blackout model, then on the shuffled one. Both have ring-shaped state clouds; only one keeps the dot moving with the robot in the dark.</p>
+        <p>The heading readout is a linear map fit after training, only to score the models. It is fit on all states, so the controls score worse here than with the paper's deep-blackout readout. Over 2,000 headless test-regime steps this page gives 2.1°, 23.1° and 40.1°; the paper reports 1.8°, 16.2° and 22.8°.</p>
+        <p>The ring plane is PCA of states near the arena centre, so it reflects heading rather than position. The JS GRU matches the PyTorch checkpoints to within 0.002.</p>
+      </details>
+    </aside>
+    <div class="stage-main">
+      <div class="rb-stage">
+        <div class="view">
+          <div class="view-head"><span class="tag">Arena <i>2.2 × 1.4 m, 12 rays</i></span><span class="tag" id="rbSensor">sensors on</span></div>
+          <canvas id="rbArena" width="660" height="440" tabindex="0" aria-label="Robot arena with true sensor rays and the world model's predicted rays"></canvas>
+          <div class="legend"><span style="--c:var(--ink)">true rays</span><span style="--c:var(--accent-ink)">model's predicted next reading</span></div>
+        </div>
+        <div class="rb-side">
+          <div class="view"><div class="view-head"><span class="tag">Hidden state <i>ring plane</i></span></div><canvas id="rbRing" width="300" height="300" aria-label="Hidden state on its ring plane over reference states coloured by heading"></canvas></div>
+          <div class="rb-dialrow">
+            <canvas id="rbDial" width="160" height="160" aria-label="True heading against decoded heading"></canvas>
+            <div class="cx-legend"><p><span class="sw" style="--c:var(--ink)"></span>True heading</p><p><span class="sw" style="--c:var(--accent)"></span>Decoded from state</p><p class="note" id="rbNow">–</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tag" style="margin-bottom:.45rem">Heading error, last 400 steps <i>grey = blackout</i></div>
+        <canvas id="rbTrace" class="cx-wide" width="960" height="110" aria-label="Recent heading error with blackout periods shaded"></canvas>
+      </div>
+      <div class="card">
+        <div class="tag">Ring topology vs. fidelity <i>all 48 analysed models</i></div>
+        <div class="chart" id="rbScatter"></div>
+        <div class="legend" id="rbScatterLegend"></div>
+        <p class="cap">Controls clear the ring threshold too (gap above 2). Fidelity separates them: every blackout model is at 0.860 or above, the best control at 0.613. Hover a point for its model.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FLY COMPASS ================= -->
+  <section class="pane" id="pane-compass" role="tabpanel" aria-label="Fly compass" hidden>
+    <header class="intro">
+      <p class="kicker">Fly compass</p>
+      <h1>The fruit fly's heading circuit as a world model you can take apart</h1>
+      <div class="intro-cols">
+        <div><h2>What this is</h2><p>A simulation of the fruit fly's head-direction circuit: a ring of 32 model neurons holding one bump of activity that marks the fly's heading. The four cell types and the direction of their connections follow the central-complex wiring mapped in the fly connectome. The weights are simplified and are not real synapse counts. Each run covers 15 s of light, 30 s of darkness and 15 s of light. You can cut any pathway and see how heading tracking fails, and a lesion table compares every cut on the same fly.</p></div>
+        <div><h2>Why I looked at it</h2><p>The fly's circuit is a small, fully mapped example of what an action-conditioned world model has to do: predict from self-motion when it cannot see, and correct from vision when it can. Cutting one pathway at a time gives a distinct failure signature for each part. I wanted those signatures as a reference for diagnosing which part of a learned world model has broken.</p></div>
+      </div>
+    </header>
+    <aside class="rail">
+      <div class="rail-head"><span class="eyebrow">Controls</span><p>Cut pathways on the diagram or with these buttons. Each change reruns the 60 s simulation.</p></div>
+      <div class="rail-group">
+        <div class="cx-chips" role="group" aria-label="Lesions">
+          <button class="chip" data-les="ring" aria-pressed="false">Ring neurons</button>
+          <button class="chip" data-les="pen" aria-pressed="false">P-EN</button>
+          <button class="chip" data-les="d7" aria-pressed="false">Δ7</button>
+          <button class="chip" data-les="epg" aria-pressed="false">E-PG recurrence</button>
+        </div>
+        <div class="ctl"><label for="cxGain">Self-motion gain <output id="oCxGain"></output></label><input type="range" id="cxGain" min="0.4" max="1.6" step="0.05" value="1"></div>
+        <div class="ctl"><label for="cxNoise">Synaptic noise <output id="oCxNoise"></output></label><input type="range" id="cxNoise" min="0" max="0.5" step="0.01" value="0.15"></div>
+        <div class="ctl"><label for="cxScene">Landmark</label><select id="cxScene"><option value="single">One bright bar</option><option value="twin">Two identical bars, 180° apart</option></select></div>
+        <div class="actions"><button class="primary" id="cxFly">New fly</button><button id="cxReset">Heal all</button></div>
+      </div>
+      <div class="rail-group">
+        <div class="verdict"><span class="pill idle" id="cxPill">Intact</span><h3 id="cxTitle">Intact circuit.</h3></div>
+        <div class="mlist">
+          <div class="metric"><span class="k">Error in light</span><span class="v" id="cxM1">–</span></div>
+          <div class="metric"><span class="k">Drift in dark</span><span class="v" id="cxM2">–</span></div>
+          <div class="metric"><span class="k">Integration gain</span><span class="v" id="cxM3">–</span><span class="d">Bump ÷ turning velocity in the dark. 1.00 is perfect.</span></div>
+          <div class="metric"><span class="k">After lights return</span><span class="v" id="cxM4">–</span></div>
+          <div class="metric"><span class="k">Bump width</span><span class="v" id="cxM5">–</span><span class="d">360° means no bump.</span></div>
+        </div>
+      </div>
+      <details class="how">
+        <summary>How it works</summary>
+        <p>The fly tracks heading with one bump of activity on a ring of E-PG neurons. P-EN neurons shift the bump as the fly turns; ring neurons pin it to what the fly sees; Δ7 inhibition keeps a single bump; recurrence holds it in the dark.</p>
+        <p>That is the predict-and-correct loop of an action-conditioned world model: P-EN ≈ transition, ring neurons ≈ observation update, recurrence ≈ memory, Δ7 ≈ competition between hypotheses.</p>
+        <p>The model follows the hemibrain connectome's topology, not its synapse counts. Weights are idealised: a cosine ring, an angular-velocity-gated shift and inhibitory landmark input. The bump-to-world offset is estimated label-free from the lit epoch, as it must be in the fly.</p>
+      </details>
+    </aside>
+    <div class="stage-main">
+      <div class="cx-stage">
+        <div class="view"><div class="view-head"><span class="tag">Circuit <i>click a pathway to cut it</i></span></div><canvas id="cxCircuit" width="440" height="400" aria-label="Central complex head-direction circuit with lesionable pathways"></canvas></div>
+        <div class="cx-side">
+          <div class="view"><div class="view-head"><span class="tag">LED arena <i>what the fly sees</i></span><span class="tag" id="cxLight">lights on</span></div><canvas id="cxArena" width="600" height="56" aria-label="Unrolled panorama of the LED arena"></canvas></div>
+          <div class="cx-dialrow">
+            <canvas id="cxDial" width="220" height="220" aria-label="True heading against the circuit's estimate"></canvas>
+            <div class="cx-legend"><p><span class="sw" style="--c:var(--ink)"></span>True heading</p><p><span class="sw" style="--c:var(--accent)"></span>Bump position</p><p class="note" id="cxNow">t = 0.0 s</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cx-scrub">
+          <div class="tag">Ellipsoid-body activity over 60 s <i>dots = true heading</i></div>
+          <label class="tag" for="cxT" style="display:flex;gap:.5rem;align-items:center">Scrub <input type="range" id="cxT" min="0" max="1000" value="0" style="width:9rem"></label>
+        </div>
+        <canvas id="cxHeat" class="cx-wide" width="960" height="150" aria-label="Heatmap of E-PG activity over time"></canvas>
+        <canvas id="cxErr" class="cx-wide" width="960" height="90" aria-label="Heading error over time"></canvas>
+      </div>
+      <div class="card">
+        <div class="tag" style="margin-bottom:.6rem">Lesion atlas <i>every condition run on this fly</i></div>
+        <div class="tablewrap">
+          <table class="atlas" id="cxAtlas">
+            <thead><tr><th>Cut</th><th>Fly cells</th><th>World-model part</th><th class="n">Dark drift</th><th class="n">After light</th><th>Signature → diagnosis</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="pane about" id="pane-about" role="tabpanel" aria-label="About" hidden>
+    <div class="about-inner">
+      <span class="eyebrow">About Perceive</span>
+      <h2 class="about-title">Three labs on one question: does a world model keep a stable map?</h2>
+      <p class="lede">I'm excited about world models and about building more aligned simulations of physical reality, for robotics and scientific reasoning. A robot can only learn inside a generated world if that world is still the same world when the robot turns around. These labs test that with tools from neuroscience: place-cell remapping for generated 3D rooms, heading-ring fidelity for my own trained world models, and pathway lesions in the fly's head-direction circuit.</p>
+      <p class="byline">Saanvi S. Subramanian, October 2026</p>
+
+      <div class="about-grid">
+        <div>
+          <h3>From video to an environment you can walk back into</h3>
+          <p>A video world model can look photoreal frame by frame and still be unusable as an environment. Frame metrics such as FVD score short clips and never ask about the return trip. The generated-worlds audit extends to real posed video:</p>
+          <ol class="steps">
+            <li><b>Poses</b> from the action stream, or structure-from-motion for raw video.</li>
+            <li><b>Revisit graph</b> of frame pairs close in pose and far apart in time.</li>
+            <li><b>Features</b> from a frozen self-supervised encoder in place of pixels.</li>
+            <li><b>Audit</b>: memory horizon, remapping and per-region stability, each with a null.</li>
+            <li><b>Build</b>: fuse only consistent regions into 3D (e.g. Gaussian splats); re-anchor the rest.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Next experiments</h3>
+          <ol class="steps">
+            <li>Run the audit on real checkpoints and report memory horizon next to FVD.</li>
+            <li>Validate it: train one navigation policy inside rollouts from checkpoints with different horizons and test transfer to the reference simulator. The audit is only useful if horizon predicts transfer, and that test can fail.</li>
+            <li>Ablate a learned model's action, observation and memory pathways and match its rollouts against the fly-compass lesion atlas.</li>
+            <li>Test pose-indexed memory against plain longer context at matched compute.</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3 class="about-sub">Prior work this builds on</h3>
+      <div class="work">
+        <article><div class="venue"><b>RoBoWoMo</b>IEEE IROS 2026 workshop, poster and lightning talk</div><div><p>Blackout training makes a faithful heading ring emerge in action-conditioned world models with no pose supervision: 0.860 fidelity for the lowest blackout model against 0.613 for the best control, across 36 models with no overlap. <a href="#robowomo">Runs live in the RoBoWoMo tab.</a></p></div></article>
+        <article><div class="venue"><b>Scaffold WM</b>in progress</div><div><p>A small world model joined to a hippocampus-style memory, after the spatial-scaffold account of Chandra, Sharma, Chaudhuri and Fiete (Nature 2025). It targets the forgetting the generated-worlds audit measures.</p></div></article>
+        <article><div class="venue"><b>NeuroDev WM</b>in progress</div><div><p>What fixes the order in which world-model capabilities emerge, compared with rodent head-direction development. Appearance arrives near step 8, the heading coordinate between steps 63 and 106.</p></div></article>
+        <article><div class="venue"><b>CortSeer</b>ECCV &amp; NeurIPS 2026 workshop orals</div><div><p>Routing clinical brain-lesion decisions on self-agreement instead of confidence: 88.4% against 70.0% accuracy at 40% coverage. The generated-worlds audit applies the same idea: agreement with itself at a revisit beats how good one frame looks.</p></div></article>
+        <article><div class="venue"><b>Neuro-VLA IB</b>pilot</div><div><p>Ring and grid latents in language-conditioned world models. The pilot came back negative and was reported that way: a neural analogy has to beat its control.</p></div></article>
+      </div>
+      <p class="note" style="margin-top:2rem">Built with three.js r128, the RoBoWoMo GRU checkpoints (float16) and a 32-unit ring attractor. Everything runs in the browser.</p>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+
+// ---------- utilities ----------
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+const wrap = a => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const tick = () => new Promise(r => setTimeout(r, 0));
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------- world ----------
+const HALF = 4;                       // room is 8 m x 8 m
+const FW = 24, FH = 18, FD = FW * FH * 3;
+const PALETTE = ["#b5543a", "#3c6e71", "#d8ae3c", "#4a4e8a", "#7a8b3a", "#8a4f7d", "#2f2f2f", "#c98b5a", "#5b8fb0"];
+const SHAPES = ["box", "cyl", "cone"];
+const YOFF = { box: 0.4, cyl: 0.45, cone: 0.5 };
+const WALLS = [ // colour of each wall, used in the 3D room and on the map
+  { c: "#9fb1b8", side: "N" }, { c: "#d9c7a3", side: "E" }, { c: "#b8a3a8", side: "S" }, { c: "#a9b79a", side: "W" }];
+
+const PRESETS = {
+  gt:      { H: 610, rate: 0,     drift: 0,   noise: 0 },
+  long:    { H: 150, rate: 0.02,  drift: 0.3, noise: 0.02 },
+  typical: { H: 60,  rate: 0.04,  drift: 1.0, noise: 0.04 },
+  short:   { H: 15,  rate: 0.10,  drift: 2.0, noise: 0.06 },
+};
+
+let layoutSeed = 7;
+let layout = makeLayout(layoutSeed);
+
+function makeLayout(seed, n = 9) {
+  const r = mulberry32(seed * 7919 + 13), out = [];
+  let tries = 0;
+  while (out.length < n && tries++ < 2000) {
+    const o = { x: (r() * 2 - 1) * 3.0, z: (r() * 2 - 1) * 3.0, shape: SHAPES[Math.floor(r() * 3)], color: PALETTE[out.length % PALETTE.length], scale: 1.1 + r() * 0.6 };
+    if (Math.hypot(o.x, o.z) < 0.8) continue;
+    if (out.every(p => Math.hypot(p.x - o.x, p.z - o.z) > 1.35)) out.push(o);
+  }
+  return out;
+}
+
+// ---------- three.js ----------
+let renderer, rt, cam, geoms, glOK = true;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(1);
+  renderer.setSize(320, 240, false);
+  rt = new THREE.WebGLRenderTarget(FW, FH);
+  cam = new THREE.PerspectiveCamera(70, 4 / 3, 0.05, 30);
+  geoms = { box: new THREE.BoxGeometry(0.6, 0.8, 0.6), cyl: new THREE.CylinderGeometry(0.32, 0.32, 0.9, 20), cone: new THREE.ConeGeometry(0.38, 1.0, 20) };
+} catch (e) { glOK = false; }
+
+function buildRoom(scene) {
+  scene.background = new THREE.Color("#e9e6dc");
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8370, 0.85));
+  const d = new THREE.DirectionalLight(0xffffff, 0.55); d.position.set(3, 6, 2); scene.add(d);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshLambertMaterial({ color: "#cfc9b8" }));
+  floor.rotation.x = -Math.PI / 2; scene.add(floor);
+  const grid = new THREE.GridHelper(8, 8, 0xb3ac98, 0xb3ac98); grid.position.y = 0.002; scene.add(grid);
+  const H = 2.4;
+  const wallDefs = [
+    { c: WALLS[0].c, pos: [0, H / 2, -HALF], rot: 0 },
+    { c: WALLS[1].c, pos: [HALF, H / 2, 0], rot: -Math.PI / 2 },
+    { c: WALLS[2].c, pos: [0, H / 2, HALF], rot: Math.PI },
+    { c: WALLS[3].c, pos: [-HALF, H / 2, 0], rot: Math.PI / 2 }];
+  // posters break the room's rotational symmetry so views stay distinct
+  const posters = [[-1.6, 1.3, 1.2, 0.8, "#5d6f76"], [1.4, 1.5, 0.7, 1.0, "#8a6a3c"], [0.2, 1.1, 1.6, 0.5, "#6e5560"], [-0.9, 1.6, 0.6, 0.6, "#5d6b4e"]];
+  wallDefs.forEach((w, i) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(8, H), new THREE.MeshLambertMaterial({ color: w.c }));
+    m.position.set(...w.pos); m.rotation.y = w.rot; scene.add(m);
+    const p = posters[i];
+    const pm = new THREE.Mesh(new THREE.PlaneGeometry(p[2], p[3]), new THREE.MeshLambertMaterial({ color: p[4] }));
+    pm.position.set(p[0], p[1] - H / 2, 0.01); m.add(pm);
+  });
+}
+function addObj(scene, o) {
+  const m = new THREE.Mesh(geoms[o.shape], new THREE.MeshLambertMaterial({ color: o.color }));
+  m.scale.setScalar(o.scale); m.position.set(o.x, YOFF[o.shape] * o.scale, o.z);
+  scene.add(m); return m;
+}
+function setCam(x, z, th) { cam.position.set(x, 0.7, z); cam.rotation.set(0, -th - Math.PI / 2, 0); }
+
+// ---------- trajectory: patrol between fixed waypoints so poses recur ----------
+function makeTrajectory(objs, N, seed) {
+  const r = mulberry32(seed);
+  const patrol = []; let tries = 0;
+  while (patrol.length < 6 && tries++ < 4000) {
+    const p = { x: (r() * 2 - 1) * 3.1, z: (r() * 2 - 1) * 3.1 };
+    if (objs.every(o => Math.hypot(o.x - p.x, o.z - p.z) > 1.0) && patrol.every(q => Math.hypot(q.x - p.x, q.z - p.z) > 1.8)) patrol.push(p);
+  }
+  while (patrol.length < 3) patrol.push({ x: (r() * 2 - 1) * 3, z: (r() * 2 - 1) * 3 });
+  const xs = new Float32Array(N), zs = new Float32Array(N), ths = new Float32Array(N);
+  let x = patrol[0].x, z = patrol[0].z, th = r() * 2 * Math.PI, wi = 1, scan = 0;
+  for (let t = 0; t < N; t++) {
+    if (scan > 0) { th = wrap(th + 0.11); scan--; xs[t] = x; zs[t] = z; ths[t] = th; continue; } // in-place look-around
+    const wp = patrol[wi];
+    let rx = wp.x - x, rz = wp.z - z; const dl = Math.hypot(rx, rz) || 1; rx /= dl; rz /= dl;
+    for (const o of objs) {
+      const d = Math.hypot(x - o.x, z - o.z);
+      if (d < 1.0 && d > 1e-3) { const w = (1.0 - d) / d * 1.6; rx += (x - o.x) * w; rz += (z - o.z) * w; }
+    }
+    if (x > 3.3) rx -= (x - 3.3) * 4; if (x < -3.3) rx -= (x + 3.3) * 4;
+    if (z > 3.3) rz -= (z - 3.3) * 4; if (z < -3.3) rz -= (z + 3.3) * 4;
+    const desired = Math.atan2(rz, rx);
+    th = wrap(th + clamp(wrap(desired - th), -0.11, 0.11) + gauss(r) * 0.01);
+    x = clamp(x + Math.cos(th) * 0.06, -3.7, 3.7); z = clamp(z + Math.sin(th) * 0.06, -3.7, 3.7);
+    xs[t] = x; zs[t] = z; ths[t] = th;
+    if (Math.hypot(wp.x - x, wp.z - z) < 0.35) { if (r() < 0.5) scan = 115; let n; do { n = Math.floor(r() * patrol.length); } while (n === wi); wi = n; }
+  }
+  return { xs, zs, ths, patrol };
+}
+
+// ---------- controls ----------
+const ids = ["H", "rate", "drift", "noise", "N", "E"];
+const ctl = Object.fromEntries(ids.map(i => [i, $("#" + i)]));
+function fmt() {
+  $("#oH").textContent = +ctl.H.value > 600 ? "∞" : ctl.H.value + " fr";
+  $("#oRate").textContent = (+ctl.rate.value).toFixed(3);
+  $("#oDrift").textContent = (+ctl.drift.value).toFixed(1) + " cm";
+  $("#oNoise").textContent = (+ctl.noise.value).toFixed(3);
+  $("#oN").textContent = ctl.N.value + " fr";
+  $("#oE").textContent = ctl.E.value + " fr";
+}
+function applyPreset(k) {
+  const p = PRESETS[k]; if (!p) return;
+  ctl.H.value = p.H; ctl.rate.value = p.rate; ctl.drift.value = p.drift; ctl.noise.value = p.noise; fmt();
+}
+ctl.N.value = 1400; ctl.E.value = 300; applyPreset("typical");
+$("#preset").addEventListener("change", e => applyPreset(e.target.value));
+["H", "rate", "drift", "noise"].forEach(k => ctl[k].addEventListener("input", () => { $("#preset").value = "custom"; fmt(); }));
+["N", "E"].forEach(k => ctl[k].addEventListener("input", fmt));
+ctl.E.addEventListener("change", () => { if (lastResult) renderResults(lastResult); });
+
+// ---------- map drawing ----------
+const mapC = $("#map"), mctx = mapC.getContext("2d");
+const vGT = $("#vGT").getContext("2d"), vWM = $("#vWM").getContext("2d");
+let live = null;   // current run state for the map
+function drawMap() {
+  const W = mapC.width, s = W / 8, P = v => (v + HALF) * s;
+  mctx.clearRect(0, 0, W, W);
+  mctx.fillStyle = css("--panel"); mctx.fillRect(0, 0, W, W);
+  mctx.strokeStyle = css("--rule"); mctx.lineWidth = 1;
+  for (let i = 1; i < 8; i++) { mctx.beginPath(); mctx.moveTo(i * s, 0); mctx.lineTo(i * s, W); mctx.moveTo(0, i * s); mctx.lineTo(W, i * s); mctx.stroke(); }
+  mctx.lineWidth = 6;
+  [[0, 0, W, 0], [W, 0, W, W], [W, W, 0, W], [0, W, 0, 0]].forEach((l, i) => { mctx.strokeStyle = WALLS[i].c; mctx.beginPath(); mctx.moveTo(l[0], l[1]); mctx.lineTo(l[2], l[3]); mctx.stroke(); });
+  const shape = (o, x, z, fill, dashed) => {
+    const r = 0.32 * o.scale * s;
+    mctx.beginPath();
+    if (o.shape === "box") mctx.rect(x - r, z - r, 2 * r, 2 * r);
+    else if (o.shape === "cyl") mctx.arc(x, z, r, 0, Math.PI * 2);
+    else { mctx.moveTo(x, z - r * 1.15); mctx.lineTo(x + r, z + r * .8); mctx.lineTo(x - r, z + r * .8); mctx.closePath(); }
+    if (dashed) { mctx.setLineDash([3, 3]); mctx.lineWidth = 2; mctx.strokeStyle = fill; mctx.stroke(); mctx.setLineDash([]); }
+    else { mctx.fillStyle = fill; mctx.fill(); }
+  };
+  if (live) {
+    mctx.strokeStyle = css("--faint"); mctx.globalAlpha = 0.45; mctx.lineWidth = 1; mctx.beginPath();
+    for (let t = 0; t <= live.t && t < live.traj.xs.length; t++) { const X = P(live.traj.xs[t]), Z = P(live.traj.zs[t]); t ? mctx.lineTo(X, Z) : mctx.moveTo(X, Z); }
+    mctx.stroke(); mctx.globalAlpha = 1;
+  }
+  layout.forEach((o, i) => shape(o, P(o.x), P(o.z), o.color, false));
+  if (live) {
+    live.belief.forEach((b, i) => {
+      const o = layout[i]; if (!o) return;
+      const moved = Math.hypot(b.x - o.x, b.z - o.z) > 0.05, changed = moved || b.color !== o.color || b.shape !== o.shape || !b.visible;
+      if (!changed) return;
+      if (b.visible) {
+        shape(b, P(b.x), P(b.z), b.color, true);
+        if (moved) { mctx.strokeStyle = css("--accent-ink"); mctx.lineWidth = 1; mctx.beginPath(); mctx.moveTo(P(o.x), P(o.z)); mctx.lineTo(P(b.x), P(b.z)); mctx.stroke(); }
+      } else {
+        mctx.strokeStyle = css("--bad"); mctx.lineWidth = 2; const X = P(o.x), Z = P(o.z), r = 6;
+        mctx.beginPath(); mctx.moveTo(X - r, Z - r); mctx.lineTo(X + r, Z + r); mctx.moveTo(X + r, Z - r); mctx.lineTo(X - r, Z + r); mctx.stroke();
+      }
+    });
+    const t = Math.min(live.t, live.traj.xs.length - 1);
+    const ax = P(live.traj.xs[t]), az = P(live.traj.zs[t]), th = live.traj.ths[t];
+    mctx.fillStyle = css("--ink"); mctx.globalAlpha = 0.12; mctx.beginPath(); mctx.moveTo(ax, az);
+    mctx.arc(ax, az, 1.6 * s, th - 0.75, th + 0.75); mctx.closePath(); mctx.fill(); mctx.globalAlpha = 1;
+    mctx.beginPath(); mctx.arc(ax, az, 5, 0, Math.PI * 2); mctx.fill();
+    mctx.strokeStyle = css("--accent"); mctx.lineWidth = 2; mctx.beginPath(); mctx.arc(P(live.wx), P(live.wz), 7, 0, Math.PI * 2); mctx.stroke();
+  }
+}
+
+// environment builder: click to place an object, button to remove the last one
+let shapeCycle = 0;
+mapC.addEventListener("click", e => {
+  if (running) return;
+  const rect = mapC.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 8 - HALF, z = ((e.clientY - rect.top) / rect.height) * 8 - HALF;
+  if (Math.abs(x) > 3.6 || Math.abs(z) > 3.6) return;
+  layout.push({ x, z, shape: SHAPES[shapeCycle++ % 3], color: PALETTE[layout.length % PALETTE.length], scale: 1.0 });
+  live = null; drawMap(); idlePreview();
+  $("#readout").textContent = `Room has ${layout.length} objects. Run the audit to test the new layout.`;
+});
+$("#undo").addEventListener("click", () => { if (running || !layout.length) return; layout.pop(); live = null; drawMap(); idlePreview(); $("#readout").textContent = `Room has ${layout.length} objects.`; });
+$("#layout").addEventListener("click", () => { if (running) return; layoutSeed++; layout = makeLayout(layoutSeed); live = null; drawMap(); runAudit(); });
+
+function idlePreview() {
+  if (!glOK) return;
+  const sc = new THREE.Scene(); buildRoom(sc); layout.forEach(o => addObj(sc, o));
+  setCam(0, 3.2, -Math.PI / 2); renderer.setRenderTarget(null); renderer.render(sc, cam);
+  vGT.drawImage(renderer.domElement, 0, 0); vWM.drawImage(renderer.domElement, 0, 0);
+}
+
+// ---------- rollout ----------
+let running = false, cancelRun = false, lastResult = null;
+$("#run").addEventListener("click", () => runAudit());
+
+async function runAudit() {
+  if (!glOK) { $("#readout").textContent = "WebGL is unavailable in this browser, so the rollout cannot render."; return; }
+  if (running) { cancelRun = true; while (running) await tick(); }
+  running = true; cancelRun = false;
+  $("#run").textContent = "Running…"; ["#run", "#layout", "#undo"].forEach(s => $(s).disabled = true);
+  setPending();
+
+  const N = +ctl.N.value, H = +ctl.H.value > 600 ? Infinity : +ctl.H.value;
+  const rate = +ctl.rate.value, drift = +ctl.drift.value / 100, noise = +ctl.noise.value;
+  const traj = makeTrajectory(layout, N, 1000 + layoutSeed);
+  const rng = mulberry32(4242 + layoutSeed);
+
+  const gtScene = new THREE.Scene(); buildRoom(gtScene); layout.forEach(o => addObj(gtScene, o));
+  const wmScene = new THREE.Scene(); buildRoom(wmScene);
+  const belief = layout.map(o => ({ ...o, visible: true }));
+  const meshes = belief.map(b => addObj(wmScene, b));
+  const lastSeen = new Int32Array(layout.length);
+  const events = [];
+  const gt = new Float32Array(N * FD), wm = new Float32Array(N * FD), px = new Uint8Array(FW * FH * 4);
+  let ox = 0, oz = 0, oth = 0;
+  live = { traj, belief, t: 0, wx: traj.xs[0], wz: traj.zs[0] };
+
+  const grab = (scene, dst, t, nz) => {
+    renderer.setRenderTarget(rt); renderer.render(scene, cam);
+    renderer.readRenderTargetPixels(rt, 0, 0, FW, FH, px);
+    const o = t * FD;
+    for (let i = 0, j = 0; i < FW * FH; i++) for (let c = 0; c < 3; c++, j++) dst[o + j] = px[i * 4 + c] / 255 + (nz ? nz * gauss(rng) : 0);
+  };
+  const KIND = ["recoloured", "moved", "swapped shape", "vanished", "reappeared"];
+
+  for (let t = 0; t < N; t++) {
+    if (cancelRun) break;
+    const x = traj.xs[t], z = traj.zs[t], th = traj.ths[t];
+    ox = 0.97 * ox + drift * gauss(rng); oz = 0.97 * oz + drift * gauss(rng); oth = 0.97 * oth + drift * 0.6 * gauss(rng);
+    const wx = x + ox, wz = z + oz, wth = th + oth;
+
+    // the stand-in model: objects it has not seen for longer than H frames may be re-imagined
+    belief.forEach((b, i) => {
+      const dx = layout[i].x - wx, dz = layout[i].z - wz;
+      const inView = Math.abs(wrap(Math.atan2(dz, dx) - wth)) < 0.85 && Math.hypot(dx, dz) < 7;
+      if (inView) { lastSeen[i] = t; return; }
+      if (t - lastSeen[i] > H && rng() < rate) {
+        const u = rng(); let kind;
+        if (!b.visible) { b.visible = true; kind = 4; }
+        else if (u < 0.4) { let c; do { c = PALETTE[Math.floor(rng() * PALETTE.length)]; } while (c === b.color); b.color = c; kind = 0; }
+        else if (u < 0.75) { const a = rng() * 2 * Math.PI, d = 0.6 + rng() * 0.9; b.x = clamp(b.x + Math.cos(a) * d, -3.5, 3.5); b.z = clamp(b.z + Math.sin(a) * d, -3.5, 3.5); kind = 1; }
+        else if (u < 0.88) { b.shape = SHAPES[(SHAPES.indexOf(b.shape) + 1) % 3]; kind = 2; }
+        else { b.visible = false; kind = 3; }
+        const m = meshes[i];
+        m.material.color.set(b.color); m.geometry = geoms[b.shape]; m.visible = b.visible;
+        m.position.set(b.x, YOFF[b.shape] * b.scale, b.z);
+        events.push({ t, i, kind: KIND[kind], gone: t - lastSeen[i] });
+        lastSeen[i] = t;
+      }
+    });
+
+    setCam(x, z, th); grab(gtScene, gt, t, 0);
+    setCam(wx, wz, wth); grab(wmScene, wm, t, noise);
+
+    if (t % 3 === 0 || t === N - 1) {
+      renderer.setRenderTarget(null);
+      setCam(x, z, th); renderer.render(gtScene, cam); vGT.drawImage(renderer.domElement, 0, 0);
+      setCam(wx, wz, wth); renderer.render(wmScene, cam); vWM.drawImage(renderer.domElement, 0, 0);
+    }
+    live.t = t; live.wx = wx; live.wz = wz;
+    if (t % 12 === 0 || t === N - 1) {
+      drawMap();
+      $("#prog").style.width = (100 * (t + 1) / N).toFixed(1) + "%";
+      $("#readout").textContent = `frame ${t + 1} / ${N}, model pose error ${(Math.hypot(ox, oz) * 100).toFixed(1)} cm, ${(Math.abs(oth) * 180 / Math.PI).toFixed(1)}°, ${events.length} re-imagination events`;
+      await tick();
+    }
+  }
+  renderer.setRenderTarget(null);
+  if (cancelRun) { running = false; return; }
+
+  $("#readout").textContent = "Analysing frames: revisit pairs, place fields, shuffle nulls…";
+  await tick();
+  const res = analyze({ N, gt, wm, traj });
+  res.events = events; res.H = H; res.N = N;
+  lastResult = res;
+  renderResults(res);
+  $("#readout").textContent = `Done, ${N} frames, ${res.nPairs.toLocaleString()} revisit pairs, ${layout.length} objects`;
+  running = false;
+  $("#run").textContent = "Run audit"; ["#run", "#layout", "#undo"].forEach(s => $(s).disabled = false);
+}
+
+// ---------- analysis ----------
+function normalise(F, N) {
+  const mean = new Float64Array(FD);
+  for (let t = 0; t < N; t++) for (let k = 0, o = t * FD; k < FD; k++) mean[k] += F[o + k];
+  for (let k = 0; k < FD; k++) mean[k] /= N;
+  for (let t = 0; t < N; t++) {
+    let s = 0; const o = t * FD;
+    for (let k = 0; k < FD; k++) { const v = F[o + k] - mean[k]; F[o + k] = v; s += v * v; }
+    s = 1 / Math.sqrt(s || 1); for (let k = 0; k < FD; k++) F[o + k] *= s;
+  }
+}
+function dot(A, i, B, j) { let s = 0; const a = i * FD, b = j * FD; for (let k = 0; k < FD; k++) s += A[a + k] * B[b + k]; return s; }
+function pearson(a, b) {
+  const n = a.length; if (n < 4) return NaN;
+  let ma = 0, mb = 0; for (let i = 0; i < n; i++) { ma += a[i]; mb += b[i]; } ma /= n; mb /= n;
+  let sab = 0, saa = 0, sbb = 0; for (let i = 0; i < n; i++) { const x = a[i] - ma, y = b[i] - mb; sab += x * y; saa += x * x; sbb += y * y; }
+  return saa && sbb ? sab / Math.sqrt(saa * sbb) : NaN;
+}
+const median = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); return b.length ? b[Math.floor(b.length / 2)] : NaN; };
+
+const BINS = 10, EDGES = [5, 12, 30, 75, 180, 450, 1100, 2600], RET = 0.8;
+
+function analyze({ N, gt, wm, traj }) {
+  const { xs, zs, ths } = traj, r = mulberry32(99);
+  normalise(gt, N); normalise(wm, N);
+
+  // revisit pairs
+  let pairs = [];
+  for (let t = 0; t < N; t++) for (let s = 0; s < t - 4; s++) {
+    const dx = xs[t] - xs[s], dz = zs[t] - zs[s];
+    if (dx * dx + dz * dz < 0.09 && Math.abs(wrap(ths[t] - ths[s])) < 0.22) pairs.push(s, t);
+  }
+  let nPairs = pairs.length / 2;
+  const keep = Math.min(nPairs, 9000), idx = [];
+  for (let i = 0; i < nPairs; i++) idx.push(i);
+  for (let i = 0; i < keep; i++) { const j = i + Math.floor(r() * (nPairs - i)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  const nb = EDGES.length - 1, sumG = new Float64Array(nb), sumW = new Float64Array(nb), cnt = new Int32Array(nb);
+  for (let q = 0; q < keep; q++) {
+    const s = pairs[2 * idx[q]], t = pairs[2 * idx[q] + 1], gap = t - s;
+    let b = -1; for (let k = 0; k < nb; k++) if (gap >= EDGES[k] && gap < EDGES[k + 1]) b = k;
+    if (b < 0) continue;
+    sumG[b] += dot(gt, s, gt, t); sumW[b] += dot(wm, s, wm, t); cnt[b]++;
+  }
+  let fG = 0, fW = 0, fn = 0;
+  for (let q = 0; q < 6000 && fn < 1200; q++) {
+    const s = Math.floor(r() * N), t = Math.floor(r() * N);
+    if (Math.hypot(xs[t] - xs[s], zs[t] - zs[s]) > 2.5) { fG += dot(gt, s, gt, t); fW += dot(wm, s, wm, t); fn++; }
+  }
+  fG /= fn || 1; fW /= fn || 1;
+  const curve = [];
+  for (let b = 0; b < nb; b++) if (cnt[b] >= 40) curve.push({ gap: Math.sqrt(EDGES[b] * Math.min(EDGES[b + 1], N)), g: sumG[b] / cnt[b], w: sumW[b] / cnt[b], n: cnt[b] });
+  // retention: model's consistency relative to the simulator's, normalised to the shortest gap
+  let horizon = null, horizonCensored = true;
+  if (curve.length >= 2) {
+    const rel = c => (c.w - fW) / Math.max(1e-6, c.g - fG);
+    const r0 = rel(curve[0]);
+    curve.forEach(c => c.ret = clamp(rel(c) / (r0 || 1), -0.2, 1.5));
+    for (let i = 1; i < curve.length; i++) if (curve[i].ret < RET) {
+      const a = curve[i - 1], b = curve[i], f = (a.ret - RET) / Math.max(1e-6, a.ret - b.ret);
+      horizon = Math.exp(Math.log(a.gap) + f * (Math.log(b.gap) - Math.log(a.gap))); horizonCensored = false; break;
+    }
+    if (horizon === null) horizon = curve[curve.length - 1].gap;
+    if (curve[0].ret < RET) { horizon = curve[0].gap; horizonCensored = false; }
+  }
+
+  // view-tuned units, shared by both sources
+  const K = 64, tau = 0.3, tpl = [];
+  for (let k = 0; k < K; k++) tpl.push(Math.floor((k + 0.5) * N / K));
+  const actG = Array.from({ length: K }, () => new Float32Array(N)), actW = Array.from({ length: K }, () => new Float32Array(N));
+  for (let t = 0; t < N; t++) for (let k = 0; k < K; k++) {
+    actG[k][t] = Math.exp(-(1 - dot(gt, t, gt, tpl[k])) / tau);
+    actW[k][t] = Math.exp(-(1 - dot(wm, t, gt, tpl[k])) / tau);
+  }
+  const bin = new Int16Array(N);
+  for (let t = 0; t < N; t++) bin[t] = clamp(Math.floor((xs[t] + HALF) / 8 * BINS), 0, BINS - 1) + BINS * clamp(Math.floor((zs[t] + HALF) / 8 * BINS), 0, BINS - 1);
+  const rateMap = (a, t0, t1, shift = 0) => {
+    const sum = new Float64Array(BINS * BINS), occ = new Int32Array(BINS * BINS);
+    for (let t = t0; t < t1; t++) { sum[bin[t]] += a[(t + shift) % N]; occ[bin[t]]++; }
+    // 3x3 boxcar smoothing of summed activity and occupancy, as in standard place-field analysis
+    const m = new Float64Array(BINS * BINS);
+    for (let y = 0; y < BINS; y++) for (let x = 0; x < BINS; x++) {
+      const i = x + BINS * y; if (!occ[i]) { m[i] = NaN; continue; }
+      let S = 0, O = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= BINS || yy >= BINS) continue;
+        S += sum[xx + BINS * yy]; O += occ[xx + BINS * yy];
+      }
+      m[i] = S / O;
+    }
+    return { m, occ };
+  };
+  const info = ({ m, occ }) => {
+    let tot = 0, lam = 0; for (let i = 0; i < m.length; i++) if (occ[i] >= 2) { tot += occ[i]; lam += occ[i] * m[i]; }
+    lam /= tot || 1; if (!lam) return 0; let I = 0;
+    for (let i = 0; i < m.length; i++) if (occ[i] >= 2 && m[i] > 0) { const q = m[i] / lam; I += (occ[i] / tot) * q * Math.log2(q); }
+    return I;
+  };
+  const splitR = (A, B) => { const a = [], b = []; for (let i = 0; i < A.m.length; i++) if (A.occ[i] >= 2 && B.occ[i] >= 2) { a.push(A.m[i]); b.push(B.m[i]); } return pearson(a, b); };
+  const h = Math.floor(N / 2), SH = 40;
+  const units = [];
+  let sigG = 0, sigW = 0;
+  for (let k = 0; k < K; k++) {
+    const u = { k };
+    for (const [src, act] of [["g", actG[k]], ["w", actW[k]]]) {
+      const full = rateMap(act, 0, N), I = info(full), nulls = [];
+      for (let s = 0; s < SH; s++) nulls.push(info(rateMap(act, 0, N, 100 + Math.floor(r() * (N - 200)))));
+      nulls.sort((a, b) => a - b);
+      const A = rateMap(act, 0, h), B = rateMap(act, h, N);
+      const sh = 100 + Math.floor(r() * (N - 200));
+      u[src] = { I, sig: I > nulls[Math.floor(SH * 0.95)], A, B, stab: splitR(A, B), nullStab: splitR(A, rateMap(act, h, N, sh)), full };
+    }
+    u.cross = splitR(u.g.full, u.w.full);
+    if (u.g.sig) sigG++; if (u.w.sig) sigW++;
+    units.push(u);
+  }
+  const Sg = median(units.map(u => u.g.stab)), Sw = median(units.map(u => u.w.stab));
+  const Sn = median(units.flatMap(u => [u.g.nullStab, u.w.nullStab]));
+  const remap = clamp(1 - (Sw - Sn) / Math.max(1e-6, Sg - Sn), 0, 1);
+  const drop = u => (u.g.stab || 0) - (u.w.stab || 0);
+  const show = [...units].filter(u => u.g.sig).sort((a, b) => drop(b) - drop(a) || b.g.I - a.g.I).slice(0, 4);
+  return { curve, fG, fW, horizon, horizonCensored, nPairs, sigG, sigW, K, Sg, Sw, Sn, remap, show };
+}
+
+// ---------- results ----------
+function setPending() {
+  $("#pill").className = "pill idle"; $("#pill").textContent = "Running";
+  $("#vtitle").textContent = "Rolling out the world model…";
+}
+function renderResults(R) {
+  const E = +ctl.E.value;
+  const hz = Math.round(R.horizon || 0), cens = R.horizonCensored;
+  $("#mH").innerHTML = cens ? `&gt;${hz}<small>frames</small>` : `${hz}<small>frames</small>`;
+  $("#mHd").textContent = cens ? "Consistency stayed above 80% out to the longest revisit gaps in this rollout." : `Revisits further apart than this look like a different place to the model.`;
+  $("#mR").textContent = R.remap.toFixed(2);
+  $("#mRd").textContent = `Split-half map r: simulator ${R.Sg.toFixed(2)}, model ${R.Sw.toFixed(2)}, shuffle ${R.Sn.toFixed(2)}.`;
+  $("#mP").innerHTML = `${R.sigG}→${R.sigW}<small>of ${R.K}</small>`;
+  $("#mE").textContent = R.events.length;
+
+  let cls, label, title;
+  const hOK = cens || hz >= E;
+  if (hOK && R.remap < 0.15) { cls = "good"; label = "Trainable"; title = `Stays consistent across a ${E}-frame episode.`; }
+  else if (R.remap < 0.45 && (cens || hz >= E / 3)) { cls = "warn"; label = "Re-anchor"; title = cens ? `Revisits hold up, but place fields drift between halves.` : `Usable for short episodes. Re-anchor before frame ${hz}.`; }
+  else { cls = "bad"; label = "Not trainable"; title = `A policy here would learn a world that rearranges itself.`; }
+  $("#pill").className = "pill " + cls; $("#pill").textContent = label; $("#vtitle").textContent = title;
+
+  drawChart(R, E); drawMaps(R);
+
+  // read-out
+  const c0 = R.curve[0], cL = R.curve[R.curve.length - 1];
+  const why = [];
+  if (c0 && cL) why.push(`<b>Revisits:</b> at a gap of ~${Math.round(c0.gap)} frames the model's frame similarity is ${c0.w.toFixed(2)} (simulator ${c0.g.toFixed(2)}). At ~${Math.round(cL.gap)} frames it is ${cL.w.toFixed(2)} (simulator ${cL.g.toFixed(2)}, different-place floor ${R.fW.toFixed(2)}).`);
+  why.push(R.remap < 0.2
+    ? `<b>Place fields hold:</b> the split-half map correlation of ${R.Sw.toFixed(2)} sits close to the simulator's ${R.Sg.toFixed(2)}, so the model returns to the same map.`
+    : `<b>Spurious remapping:</b> split-half map correlation drops from ${R.Sg.toFixed(2)} in the simulator to ${R.Sw.toFixed(2)} in the model, with nothing in the room changed. Remapping index ${R.remap.toFixed(2)}.`);
+  why.push(`<b>Spatial information:</b> ${R.sigG} of ${R.K} units carry significant position information on the simulator's frames and ${R.sigW} on the model's (circular-shift null, p &lt; .05). ${R.sigW >= R.sigG - 3 ? "Units can still be spatial while the map underneath them moves, which is why stability is the stronger test." : "The model's frames lose position information outright."}`);
+  why.push(cls === "good"
+    ? `<b>Decision:</b> horizon ${cens ? "&gt;" : ""}${hz} frames against a ${E}-frame episode. Safe to train in, as far as this audit can tell.`
+    : `<b>Fix to try:</b> store what the agent has seen in a pose-indexed memory and re-render it on revisit, or cap episodes below ${hz} frames and re-anchor to a real observation between them.`);
+  $("#why").innerHTML = why.map(s => `<li>${s}</li>`).join("");
+
+  const ev = R.events;
+  if (!ev.length) $("#log").textContent = "No planted failures. The audit should report this model as consistent.";
+  else {
+    const byKind = {}; ev.forEach(e => byKind[e.kind] = (byKind[e.kind] || 0) + 1);
+    const meanGone = ev.reduce((a, e) => a + e.gone, 0) / ev.length;
+    $("#log").innerHTML = `${ev.length} events, ${Object.entries(byKind).map(([k, v]) => `${v} ${k}`).join(", ")}, mean time out of view ${Math.round(meanGone)} fr<br>` +
+      ev.slice(0, 40).map(e => `fr ${String(e.t).padStart(4, " ")}, object ${e.i + 1} ${e.kind} after ${e.gone} fr unseen`).join("<br>") + (ev.length > 40 ? `<br>… ${ev.length - 40} more` : "");
+  }
+}
+
+function drawChart(R, E) {
+  const W = 560, Hh = 250, m = { l: 42, r: 16, t: 14, b: 34 };
+  const pts = R.curve; if (!pts.length) { $("#chart").innerHTML = `<p class="note">Too few revisits. Use a longer rollout.</p>`; return; }
+  const gx0 = Math.log(5), gx1 = Math.log(Math.max(pts[pts.length - 1].gap * 1.4, 400));
+  const X = g => m.l + (Math.log(g) - gx0) / (gx1 - gx0) * (W - m.l - m.r);
+  const lo = Math.floor(Math.min(R.fG, R.fW, ...pts.map(p => p.w)) * 10 - 1) / 10, hi = 1.0;
+  const Y = v => m.t + (hi - v) / (hi - lo) * (Hh - m.t - m.b);
+  let s = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Revisit consistency by gap for simulator and world model">`;
+  for (let v = Math.ceil(lo * 5) / 5; v <= hi + 1e-9; v += 0.2) s += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l - 6}" y="${Y(v) + 3}" text-anchor="end">${v.toFixed(1)}</text>`;
+  [10, 30, 100, 300, 1000, 3000].filter(g => Math.log(g) <= gx1).forEach(g => s += `<line class="axis" x1="${X(g)}" x2="${X(g)}" y1="${Hh - m.b}" y2="${Hh - m.b + 4}"/><text x="${X(g)}" y="${Hh - m.b + 15}" text-anchor="middle">${g}</text>`);
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${Hh - m.b}" y2="${Hh - m.b}"/>`;
+  s += `<text x="${(m.l + W - m.r) / 2}" y="${Hh - 4}" text-anchor="middle">frames since last visit (log)</text>`;
+  s += `<text x="12" y="${(m.t + Hh - m.b) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(m.t + Hh - m.b) / 2})">frame cosine</text>`;
+  s += `<line class="floor" x1="${m.l}" x2="${W - m.r}" y1="${Y(R.fW)}" y2="${Y(R.fW)}"/>`;
+  if (Math.log(E) <= gx1) s += `<line class="ep" x1="${X(E)}" x2="${X(E)}" y1="${m.t}" y2="${Hh - m.b}"/><text x="${X(E) + 4}" y="${Hh - m.b - 6}">episode ${E}</text>`;
+  if (!R.horizonCensored && R.horizon) s += `<line class="hz" x1="${X(R.horizon)}" x2="${X(R.horizon)}" y1="${m.t}" y2="${Hh - m.b}"/><text class="lbl-bad" x="${X(R.horizon) + 4}" y="${m.t + 24}">horizon ${Math.round(R.horizon)}</text>`;
+  const path = k => pts.map((p, i) => `${i ? "L" : "M"}${X(p.gap).toFixed(1)},${Y(p[k]).toFixed(1)}`).join("");
+  s += `<path class="gt" d="${path("g")}"/><path class="wm" d="${path("w")}"/>`;
+  pts.forEach(p => s += `<circle class="gtd" cx="${X(p.gap)}" cy="${Y(p.g)}" r="2.6"/><circle class="wmd" cx="${X(p.gap)}" cy="${Y(p.w)}" r="3.2"/>`);
+  const last = pts[pts.length - 1];
+  s += `<text class="lbl-ink" x="${X(last.gap) - 4}" y="${Y(last.g) - 7}" text-anchor="end">simulator</text>`;
+  s += `<text class="lbl-acc" x="${X(last.gap) - 4}" y="${Y(last.w) + 14}" text-anchor="end">model</text>`;
+  s += `</svg>`;
+  $("#chart").innerHTML = s;
+}
+
+function hexToRgb(h) { h = h.replace("#", ""); if (h.length === 3) h = h.split("").map(c => c + c).join(""); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function drawMaps(R) {
+  const lo = hexToRgb(css("--map-lo")), mid = hexToRgb(css("--map-mid")), hi = hexToRgb(css("--map-hi")), empty = hexToRgb(css("--panel"));
+  const cmap = v => { const a = v < .5 ? lo : mid, b = v < .5 ? mid : hi, f = v < .5 ? v * 2 : (v - .5) * 2; return a.map((x, i) => Math.round(x + (b[i] - x) * f)); };
+  const host = $("#maps");
+  host.innerHTML = `<span></span><span class="h">Sim 1st</span><span class="h">Sim 2nd</span><span class="h">Model 1st</span><span class="h">Model 2nd</span>`;
+  R.show.forEach(u => {
+    const maps = [u.g.A, u.g.B, u.w.A, u.w.B];
+    let mx = 0; maps.forEach(M => M.m.forEach((v, i) => { if (M.occ[i] >= 2 && v > mx) mx = v; }));
+    const lab = document.createElement("span"); lab.className = "u"; lab.innerHTML = `unit ${u.k + 1}<small>${u.g.I.toFixed(2)} bits</small>`; host.appendChild(lab);
+    maps.forEach(M => {
+      const c = document.createElement("canvas"); c.width = BINS; c.height = BINS;
+      const x = c.getContext("2d"), img = x.createImageData(BINS, BINS);
+      for (let i = 0; i < BINS * BINS; i++) {
+        const col = M.occ[i] >= 2 ? cmap(clamp(M.m[i] / (mx || 1), 0, 1)) : empty;
+        img.data.set([...col, 255], i * 4);
+      }
+      x.putImageData(img, 0, 0); host.appendChild(c);
+    });
+    host.insertAdjacentHTML("beforeend", `<span></span><span class="r" style="grid-column:span 2">r = ${Number.isFinite(u.g.stab) ? u.g.stab.toFixed(2) : "–"}</span><span class="r" style="grid-column:span 2">r = ${Number.isFinite(u.w.stab) ? u.w.stab.toFixed(2) : "–"}</span>`);
+  });
+}
+
+// redraw theme-dependent canvases when the theme changes
+const redraw = () => { drawMap(); if (lastResult) drawMaps(lastResult); };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+fmt(); drawMap();
+if (glOK) { idlePreview(); runAudit(); }
+else { $("#readout").textContent = "WebGL is unavailable in this browser, so the rollout cannot render."; $("#pill").textContent = "No WebGL"; }
+})();
+</script>
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+const wrap = a => { a = (a + Math.PI) % (2 * Math.PI); if (a < 0) a += 2 * Math.PI; return a - Math.PI; };
+const DEG = 180 / Math.PI;
+function hexToRgb(h) { h = h.replace("#", ""); if (h.length === 3) h = h.split("").map(c => c + c).join(""); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+
+// ---------- circuit model ----------
+// E-PG ring (32 positions = 16 wedges x 2), weights normalised as a continuum ring attractor.
+// recurrence: J1 cos;  Δ7: uniform J0 plus the inhibitory flank of the cosine;
+// P-EN: angular-velocity-gated shift (J1 sin kernel scaled by ω·τ·gain);
+// ring neurons: inhibit every wedge except the one mapped to the landmark's bearing.
+const N = 32, DT = 0.005, T = 60, TAU = 0.04, DARK = [15, 45], OFFSET = 2.1, KEEP = 10;
+const PHI = Array.from({ length: N }, (_, i) => 2 * Math.PI * i / N);
+
+function simulate({ les = {}, gain = 1, noise = 0.15, twin = false, seed = 1 }) {
+  const r = mulberry32(seed), rw = mulberry32(seed + 999);
+  const J1 = les.epg ? 0 : 3.2, J0 = -5, A = 0.8, KV = 3, B = 1, FMAX = 3;
+  const Ws = PHI.map(a => PHI.map(b => { const c = Math.cos(a - b); return les.d7 ? J1 * Math.max(c, 0) / N : (J0 + J1 * c) / N; }));
+  const Wr = PHI.map(a => PHI.map(b => 3.2 * Math.sin(a - b) / N));
+  let e = PHI.map(p => Math.max(0, Math.cos(p))), h = 0, om = 0;
+  const steps = Math.round(T / DT), S = Math.floor(steps / KEEP);
+  const out = { h: new Float32Array(steps), pva: new Float32Array(steps), om: new Float32Array(steps), amp: new Float32Array(steps), width: new Float32Array(steps), E: new Float32Array(S * N) };
+  const u = new Float64Array(N);
+  for (let t = 0; t < steps; t++) {
+    const time = t * DT, dark = time >= DARK[0] && time < DARK[1];
+    om = om * (1 - DT / 0.6) + 1.4 * Math.sqrt(2 * DT / 0.6) * gauss(rw);
+    h = wrap(h + om * DT);
+    const gam = les.pen ? 0 : om * TAU * gain, pk = wrap(h + OFFSET);
+    for (let i = 0; i < N; i++) {
+      let s = B; const Wi = Ws[i], Ri = Wr[i];
+      for (let j = 0; j < N; j++) s += (Wi[j] + gam * Ri[j]) * e[j];
+      if (!dark && !les.ring) {
+        let v = Math.exp(KV * (Math.cos(PHI[i] - pk) - 1));
+        if (twin) v = Math.max(v, Math.exp(KV * (Math.cos(PHI[i] - pk - Math.PI) - 1)));
+        s += A * (v - 1);
+      }
+      u[i] = s + noise * gauss(r) * 0.1 / Math.sqrt(DT / TAU);
+    }
+    let cx = 0, cy = 0, mx = 0;
+    for (let i = 0; i < N; i++) { e[i] += DT / TAU * (-e[i] + Math.min(FMAX, Math.max(0, u[i]))); cx += e[i] * Math.cos(PHI[i]); cy += e[i] * Math.sin(PHI[i]); if (e[i] > mx) mx = e[i]; }
+    let w = 0; for (let i = 0; i < N; i++) if (e[i] > mx / 2) w++;
+    out.h[t] = h; out.pva[t] = Math.atan2(cy, cx); out.om[t] = om; out.amp[t] = mx; out.width[t] = w * 360 / N;
+    if (t % KEEP === 0 && t / KEEP < S) out.E.set(e, (t / KEEP) * N);
+  }
+  return Object.assign(out, measure(out));
+}
+
+function measure(o) {
+  const n = o.h.length, i0 = Math.round(DARK[0] / DT), i1 = Math.round(DARK[1] / DT), a0 = Math.round(3 / DT);
+  // the bump-to-world offset is arbitrary in the fly too; estimate it label-free from the lit epoch
+  let cx = 0, cy = 0; for (let t = a0; t < i0; t++) { const d = o.pva[t] - o.h[t]; cx += Math.cos(d); cy += Math.sin(d); }
+  const off = Math.atan2(cy, cx), err = new Float32Array(n);
+  for (let t = 0; t < n; t++) err[t] = Math.abs(wrap(o.pva[t] - o.h[t] - off));
+  const mean = (a, b) => { let s = 0; for (let t = a; t < b; t++) s += err[t]; return s / Math.max(1, b - a) * DEG; };
+  let sxy = 0, sxx = 0; for (let t = i0 + 1; t < i1; t++) { const dp = wrap(o.pva[t] - o.pva[t - 1]), x = o.om[t] * DT; sxy += dp * x; sxx += x * x; }
+  let w = 0; for (let t = i0; t < i1; t++) w += o.width[t]; w /= (i1 - i0);
+  return { off, err, lit: mean(a0, i0), dark: mean(i0, i1), post: mean(i1 + Math.round(3 / DT), i1 + Math.round(8 / DT)), gainHat: sxy / sxx, width: w };
+}
+
+// ---------- state & controls ----------
+const st = { les: { ring: false, pen: false, d7: false, epg: false }, gain: 1, noise: 0.15, twin: false, seed: 3 };
+let run = null, play = 0, lastFrame = 0, playing = true;
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fmt = () => { $("#oCxGain").textContent = st.gain.toFixed(2) + "×"; $("#oCxNoise").textContent = st.noise.toFixed(2); };
+
+function rerun(atlasToo) {
+  run = simulate(st);
+  renderMetrics(); cacheCharts();
+  if (atlasToo) buildAtlas();
+  if (reduce) { play = T; drawFrame(); }
+}
+document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => toggle(b.dataset.les)));
+function toggle(k) { st.les[k] = !st.les[k]; syncChips(); rerun(false); play = 0; }
+function syncChips() { document.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", st.les[b.dataset.les] ? "true" : "false")); drawCircuit(); }
+$("#cxGain").addEventListener("input", e => { st.gain = +e.target.value; fmt(); });
+$("#cxGain").addEventListener("change", () => { rerun(false); play = 0; });
+$("#cxNoise").addEventListener("input", e => { st.noise = +e.target.value; fmt(); });
+$("#cxNoise").addEventListener("change", () => { rerun(true); play = 0; });
+$("#cxScene").addEventListener("change", e => { st.twin = e.target.value === "twin"; rerun(true); play = 0; });
+$("#cxFly").addEventListener("click", () => { st.seed++; rerun(true); play = 0; });
+$("#cxReset").addEventListener("click", () => { Object.keys(st.les).forEach(k => st.les[k] = false); st.gain = 1; $("#cxGain").value = 1; fmt(); syncChips(); rerun(false); play = 0; });
+$("#cxT").addEventListener("input", e => { play = +e.target.value / 1000 * T; playing = false; drawFrame(); });
+$("#cxT").addEventListener("change", () => { playing = !reduce; });
+
+// ---------- verdict & metrics ----------
+const DIAG = {
+  intact: ["good", "Intact", "Predicts in the dark, corrects in the light."],
+  ring: ["warn", "No correction", "Integrates fine, but drift from the blackout is never corrected."],
+  pen: ["bad", "Frozen", "The estimate stops moving once vision is gone."],
+  d7: ["bad", "Flooded", "Without inhibition the whole ring turns on and no single heading survives."],
+  epg: ["bad", "No memory", "Tracks vision moment to moment, then loses everything in the dark."],
+  gain: ["warn", "Miscalibrated", "Turns are integrated at the wrong scale, so error grows with every turn."],
+  twin: ["warn", "Ambiguous", "Two identical landmarks: after darkness the bump can lock onto the wrong one."],
+};
+function diagKey() {
+  const on = Object.keys(st.les).filter(k => st.les[k]);
+  if (on.length > 1) return "multi";
+  if (on.length === 1) return on[0];
+  if (Math.abs(st.gain - 1) > 0.08) return "gain";
+  if (st.twin) return "twin";
+  return "intact";
+}
+function renderMetrics() {
+  const R = run, noBump = R.width > 300;
+  $("#cxM1").innerHTML = `${R.lit.toFixed(1)}<small>°</small>`;
+  $("#cxM2").innerHTML = `${R.dark.toFixed(1)}<small>°</small>`;
+  $("#cxM3").innerHTML = noBump ? `n/a<small>no bump</small>` : R.gainHat.toFixed(2);
+  $("#cxM4").innerHTML = `${R.post.toFixed(1)}<small>°</small>`;
+  $("#cxM5").innerHTML = `${Math.round(R.width)}<small>°</small>`;
+  const k = diagKey();
+  const [cls, label, title] = k === "multi" ? ["bad", "Multiple cuts", "Several pathways cut at once."] : DIAG[k];
+  let t = title;
+  if (k === "twin" && R.post > 90) t = "Locked onto the wrong landmark: the estimate is 180° off after the lights return.";
+  if (k === "intact" && R.dark > 30) t = "Intact, but noise is high enough that the bump wanders far in the dark.";
+  $("#cxPill").className = "pill " + cls; $("#cxPill").textContent = label; $("#cxTitle").textContent = t;
+}
+
+// ---------- lesion atlas ----------
+const ATLAS = [
+  { key: "intact", cut: "Nothing", cells: "–", wm: "Full predict-and-correct loop", cfg: {}, sig: () => "Small diffusive drift in the dark, removed within a fraction of a second of light." },
+  { key: "pen", cut: "P-EN", cells: "P-EN L/R, protocerebral bridge → EB", wm: "Action-conditioned transition", cfg: { les: { pen: true } }, sig: () => "Estimate freezes while the animal turns. In a world model: rollouts ignore actions; check action conditioning." },
+  { key: "gain", cut: "P-EN at 0.7×", cells: "P-EN gain", wm: "Mis-scaled action embedding", cfg: { gain: 0.7 }, sig: r => `Gain reads ${r.gainHat.toFixed(2)}; error grows with total turning, not with time. In a world model: drift that scales with action magnitude.` },
+  { key: "ring", cut: "Ring neurons", cells: "ER neurons, bulb → EB", wm: "Observation encoder / re-anchoring", cfg: { les: { ring: true } }, sig: () => "Normal in the dark, but error from the blackout persists after light returns. In a world model: observations stop correcting the state." },
+  { key: "d7", cut: "Δ7", cells: "Δ7, bridge-wide inhibition", wm: "Normalisation / competition between hypotheses", cfg: { les: { d7: true } }, sig: () => "Activity floods the ring; width 360°. In a world model: the state smears across modes and stops committing to one world." },
+  { key: "epg", cut: "E-PG recurrence", cells: "E-PG ↔ P-EG loop", wm: "Recurrent state (memory)", cfg: { les: { epg: true } }, sig: () => "Fine with light, gone in the dark. In a world model: a frame-to-frame predictor with no persistent state." },
+  { key: "twin", cut: "Nothing, twin bars", cells: "scene", wm: "Perceptual aliasing", cfg: { twin: true }, sig: r => r.post > 90 ? "Re-locked 180° off: the observation fits two states equally well." : "Re-locked correctly this time; with more drift it can lock 180° off." },
+];
+function buildAtlas() {
+  const tb = $("#cxAtlas tbody"); tb.innerHTML = "";
+  for (const row of ATLAS) {
+    const cfg = { les: {}, gain: 1, noise: st.noise, twin: false, seed: st.seed, ...row.cfg };
+    const r = simulate(cfg);
+    const tr = document.createElement("tr");
+    const bad = v => v > 30 ? "bad" : v > 12 ? "warn" : "ok";
+    tr.innerHTML = `<td><b>${row.cut}</b></td><td>${row.cells}</td><td>${row.wm}</td><td class="n ${bad(r.dark)}">${r.dark.toFixed(1)}°</td><td class="n ${bad(r.post)}">${r.post.toFixed(1)}°</td><td>${row.sig(r)}</td>`;
+    tb.appendChild(tr);
+  }
+}
+
+// ---------- drawing ----------
+const cC = $("#cxCircuit"), cx = cC.getContext("2d");
+const NODES = {
+  ring: { x: 220, y: 52, label: "Ring neurons", sub: "vision, inhibitory", wm: "observation" },
+  pen: { x: 220, y: 360, label: "P-EN L / R", sub: "self-motion shift", wm: "action → transition" },
+  d7: { x: 62, y: 200, label: "Δ7", sub: "global inhibition", wm: "competition" },
+  epg: { x: 378, y: 200, label: "P-EG", sub: "E-PG recurrence", wm: "memory" },
+};
+const BOX = { w: 118, h: 46 };
+function cmapFn() {
+  const lo = hexToRgb(css("--map-lo")), mid = hexToRgb(css("--map-mid")), hi = hexToRgb(css("--map-hi"));
+  return v => { v = Math.max(0, Math.min(1, v)); const a = v < .5 ? lo : mid, b = v < .5 ? mid : hi, f = v < .5 ? v * 2 : (v - .5) * 2; return a.map((x, i) => Math.round(x + (b[i] - x) * f)); };
+}
+function drawCircuit(e) {
+  const W = cC.width, H = cC.height, X0 = 220, Y0 = 200, R0 = 70, R1 = 98;
+  const ink = css("--ink"), muted = css("--muted"), rule = css("--rule"), bad = css("--bad"), acc = css("--accent-ink"), paper = css("--paper"), panel = css("--panel");
+  cx.clearRect(0, 0, W, H);
+  const cm = cmapFn();
+  let mx = 0; if (e) for (let i = 0; i < N; i++) mx = Math.max(mx, e[i]);
+  // connections
+  const link = (k, x1, y1, x2, y2, inhib) => {
+    const cut = st.les[k];
+    cx.strokeStyle = cut ? bad : ink; cx.lineWidth = 1.5; cx.setLineDash(cut ? [4, 4] : []);
+    cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2); cx.stroke(); cx.setLineDash([]);
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    if (inhib) { cx.beginPath(); cx.moveTo(x2 - 7 * Math.sin(ang), y2 + 7 * Math.cos(ang)); cx.lineTo(x2 + 7 * Math.sin(ang), y2 - 7 * Math.cos(ang)); cx.lineWidth = 2.5; cx.stroke(); }
+    else { cx.fillStyle = cut ? bad : ink; cx.beginPath(); cx.moveTo(x2, y2); cx.lineTo(x2 - 9 * Math.cos(ang - .4), y2 - 9 * Math.sin(ang - .4)); cx.lineTo(x2 - 9 * Math.cos(ang + .4), y2 - 9 * Math.sin(ang + .4)); cx.closePath(); cx.fill(); }
+    if (cut) { const mx2 = (x1 + x2) / 2, my2 = (y1 + y2) / 2; cx.strokeStyle = bad; cx.lineWidth = 2.5; cx.beginPath(); cx.moveTo(mx2 - 7, my2 - 7); cx.lineTo(mx2 + 7, my2 + 7); cx.moveTo(mx2 + 7, my2 - 7); cx.lineTo(mx2 - 7, my2 + 7); cx.stroke(); }
+  };
+  link("ring", X0, NODES.ring.y + BOX.h / 2, X0, Y0 - R1 - 6, true);
+  link("pen", X0 - 14, NODES.pen.y - BOX.h / 2, X0 - 14, Y0 + R1 + 6, false);
+  link("pen", X0 + 14, Y0 + R1 + 6, X0 + 14, NODES.pen.y - BOX.h / 2, false);
+  link("d7", NODES.d7.x + BOX.w / 2, Y0, X0 - R1 - 6, Y0, true);
+  link("epg", X0 + R1 + 6, Y0 - 10, NODES.epg.x - BOX.w / 2, Y0 - 10, false);
+  link("epg", NODES.epg.x - BOX.w / 2, Y0 + 10, X0 + R1 + 6, Y0 + 10, false);
+  // ellipsoid body ring
+  for (let i = 0; i < N; i++) {
+    const a0 = PHI[i] - Math.PI / N - Math.PI / 2, a1 = PHI[i] + Math.PI / N - Math.PI / 2;
+    const v = e && mx > 0 ? e[i] / Math.max(mx, 0.6) : 0;
+    cx.beginPath(); cx.arc(X0, Y0, R1, a0, a1); cx.arc(X0, Y0, R0, a1, a0, true); cx.closePath();
+    const c = cm(v); cx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`; cx.fill();
+    cx.strokeStyle = paper; cx.lineWidth = 1; cx.stroke();
+  }
+  cx.fillStyle = ink; cx.font = `500 10.5px ${css("--mono")}`; cx.textAlign = "center";
+  cx.fillText("E-PG", X0, Y0 - 4); cx.fillStyle = muted; cx.font = `400 10px ${css("--mono")}`; cx.fillText("ellipsoid body", X0, Y0 + 10);
+  if (e && mx > 0) { // bump direction marker
+    let sx = 0, sy = 0; for (let i = 0; i < N; i++) { sx += e[i] * Math.cos(PHI[i]); sy += e[i] * Math.sin(PHI[i]); }
+    const a = Math.atan2(sy, sx) - Math.PI / 2; cx.strokeStyle = acc; cx.lineWidth = 2;
+    cx.beginPath(); cx.moveTo(X0 + Math.cos(a) * (R0 - 22), Y0 + Math.sin(a) * (R0 - 22)); cx.lineTo(X0 + Math.cos(a) * (R0 - 6), Y0 + Math.sin(a) * (R0 - 6)); cx.stroke();
+  }
+  // nodes
+  for (const [k, n] of Object.entries(NODES)) {
+    const cut = st.les[k];
+    cx.fillStyle = panel; cx.strokeStyle = cut ? bad : ink; cx.lineWidth = 1; cx.setLineDash(cut ? [4, 3] : []);
+    cx.fillRect(n.x - BOX.w / 2, n.y - BOX.h / 2, BOX.w, BOX.h); cx.strokeRect(n.x - BOX.w / 2, n.y - BOX.h / 2, BOX.w, BOX.h); cx.setLineDash([]);
+    cx.textAlign = "center"; cx.fillStyle = cut ? bad : ink; cx.font = `600 13px ${css("--sans")}`; cx.fillText(n.label + (cut ? "  ✕" : ""), n.x, n.y - 5);
+    cx.fillStyle = muted; cx.font = `400 10px ${css("--mono")}`; cx.fillText(n.sub, n.x, n.y + 9);
+    cx.fillStyle = acc; cx.fillText("≈ " + n.wm, n.x, k === "ring" ? n.y - BOX.h / 2 - 6 : n.y + BOX.h / 2 + 13);
+  }
+}
+cC.addEventListener("click", ev => {
+  const r = cC.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * cC.width, y = (ev.clientY - r.top) / r.height * cC.height;
+  for (const [k, n] of Object.entries(NODES)) if (Math.abs(x - n.x) < BOX.w / 2 + 6 && Math.abs(y - n.y) < BOX.h / 2 + 14) { toggle(k); return; }
+});
+cC.addEventListener("mousemove", ev => {
+  const r = cC.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * cC.width, y = (ev.clientY - r.top) / r.height * cC.height;
+  cC.style.cursor = Object.values(NODES).some(n => Math.abs(x - n.x) < BOX.w / 2 + 6 && Math.abs(y - n.y) < BOX.h / 2 + 14) ? "pointer" : "default";
+});
+
+const hC = $("#cxHeat"), hx = hC.getContext("2d"), eC = $("#cxErr"), ex = eC.getContext("2d");
+let heatImg = null, errImg = null;
+function cacheCharts() { drawHeat(); drawErr(); heatImg = hx.getImageData(0, 0, hC.width, hC.height); errImg = ex.getImageData(0, 0, eC.width, eC.height); }
+const PADL = 44, PADR = 10;
+function tx(t, W) { return PADL + t / T * (W - PADL - PADR); }
+function drawHeat() {
+  const W = hC.width, H = hC.height, top = 4, bot = H - 18, R = run, S = R.E.length / N;
+  hx.clearRect(0, 0, W, H);
+  const cm = cmapFn();
+  let mx = 0; for (let i = 0; i < R.E.length; i++) if (R.E[i] > mx) mx = R.E[i];
+  const cols = W - PADL - PADR, img = hx.createImageData(cols, N);
+  for (let c = 0; c < cols; c++) {
+    const s = Math.min(S - 1, Math.floor(c / cols * S));
+    for (let i = 0; i < N; i++) { const col = cm(R.E[s * N + i] / (mx || 1)); img.data.set([col[0], col[1], col[2], 255], ((N - 1 - i) * cols + c) * 4); }
+  }
+  const off = document.createElement("canvas"); off.width = cols; off.height = N; off.getContext("2d").putImageData(img, 0, 0);
+  hx.imageSmoothingEnabled = false; hx.drawImage(off, PADL, top, cols, bot - top);
+  // true heading in bump coordinates
+  hx.fillStyle = css("--ink");
+  const step = Math.round(0.08 / DT);
+  for (let t = 0; t < R.h.length; t += step) {
+    let a = wrap(R.h[t] + R.off); a = (a + 2 * Math.PI) % (2 * Math.PI);
+    hx.fillRect(tx(t * DT, W) - 0.8, bot - a / (2 * Math.PI) * (bot - top) - 0.8, 1.6, 1.6);
+  }
+  axes(hx, W, H, top, bot, ["360°", "0°"], "bump position");
+  darkBand(hx, W, top, bot);
+}
+function drawErr() {
+  const W = eC.width, H = eC.height, top = 4, bot = H - 18, R = run;
+  ex.clearRect(0, 0, W, H);
+  darkBand(ex, W, top, bot, true);
+  ex.beginPath(); ex.moveTo(tx(0, W), bot);
+  const step = 4;
+  for (let t = 0; t < R.err.length; t += step) ex.lineTo(tx(t * DT, W), bot - R.err[t] / Math.PI * (bot - top));
+  ex.lineTo(tx(T, W), bot); ex.closePath();
+  ex.fillStyle = css("--accent"); ex.globalAlpha = 0.35; ex.fill(); ex.globalAlpha = 1;
+  ex.strokeStyle = css("--accent-ink"); ex.lineWidth = 1.2; ex.beginPath();
+  for (let t = 0; t < R.err.length; t += step) { const X = tx(t * DT, W), Y = bot - R.err[t] / Math.PI * (bot - top); t ? ex.lineTo(X, Y) : ex.moveTo(X, Y); }
+  ex.stroke();
+  axes(ex, W, H, top, bot, ["180°", "0°"], "error", true);
+}
+function darkBand(g, W, top, bot, under) {
+  g.fillStyle = css("--faint"); g.globalAlpha = under ? 0.16 : 0.0; g.fillRect(tx(DARK[0], W), top, tx(DARK[1], W) - tx(DARK[0], W), bot - top); g.globalAlpha = 1;
+  g.strokeStyle = css("--muted"); g.setLineDash([3, 3]); g.lineWidth = 1;
+  [DARK[0], DARK[1]].forEach(t => { g.beginPath(); g.moveTo(tx(t, W), top); g.lineTo(tx(t, W), bot); g.stroke(); });
+  g.setLineDash([]);
+}
+function axes(g, W, H, top, bot, yl, name, xt) {
+  g.fillStyle = css("--muted"); g.font = `400 10px ${css("--mono")}`; g.textAlign = "right";
+  g.fillText(yl[0], PADL - 6, top + 8); g.fillText(yl[1], PADL - 6, bot);
+  g.textAlign = "center";
+  if (xt) [0, 15, 30, 45, 60].forEach(t => g.fillText(t + " s", tx(t, W), H - 4));
+  else { g.fillText("lights off", (tx(DARK[0], W) + tx(DARK[1], W)) / 2, H - 4); g.fillText("light", (tx(0, W) + tx(DARK[0], W)) / 2, H - 4); g.fillText("light", (tx(DARK[1], W) + tx(T, W)) / 2, H - 4); }
+}
+
+const aC = $("#cxArena"), ax = aC.getContext("2d"), dC = $("#cxDial"), dx = dC.getContext("2d");
+function drawFrame() {
+  if (!run) return;
+  const t = Math.min(run.h.length - 1, Math.floor(play / DT)), time = t * DT, dark = time >= DARK[0] && time < DARK[1];
+  const s = Math.min(run.E.length / N - 1, Math.floor(t / KEEP));
+  drawCircuit(run.E.subarray(s * N, s * N + N));
+  // arena: unrolled 360° panorama, fly's straight ahead in the middle
+  const W = aC.width, H = aC.height;
+  ax.fillStyle = dark ? css("--ink") : css("--panel"); ax.fillRect(0, 0, W, H);
+  ax.strokeStyle = css("--rule"); ax.strokeRect(0.5, 0.5, W - 1, H - 1);
+  if (!dark) {
+    const bars = st.twin ? [0, Math.PI] : [0];
+    ax.fillStyle = css("--ink");
+    bars.forEach(b => { const bearing = wrap(b - run.h[t]); const X = W / 2 - bearing / (2 * Math.PI) * W; ax.fillRect(X - 9, 6, 18, H - 12); });
+  }
+  ax.fillStyle = dark ? css("--paper") : css("--muted"); ax.font = `400 9.5px ${css("--mono")}`; ax.textAlign = "center";
+  ax.fillText("ahead", W / 2, H - 2); ax.fillText("behind", 22, H - 2); ax.fillText("behind", W - 22, H - 2);
+  $("#cxLight").textContent = dark ? "lights off" : "lights on";
+  // dial
+  const D = dC.width, C = D / 2, R = D / 2 - 14;
+  dx.clearRect(0, 0, D, D);
+  dx.strokeStyle = css("--rule"); dx.lineWidth = 1; dx.beginPath(); dx.arc(C, C, R, 0, Math.PI * 2); dx.stroke();
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; dx.beginPath(); dx.moveTo(C + Math.cos(a) * (R - 6), C + Math.sin(a) * (R - 6)); dx.lineTo(C + Math.cos(a) * R, C + Math.sin(a) * R); dx.stroke(); }
+  const needle = (a, col, w, len) => { dx.strokeStyle = col; dx.lineWidth = w; dx.lineCap = "round"; dx.beginPath(); dx.moveTo(C, C); dx.lineTo(C + Math.cos(a - Math.PI / 2) * len, C + Math.sin(a - Math.PI / 2) * len); dx.stroke(); };
+  needle(run.h[t], css("--ink"), 3, R - 10);
+  needle(wrap(run.pva[t] - run.off), css("--accent"), 5, R - 24);
+  dx.fillStyle = css("--ink"); dx.beginPath(); dx.arc(C, C, 4, 0, Math.PI * 2); dx.fill();
+  dx.fillStyle = css("--muted"); dx.font = `400 10px ${css("--mono")}`; dx.textAlign = "center";
+  dx.fillText(`error ${(run.err[t] * DEG).toFixed(0)}°`, C, D - 2);
+  $("#cxNow").textContent = `t = ${time.toFixed(1)} s, ${dark ? "dark, integrating self-motion" : "light, anchored to the bar"}`;
+  $("#cxT").value = Math.round(play / T * 1000);
+  // playheads
+  if (heatImg) hx.putImageData(heatImg, 0, 0); if (errImg) ex.putImageData(errImg, 0, 0);
+  [[hx, hC], [ex, eC]].forEach(([g, c]) => { g.strokeStyle = css("--bad"); g.lineWidth = 1.5; g.beginPath(); g.moveTo(tx(time, c.width), 2); g.lineTo(tx(time, c.width), c.height - 18); g.stroke(); });
+}
+function loop(ts) {
+  if (playing && run && !reduce && !document.getElementById("pane-compass").hidden) {
+    const dt = lastFrame ? Math.min(0.1, (ts - lastFrame) / 1000) : 0;
+    play += dt * 4; if (play >= T) play = 0;
+    drawFrame();
+  }
+  lastFrame = ts; requestAnimationFrame(loop);
+}
+
+const redraw = () => { if (run) { cacheCharts(); drawFrame(); } else drawCircuit(); };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+fmt(); drawCircuit();
+setTimeout(() => { rerun(true); drawFrame(); requestAnimationFrame(loop); }, 50);
+})();
+</script>
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+const DEG = 180 / Math.PI;
+
+// ---------- GRU, verified against the PyTorch checkpoints (max |Δh| < 0.002 after 40 steps) ----------
+function f16(b64) {
+  const bin = atob(b64), n = bin.length / 2, out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const h = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8);
+    const s = h & 0x8000 ? -1 : 1, e = (h >> 10) & 31, f = h & 1023;
+    out[i] = e === 0 ? s * Math.pow(2, -14) * (f / 1024) : e === 31 ? (f ? NaN : s * Infinity) : s * Math.pow(2, e - 15) * (1 + f / 1024);
+  }
+  return out;
+}
+function makeGRU(M) {
+  const W = {}; for (const k in M.w) W[k] = f16(M.w[k]);
+  const S = M.shapes, Hn = S["core.weight_hh_l0"][1], In = S["enc.weight"][1], Od = S["dec.2.weight"][0];
+  const lin = (w, b, x, rows, cols, out) => { for (let r = 0; r < rows; r++) { let s = b ? b[r] : 0; const o = r * cols; for (let c = 0; c < cols; c++) s += w[o + c] * x[c]; out[r] = s; } return out; };
+  const sig = x => 1 / (1 + Math.exp(-x));
+  const z = new Float32Array(Hn), gi = new Float32Array(3 * Hn), gh = new Float32Array(3 * Hn), d1 = new Float32Array(Hn);
+  return {
+    hidden: Hn, inDim: In, outDim: Od,
+    step(x, h) {
+      lin(W["enc.weight"], W["enc.bias"], x, Hn, In, z); for (let i = 0; i < Hn; i++) z[i] = Math.max(0, z[i]);
+      lin(W["core.weight_ih_l0"], W["core.bias_ih_l0"], z, 3 * Hn, Hn, gi);
+      lin(W["core.weight_hh_l0"], W["core.bias_hh_l0"], h, 3 * Hn, Hn, gh);
+      const hn = new Float32Array(Hn);
+      for (let i = 0; i < Hn; i++) {
+        const r = sig(gi[i] + gh[i]), u = sig(gi[Hn + i] + gh[Hn + i]);
+        hn[i] = (1 - u) * Math.tanh(gi[2 * Hn + i] + r * gh[2 * Hn + i]) + u * h[i];
+      }
+      return hn;
+    },
+    readout(h) { lin(W["dec.0.weight"], W["dec.0.bias"], h, Hn, Hn, d1); for (let i = 0; i < Hn; i++) d1[i] = Math.max(0, d1[i]); return lin(W["dec.2.weight"], W["dec.2.bias"], d1, Od, Hn, new Float32Array(Od)); },
+  };
+}
+
+// ---------- environment: a JS port of envs.py (rectangle domain) ----------
+let AW = 2.2, AH = 1.4, NR = 12, VMAX = 0.08, WMAX = 0.35;
+const NW = 4, MARGIN = 0.12;
+const WALLC = ["#b5543a", "#3c6e71", "#d8ae3c", "#4a4e8a"]; // 0 x-max, 1 x-min, 2 y-max, 3 y-min
+let rng = Math.random;
+function gauss() { let u = 0; while (u === 0) u = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng()); }
+function raycast(x, y, head) {
+  const depth = [], wall = [];
+  for (let k = 0; k < NR; k++) {
+    const a = head - Math.PI + k * 2 * Math.PI / NR, ux = Math.cos(a), uy = Math.sin(a), eps = 1e-9;
+    let tx = ux > 0 ? (AW - x) / (ux + eps) : (0 - x) / (ux - eps);
+    let ty = uy > 0 ? (AH - y) / (uy + eps) : (0 - y) / (uy - eps);
+    if (Math.abs(ux) < 1e-8) tx = Infinity; if (Math.abs(uy) < 1e-8) ty = Infinity;
+    const hx = tx < ty; depth.push(Math.min(10, Math.max(0, hx ? tx : ty)));
+    wall.push(hx ? (ux > 0 ? 0 : 1) : (uy > 0 ? 2 : 3));
+  }
+  return { depth, wall };
+}
+function observe(x, y, head) {
+  const { depth, wall } = raycast(x, y, head), o = new Float32Array(NR * 5);
+  for (let k = 0; k < NR; k++) { o[k * 5] = 1 / (1 + depth[k]); o[k * 5 + 1 + wall[k]] = 1; }
+  for (let i = 0; i < o.length; i++) o[i] += 0.02 * gauss();
+  return o;
+}
+
+// ---------- state ----------
+let D = null, nets = {}, cur = "dark";
+const st = { x: 1.1, y: 0.7, head: 0, om: 0, v: 0.05, h: null, t: 0, dark: false, run: 0, hold: false, keys: {}, paused: false };
+let hist = [], deepErrs = [], predErrs = [], trail = [], pred = null, lastObs = null;
+const blackoutP = { hide: (1 / 12) * 0.5 / 0.5, show: 1 / 12 };
+
+function resetState() {
+  st.x = 0.4 + rng() * (AW - 0.8); st.y = 0.3 + rng() * (AH - 0.6); st.head = (rng() * 2 - 1) * Math.PI; st.om = 0; st.v = (0.3 + 0.7 * rng()) * VMAX;
+  st.h = new Float32Array(128); st.t = 0; st.dark = false; st.run = 0; hist = []; deepErrs = []; predErrs = []; trail = [];
+}
+function policy() {
+  if ($("#rbDrive").value === "keys") {
+    const fwd = st.keys.ArrowUp || st.keys.w ? 1 : 0, turn = (st.keys.ArrowLeft || st.keys.a ? -1 : 0) + (st.keys.ArrowRight || st.keys.d ? 1 : 0);
+    st.om = turn * WMAX * 0.7; st.v = fwd * VMAX * 0.8;
+  } else { // the training rollout policy: AR(1) angular velocity, steer hard on wall approach
+    st.om = 0.8 * st.om + 0.2 * gauss() * WMAX;
+    st.v = Math.min(VMAX, Math.max(0, 0.9 * st.v + 0.1 * (0.2 + 0.8 * rng()) * VMAX));
+    const nx = st.x + st.v * Math.cos(st.head + st.om), ny = st.y + st.v * Math.sin(st.head + st.om);
+    if (nx < MARGIN || nx > AW - MARGIN || ny < MARGIN || ny > AH - MARGIN) st.om = (gauss() > 0 ? 1 : -1) * WMAX;
+    st.om = Math.max(-WMAX, Math.min(WMAX, st.om));
+  }
+}
+function updateBlackout() {
+  const mode = $("#rbSched").value;
+  if (st.hold) st.dark = true;
+  else if (mode === "test") st.dark = st.dark ? rng() > blackoutP.show : rng() < blackoutP.hide;
+  else if (mode === "long") st.dark = (st.t % 120) >= 50;
+  else st.dark = false;
+  if (st.t < 3 && !st.hold) st.dark = false;
+  st.run = st.dark ? st.run + 1 : 0;
+}
+function decode(net, h) {
+  const M = D.models[cur]; let c = M.rd_b[0], s = M.rd_b[1];
+  for (let i = 0; i < 128; i++) { c += M.rd_W[0][i] * h[i]; s += M.rd_W[1][i] * h[i]; }
+  return Math.atan2(s, c);
+}
+function project(h) {
+  const M = D.models[cur]; let a = 0, b = 0;
+  for (let i = 0; i < 128; i++) { const d = h[i] - M.pc_mean[i]; a += M.pc[0][i] * d; b += M.pc[1][i] * d; }
+  return [a, b];
+}
+function step() {
+  updateBlackout(); policy();
+  const net = nets[cur], obs = observe(st.x, st.y, st.head), x = new Float32Array(net.inDim);
+  if (pred && st.dark) { let se = 0; for (let i = 0; i < obs.length; i++) se += (pred[i] - obs[i]) ** 2; predErrs.push(se / obs.length); if (predErrs.length > 400) predErrs.shift(); }
+  for (let i = 0; i < obs.length; i++) x[i] = st.dark ? 0 : obs[i];
+  x[obs.length] = st.dark ? 1 : 0; x[obs.length + 1] = st.v / VMAX; x[obs.length + 2] = st.om / WMAX;
+  st.h = net.step(x, st.h); pred = net.readout(st.h); lastObs = obs;
+  // the state after step t is scored against heading at t, as in the study's probes
+  const dh = decode(net, st.h), err = Math.abs(wrap(dh - st.head)) * DEG; st.trueHead = st.head;
+  // move (the action at t takes the robot from state t to t+1, as in training)
+  st.head = wrap(st.head + st.om);
+  st.x = Math.min(AW - MARGIN, Math.max(MARGIN, st.x + st.v * Math.cos(st.head)));
+  st.y = Math.min(AH - MARGIN, Math.max(MARGIN, st.y + st.v * Math.sin(st.head)));
+  st.t++;
+  hist.push({ err, dark: st.dark }); if (hist.length > 400) hist.shift();
+  if (st.run >= 5) { deepErrs.push(err); if (deepErrs.length > 2000) deepErrs.shift(); }
+  trail.push(project(st.h)); if (trail.length > 40) trail.shift();
+  st.dec = dh; st.err = err;
+}
+
+// ---------- drawing ----------
+const aC = $("#rbArena"), ax = aC.getContext("2d"), rC = $("#rbRing"), rx = rC.getContext("2d"), dC = $("#rbDial"), dx = dC.getContext("2d"), tC = $("#rbTrace"), tx2 = tC.getContext("2d");
+function drawArena() {
+  const W = aC.width, H = aC.height, pad = 22, s = Math.min((W - 2 * pad) / AW, (H - 2 * pad) / AH), ox = (W - AW * s) / 2, oy = (H - AH * s) / 2;
+  const X = v => ox + v * s, Y = v => oy + (AH - v) * s;
+  ax.clearRect(0, 0, W, H);
+  ax.fillStyle = st.dark ? css("--ink") : css("--panel"); ax.globalAlpha = st.dark ? 0.08 : 1; ax.fillRect(X(0), Y(AH), AW * s, AH * s); ax.globalAlpha = 1;
+  ax.lineWidth = 7;
+  [[X(AW), Y(0), X(AW), Y(AH)], [X(0), Y(0), X(0), Y(AH)], [X(0), Y(AH), X(AW), Y(AH)], [X(0), Y(0), X(AW), Y(0)]].forEach((l, i) => { ax.strokeStyle = WALLC[i]; ax.beginPath(); ax.moveTo(l[0], l[1]); ax.lineTo(l[2], l[3]); ax.stroke(); });
+  if (!lastObs) return;
+  ax.save(); ax.beginPath(); ax.rect(X(0) - 14, Y(AH) - 14, AW * s + 28, AH * s + 28); ax.clip();
+  // true rays (as the robot would sense them), then the model's predicted next reading
+  const { depth, wall } = raycast(st.x, st.y, st.head);
+  for (let k = 0; k < NR; k++) {
+    const a = st.head - Math.PI + k * 2 * Math.PI / NR;
+    ax.strokeStyle = css("--ink"); ax.globalAlpha = st.dark ? 0.18 : 0.55; ax.lineWidth = 1; ax.setLineDash(st.dark ? [3, 4] : []);
+    ax.beginPath(); ax.moveTo(X(st.x), Y(st.y)); ax.lineTo(X(st.x + depth[k] * Math.cos(a)), Y(st.y + depth[k] * Math.sin(a))); ax.stroke(); ax.setLineDash([]); ax.globalAlpha = 1;
+    if (pred) {
+      const inv = Math.max(0.05, Math.min(0.99, pred[k * 5])), d = 1 / inv - 1;
+      let wb = 0; for (let j = 1; j < 4; j++) if (pred[k * 5 + 1 + j] > pred[k * 5 + 1 + wb]) wb = j;
+      const px = X(st.x + d * Math.cos(a)), py = Y(st.y + d * Math.sin(a));
+      ax.strokeStyle = css("--accent-ink"); ax.lineWidth = 2; ax.globalAlpha = 0.6;
+      ax.beginPath(); ax.moveTo(X(st.x), Y(st.y)); ax.lineTo(px, py); ax.stroke(); ax.globalAlpha = 1;
+      ax.fillStyle = WALLC[wb]; ax.strokeStyle = css("--paper"); ax.lineWidth = 1.5; ax.beginPath(); ax.arc(px, py, 4.5, 0, Math.PI * 2); ax.fill(); ax.stroke();
+    }
+  }
+  ax.restore();
+  // robot
+  ax.fillStyle = css("--ink"); ax.beginPath();
+  ax.moveTo(X(st.x) + Math.cos(-st.head) * 13, Y(st.y) + Math.sin(-st.head) * 13);
+  ax.lineTo(X(st.x) + Math.cos(-st.head + 2.5) * 9, Y(st.y) + Math.sin(-st.head + 2.5) * 9);
+  ax.lineTo(X(st.x) + Math.cos(-st.head - 2.5) * 9, Y(st.y) + Math.sin(-st.head - 2.5) * 9); ax.closePath(); ax.fill();
+  ax.fillStyle = css("--muted"); ax.font = `400 10px ${css("--mono")}`; ax.textAlign = "left";
+  ax.fillText("2.2 m × 1.4 m, 12 rays", X(0), H - 5);
+  $("#rbSensor").textContent = st.dark ? `blackout, ${st.run} steps` : "sensors on";
+}
+const hueOf = a => `hsl(${((a * DEG) + 360) % 360}, 48%, 52%)`;
+let ringScale = 1;
+function drawRing() {
+  const W = rC.width, C = W / 2, M = D.models[cur];
+  rx.clearRect(0, 0, W, W);
+  rx.globalAlpha = 0.55;
+  for (const [a, b, h] of M.cloud) { rx.fillStyle = hueOf(h); rx.beginPath(); rx.arc(C + a * ringScale, C - b * ringScale, 2.2, 0, Math.PI * 2); rx.fill(); }
+  rx.globalAlpha = 1;
+  if (trail.length) {
+    rx.strokeStyle = css("--ink"); rx.lineWidth = 1.2; rx.beginPath();
+    trail.forEach(([a, b], i) => { const X = C + a * ringScale, Y = C - b * ringScale; i ? rx.lineTo(X, Y) : rx.moveTo(X, Y); }); rx.stroke();
+    const [a, b] = trail[trail.length - 1];
+    rx.fillStyle = st.dark ? css("--ink") : css("--paper"); rx.strokeStyle = css("--ink"); rx.lineWidth = 2;
+    rx.beginPath(); rx.arc(C + a * ringScale, C - b * ringScale, 7, 0, Math.PI * 2); rx.fill(); rx.stroke();
+  }
+  rx.fillStyle = css("--muted"); rx.font = `400 10px ${css("--mono")}`; rx.textAlign = "left";
+  rx.fillText("PC1 →", 8, W - 8); rx.fillText("colour = true heading", 8, 14);
+}
+function drawDial() {
+  const D2 = dC.width, C = D2 / 2, R = C - 10;
+  dx.clearRect(0, 0, D2, D2);
+  dx.strokeStyle = css("--rule"); dx.lineWidth = 1; dx.beginPath(); dx.arc(C, C, R, 0, Math.PI * 2); dx.stroke();
+  const needle = (a, col, w, len) => { dx.strokeStyle = col; dx.lineWidth = w; dx.lineCap = "round"; dx.beginPath(); dx.moveTo(C, C); dx.lineTo(C + Math.cos(-a) * len, C + Math.sin(-a) * len); dx.stroke(); };
+  needle(st.trueHead ?? st.head, css("--ink"), 3, R - 8);
+  if (st.dec !== undefined) needle(st.dec, css("--accent"), 5, R - 22);
+  dx.fillStyle = css("--ink"); dx.beginPath(); dx.arc(C, C, 3.5, 0, Math.PI * 2); dx.fill();
+}
+function drawTrace() {
+  const W = tC.width, H = tC.height, top = 4, bot = H - 16, n = 400, padL = 40;
+  tx2.clearRect(0, 0, W, H);
+  const X = i => padL + i / (n - 1) * (W - padL - 6), Y = e => bot - Math.min(180, e) / 180 * (bot - top);
+  const off = n - hist.length;
+  tx2.fillStyle = css("--faint"); tx2.globalAlpha = 0.18;
+  hist.forEach((p, i) => { if (p.dark) tx2.fillRect(X(i + off) - 1, top, (W - padL) / n + 1, bot - top); }); tx2.globalAlpha = 1;
+  tx2.strokeStyle = css("--rule"); tx2.beginPath(); tx2.moveTo(padL, bot); tx2.lineTo(W - 6, bot); tx2.stroke();
+  tx2.strokeStyle = css("--accent-ink"); tx2.lineWidth = 1.4; tx2.beginPath();
+  hist.forEach((p, i) => { i ? tx2.lineTo(X(i + off), Y(p.err)) : tx2.moveTo(X(i + off), Y(p.err)); }); tx2.stroke();
+  tx2.fillStyle = css("--muted"); tx2.font = `400 10px ${css("--mono")}`; tx2.textAlign = "right";
+  tx2.fillText("180°", padL - 6, top + 8); tx2.fillText("0°", padL - 6, bot); tx2.textAlign = "center"; tx2.fillText("now →", W - 30, H - 3);
+}
+function renderMetrics() {
+  $("#rbM1").textContent = st.run;
+  $("#rbM2").innerHTML = st.err === undefined ? "–" : `${st.err.toFixed(1)}<small>°</small>`;
+  const med = a => { if (!a.length) return null; const b = [...a].sort((x, y) => x - y); return b[Math.floor(b.length / 2)]; };
+  const m3 = med(deepErrs); $("#rbM3").innerHTML = m3 === null ? "–" : `${m3.toFixed(1)}<small>°, n=${deepErrs.length}</small>`;
+  const m4 = predErrs.length ? predErrs.reduce((a, b) => a + b, 0) / predErrs.length : null;
+  $("#rbM4").innerHTML = m4 === null ? "–" : m4.toFixed(4);
+  $("#rbNow").textContent = `step ${st.t}, ${st.dark ? "blind, integrating actions" : "observing"}`;
+}
+function frame() { drawArena(); drawRing(); drawDial(); drawTrace(); renderMetrics(); }
+
+// ---------- scatter of all analysed models ----------
+function drawScatter() {
+  const A = D.analysis, W = 520, H = 280, m = { l: 44, r: 14, t: 12, b: 34 };
+  const COND = { dark: ["Blackout", "var(--accent-ink)"], lit: ["Always observed", "var(--ink)"], shuffle: ["Shuffled actions", "var(--bad)"], untrained: ["Untrained", "var(--faint)"] };
+  const SH = { gru: "circle", rnn: "square", tf: "triangle" };
+  const gx0 = Math.log(0.9), gx1 = Math.log(12);
+  const X = g => m.l + (Math.log(Math.max(0.9, g)) - gx0) / (gx1 - gx0) * (W - m.l - m.r), Y = k => m.t + (1 - k) * (H - m.t - m.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fidelity against ring persistence gap for 48 models">`;
+  [0, 0.2, 0.4, 0.6, 0.8, 1].forEach(k => s += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${Y(k)}" y2="${Y(k)}"/><text x="${m.l - 6}" y="${Y(k) + 3}" text-anchor="end">${k.toFixed(1)}</text>`);
+  [1, 2, 4, 8].forEach(g => s += `<line class="axis" x1="${X(g)}" x2="${X(g)}" y1="${H - m.b}" y2="${H - m.b + 4}"/><text x="${X(g)}" y="${H - m.b + 15}" text-anchor="middle">${g}</text>`);
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}"/>`;
+  s += `<rect x="${m.l}" y="${Y(0.860)}" width="${W - m.l - m.r}" height="${Y(0.613) - Y(0.860)}" fill="var(--accent)" opacity="0.12"/>`;
+  s += `<text class="lbl-acc" x="${W - m.r - 4}" y="${Y(0.860) - 4}" text-anchor="end">lowest blackout model 0.860</text><text x="${W - m.r - 4}" y="${Y(0.613) + 12}" text-anchor="end">best control 0.613</text>`;
+  s += `<line class="ep" x1="${X(2)}" x2="${X(2)}" y1="${m.t}" y2="${H - m.b}"/><text x="${X(2) + 4}" y="${H - m.b - 6}">ring-like →</text>`;
+  s += `<text x="${(m.l + W - m.r) / 2}" y="${H - 4}" text-anchor="middle">H1 persistence gap (ring statistic, log)</text>`;
+  s += `<text x="12" y="${(m.t + H - m.b) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(m.t + H - m.b) / 2})">fidelity κ in blackout</text>`;
+  for (const r of A) {
+    const c = COND[r.cond][1], x = X(r.gap), y = Y(r.kappa), sh = SH[r.kind];
+    const tip = `<title>${r.kind.toUpperCase()}, ${COND[r.cond][0]}, seed ${r.seed}: κ ${r.kappa.toFixed(3)}, gap ${r.gap}, median error ${r.err}°</title>`;
+    if (sh === "circle") s += `<circle cx="${x}" cy="${y}" r="4" fill="${c}" fill-opacity="0.85">${tip}</circle>`;
+    else if (sh === "square") s += `<rect x="${x - 3.5}" y="${y - 3.5}" width="7" height="7" fill="${c}" fill-opacity="0.85">${tip}</rect>`;
+    else s += `<path d="M${x},${y - 4.5}L${x + 4.5},${y + 3.5}L${x - 4.5},${y + 3.5}Z" fill="${c}" fill-opacity="0.85">${tip}</path>`;
+  }
+  // mark the three models running live
+  for (const cond of ["dark", "lit", "shuffle"]) { const r = A.find(q => q.kind === "gru" && q.cond === cond && q.seed === 0); if (r) s += `<circle cx="${X(r.gap)}" cy="${Y(r.kappa)}" r="8" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="2 2"><title>Running live above</title></circle>`; }
+  s += `</svg>`;
+  $("#rbScatter").innerHTML = s;
+  $("#rbScatterLegend").innerHTML = Object.values(COND).map(([n, c]) => `<span style="--c:${c}">${n}</span>`).join("") + `<span style="--c:transparent">● GRU ■ RNN ▲ transformer, dashed ring = live</span>`;
+}
+
+// ---------- controls & loop ----------
+function selectModel(m) {
+  cur = m; document.querySelectorAll(".rb-model").forEach(b => b.setAttribute("aria-checked", b.dataset.m === m ? "true" : "false"));
+  const M = D.models[m]; let mx = 0; for (const [a, b] of M.cloud) mx = Math.max(mx, Math.hypot(a, b));
+  ringScale = (rC.width / 2 - 18) / (mx || 1);
+  rng = mulberry(11); resetState(); frame();
+}
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+document.querySelectorAll(".rb-model").forEach(b => b.addEventListener("click", () => selectModel(b.dataset.m)));
+const hold = v => { st.hold = v; $("#rbHold").classList.toggle("on", v); };
+$("#rbHold").addEventListener("pointerdown", e => { e.preventDefault(); hold(true); });
+["pointerup", "pointerleave", "pointercancel"].forEach(ev => $("#rbHold").addEventListener(ev, () => hold(false)));
+$("#rbHold").addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); hold(true); } });
+$("#rbHold").addEventListener("keyup", () => hold(false));
+aC.addEventListener("keydown", e => {
+  if (e.key === "b" || e.key === "B") { hold(true); e.preventDefault(); return; }
+  if ($("#rbDrive").value === "keys" && ["ArrowUp", "ArrowLeft", "ArrowRight", "ArrowDown", "w", "a", "d"].includes(e.key)) { st.keys[e.key] = true; e.preventDefault(); }
+});
+aC.addEventListener("keyup", e => { if (e.key === "b" || e.key === "B") hold(false); st.keys[e.key] = false; });
+aC.addEventListener("click", () => aC.focus());
+$("#rbPause").addEventListener("click", () => { st.paused = !st.paused; $("#rbPause").textContent = st.paused ? "Resume" : "Pause"; });
+$("#rbReset").addEventListener("click", () => { rng = mulberry(Math.floor(Math.random() * 1e9)); resetState(); frame(); });
+$("#rbSpeed").addEventListener("input", e => $("#oRbSpeed").textContent = e.target.value + "/s");
+$("#oRbSpeed").textContent = $("#rbSpeed").value + "/s";
+
+let acc = 0, last = 0, visible = true;
+new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe($("#pane-robowomo"));
+function loop(ts) {
+  const dt = last ? Math.min(0.25, (ts - last) / 1000) : 0; last = ts;
+  if (D && !st.paused && visible) {
+    acc += dt * +$("#rbSpeed").value; let n = 0;
+    while (acc >= 1 && n < 8) { step(); acc -= 1; n++; }
+    if (n) frame();
+  }
+  requestAnimationFrame(loop);
+}
+const redraw = () => { if (D) { frame(); drawScatter(); } };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+fetch("robo.json").then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => {
+  D = d; AW = d.meta.W; AH = d.meta.H; NR = d.meta.n_rays; VMAX = d.meta.v_max; WMAX = d.meta.w_max;
+  for (const k of ["dark", "lit", "shuffle"]) nets[k] = makeGRU(d.models[k]);
+  $("#rbDescDark").textContent = `GRU, seed 0, paper median ${d.analysis.find(r => r.kind === "gru" && r.cond === "dark" && r.seed === 0).err}°`;
+  $("#rbDescLit").textContent = `GRU, seed 0, paper median ${d.analysis.find(r => r.kind === "gru" && r.cond === "lit" && r.seed === 0).err}°`;
+  $("#rbDescShuffle").textContent = `GRU, seed 0, paper median ${d.analysis.find(r => r.kind === "gru" && r.cond === "shuffle" && r.seed === 0).err}°`;
+  drawScatter(); selectModel("dark");
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(loop);
+  else { for (let i = 0; i < 200; i++) step(); frame(); }
+}).catch(() => { $("#rbNow").textContent = "Could not load the model weights (robo.json)."; });
+})();
+</script>
+<script>
+(() => {
+  const TABS = ["lab", "robowomo", "compass", "about"];
+  const panes = TABS.map(id => document.getElementById("pane-" + id)), links = [...document.querySelectorAll(".tabs a")];
+  function show(id, scroll) {
+    if (!TABS.includes(id)) id = "lab";
+    panes.forEach(p => p.hidden = p.id !== "pane-" + id);
+    links.forEach(a => a.setAttribute("aria-selected", a.dataset.tab === id ? "true" : "false"));
+    try { localStorage.setItem("perceive.tab", id); } catch (e) {}
+    if (scroll) window.scrollTo(0, 0);
+  }
+  links.forEach(a => a.addEventListener("click", e => { e.preventDefault(); history.replaceState(null, "", "#" + a.dataset.tab); show(a.dataset.tab, true); }));
+  window.addEventListener("hashchange", () => show(location.hash.slice(1), true));
+  let start = location.hash.slice(1);
+  if (!TABS.includes(start)) { try { start = localStorage.getItem("perceive.tab") || "lab"; } catch (e) { start = "lab"; } }
+  show(start, false);
+})();
+</script>
+
+{% endraw %}
+</body>
+</html>
