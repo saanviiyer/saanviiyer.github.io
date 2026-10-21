@@ -25,6 +25,9 @@ permalink: /playground/biopack/
   .bp-seg button.on { background: var(--accent); color: #fff; }
   select.bp-select, input.bp-input { font-family: var(--sans); font-size: 0.92rem; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--ink); }
   input.bp-input { width: 120px; }
+  .bp-file { font-family: var(--sans); font-size: 0.78rem; color: var(--muted); max-width: 210px; }
+  .bp-file::file-selector-button { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.03em; text-transform: uppercase; padding: 6px 11px; margin-right: 10px; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 999px; cursor: pointer; }
+  .bp-file::file-selector-button:hover { background: var(--accent-soft); }
   .bp-btn { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 8px 14px; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 999px; cursor: pointer; }
   .bp-btn:hover { background: var(--accent-soft); }
 
@@ -87,6 +90,11 @@ permalink: /playground/biopack/
             <button data-style="surface">surface</button>
             <button data-style="stick">sticks</button>
           </div>
+        </div>
+        <div class="bp-row">
+          <label for="bp-upload">your structure</label>
+          <input type="file" id="bp-upload" class="bp-file" accept=".pdb,.ent,.cif,.mmcif,.mol2,.xyz,.sdf">
+          <button class="bp-btn" id="bp-clearup" style="display:none;">back to panel</button>
         </div>
         <div id="bp-viewer"><div class="bp-viewer-msg">loading structure&hellip;</div></div>
         <p class="bp-meta" id="bp-meta"></p>
@@ -160,7 +168,7 @@ permalink: /playground/biopack/
   var MUT_RE = /^([ACDEFGHIKLMNPQRSTVWY])(\d+)([ACDEFGHIKLMNPQRSTVWY])$/;
 
   var el = function (id) { return document.getElementById(id); };
-  var viewer = null, cur = PANEL[0], bg = "light", style = "cartoon";
+  var viewer = null, cur = PANEL[0], bg = "light", style = "cartoon", uploaded = null;
 
   // --- molecular viewer -------------------------------------------------------
   var BG = { light: "0xf6f3ee", dark: "0x161016", white: "0xffffff" };
@@ -204,6 +212,19 @@ permalink: /playground/biopack/
       viewer.render();
     });
   }
+
+  // An uploaded structure is parsed and drawn entirely in the browser; the file
+  // never leaves the page.
+  function loadUploaded() {
+    if (!viewer || !uploaded) return;
+    viewer.clear();
+    try { viewer.addModel(uploaded.text, uploaded.fmt); } catch (e) {}
+    applyStyle(); viewer.zoomTo(); viewer.render();
+    el("bp-meta").innerHTML = "<strong>uploaded</strong>, " + uploaded.name + " &middot; " + uploaded.fmt.toUpperCase() +
+      "<br>Read in your browser only; your file is never uploaded anywhere. The panel gates do not apply to an uploaded structure.";
+  }
+  function redraw() { if (uploaded) loadUploaded(); else loadStructure(); }
+  function clearUpload() { uploaded = null; el("bp-clearup").style.display = "none"; if (el("bp-upload")) el("bp-upload").value = ""; }
 
   // --- deterministic synthetic outputs (clearly placeholders) -----------------
   function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0); }
@@ -257,7 +278,7 @@ permalink: /playground/biopack/
 
     // load this protein into the viewer too
     var idx = PANEL.indexOf(p);
-    if (p !== cur) { cur = p; el("bp-protein").value = idx; setMeta(); loadStructure(); }
+    if (p !== cur || uploaded) { clearUpload(); cur = p; el("bp-protein").value = idx; setMeta(); loadStructure(); }
 
     var m = tok.match(MUT_RE);
     if (!tok) { out.innerHTML = '<div class="bp-result ok">On panel. Enter a mutation like <code>T2A</code> (wild-type, position, mutant) to run a forward estimate.</div>'; return; }
@@ -292,9 +313,20 @@ permalink: /playground/biopack/
 
   document.addEventListener("DOMContentLoaded", function () {
     buildSelect(); buildExamples(); setMeta();
-    el("bp-protein").addEventListener("change", function () { cur = PANEL[+this.value]; setMeta(); loadStructure(); });
+    el("bp-protein").addEventListener("change", function () { clearUpload(); cur = PANEL[+this.value]; setMeta(); loadStructure(); });
     el("bp-bg").addEventListener("click", function (e) { if (e.target.dataset.bg) { bg = e.target.dataset.bg; [].forEach.call(this.children, function (b) { b.classList.toggle("on", b.dataset.bg === bg); }); if (viewer) { viewer.setBackgroundColor(BG[bg]); viewer.render(); } } });
-    el("bp-style").addEventListener("click", function (e) { if (e.target.dataset.style) { style = e.target.dataset.style; [].forEach.call(this.children, function (b) { b.classList.toggle("on", b.dataset.style === style); }); loadStructure(); } });
+    el("bp-style").addEventListener("click", function (e) { if (e.target.dataset.style) { style = e.target.dataset.style; [].forEach.call(this.children, function (b) { b.classList.toggle("on", b.dataset.style === style); }); redraw(); } });
+    el("bp-upload").addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      if (!viewer) { alert("The 3D viewer did not load, so an uploaded structure cannot be shown."); return; }
+      var ext = (f.name.split(".").pop() || "").toLowerCase();
+      var fmt = (ext === "cif" || ext === "mmcif") ? "cif" : (ext === "mol2" ? "mol2" : (ext === "xyz" ? "xyz" : (ext === "sdf" ? "sdf" : "pdb")));
+      var r = new FileReader();
+      r.onload = function () { uploaded = { text: r.result, fmt: fmt, name: f.name }; el("bp-clearup").style.display = ""; loadUploaded(); };
+      r.onerror = function () { alert("Could not read that file."); };
+      r.readAsText(f);
+    });
+    el("bp-clearup").addEventListener("click", function () { clearUpload(); setMeta(); loadStructure(); });
     el("bp-run").addEventListener("click", runQuery);
     el("bp-mut").addEventListener("keydown", function (e) { if (e.key === "Enter") runQuery(); });
     el("bp-acc").addEventListener("keydown", function (e) { if (e.key === "Enter") runQuery(); });
