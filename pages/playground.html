@@ -5,14 +5,13 @@ permalink: /playground/
 
 <style>
   .pf-section { border-top: none; padding-top: 8px; }
-  .play-list { display: flex; flex-direction: column; }
-  .play-item { padding: 24px 0; border-top: 0.5px solid var(--border); }
-  .play-item:first-child { border-top: none; padding-top: 8px; }
-  .play-title { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; margin: 0 0 5px; letter-spacing: -0.01em; }
+  .play-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px 44px; margin-top: 10px; }
+  .play-item { padding: 18px 0 0; border-top: 0.5px solid var(--border); }
+  .play-title { font-family: var(--serif); font-size: 1.28rem; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
   .play-title a { color: var(--robin); text-decoration: none; }
   .play-title a:hover { text-decoration: underline; }
-  .play-line { font-family: var(--sans); font-size: 1rem; line-height: 1.6; color: var(--ink); margin: 0 0 10px; max-width: 74ch; }
-  .play-links a { font-family: var(--sans); font-size: 0.82rem; color: var(--berry); text-decoration: none; margin-right: 16px; }
+  .play-line { font-family: var(--sans); font-size: 0.94rem; line-height: 1.55; color: var(--ink); margin: 0 0 12px; }
+  .play-links a { font-family: var(--sans); font-size: 0.8rem; color: var(--berry); text-decoration: none; margin-right: 16px; }
   .play-links a:hover { text-decoration: underline; }
 </style>
 
