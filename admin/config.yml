@@ -1,0 +1,46 @@
+# Sveltia CMS configuration. Edits commit to the repo; GitHub Pages rebuilds in ~1-2 min.
+# Auth: sign in at /admin with a GitHub personal access token (no OAuth app or worker needed).
+# Only accounts with write access to this repo (you) can save.
+
+backend:
+  name: github
+  repo: saanviiyer/saanviiyer.github.io
+  branch: main
+
+site_url: https://saanviiyer.github.io
+display_url: https://saanviiyer.github.io/writing/
+
+# Images you add in the editor land here and are referenced from /assets/images/uploads.
+media_folder: assets/images/uploads
+public_folder: /assets/images/uploads
+
+collections:
+  - name: writing
+    label: Writing posts
+    label_singular: post
+    folder: _posts
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    identifier_field: title
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}}'
+    sortable_fields: [date, title]
+    # Fields the editor manages. Any front-matter key not listed here (dek, authors,
+    # updated, affiliations, artifact) is preserved as-is on save, not dropped.
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: date, label: Date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
+      - { name: section, label: Section, widget: select, options: ['technical', 'nontechnical'] }
+      - { name: tag, label: Tag (venue line), widget: string, required: false }
+      - { name: excerpt, label: Excerpt, widget: text, required: false }
+      - { name: rank, label: 'Rank (technical only; 1 = best)', widget: number, required: false, value_type: int }
+      - { name: math, label: 'Uses math (MathJax)', widget: boolean, required: false, default: false }
+      - { name: thumb, label: Thumbnail path, widget: string, required: false }
+      - { name: permalink, label: Permalink, widget: string, required: false }
+      - { name: layout, label: Layout, widget: hidden, default: post }
+      - { name: redirect_from, label: Redirect from (old URLs), widget: list, required: false }
+      - name: body
+        label: 'Body (use the "raw" / markdown toggle for posts with figures or animations)'
+        widget: markdown
+        hint: 'For the technical posts with inline <figure>, <canvas>, or <script> blocks, edit in the raw Markdown view so the embedded HTML is left untouched.'
