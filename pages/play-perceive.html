@@ -8,7 +8,7 @@ permalink: /playground/perceive/
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Three browser labs on whether a world model keeps a stable picture of physical reality.">
+<meta name="description" content="Four browser labs on whether a world model keeps a stable picture of physical reality.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 {% raw %}
 <title>Perceive</title>
@@ -338,6 +338,22 @@ kbd { font: 500 10px/1 var(--mono); border: 1px solid currentColor; padding: .2r
   .who { display: none; }
 }
 
+
+/* ---------- Noema lab ---------- */
+.nm-stage { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+.nm-stage canvas#nmRaster { aspect-ratio: 640 / 420; }
+.nm-stage canvas#nmRing { aspect-ratio: 1 / 1; }
+.nm-side { display: grid; gap: .8rem; min-width: 0; }
+.nm-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .8rem; align-items: center; }
+.nm-scrub input { width: 100%; }
+.intro .credit { margin: 0; font-size: 14.5px; max-width: 80ch; }
+.nm-bench td:last-child { width: 46%; white-space: nowrap; }
+.nm-bar { display: inline-block; vertical-align: middle; height: 9px; width: calc(var(--w) * 0.8); background: var(--faint); }
+.nm-bench tr.me .nm-bar { background: var(--accent); }
+.nm-bench tr.ref .nm-bar { background: var(--ink); }
+.nm-pct { margin-left: .5rem; font-size: 13px; color: var(--muted); }
+@media (max-width: 980px) { .nm-stage { grid-template-columns: minmax(0,1fr); } .nm-side { grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; } }
+@media (max-width: 600px) { .nm-side { grid-template-columns: minmax(0,1fr); } }
 /* ---------- Perceive: type and intro bands ---------- */
 body { font-size: 17.5px; line-height: 1.55; }
 h1, h2, h3, .rail-head h2, .about-title, .metric .v, .verdict h3 { font-weight: 700; letter-spacing: -0.01em; }
@@ -356,6 +372,7 @@ details.abstract { max-width: 70rem; border-left: 3px solid var(--accent); paddi
 details.abstract summary { cursor: pointer; font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); }
 details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-width: 80ch; }
 .rail-head p { font-size: 15px; }
+@media (max-width: 640px) { .tabs { flex: 1 1 100%; order: 3; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .tabs::-webkit-scrollbar { display: none; } .tabs a { white-space: nowrap; padding: .55rem .7rem; font-size: 12px; } }
 @media (max-width: 860px) { .intro { order: -1; } .intro-cols { grid-template-columns: minmax(0,1fr); } }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
@@ -369,6 +386,7 @@ details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-w
       <a role="tab" href="#lab" data-tab="lab">Generated worlds</a>
       <a role="tab" href="#robowomo" data-tab="robowomo">RoBoWoMo</a>
       <a role="tab" href="#compass" data-tab="compass">Fly compass</a>
+      <a role="tab" href="#noema" data-tab="noema">Noema</a>
       <a role="tab" href="#about" data-tab="about">About</a>
     </nav>
     <a class="who" href="/playground/">Saanvi S. Subramanian, playground</a>
@@ -379,7 +397,7 @@ details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-w
     <header class="intro">
       <p class="kicker">Perceive</p>
       <h1>World models that keep a stable picture of physical reality</h1>
-      <p class="opener">I'm excited about world models and about building more aligned simulations of physical reality, for applications in robotics and scientific reasoning. The world doesn't operate through language. It follows physical laws and constructs, and models that can understand them are better equipped to address the world's critical needs. Perceive is three small labs that run in the browser. Each one asks whether a model holds a stable, physically faithful picture of its world, using measurements borrowed from neuroscience.</p>
+      <p class="opener">I'm excited about world models and about building more aligned simulations of physical reality, for applications in robotics and scientific reasoning. The world doesn't operate through language. It follows physical laws and constructs, and models that can understand them are better equipped to address the world's critical needs. Perceive is four small labs that run in the browser. Each one asks whether a model holds a stable, physically faithful picture of its world, using measurements borrowed from neuroscience.</p>
       <div class="intro-cols">
         <div><h2>Generated worlds: what this is</h2><p>A simulated 3D room is rendered twice along the same camera path. One render comes from a ground-truth simulator. The other comes from a stand-in world model that predicts the room from the agent's actions alone and forgets objects that stay out of view too long. The audit reads only the rendered frames and reports how long the model's picture of the room stays consistent, using the place-field analyses used to study the hippocampus. The stand-in model is synthetic and its failures are planted on purpose, so this lab tests the measurement itself. It has not yet been run on a real video world model.</p></div>
         <div><h2>Why I looked at it</h2><p>A robot trained inside a generated world needs that world to still be there when it turns around. Frame-quality scores do not check this, because they judge short clips and never ask about the return trip. From neurobiology, the standard test for whether an animal holds a stable map is whether its place cells keep the same firing fields when it comes back to an unchanged room. I wanted to see whether the same test gives a useful number for generated environments.</p></div>
@@ -597,12 +615,76 @@ details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-w
     </div>
   </section>
 
+  <!-- ================= NOEMA ================= -->
+  <section class="pane" id="pane-noema" role="tabpanel" aria-label="Noema" hidden>
+    <header class="intro">
+      <p class="kicker">Noema</p>
+      <h1>When a model of neural activity runs out of information, not capacity</h1>
+      <div class="intro-cols">
+        <div><h2>What this is</h2><p>Noema, by Manraj Mondair, models recorded neural populations for brain–computer interfaces. On the Neural Latents Benchmark's MC_Maze task it predicts the spikes of hidden motor-cortex neurons from the visible ones at 0.367 bits per spike, and it argues that the rest of the gap to a 0.392 oracle is information the visible neurons do not carry. This lab rebuilds that test in the browser on a synthetic reaching population: 182 model neurons tuned to reach direction, 45 of them hidden. The decoder is the condition-mix estimator from Noema's MINT module. It infers which reach this is from the visible neurons, then predicts the hidden ones from that reach's average activity.</p></div>
+        <div><h2>Why I looked at it</h2><p>It asks the question the other labs ask, from the neural side: does the model's internal state determine the hidden variable? Here that variable is the reach rather than the heading. Noema's analysis gives a clean way to tell a model that lacks capacity from one that has already used everything the observations hold: compare it with an oracle that is handed the answer, and measure how uncertain the answer still is. I wanted to watch that test work, and see where it stops working.</p></div>
+      </div>
+      <p class="note credit">Noema: <a href="https://github.com/manrajmondair/noema" target="_blank" rel="noopener">github.com/manrajmondair/noema</a>, by Manraj Mondair, MIT licence. The synthetic population and the browser port are new to this page. The MC_Maze numbers below are quoted from Noema's README.</p>
+    </header>
+    <aside class="rail">
+      <div class="rail-head"><span class="eyebrow">Controls</span><p>Change what the decoder gets to see. Changing the population refits the library and reruns the sweep.</p></div>
+      <div class="rail-group">
+        <div class="ctl"><label for="nmIn">Held-in neurons <output id="oNmIn"></output></label><input type="range" id="nmIn" min="0" max="13" step="1" value="13"></div>
+        <div class="ctl"><label for="nmC">Reach conditions</label><select id="nmC"><option value="8">8, 45° apart</option><option value="27">27</option><option value="54">54</option><option value="108" selected>108, as in MC_Maze</option></select></div>
+        <div class="ctl"><label for="nmReps">Training trials per condition <output id="oNmReps"></output></label><input type="range" id="nmReps" min="2" max="32" step="1" value="16"></div>
+        <div class="ctl"><label for="nmWin">Decoder sees</label><select id="nmWin"><option value="all">The whole trial</option><option value="pre">Only the 200 ms before movement</option></select></div>
+        <div class="actions"><button class="primary" id="nmNew">New population</button><button id="nmTrial">New example trial</button></div>
+      </div>
+      <div class="rail-group">
+        <div class="verdict"><span class="pill idle" id="nmPill">Waiting</span><h3 id="nmTitle">Open this tab to fit the library.</h3></div>
+        <div class="mlist">
+          <div class="metric"><span class="k">Decoder</span><span class="v" id="nmM1">–</span><span class="d">Bits per spike on the 45 held-out neurons, test trials.</span></div>
+          <div class="metric"><span class="k">Oracle</span><span class="v" id="nmM2">–</span><span class="d">Handed each trial's true condition.</span></div>
+          <div class="metric"><span class="k">Share of oracle</span><span class="v" id="nmM3">–</span><span class="d" id="nmM3d">Noema on MC_Maze: 94%.</span></div>
+          <div class="metric"><span class="k">H(condition | held-in)</span><span class="v" id="nmM4">–</span><span class="d" id="nmM4d">Bits of uncertainty about the reach left after the held-in neurons.</span></div>
+          <div class="metric"><span class="k">Condition-blind</span><span class="v" id="nmM5">–</span><span class="d">The same average activity for every trial.</span></div>
+        </div>
+      </div>
+      <details class="how">
+        <summary>How it works</summary>
+        <p>Each of 182 model neurons fires as a Poisson process whose rate is tuned to reach direction. The tuning switches on around movement onset (0 ms), and each trial carries a small shared gain fluctuation. 137 neurons are held in and 45 held out, the MC_Maze split. Trials are 700 ms in 20 ms bins.</p>
+        <p>The decoder is the condition-mix readout in Noema's <code>eval/mint.py</code>. It builds a library of each condition's smoothed average activity from training trials, weights every condition by the Poisson likelihood of the held-in spikes, and predicts held-out spikes from the weighted library. Its temperature is chosen on a separate selection split, never on the test split. The score is the NLB co-smoothing metric from <code>eval/metrics.py</code>.</p>
+        <p>The oracle is not a hard ceiling. Its templates come from a finite number of training trials, so when the decoder mixes similar conditions their noise partly averages out, and it can edge above the oracle. The dotted generator-rates line, which uses the true firing rates, is the real ceiling. Remaining uncertainty about the condition also overstates the cost: confusing two conditions with similar held-out activity costs almost nothing.</p>
+        <p>In this synthetic world the decoder computes the right posterior by construction, so every gap here is information-bound. The lab shows what such a gap looks like and how to measure it. It does not show that Noema's real gap is one; that claim rests on Noema's own measurements on MC_Maze.</p>
+      </details>
+    </aside>
+    <div class="stage-main">
+      <div class="nm-stage">
+        <div class="view"><div class="view-head"><span class="tag">Population <i>one test trial</i></span><span class="tag" id="nmNow">t = 0 ms</span></div><canvas id="nmRaster" width="640" height="420" aria-label="Spike raster of held-in neurons and predicted held-out activity for one trial"></canvas></div>
+        <div class="nm-side">
+          <div class="view"><div class="view-head"><span class="tag">Which reach? <i>posterior over conditions</i></span></div><canvas id="nmRing" width="320" height="320" aria-label="Posterior probability of each reach direction, with the true reach marked"></canvas></div>
+          <div class="cx-legend"><p><span class="sw" style="--c:var(--ink)"></span>True reach</p><p><span class="sw" style="--c:var(--accent)"></span>Most likely reach</p></div>
+          <div class="nm-scrub"><button id="nmPlay" aria-pressed="true">Pause</button><input type="range" id="nmT" min="0" max="34" value="34" aria-label="Time in trial"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tag" style="margin-bottom:.45rem">Co-smoothing against held-in neurons <i>test trials; one temperature, chosen on a separate split</i></div>
+        <canvas id="nmSweep" class="cx-wide" width="960" height="250" aria-label="Bits per spike and remaining condition uncertainty as the number of held-in neurons grows"></canvas>
+      </div>
+      <div class="card">
+        <div class="tag" style="margin-bottom:.6rem">Noema on the real benchmark <i>NLB MC_Maze co-smoothing, test split</i></div>
+        <div class="tablewrap">
+          <table class="atlas nm-bench">
+            <thead><tr><th>Method</th><th class="n">co-bps</th><th>Against the known-condition oracle</th></tr></thead>
+            <tbody id="nmBench"></tbody>
+          </table>
+        </div>
+        <p class="note">Quoted from Noema's README. Noema's 0.367 comes from a 21-member ensemble plus MINT, and its strongest single model scores 0.333. It was scored locally with <code>nlb_tools</code> against MC_Maze's public test labels rather than uploaded to the EvalAI leaderboard, and the ensemble's member pool was chosen using a validation split. The oracle hands each test trial its true condition's average held-out activity. The other rows are the published scores listed in the same README.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= ABOUT ================= -->
   <section class="pane about" id="pane-about" role="tabpanel" aria-label="About" hidden>
     <div class="about-inner">
       <span class="eyebrow">About Perceive</span>
-      <h2 class="about-title">Does a world model keep a stable map?</h2>
-      <p class="lede">I'm excited about world models and about building more aligned simulations of physical reality, for robotics and scientific reasoning. A robot can only learn inside a generated world if that world is still the same world when the robot turns around. These labs test that with tools from neuroscience: place-cell remapping for generated 3D rooms, heading-ring fidelity for my own trained world models, and pathway lesions in the fly's head-direction circuit.</p>
+      <h2 class="about-title">Four labs on one question: does a model hold a stable picture of what it cannot see?</h2>
+      <p class="lede">I'm excited about world models and about building more aligned simulations of physical reality, for robotics and scientific reasoning. A robot can only learn inside a generated world if that world is still the same world when the robot turns around. These labs test that with tools from neuroscience: place-cell remapping for generated 3D rooms, heading-ring fidelity for my own trained world models, pathway lesions in the fly's head-direction circuit, and the information-limit test from Noema, a model of recorded neural populations.</p>
       <p class="byline">Saanvi S. Subramanian, October 2026</p>
 
       <div class="about-grid">
@@ -634,9 +716,10 @@ details.abstract p { margin: .6rem 0 0; font-size: 16px; line-height: 1.6; max-w
         <article><div class="venue"><b>Scaffold WM</b>in progress</div><div><p>A small world model joined to a hippocampus-style memory, after the spatial-scaffold account of Chandra, Sharma, Chaudhuri and Fiete (Nature 2025). It targets the forgetting the generated-worlds audit measures.</p></div></article>
         <article><div class="venue"><b>NeuroDev WM</b>in progress</div><div><p>What fixes the order in which world-model capabilities emerge, compared with rodent head-direction development. Appearance arrives near step 8, the heading coordinate between steps 63 and 106.</p></div></article>
         <article><div class="venue"><b>CortSeer</b>ECCV &amp; NeurIPS 2026 workshop orals</div><div><p>Routing clinical brain-lesion decisions on self-agreement instead of confidence: 88.4% against 70.0% accuracy at 40% coverage. The generated-worlds audit applies the same idea: agreement with itself at a revisit beats how good one frame looks.</p></div></article>
+        <article><div class="venue"><b>Noema</b>Manraj Mondair, open source (MIT)</div><div><p>Neural population modelling for brain–computer interfaces: 0.367 bits per spike on NLB MC_Maze, 94% of a known-condition oracle, with the remaining gap argued to be information the observed neurons lack. <a href="#noema">Rebuilt as a synthetic lab in the Noema tab.</a> <a href="https://github.com/manrajmondair/noema" target="_blank" rel="noopener">Code</a>.</p></div></article>
         <article><div class="venue"><b>Neuro-VLA IB</b>pilot</div><div><p>Ring and grid latents in language-conditioned world models. The pilot came back negative and was reported that way: a neural analogy has to beat its control.</p></div></article>
       </div>
-      <p class="note" style="margin-top:2rem">Built with three.js r128, the RoBoWoMo GRU checkpoints (float16) and a 32-unit ring attractor. Everything runs in the browser.</p>
+      <p class="note" style="margin-top:2rem">Built with three.js r128, the RoBoWoMo GRU checkpoints (float16), a 32-unit ring attractor and a port of Noema's condition-mix estimator. Everything runs in the browser.</p>
     </div>
   </section>
 </div>
@@ -1783,12 +1866,348 @@ fetch("robo.json").then(r => { if (!r.ok) throw new Error(r.status); return r.js
 </script>
 <script>
 (() => {
-  const TABS = ["lab", "robowomo", "compass", "about"];
+"use strict";
+const $ = s => document.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------- synthetic reaching population (MC_Maze shape: 137 held-in, 45 held-out) ----------
+const T = 35, ONSET = 10, BIN = 20, NIN = 137, NOUT = 45, N = NIN + NOUT, LN2 = Math.log(2);
+const NS = [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 137], TEMPS = [1, 2, 4];
+const SIG = 1.5, SHRINK = 0.1, NSEL = 1, NTEST = 3;
+const st = { ni: NS.length - 1, C: 108, reps: 16, win: "all", seed: 1, ex: 0, t: T - 1, playing: true, started: false, busy: false };
+let P = null, D = null, L = null, logL = null, LL = null, sweep = [], fixed = null, job = 0;
+
+function rng(a) { return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const gauss = r => Math.sqrt(-2 * Math.log(r() + 1e-12)) * Math.cos(2 * Math.PI * r());
+function poisson(lam, r) { const e = Math.exp(-lam); let k = 0, p = r(); while (p > e) { k++; p *= r(); } return k; }
+const ms = t => (t - ONSET) * BIN;
+const theta = c => 2 * Math.PI * c / st.C;
+const winEnd = () => st.win === "pre" ? ONSET : T;
+
+// direction tuning that switches on at movement onset and rotates a little, a mid-reach term set by each
+// condition's own path (as MC_Maze's mazes make reaches to nearby targets differ), and a condition-independent onset bump
+function rate(p, f, t) {
+  const s = 0.12 + 0.88 / (1 + Math.exp(-(t - ONSET - p.lat) / 1.5)) * Math.exp(-Math.max(0, t - 27) / 10);
+  const mid = 0.5 * Math.exp(-0.5 * ((t - ONSET - 12 - p.lat) / 5) ** 2);
+  const bump = Math.exp(-0.5 * ((t - ONSET - 4 - p.lat) / 3) ** 2);
+  return p.b * Math.exp(p.kap * s * Math.cos(f.th - p.phi - p.rot * s) + mid * (p.v1 * f.a + p.v2 * f.b) + p.cis * bump - 0.3 * p.kap);
+}
+
+function build() {
+  const r = rng(st.seed * 7919 + 13), C = st.C;
+  // neurons are iid, so the first n held-in neurons are a random subset of the 137
+  P = Array.from({ length: N }, () => ({ b: Math.exp(Math.log(2) + r() * Math.log(15)) * BIN / 1000, phi: r() * 2 * Math.PI, kap: 0.35 + 1.0 * r(), rot: (r() - 0.5) * 1.2, cis: r() - 0.3, lat: (r() - 0.5) * 3, v1: gauss(r), v2: gauss(r) }));
+  const F = Array.from({ length: C }, (_, c) => ({ th: theta(c), a: gauss(r), b: gauss(r) }));
+  const R = new Float32Array(C * T * N);
+  for (let c = 0; c < C; c++) for (let t = 0; t < T; t++) for (let n = 0; n < N; n++) R[(c * T + t) * N + n] = rate(P[n], F[c], t);
+  const tr = rng(st.seed * 104729 + C * 31 + st.reps * 7);
+  const split = reps => {
+    const K = C * reps, y = new Uint8Array(K * T * N), cond = new Int16Array(K);
+    for (let k = 0; k < K; k++) {
+      const c = k % C, g = Math.exp(0.12 * gauss(tr) - 0.0072); cond[k] = c;
+      for (let i = 0, o = k * T * N, b = c * T * N; i < T * N; i++) y[o + i] = Math.min(255, poisson(R[b + i] * g, tr));
+    }
+    // per-neuron mean-rate null over the split (noema/eval/metrics.py bits_per_spike), held-out neurons only
+    const m = new Float64Array(NOUT); let spk = 0, nul = 0;
+    for (let k = 0; k < K; k++) for (let t = 0; t < T; t++) for (let o = 0; o < NOUT; o++) { const v = y[(k * T + t) * N + NIN + o]; m[o] += v; spk += v; }
+    for (let o = 0; o < NOUT; o++) m[o] = Math.max(m[o] / (K * T), 1e-8);
+    for (let k = 0; k < K; k++) for (let t = 0; t < T; t++) for (let o = 0; o < NOUT; o++) { const v = y[(k * T + t) * N + NIN + o]; nul += v * Math.log(m[o]) - m[o]; }
+    // nonzero bins only: likelihood terms y·log(rate) vanish wherever y = 0
+    const hi = [], ho = [], hiStart = [0], hoStart = [0];
+    for (let k = 0; k < K; k++) {
+      for (let t = 0; t < T; t++) for (let n = 0; n < N; n++) { const v = y[(k * T + t) * N + n]; if (v) (n < NIN ? hi : ho).push(t * N + n, v); }
+      hiStart.push(hi.length); hoStart.push(ho.length);
+    }
+    return { K, y, cond, spk, nul, hi: Int32Array.from(hi), ho: Int32Array.from(ho), hiStart, hoStart };
+  };
+  D = { C, R, train: split(st.reps), sel: split(NSEL), test: split(NTEST) };
+  // library: condition-averaged train activity, shrunk toward the grand mean, smoothed in time (mint.py build_library)
+  const raw = new Float64Array(C * T * N), grand = new Float64Array(T * N), tn = D.train;
+  for (let k = 0; k < tn.K; k++) { const b = tn.cond[k] * T * N, o = k * T * N; for (let i = 0; i < T * N; i++) { raw[b + i] += tn.y[o + i]; grand[i] += tn.y[o + i]; } }
+  for (let i = 0; i < raw.length; i++) raw[i] = (1 - SHRINK) * raw[i] / st.reps + SHRINK * grand[i % (T * N)] / tn.K;
+  const rad = Math.ceil(4 * SIG), ker = []; let ks = 0;
+  for (let d = -rad; d <= rad; d++) { const w = Math.exp(-0.5 * (d / SIG) ** 2); ker.push(w); ks += w; }
+  L = new Float32Array(C * T * N); logL = new Float32Array(C * T * N);
+  for (let c = 0; c < C; c++) for (let t = 0; t < T; t++) for (let n = 0; n < N; n++) {
+    let s = 0;
+    for (let d = -rad; d <= rad; d++) s += ker[d + rad] * raw[(c * T + Math.min(T - 1, Math.max(0, t + d))) * N + n];
+    const v = Math.max(s / ks, 1e-4), i = (c * T + t) * N + n; L[i] = v; logL[i] = Math.log(v);
+  }
+  st.ex = Math.floor(r() * D.test.K);
+}
+
+// Poisson log-likelihood of each held-in neuron's spikes under each condition's library, per trial
+function precompute() {
+  const C = st.C, te = winEnd(), lsum = new Float64Array(C * NIN);
+  for (let c = 0; c < C; c++) for (let t = 0; t < te; t++) for (let j = 0; j < NIN; j++) lsum[c * NIN + j] += L[(c * T + t) * N + j];
+  LL = {};
+  for (const name of ["sel", "test"]) {
+    const s = D[name], out = new Float32Array(s.K * C * NIN);
+    for (let k = 0; k < s.K; k++) for (let c = 0; c < C; c++) {
+      const o = (k * C + c) * NIN, cb = c * T * N;
+      for (let j = 0; j < NIN; j++) out[o + j] = -lsum[c * NIN + j];
+      for (let i = s.hiStart[k]; i < s.hiStart[k + 1]; i += 2) {
+        const pos = s.hi[i]; if (pos >= te * N) continue;
+        out[o + pos % N] += s.hi[i + 1] * logL[cb + pos];
+      }
+    }
+    LL[name] = out;
+  }
+}
+function addNeurons(src, acc, K, j0, j1) {
+  for (let kc = 0, n = K * st.C; kc < n; kc++) { let s = 0; const o = kc * NIN; for (let j = j0; j < j1; j++) s += src[o + j]; acc[kc] += s; }
+}
+// soft condition assignment (mint.py infer_condition_mix)
+function posterior(acc, s, temp) {
+  const C = st.C, W = new Float64Array(s.K * C); let H = 0, hit = 0;
+  for (let k = 0; k < s.K; k++) {
+    const o = k * C; let mx = -Infinity, am = 0, z = 0;
+    for (let c = 0; c < C; c++) if (acc[o + c] > mx) { mx = acc[o + c]; am = c; }
+    for (let c = 0; c < C; c++) { const w = Math.exp((acc[o + c] - mx) / temp); W[o + c] = w; z += w; }
+    for (let c = 0; c < C; c++) { const w = W[o + c] /= z; if (w > 0) H -= w * Math.log2(w); }
+    if (am === s.cond[k]) hit++;
+  }
+  return { W, H: H / s.K, acc: hit / s.K };
+}
+// co-smoothing bits per spike on the held-out neurons, predicting each trial as a weighted mix of library rows
+// sum over bins of the predicted rate is the w-weighted sum of each row's total, so only spiking bins need the mix
+function score(s, W, tab = L) {
+  const C = st.C, tot = new Float64Array(C), live = new Int32Array(C); let ll = 0;
+  for (let c = 0; c < C; c++) for (let t = 0; t < T; t++) for (let o = 0; o < NOUT; o++) tot[c] += tab[(c * T + t) * N + NIN + o];
+  for (let k = 0; k < s.K; k++) {
+    let m = 0;
+    for (let c = 0; c < C; c++) { const w = W[k * C + c]; if (w >= 1e-6) { live[m++] = c; ll -= w * tot[c]; } }
+    for (let i = s.hoStart[k]; i < s.hoStart[k + 1]; i += 2) {
+      const pos = s.ho[i]; let p = 0;
+      for (let q = 0; q < m; q++) { const c = live[q]; p += W[k * C + c] * tab[c * T * N + pos]; }
+      ll += s.ho[i + 1] * Math.log(Math.max(p, 1e-8));
+    }
+  }
+  return (ll - s.nul) / Math.max(s.spk, 1) / LN2;
+}
+const onehot = s => { const W = new Float64Array(s.K * st.C); for (let k = 0; k < s.K; k++) W[k * st.C + s.cond[k]] = 1; return W; };
+
+// yield to the page between sweep points; a message is not throttled the way setTimeout is in background tabs
+const tick = () => new Promise(r => { const ch = new MessageChannel(); ch.port1.onmessage = () => r(); ch.port2.postMessage(0); });
+async function run(level) { // 2 = new population or library, 1 = new decoder window
+  const my = ++job, t0 = performance.now(); st.busy = true; st.ms = 0; sweep = []; update();
+  await tick(); if (my !== job) return;
+  if (level >= 2) st.rebuild = true;
+  if (st.rebuild || !D) { build(); st.rebuild = false; }
+  precompute();
+  const C = st.C;
+  fixed = { oracle: score(D.test, onehot(D.test)), blind: score(D.test, new Float64Array(D.test.K * C).fill(1 / C)), truth: score(D.test, onehot(D.test), D.R) };
+  // one temperature per population, chosen on the selection split with every held-in neuron, then held fixed
+  const accS = new Float64Array(D.sel.K * C), accT = new Float64Array(D.test.K * C); let j0 = 0, best = -Infinity, temp = 1;
+  addNeurons(LL.sel, accS, D.sel.K, 0, NIN);
+  for (const tp of TEMPS) { const v = score(D.sel, posterior(accS, D.sel, tp).W); if (v > best) { best = v; temp = tp; } }
+  for (const n of NS) {
+    await tick(); if (my !== job) return;
+    addNeurons(LL.test, accT, D.test.K, j0, n); j0 = n;
+    const pT = posterior(accT, D.test, temp);
+    sweep.push({ n, dec: score(D.test, pT.W), H: pT.H, acc: pT.acc, temp });
+    update();
+  }
+  st.busy = false; st.ms = performance.now() - t0; update();
+}
+
+// posterior over conditions after each bin of the example trial
+function examplePosterior() {
+  const C = st.C, n = NS[st.ni], s = D.test, k = st.ex, te = winEnd(), rec = sweep.find(r => r.n === n), temp = rec ? rec.temp : 1;
+  const cum = new Float64Array(C), out = [];
+  for (let t = 0; t < T; t++) {
+    if (t < te) for (let c = 0; c < C; c++) {
+      const yb = (k * T + t) * N, lb = (c * T + t) * N; let v = 0;
+      for (let j = 0; j < n; j++) v += s.y[yb + j] * logL[lb + j] - L[lb + j];
+      cum[c] += v;
+    }
+    let mx = -Infinity; for (let c = 0; c < C; c++) mx = Math.max(mx, cum[c]);
+    const q = new Float64Array(C); let z = 0;
+    for (let c = 0; c < C; c++) { q[c] = Math.exp((cum[c] - mx) / temp); z += q[c]; }
+    for (let c = 0; c < C; c++) q[c] /= z;
+    out.push(q);
+  }
+  return out;
+}
+const entropy = q => { let h = 0; for (const w of q) if (w > 0) h -= w * Math.log2(w); return h; };
+
+// ---------- drawing ----------
+const rC = $("#nmRaster"), rx = rC.getContext("2d"), gC = $("#nmRing"), gx = gC.getContext("2d"), sC = $("#nmSweep"), sx = sC.getContext("2d");
+let post = null;
+
+function drawRaster() {
+  const W = rC.width, H = rC.height, g = rx, n = NS[st.ni], s = D.test, k = st.ex;
+  const left = 78, right = 8, top = 8, bottom = 24, gap = 14, rows = n + NOUT;
+  const rh = (H - top - bottom - gap) / rows, cw = (W - left - right) / T, X = t => left + t * cw;
+  const ink = css("--ink"), acc = css("--accent"), mono = css("--mono");
+  g.clearRect(0, 0, W, H); g.fillStyle = css("--panel"); g.fillRect(0, 0, W, H);
+  const hiTop = top, hiBot = top + n * rh, hoTop = hiBot + gap, hoBot = hoTop + NOUT * rh;
+  if (st.win === "pre") { g.fillStyle = css("--rule"); g.fillRect(X(ONSET), hiTop, X(T) - X(ONSET), hiBot - hiTop); }
+  g.fillStyle = ink;
+  for (let j = 0; j < n; j++) for (let t = 0; t < T; t++) {
+    const v = s.y[(k * T + t) * N + j]; if (!v) continue;
+    g.globalAlpha = Math.min(1, 0.35 + 0.3 * v); g.fillRect(X(t) + 1, hiTop + j * rh, cw - 2, Math.max(1, rh * 0.8));
+  }
+  // held-out: the decoder's predicted rate as a heat strip, true spikes as ticks on top
+  const q = post[T - 1], C = st.C;
+  for (let o = 0; o < NOUT; o++) {
+    const pr = new Float64Array(T); let mx = 1e-9;
+    for (let t = 0; t < T; t++) { let v = 0; for (let c = 0; c < C; c++) if (q[c] > 1e-6) v += q[c] * L[(c * T + t) * N + NIN + o]; pr[t] = v; mx = Math.max(mx, v); }
+    g.fillStyle = acc;
+    for (let t = 0; t < T; t++) { g.globalAlpha = 0.85 * pr[t] / mx; g.fillRect(X(t), hoTop + o * rh, cw, Math.max(1, rh)); }
+    g.fillStyle = ink;
+    for (let t = 0; t < T; t++) { const v = s.y[(k * T + t) * N + NIN + o]; if (v) { g.globalAlpha = 1; g.fillRect(X(t) + cw * 0.38, hoTop + o * rh, cw * 0.24, Math.max(1, rh * 0.85)); } }
+  }
+  g.globalAlpha = 1;
+  // time markers
+  g.strokeStyle = css("--muted"); g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(ONSET), top); g.lineTo(X(ONSET), hoBot); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = acc; g.lineWidth = 2; g.beginPath(); g.moveTo(X(st.t + 1), top); g.lineTo(X(st.t + 1), hoBot); g.stroke(); g.lineWidth = 1;
+  g.fillStyle = css("--muted"); g.font = `500 11px ${mono}`; g.textAlign = "center";
+  [-200, 0, 200, 400].forEach(m => g.fillText(m === 0 ? "0 ms, movement" : m + " ms", X(ONSET + m / BIN), H - 7));
+  g.textAlign = "left"; g.fillStyle = ink; g.font = `600 12px ${mono}`;
+  g.fillText("Held in", 6, (hiTop + hiBot) / 2 - 2); g.fillText("Held out", 6, (hoTop + hoBot) / 2 - 2);
+  g.fillStyle = css("--muted"); g.font = `400 11px ${mono}`;
+  g.fillText(n + (n === 1 ? " neuron" : " neurons"), 6, (hiTop + hiBot) / 2 + 12); g.fillText("45, predicted", 6, (hoTop + hoBot) / 2 + 12);
+  if (st.win === "pre") { g.textAlign = "center"; g.fillText("not shown to the decoder", (X(ONSET) + X(T)) / 2, Math.max(hiTop + 12, (hiTop + hiBot) / 2)); }
+  $("#nmNow").textContent = `t = ${ms(st.t + 1)} ms`;
+}
+
+function drawRing() {
+  const W = gC.width, H = gC.height, g = gx, cx = W / 2, cy = H / 2, R0 = W * 0.26, Lm = W * 0.18, C = st.C;
+  const q = post[st.t], tc = D.test.cond[st.ex];
+  g.clearRect(0, 0, W, H); g.fillStyle = css("--panel"); g.fillRect(0, 0, W, H);
+  g.strokeStyle = css("--rule"); g.lineWidth = 1; g.beginPath(); g.arc(cx, cy, R0, 0, 2 * Math.PI); g.stroke();
+  let mx = 0, am = 0; for (let c = 0; c < C; c++) if (q[c] > mx) { mx = q[c]; am = c; }
+  g.lineWidth = Math.max(1.5, Math.min(7, 2 * Math.PI * R0 / C * 0.55)); g.lineCap = "butt";
+  for (let c = 0; c < C; c++) {
+    const a = theta(c), len = Math.max(1, q[c] / mx * Lm);
+    g.strokeStyle = c === am ? css("--accent") : css("--faint");
+    g.beginPath(); g.moveTo(cx + R0 * Math.cos(a), cy - R0 * Math.sin(a)); g.lineTo(cx + (R0 + len) * Math.cos(a), cy - (R0 + len) * Math.sin(a)); g.stroke();
+  }
+  const a = theta(tc), r1 = R0 - 6, r2 = R0 - 20;
+  g.fillStyle = css("--ink"); g.beginPath();
+  g.moveTo(cx + r1 * Math.cos(a), cy - r1 * Math.sin(a));
+  g.lineTo(cx + r2 * Math.cos(a + 0.12), cy - r2 * Math.sin(a + 0.12)); g.lineTo(cx + r2 * Math.cos(a - 0.12), cy - r2 * Math.sin(a - 0.12)); g.fill();
+  g.textAlign = "center"; g.fillStyle = css("--ink"); g.font = `700 20px ${css("--serif")}`;
+  g.fillText(`${entropy(q).toFixed(2)} bits`, cx, cy + 2);
+  g.fillStyle = css("--muted"); g.font = `500 11px ${css("--mono")}`;
+  g.fillText(`left of ${Math.log2(C).toFixed(2)}`, cx, cy + 18); g.fillText(`p(true) = ${q[tc].toFixed(2)}`, cx, cy + 32);
+  g.fillText(`peak ${mx.toFixed(2)}`, cx, H - 8);
+}
+
+function drawSweep() {
+  const W = sC.width, H = sC.height, g = sx, mono = css("--mono");
+  g.clearRect(0, 0, W, H);
+  if (!fixed) return;
+  const top = 34, bot = H - 30, lx = [52, 600], hx = [680, W - 12];
+  const xs = (n, x) => x[0] + Math.log(n) / Math.log(NIN) * (x[1] - x[0]);
+  const vals = [fixed.blind, fixed.oracle, fixed.truth, ...sweep.map(r => r.dec)];
+  const lo = Math.min(0, ...vals), hi = Math.max(...vals) * 1.08, Y = v => bot - (v - lo) / (hi - lo) * (bot - top);
+  const Hmax = Math.log2(st.C), YH = v => bot - v / Hmax * (bot - top);
+  g.font = `500 11px ${mono}`; g.strokeStyle = css("--rule"); g.fillStyle = css("--muted");
+  // axes and grid
+  const step = hi - lo > 0.6 ? 0.2 : 0.1;
+  g.textAlign = "right";
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) { g.beginPath(); g.moveTo(lx[0], Y(v)); g.lineTo(lx[1], Y(v)); g.stroke(); g.fillText(v.toFixed(1), lx[0] - 6, Y(v) + 4); }
+  for (let v = 0; v <= Hmax + 1e-9; v += Hmax > 5 ? 2 : 1) { g.beginPath(); g.moveTo(hx[0], YH(v)); g.lineTo(hx[1], YH(v)); g.stroke(); g.fillText(String(v), hx[0] - 6, YH(v) + 4); }
+  g.textAlign = "center";
+  [1, 4, 16, 64, 137].forEach(n => { g.fillText(n, xs(n, lx), bot + 15); g.fillText(n, xs(n, hx), bot + 15); });
+  g.fillText("held-in neurons", (lx[0] + lx[1]) / 2, H - 2); g.fillText("held-in neurons", (hx[0] + hx[1]) / 2, H - 2);
+  g.textAlign = "left"; g.fillStyle = css("--ink"); g.font = `600 11px ${mono}`;
+  g.fillText("BITS PER SPIKE", lx[0], 12); g.fillText("H(CONDITION | HELD-IN), BITS", hx[0], 12);
+  // current selection
+  const n = NS[st.ni]; g.strokeStyle = css("--accent"); g.globalAlpha = 0.5;
+  [lx, hx].forEach(x => { g.beginPath(); g.moveTo(xs(n, x), top); g.lineTo(xs(n, x), bot); g.stroke(); }); g.globalAlpha = 1;
+  // reference lines
+  const hline = (v, col, dash, label, x = lx, Yf = Y) => {
+    g.strokeStyle = col; g.setLineDash(dash); g.lineWidth = 1.5; g.beginPath(); g.moveTo(x[0], Yf(v)); g.lineTo(x[1], Yf(v)); g.stroke(); g.setLineDash([]);
+    g.fillStyle = col; g.font = `500 11px ${mono}`; g.textAlign = "left"; g.fillText(label, x[0] + 6, Yf(v) - 5);
+  };
+  hline(fixed.truth, css("--faint"), [2, 3], `generator rates ${fixed.truth.toFixed(3)}`);
+  hline(fixed.oracle, css("--ink"), [6, 4], `oracle ${fixed.oracle.toFixed(3)}`);
+  hline(fixed.blind, css("--faint"), [], `condition-blind ${fixed.blind.toFixed(3)}`);
+  hline(Hmax, css("--faint"), [6, 4], `no information, log₂ ${st.C} = ${Hmax.toFixed(2)}`, hx, YH);
+  // decoder curve and entropy curve
+  const curve = (key, x, Yf) => {
+    g.strokeStyle = css("--accent"); g.lineWidth = 2.5; g.beginPath();
+    sweep.forEach((r, i) => i ? g.lineTo(xs(r.n, x), Yf(r[key])) : g.moveTo(xs(r.n, x), Yf(r[key]))); g.stroke(); g.lineWidth = 1;
+    g.fillStyle = css("--accent"); sweep.forEach(r => { g.beginPath(); g.arc(xs(r.n, x), Yf(r[key]), r.n === n ? 5 : 3, 0, 2 * Math.PI); g.fill(); });
+  };
+  curve("dec", lx, Y); curve("H", hx, YH);
+  if (st.busy) { g.fillStyle = css("--muted"); g.textAlign = "right"; g.fillText(`computing… ${sweep.length} of ${NS.length}`, lx[1] - 4, bot - 8); }
+}
+
+function update() {
+  const n = NS[st.ni];
+  $("#oNmIn").textContent = n === NIN ? `${n}, all` : String(n);
+  $("#oNmReps").textContent = String(st.reps);
+  const r = sweep.find(x => x.n === n), pill = $("#nmPill"), title = $("#nmTitle");
+  const f3 = v => v.toFixed(3);
+  $("#nmM2").textContent = fixed ? f3(fixed.oracle) : "–";
+  $("#nmM5").textContent = fixed ? f3(fixed.blind) : "–";
+  $("#nmM4d").textContent = `Bits of uncertainty about the reach left after the held-in neurons. log₂ ${st.C} = ${Math.log2(st.C).toFixed(2)} means no information.`;
+  if (!r || !fixed) {
+    ["#nmM1", "#nmM3", "#nmM4"].forEach(id => $(id).textContent = "…");
+    pill.className = "pill idle"; pill.textContent = "Computing"; title.textContent = "Fitting the library and running the sweep.";
+  } else {
+    const share = r.dec / fixed.oracle, pct = Math.round(share * 100) + "%";
+    $("#nmM1").textContent = f3(r.dec); $("#nmM3").textContent = pct; $("#nmM4").textContent = r.H.toFixed(2) + " bits";
+    $("#nmM3d").textContent = share > 1.005 ? "Above 100%: mixing similar conditions averages out noise in the oracle's training templates." : "Noema on MC_Maze: 94%.";
+    if (share >= 0.95) { pill.className = "pill good"; pill.textContent = "Determined"; title.textContent = `The held-in neurons nearly pin down the reach. The decoder reaches ${pct} of the oracle.`; }
+    else if (share >= 0.8) { pill.className = "pill warn"; pill.textContent = "Partly ambiguous"; title.textContent = `${r.H.toFixed(1)} bits about the reach stay unknown, and the decoder reaches ${pct} of the oracle.`; }
+    else { pill.className = "pill bad"; pill.textContent = "Underdetermined"; title.textContent = `These neurons leave ${r.H.toFixed(1)} bits about the reach unknown. The decoder reaches ${pct} of the oracle.`; }
+  }
+  pane.dataset.ms = st.ms ? Math.round(st.ms) : "";
+  if (D && D.C === st.C) { post = examplePosterior(); drawRaster(); drawRing(); }
+  drawSweep();
+}
+
+// ---------- real-benchmark table (from Noema's README) ----------
+(() => {
+  const rows = [["Known-condition oracle", 0.392, "ref"], ["GRAFT, ensemble", 0.387], ["STNDT, ensemble", 0.386], ["S5", 0.382], ["STNDT, single", 0.369], ["Noema, ensemble + MINT", 0.367, "me"], ["AutoLFADS", 0.336], ["MINT", 0.330], ["NDT", 0.323]];
+  $("#nmBench").innerHTML = rows.map(([m, v, c]) => `<tr class="${c || ""}"><td>${c === "me" ? "<b>" + m + "</b>" : m}</td><td class="n">${v.toFixed(3)}</td><td><span class="nm-bar" style="--w:${(v / 0.392 * 100).toFixed(1)}%"></span><span class="nm-pct">${Math.round(v / 0.392 * 100)}%</span></td></tr>`).join("");
+})();
+
+// ---------- controls ----------
+const pane = $("#pane-noema");
+$("#nmIn").addEventListener("input", e => { st.ni = +e.target.value; update(); });
+$("#nmC").addEventListener("change", e => { st.C = +e.target.value; run(2); });
+$("#nmReps").addEventListener("input", e => { st.reps = +e.target.value; $("#oNmReps").textContent = String(st.reps); });
+$("#nmReps").addEventListener("change", () => run(2));
+$("#nmWin").addEventListener("change", e => { st.win = e.target.value; run(1); });
+$("#nmNew").addEventListener("click", () => { st.seed++; run(2); });
+$("#nmTrial").addEventListener("click", () => { if (D) { st.ex = Math.floor(Math.random() * D.test.K); update(); } });
+const play = $("#nmPlay"), scrub = $("#nmT");
+const setPlaying = on => { st.playing = on; play.textContent = on ? "Pause" : "Play"; play.setAttribute("aria-pressed", on ? "true" : "false"); };
+play.addEventListener("click", () => setPlaying(!st.playing));
+scrub.addEventListener("input", e => { setPlaying(false); st.t = +e.target.value; if (post) { drawRaster(); drawRing(); } });
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+let last = 0;
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (pane.hidden) return;
+  if (st.playing && post && now - last > 140) {
+    last = now; st.t = st.t >= T - 1 ? 0 : st.t + 1; scrub.value = st.t; drawRaster(); drawRing();
+  }
+}
+requestAnimationFrame(loop);
+// start the (heavy) fit only once the tab is first opened
+const kick = () => { if (!pane.hidden && !st.started) { st.started = true; run(2); } };
+new MutationObserver(kick).observe(pane, { attributes: true, attributeFilter: ["hidden"] });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", update);
+update(); kick();
+})();
+</script>
+<script>
+(() => {
+  const TABS = ["lab", "robowomo", "compass", "noema", "about"];
   const panes = TABS.map(id => document.getElementById("pane-" + id)), links = [...document.querySelectorAll(".tabs a")];
   function show(id, scroll) {
     if (!TABS.includes(id)) id = "lab";
     panes.forEach(p => p.hidden = p.id !== "pane-" + id);
     links.forEach(a => a.setAttribute("aria-selected", a.dataset.tab === id ? "true" : "false"));
+    links.find(a => a.dataset.tab === id)?.scrollIntoView({ block: "nearest", inline: "nearest" });
     try { localStorage.setItem("perceive.tab", id); } catch (e) {}
     if (scroll) window.scrollTo(0, 0);
   }
