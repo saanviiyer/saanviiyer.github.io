@@ -56,7 +56,6 @@ video: ""  # TODO: Saanvi to add explainer video
 <section class="pp-thread" id="t1">
   <h3 class="pp-thread-title">Detecting subtle epileptic lesions</h3>
   <p class="pp-thread-sub">Structural-functional integration for enhanced detection of subtle epileptogenic lesions</p>
-  <p><span class="venue-badge">ECCV AI4M3D 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
 
   <p>I wanted to know whether anatomical localization can help a 3D detector recover epileptogenic lesions it would otherwise miss. The intuition is simple: a detector that scores every voxel with one global threshold either sets the bar high and loses faint lesions, or sets it low and fills up with false positives. If you already suspect which lobe the lesion is in, you can lower the bar there and raise it everywhere else, so a faint lesion in the right place survives while noise elsewhere is suppressed. The method does that, and then searches for several candidate peaks inside the restricted region rather than trusting a single maximum. The recovery numbers below are upper bounds under oracle localization, which means they assume the correct region is already known rather than derived from EEG.</p>
 
@@ -117,8 +116,6 @@ video: ""  # TODO: Saanvi to add explainer video
 <section class="pp-thread" id="t2">
   <h3 class="pp-thread-title">Routing EEG localization decisions</h3>
   <p class="pp-thread-sub">Wait, predict, or defer? Evaluating an offline sequential routing policy for EEG localization</p>
-  <p><span class="venue-badge">NeurIPS HAIC 2026</span><span class="venue-badge">Sole author</span></p>
-  <!-- TODO: Saanvi to add the HAIC OpenReview link. -->
 
   <p>A model forced to answer every patient will answer the hard ones too, and a confident wrong localization is worse at the bedside than no answer, because it can send attention to the wrong region. So I evaluated a different design on 166 patients. Instead of always predicting, a policy watches the localizer's output as 10-second EEG segments arrive and decides, at each step, whether to report the current hemisphere, wait for another segment, or defer the patient after a fixed observation budget. Nothing is retrained, the policy replays held-out predictions, and I choose every threshold on training patients only. The policies are compared at 40% coverage, which means each answers the 40% of patients it is most willing to commit to and defers the rest.</p>
 
@@ -150,7 +147,6 @@ video: ""  # TODO: Saanvi to add explainer video
 <section class="pp-thread" id="t3">
   <h3 class="pp-thread-title">Seven failures in clinical ML evaluation</h3>
   <p class="pp-thread-sub">Right number, wrong conclusion: seven failures in clinical ML evaluation</p>
-  <p><span class="venue-badge">NeurIPS RCMLR 2026</span><span class="venue-badge">Oral</span><span class="venue-badge">Sole author</span></p>
 
   <p>This thread is the standard behind the other two, written down. It catalogues seven corrections to my own EEG-localization work where a statistic was computed correctly and still invited a conclusion that was wrong, each with the one worked number that changed and the claim it would have licensed. The oracle upper bound in thread 1 is the same kind of error these are about, a number that is right but assumes part of the answer, which is why that bound is labeled every time it appears. The catalogue gives a checklist a result has to pass before its number means what it seems to, applied first to my own.</p>
 
@@ -223,19 +219,17 @@ video: ""  # TODO: Saanvi to add explainer video
 </div>
 
 <p class="pp-section-num" id="cite">Cite</p>
-<div class="bibtex">@inproceedings{subramanian2026fcd,
-  author    = {Saanvi S. Subramanian},
-  title     = {Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions},
-  booktitle = {ECCV Workshop on AI for Medical 3D Vision (AI4M3D)},
-  year      = {2026},
-  url       = {https://openreview.net/forum?id=8EdNGJbsTq}
+<div class="bibtex">@misc{subramanian2026fcd,
+  author = {Saanvi S. Subramanian},
+  title  = {Structural-Functional Integration for Enhanced Detection of Subtle Epileptogenic Lesions},
+  year   = {2026},
+  note   = {Preprint}
 }
 
-@inproceedings{subramanian2026rcmlr,
-  author    = {Saanvi S. Subramanian},
-  title     = {Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation},
-  booktitle = {NeurIPS RCMLR Workshop},
-  year      = {2026},
-  url       = {https://openreview.net/forum?id=k7zEEtF1V8}
+@misc{subramanian2026rcmlr,
+  author = {Saanvi S. Subramanian},
+  title  = {Right Number, Wrong Conclusion: Seven Failures in Clinical ML Evaluation},
+  year   = {2026},
+  note   = {Preprint}
 }
 </div>

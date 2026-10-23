@@ -3,9 +3,6 @@ layout: project
 title: "Recurrent Learning in Robot World Models"
 permalink: /robot-world-models/
 authors: "Saanvi S. Subramanian"
-venues:
-  - "lightning talk and poster, RoBoWoMo @ IEEE IROS 2026"
-  - "poster, Robotics World Modeling @ NeurIPS 2026"
 links:
   - label: "Coordinates code"
     url: "https://github.com/saanviiyer/used_coordinates"
@@ -54,7 +51,6 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
 
 <section class="pp-thread" id="faithful-heading">
   <h3 class="pp-thread-title">A steerable heading variable emerges only under partial observability</h3>
-  <p><span class="venue-badge">RoBoWoMo @ IEEE IROS 2026</span><span class="venue-badge">Lightning talk and poster</span></p>
 
   <p>I train 36 action-conditioned world models on egocentric range observations from a robot moving in a plane, with no pose in the input and none in the loss, and ask whether a heading variable appears on its own. Hidden states form a ring in nearly every condition, and persistent homology finds one in 7 of 8 always-observed models and 7 of 8 shuffled-action controls, which have no way to integrate heading, so ring shape alone leaves the question open. The deciding test is fidelity, how closely the coordinate around the ring follows physical heading at the steps where the model has to integrate without seeing anything. Withholding observations during training lifts that fidelity by 0.421 on average over a matched shuffled-action null, with all 12 paired differences positive and the smallest of them 0.293, and the lowest-fidelity blackout model, at 0.860, still beats the highest-fidelity control, at 0.613, so the 36 models separate with no overlap.</p>
 
@@ -84,7 +80,6 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
 
 <section class="pp-thread" id="used-coordinates">
   <h3 class="pp-thread-title">Decoding and use are separate properties</h3>
-  <p><span class="venue-badge">Robotics World Modeling @ NeurIPS 2026</span><span class="venue-badge">Poster</span></p>
 
   <p>The heading result raised a sharper question. A probe can read a variable out of a model's latent state even when the model's own transition dynamics act on a different one, so decoding and use are different properties. To tell them apart I built a label-free test that uses only actions and the frozen model's own predictions: a candidate coordinate is a plane in the latent space, and the test asks whether rotating the state inside that plane reproduces the effect of an extra action, judged against a variance-matched null. A coordinate the dynamics use passes; a coordinate that is only decodable stays within the null. In the shuffled-action control from the heading study, heading decodes to within 20 to 24 degrees, yet the conjugate plane sits 69 to 83 degrees away, so the variable lives in a decaying trace of the last observation while the dynamics act elsewhere.</p>
 
@@ -123,18 +118,18 @@ thesis: "A predictive world model builds a usable internal coordinate only when 
 </div>
 
 <p class="pp-section-num" id="cite">Cite</p>
-<div class="bibtex">@inproceedings{subramanian2026heading,
-  author    = {Saanvi S. Subramanian},
-  title     = {A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
-  booktitle = {Robot World Models Workshop (RoBoWoMo), IEEE IROS},
-  year      = {2026}
+<div class="bibtex">@misc{subramanian2026heading,
+  author = {Saanvi S. Subramanian},
+  title  = {A Steerable Heading Variable Emerges in Predictive World Models Only Under Partial Observability},
+  year   = {2026},
+  note   = {Preprint}
 }
 
-@inproceedings{subramanian2026coordinates,
-  author    = {Saanvi S. Subramanian},
-  title     = {Which Latent Coordinates Drive World-Model Dynamics?},
-  booktitle = {Robotics World Modeling Workshop, NeurIPS},
-  year      = {2026}
+@misc{subramanian2026coordinates,
+  author = {Saanvi S. Subramanian},
+  title  = {Which Latent Coordinates Drive World-Model Dynamics?},
+  year   = {2026},
+  note   = {Preprint}
 }</div>
 
 </div>
