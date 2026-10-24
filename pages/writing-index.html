@@ -16,7 +16,7 @@ permalink: /writing/
       <div class="pub-main">
         <h3 class="pub-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
         <div class="pub-venue">essay, personal site</div>
-        <div class="pub-links"><a href="{{ post.url | relative_url }}">read</a></div>
+        <div class="pub-links"><a href="{{ post.url | relative_url }}">read</a>{% if post.x_url %}<a href="{{ post.x_url }}" target="_blank" rel="noopener" aria-label="Thread on X" style="margin-left: 14px;"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="fill: currentColor; vertical-align: -1px; margin-right: 4px;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>thread</a>{% endif %}</div>
       </div>
       <div class="pub-year">{{ post.date | date: "%Y" }}</div>
     </div>
