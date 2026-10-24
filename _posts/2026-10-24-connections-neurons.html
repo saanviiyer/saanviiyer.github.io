@@ -1,0 +1,327 @@
+---
+layout: null
+title: "Can a language model's neurons solve Connections?"
+date: 2026-10-24
+tag: "Interpretability"
+section: technical
+rank: 5.5
+thumb: /assets/images/connections-neurons/thumb.svg
+permalink: /writing/connections-neurons/
+excerpt: "If HAIL, RAIN, SLEET and SNOW light up the same neurons, a puzzle solver should fall out for free. I tested that on 1,217 puzzles and five Qwen models. It half works, for a different reason than I expected."
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Can a language model's neurons solve Connections?, Saanvi S. Subramanian</title>
+<meta name="description" content="Can a language model's neurons solve NYT Connections? Shared-neuron and activation-similarity solvers on five Qwen models.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; the puzzle board and two charts break out slightly wider. Tile colours come from the game's four difficulty levels. */
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1c1a;
+  --muted: #5f5c55;
+  --rule: #e2dfd6;
+  --tile: #efede6;
+  --tile-fg: #1d1c1a;
+  --yellow: #f9df6d;
+  --green: #a0c35a;
+  --blue: #b0c4ef;
+  --purple: #ba81c5;
+  --ink-res: #3456a6;
+  --ink-mlp: #4f7417;
+  --ink-neuron: #7a3a8c;
+  --ink-sae: #a37800;
+  --ink-flat: #8b877d;
+  --display: "Libre Franklin", "Franklin Gothic Medium", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --fg: #ecebe6; --muted: #a8a59c; --rule: #2f2e2a; --tile: #2a2926; --tile-fg: #ecebe6;
+    --ink-res: #8fb0ff; --ink-mlp: #a9d36a; --ink-neuron: #d39be2; --ink-sae: #e6c34a; --ink-flat: #8d8a82;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614; --fg: #ecebe6; --muted: #a8a59c; --rule: #2f2e2a; --tile: #2a2926; --tile-fg: #ecebe6;
+  --ink-res: #8fb0ff; --ink-mlp: #a9d36a; --ink-neuron: #d39be2; --ink-sae: #e6c34a; --ink-flat: #8d8a82;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 1.12rem; line-height: 1.65; }
+.page { max-width: 44rem; margin: 0 auto; padding-block: 3.5rem 5rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 1.4rem; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 6vw, 3.1rem); line-height: 1.08; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; margin: 1.6rem 0 0; text-wrap: balance; }
+p { margin: 0; }
+.dek { font-size: 1.28rem; color: var(--muted); line-height: 1.5; }
+.tldr { border-left: 4px solid var(--purple); background: var(--tile); border-radius: 0 6px 6px 0; padding: 1rem 1.1rem; display: grid; gap: .5rem; }
+.tldr h2 { margin: 0; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.tldr ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .4rem; font-size: 1.02rem; line-height: 1.5; }
+.back { font-family: var(--display); font-size: .85rem; margin: 0; }
+.back a { color: var(--muted); text-decoration: none; }
+.back a:hover, .back a:focus-visible { color: var(--fg); text-decoration: underline; }
+.byline { font-family: var(--display); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: .8rem; }
+code, .mono { font-family: var(--mono); font-size: .88em; }
+a { color: var(--ink-res); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink-res); outline-offset: 2px; }
+strong { font-weight: 600; }
+
+/* board */
+figure { margin: .6rem 0; display: grid; gap: .6rem; }
+figcaption { font-family: var(--display); font-size: .84rem; color: var(--muted); line-height: 1.45; }
+.board { display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; position: relative; }
+.tile { background: var(--tile); color: var(--tile-fg); border-radius: 6px; min-height: 64px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: clamp(.68rem, 2.4vw, .95rem); letter-spacing: .02em; text-align: center; padding: 4px; overflow-wrap: anywhere; }
+.solved { grid-column: 1 / -1; background: var(--yellow); color: #1d1c1a; border-radius: 6px; min-height: 64px; display: grid; place-content: center; text-align: center; font-family: var(--display); }
+.solved b { font-weight: 800; letter-spacing: .04em; }
+.solved span { font-size: .9rem; }
+.miss .tile { box-shadow: inset 0 0 0 2px var(--rule); }
+.legend-row { font-family: var(--display); font-size: .74rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+
+/* charts */
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; height: auto; min-width: 340px; }
+.chart text { font-family: var(--display); fill: var(--muted); font-size: 12px; }
+.chart .lab { font-weight: 600; font-size: 12.5px; }
+.grid line { stroke: var(--rule); stroke-width: 1; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* stat strip */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); }
+.stats div { background: var(--bg); padding: .9rem .6rem; display: grid; gap: .2rem; }
+.stats b { font-family: var(--display); font-weight: 800; font-size: 1.7rem; font-variant-numeric: tabular-nums; }
+.stats span { font-family: var(--display); font-size: .8rem; color: var(--muted); line-height: 1.35; }
+@media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
+
+.cmp { width: 100%; border-collapse: collapse; font-family: var(--display); font-size: .95rem; }
+.cmp th, .cmp td { padding: .55rem .6rem; border-bottom: 1px solid var(--rule); text-align: right; }
+.cmp th[scope="row"] { text-align: left; font-weight: 600; }
+.cmp thead th { color: var(--muted); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; }
+.cmp td { font-variant-numeric: tabular-nums; }
+ul.notes { margin: 0; padding-left: 1.2rem; display: grid; gap: .45rem; }
+.end { font-family: var(--display); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
+
+/* Standalone reset (the artifact host used to supply these) */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; color-scheme: light; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img, svg { max-width: 100%; }
+
+/* Animations: only for viewers who haven't asked for reduced motion. Without JS everything is static and visible. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes drop { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
+  @keyframes sweep { from { opacity: 0; clip-path: inset(0 100% 0 0 round 6px); } to { opacity: 1; clip-path: inset(0 0 0 0 round 6px); } }
+
+  h1, .dek, .byline, .tldr { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  h1 { animation-delay: .08s; }
+  .dek { animation-delay: .16s; }
+  .byline { animation-delay: .24s; }
+  .tldr { animation-delay: .32s; }
+
+  .board .tile { animation: drop .45s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(.45s + var(--i, 0) * 45ms); }
+  .board .solved { animation: sweep .7s cubic-bezier(.65,0,.35,1) both; animation-delay: 1.15s; }
+
+  .js .chart polyline.draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.4s cubic-bezier(.65,0,.35,1); }
+  .js .chart circle, .js .chart .lab, .js .chart polyline.fade { opacity: 0; transition: opacity .5s ease; }
+  .js .chart.in polyline.draw { stroke-dashoffset: 0; }
+  .js .chart.in circle, .js .chart.in .lab, .js .chart.in polyline.fade { opacity: 1; transition-delay: 1.1s; }
+
+  .js .cmp tbody tr { opacity: 0; transform: translateY(8px); transition: opacity .5s ease, transform .5s ease; transition-delay: calc(var(--i, 0) * 90ms); }
+  .js .cmp.in tbody tr { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<article class="page">
+  <p class="back"><a href="/writing/">&larr; Writing</a></p>
+  <h1>Can a language model's neurons solve Connections?</h1>
+  <p class="dek">If HAIL, RAIN, SLEET and SNOW light up the same neurons, a puzzle solver should fall out for free. I tested that on 1,217 puzzles and five Qwen models. It half works, for a different reason than I expected.</p>
+  <p class="byline">October 2026 &middot; code and full tables in the project README</p>
+
+  <section class="tldr" aria-label="TL;DR">
+    <h2>TL;DR</h2>
+    <ul>
+      <li>Grouping Connections words by how similarly a Qwen model represents them works: up to 1.12 of 4 groups per puzzle with Qwen3.8-27B, against 0.006 by chance.</li>
+      <li>"Shared neurons" are not why. Scoring groups by neurons all four words share is worse than plain similarity at every model size, and interpretable SAE features do worse still. There is no weather neuron.</li>
+      <li>Asked directly, the same models find fewer groups. Thinking narrows the gap but doesn't close it.</li>
+      <li>Feeding the similarity solver's guesses to a thinking model looked like the best method, until a split by release date showed its edge came from puzzles the model may have memorised.</li>
+    </ul>
+  </section>
+
+  <figure>
+    <div class="board" aria-label="Puzzle 1 as sorted by the neuron solver">
+      <div class="row"><div class="solved"><b>WET WEATHER</b><span>HAIL, RAIN, SLEET, SNOW</span></div></div>
+      <div class="row miss"><div class="tile">BUCKS</div><div class="tile">JAZZ</div><div class="tile">KAYAK</div><div class="tile">RACECAR</div></div>
+      <div class="row miss"><div class="tile">HEAT</div><div class="tile">NETS</div><div class="tile">TAB</div><div class="tile">MOM</div></div>
+      <div class="row miss"><div class="tile">OPTION</div><div class="tile">RETURN</div><div class="tile">SHIFT</div><div class="tile">LEVEL</div></div>
+    </div>
+    <figcaption>The very first Connections puzzle (12 June 2023), sorted by the shared-neuron solver on Qwen3-0.6B. It finds the weather. It never reads BUCKS, HEAT, JAZZ and NETS as basketball teams, or KAYAK, LEVEL, MOM and RACECAR as palindromes, and it splits the keyboard keys apart.</figcaption>
+  </figure>
+
+  <h2>The idea</h2>
+  <p>A Connections board is 16 words that hide four groups of four. The groups range from easy (yellow) to devious (purple). Language models know a lot about words, so here is a tempting shortcut: don't ask the model to solve anything. Show it each word on its own, record which MLP neurons fire, and look for the four-word sets that share the most strongly active neurons. If the model has a "weather" neuron, the weather group should jump out.</p>
+  <p>Reading each word in isolation matters. The model never sees a word next to its puzzle-mates, so it can't recall a memorised answer. All it has is what it already knows about each word.</p>
+
+  <h2>The setup</h2>
+  <p>I used every puzzle from June 2023 to October 2026, 8,797 distinct words in all. All tuning happened on the first 200 puzzles, and the remaining 1,017 were scored once. For every word I averaged activations over three short prompts ("A word: hail", and so on). Then I z-scored each neuron across the whole vocabulary, so a neuron only counts when it is unusually active for that word.</p>
+  <p>The shared-neuron score for a candidate group works like this: for each neuron, take the activation of the <em>weakest</em> of the four words, so the neuron has to fire for all of them. Then average the top <span class="mono">k</span> neurons. An exact search picks the best split of the board into four groups, and a game simulation plays it with the usual four mistakes allowed. Every competing method uses the same search and the same game, and differs only in how it scores a group.</p>
+
+  <h2>It works, and plain similarity works better</h2>
+  <div class="stats">
+    <div><b class="num">0.006</b><span>groups per puzzle from random guessing</span></div>
+    <div><b class="num">0.74</b><span>shared neurons, Qwen3.8-27B</span></div>
+    <div><b class="num">1.12</b><span>plain cosine similarity, Qwen3.8-27B</span></div>
+  </div>
+  <p>Shared neurons beat chance by a factor of more than a hundred. But the controls do better. Mean cosine similarity of the same MLP activations, or of the residual stream at the same layer, beats the shared-neuron score at every model size. The gap also grows with scale: from 0.6B up to Qwen3.8-27B, residual cosine climbs to 1.12, while shared neurons stall at about 0.78 from 1.7B on and dip to 0.74 at 27B. At 27B the difference is 0.38 groups per puzzle (95% CI 0.32 to 0.44). The 27B is a newer Qwen generation, so its jump mixes size with a change of model family.</p>
+
+  <figure class="chart">
+    <svg viewBox="0 0 700 300" role="img" aria-label="Groups solved per puzzle by model size for four methods, Qwen3-0.6B to Qwen3.8-27B">
+      <g class="grid">
+        <line x1="60" x2="560" y1="250.0" y2="250.0"/>
+        <line x1="60" x2="560" y1="206.0" y2="206.0"/>
+        <line x1="60" x2="560" y1="162.0" y2="162.0"/>
+        <line x1="60" x2="560" y1="118.0" y2="118.0"/>
+        <line x1="60" x2="560" y1="74.0" y2="74.0"/>
+        <line x1="60" x2="560" y1="30.0" y2="30.0"/>
+      </g>
+      <text x="50" y="254.0" text-anchor="end">0</text><text x="50" y="210.0" text-anchor="end">0.25</text><text x="50" y="166.0" text-anchor="end">0.5</text><text x="50" y="122.0" text-anchor="end">0.75</text><text x="50" y="78.0" text-anchor="end">1</text><text x="50" y="34.0" text-anchor="end">1.25</text>
+      <text x="80" y="274" text-anchor="middle">Qwen3-0.6B</text><text x="195" y="274" text-anchor="middle">1.7B</text><text x="310" y="274" text-anchor="middle">4B</text><text x="425" y="274" text-anchor="middle">8B</text><text x="540" y="274" text-anchor="middle">Qwen3.8-27B</text>
+      <text x="12" y="140" transform="rotate(-90 12 140)" text-anchor="middle">groups per puzzle (of 4)</text>
+      <polyline points="80,118.0 195,109.2 310,79.3 425,72.2 540,52.9" fill="none" stroke="var(--ink-res)" stroke-width="2.5"/>
+      <polyline points="80,123.3 195,102.2 310,88.1 425,88.1 540,86.3" fill="none" stroke="var(--ink-mlp)" stroke-width="2.5"/>
+      <polyline points="80,128.6 195,112.7 310,112.7 425,111.0 540,119.8" fill="none" stroke="var(--ink-neuron)" stroke-width="3"/>
+      <polyline points="80,190.2 195,188.4 310,186.6 425,209.5 540,195.4" fill="none" stroke="var(--ink-flat)" stroke-width="2" stroke-dasharray="4 4"/>
+      <text class="lab" x="562" y="52" style="fill:var(--ink-res)">residual cosine 1.12</text>
+      <text class="lab" x="562" y="89" style="fill:var(--ink-mlp)">MLP cosine 0.93</text>
+      <text class="lab" x="562" y="123" style="fill:var(--ink-neuron)">shared neurons 0.74</text>
+      <text class="lab" x="562" y="199" style="fill:var(--ink-flat)">static embedding 0.31</text>
+    </svg>
+    <figcaption>Held-out test set, 1,017 puzzles. Each method's layer and settings were chosen on the 200 dev puzzles. Qwen3-8B and Qwen3.8-27B ran on an A100; the others on a laptop. Standard errors are about &plusmn;0.03.</figcaption>
+  </figure>
+
+  <h2>There is no weather neuron</h2>
+  <p>The tuning results said the same thing. If category neurons existed, a handful should be enough to find a group. Instead the shared-neuron score kept improving as I averaged over more neurons, from 1 to 4 to 16 and on up to 1,024, the largest value I tried. And when you look at which neurons the four weather words share most strongly, they are unrelated to weather. The top one fires hardest for STARRY, DOZEN, TUNGSTEN and AURORA. Raw MLP neurons are polysemantic, so a group shows up as a faint overlap across hundreds of neurons, never as one bright cell.</p>
+
+  <h2>Second try: interpretable features</h2>
+  <p>That points to the obvious fix. Sparse autoencoders and transcoders break activations into features that are much closer to one concept each. Qwen recently released <a href="https://huggingface.co/Qwen/SAE-Res-Qwen3-1.7B-Base-W32K-L0_50">Qwen-Scope SAEs</a>, and there are community <a href="https://huggingface.co/mwhanna/qwen3-1.7b-transcoders-lowl0">transcoders for Qwen3-1.7B</a>. I swapped each of them in for the neurons.</p>
+  <p>It got worse: 0.33 groups per puzzle with shared SAE features and 0.19 with transcoder features, against 0.78 for raw neurons. The curve below shows why, and it is the most interesting result of the project. One SAE feature is worth far more than one neuron (0.59 against 0.32). But SAE features stop improving after about four, while neurons keep climbing.</p>
+
+  <figure class="chart">
+    <svg viewBox="0 0 700 300" role="img" aria-label="Accuracy versus number of shared units k for neurons, SAE features, and transcoder features">
+      <g class="grid">
+        <line x1="60" x2="530" y1="250" y2="250"/><line x1="60" x2="530" y1="176.7" y2="176.7"/>
+        <line x1="60" x2="530" y1="103.3" y2="103.3"/><line x1="60" x2="530" y1="30" y2="30"/>
+      </g>
+      <text x="50" y="254" text-anchor="end">0</text><text x="50" y="181" text-anchor="end">0.4</text>
+      <text x="50" y="107" text-anchor="end">0.8</text><text x="50" y="34" text-anchor="end">1.2</text>
+      <text x="70" y="274" text-anchor="middle">1</text><text x="160" y="274" text-anchor="middle">4</text><text x="250" y="274" text-anchor="middle">16</text>
+      <text x="340" y="274" text-anchor="middle">64</text><text x="430" y="274" text-anchor="middle">256</text><text x="520" y="274" text-anchor="middle">1024</text>
+      <text x="295" y="294" text-anchor="middle">k, the number of shared units averaged (log scale)</text>
+      <text x="12" y="140" transform="rotate(-90 12 140)" text-anchor="middle">groups per puzzle, dev</text>
+      <polyline points="70,192.3 160,153.8 250,105.2 340,68.5 430,53.8 520,42.8" fill="none" stroke="var(--ink-neuron)" stroke-width="3"/>
+      <polyline points="70,141.8 160,134.5 250,136.3 340,138.2 430,136.3 520,150.1" fill="none" stroke="var(--ink-sae)" stroke-width="2.5"/>
+      <polyline points="70,171.2 160,165.7 250,165.7 340,165.7 430,165.7 520,173.9" fill="none" stroke="var(--ink-flat)" stroke-width="2.5"/>
+      <text class="lab" x="530" y="47" style="fill:var(--ink-neuron)">MLP neurons</text>
+      <text class="lab" x="530" y="150" style="fill:var(--ink-sae)">SAE features</text>
+      <text class="lab" x="530" y="178" style="fill:var(--ink-flat)">transcoder</text>
+    </svg>
+    <figcaption>Qwen3-1.7B, 200 dev puzzles, best layer and settings for each k. Dev puzzles are easier than test puzzles, so compare curves with each other, not with the test numbers above.</figcaption>
+  </figure>
+
+  <p>So I counted directly. I kept only <em>specific</em> SAE features, ones active for at most 1% of the vocabulary. The four words of a true group share at least one such feature only 4.4% of the time. When they do, it is a strong clue: decoy groups from the same board share one only 0.2% of the time, about twenty times less often. Some of these features are lovely. One fires for RACECAR, MADAM, KAYAK and MOM, which looks a lot like a palindrome detector. But they are rare, and for purple groups they almost never appear (0.5%). Adding them as a bonus on top of cosine similarity moved the score by +0.015 groups per puzzle, with a confidence interval that includes zero.</p>
+
+  <h2>Third try: show it the whole board</h2>
+  <p>Reading words one at a time has an obvious weakness: HEAT alone is mostly weather, and only the other 15 tiles suggest the Miami Heat. So I gave Qwen3-1.7B the shuffled board, then had it read each word again on its own line, and took every word's activation after the model had seen all 16.</p>
+  <p>That made things worse. Every method lost about 0.2 groups per puzzle (shared neurons went from 0.78 to 0.59). The board in the prompt also opens the door to memorised answers, so I split the test puzzles at Qwen3's release date. The drop is about the same on the 486 puzzles from before the release and the 531 from after, so memorisation isn't helping either. Context only slightly blurs which word pairs belong together, but an exact four-way split punishes small errors. I tried one prompt format, so this isn't the last word on context.</p>
+
+  <h2>What if you just ask?</h2>
+  <p>The fair comparison is to hand the model the board and ask for the four groups. I scored answers strictly (no tile used twice) on 255 test puzzles, split by whether each puzzle was published before or after Qwen3 came out. With the whole board in its prompt, a model could recognise a puzzle it saw in training; puzzles from after the release rule that out.</p>
+  <figure class="chart">
+    <table class="cmp">
+      <thead><tr><th scope="col">Qwen3-4B</th><th scope="col">All 255</th><th scope="col">Before release</th><th scope="col">After release</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Activation similarity</th><td class="num">1.02</td><td class="num">0.98</td><td class="num"><b>1.05</b></td></tr>
+        <tr><th scope="row">Ask, thinking off</th><td class="num">0.56</td><td class="num">0.61</td><td class="num">0.51</td></tr>
+        <tr><th scope="row">Ask, thinking on</th><td class="num">0.84</td><td class="num">0.87</td><td class="num">0.80</td></tr>
+        <tr><th scope="row">Ask with the solver's top 16 candidates, thinking on</th><td class="num">1.06</td><td class="num"><b>1.18</b></td><td class="num">0.95</td></tr>
+      </tbody>
+    </table>
+    <figcaption>Groups found per puzzle (of 4). 122 puzzles from before the Qwen3 release, 133 after. Thinking runs allowed up to 8,192 tokens and ran on one A100.</figcaption>
+  </figure>
+  <p>Without thinking, the activations clearly know more than the model can say: asking directly finds about half as many groups. Thinking helps a lot (0.56 to 0.84), but it still falls short of the activation solver, and a third of its answers were still thinking when they hit the token limit. On a first, smaller run of 64 puzzles, thinking had looked tied with the activation solver. The bigger sample says it isn't.</p>
+  <h2>Combining them, and a warning</h2>
+  <p>The two approaches get different groups right, so I tried the simplest combination: the activation solver ranks all 1,820 possible groups, and the model sees the top 16 in its prompt, with a note that most are wrong. With thinking, this hybrid scores 1.06, clearly better than thinking alone. It takes about four in five of its answers from the list, found 27 correct groups that weren't on it, and finishes its reasoning more often.</p>
+  <p>But look at the last two columns. The hybrid's whole edge over the activation solver comes from puzzles published before the model was released (1.18 against 0.98). On newer puzzles it falls behind (0.95 against 1.05), and that gap between old and new is statistically clear. The newer puzzles aren't harder in general; the activation solver, which can't memorise anything, does slightly better on them. The likeliest reading is that seeing the full board plus a strong list of hints sometimes lets the model recognise a puzzle it was trained on. On puzzles it cannot have seen, the plain activation solver is still the best method I tried, and scale helps it most: with Qwen3.8-27B it finds 1.29 groups per puzzle on those newer puzzles, against 0.95 for the 4B hybrid.</p>
+
+  <p>Playing the actual game, the activation solver wins 14% of the time with its best setup (residual cosine on Qwen3-4B). Using the game's "one away" hint, by dropping any guess that contradicts a plain miss and trying near-miss swaps first, raises that to 25%.</p>
+
+  <h2>What I take from it</h2>
+  <ul class="notes">
+    <li>A small model reading words one at a time already finds a real share of groups: about a third of yellow groups and around a tenth of purple ones. That is roughly four times what the same 1.7B model manages when asked outright without thinking.</li>
+    <li>The signal lives in broad similarity spread across many units. Clean, shared "category units" exist, but they cover only a few percent of groups.</li>
+    <li>The best layer is consistently about a quarter of the way through the network (L7 of 28, L10 of 36). Even early layers already carry a word's meaning.</li>
+    <li>The model's internals beat its words. Asking directly finds about half as many groups without thinking, and thinking narrows the gap without closing it.</li>
+    <li>Check the release date. A hybrid that looked like the best method overall owed its edge to puzzles the model may have seen in training. Any result with an LLM reading the full board needs a before/after-release split.</li>
+    <li>Purple stays out of reach. Palindromes, hidden words and "___ BALL" groups are about spelling and word combinations, and the model's word representations don't capture those relations well enough to find them, with or without the board in view.</li>
+  </ul>
+
+  <h2>Caveats</h2>
+  <ul class="notes">
+    <li>The SAE was trained on Qwen3-1.7B-Base and applied to the post-trained model. On single-word prompts, both dictionaries leave 32% to 86% of the variance unexplained. Dictionaries trained on word-level activations might find more shared features.</li>
+    <li>The "one away" strategy is a simple heuristic, not an optimal player, and the ask-the-model runs cover subsets (255 puzzles, every 4th test puzzle).</li>
+    <li>The original idea named "Qwen-3.8". Both readings are covered: Qwen3-8B and Qwen3.8-27B ran on an A100. Qwen3.8 is a newer model family, so the 27B result mixes scale with generation.</li>
+  </ul>
+
+  <p class="end">Puzzle answers come from the community archive <a href="https://github.com/Eyefyre/NYT-Connections-Answers">Eyefyre/NYT-Connections-Answers</a>. Models: Qwen3-0.6B, 1.7B and 4B; Qwen-Scope SAE; mwhanna Qwen3 transcoders. The activation experiments ran on one M-series MacBook; the ask-the-model runs for Qwen3-4B and with thinking ran on one A100.</p>
+</article>
+
+<script>
+(function () {
+  if (!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('js');
+
+  // board tiles drop in one after another
+  document.querySelectorAll('.board .tile').forEach(function (t, i) { t.style.setProperty('--i', i); });
+
+  // chart lines: solid lines draw themselves, dashed ones fade
+  document.querySelectorAll('.chart polyline').forEach(function (p) {
+    if (p.getAttribute('stroke-dasharray')) { p.classList.add('fade'); }
+    else { p.setAttribute('pathLength', '1'); p.classList.add('draw'); }
+  });
+  document.querySelectorAll('.cmp tbody tr').forEach(function (r, i) { r.style.setProperty('--i', i); });
+
+  // stat numbers count up to their printed value
+  function countUp(el) {
+    var final = el.textContent, target = parseFloat(final), dec = (final.split('.')[1] || '').length;
+    if (isNaN(target)) return;
+    var t0 = null, dur = 1100;
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = (target * e).toFixed(dec);
+      if (k < 1) requestAnimationFrame(step); else el.textContent = final;
+    }
+    requestAnimationFrame(step);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      el.classList.add('in');
+      if (el.classList.contains('stats')) el.querySelectorAll('b.num').forEach(countUp);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll('.chart, .cmp, .stats').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

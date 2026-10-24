@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Connections board">
+<rect width="240" height="240" fill="#fbfaf7"/>
+<rect x="22" y="22" width="196" height="43.0" rx="6" fill="#f9df6d"/>
+<rect x="22.0" y="73.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="73.0" y="73.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="124.0" y="73.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="175.0" y="73.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="22.0" y="124.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="73.0" y="124.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="124.0" y="124.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="175.0" y="124.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="22.0" y="175.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="73.0" y="175.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="124.0" y="175.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+<rect x="175.0" y="175.0" width="43.0" height="43.0" rx="6" fill="#efede6" stroke="#e2dfd6" stroke-width="2"/>
+</svg>
