@@ -94,7 +94,7 @@ I added one more cortical ingredient, top-down feedback onto apical dendrites. E
 
 ## Feedback onto the apical dendrite
 
-Cortical pyramidal neurons receive bottom-up input on their basal dendrites. Top-down feedback from higher areas arrives on a separate apical dendrite. Several models of cortical learning treat the apical signal as a local, approximate error that tells each neuron which way to change (Guerguiev, Lillicrap and Richards, 2017). The signal stays approximate, so the brain must learn it somehow. Lansdell, Prakash and Kording (2020) proposed that the brain learns its feedback weights from noise. Neurons jitter, a neuromodulatory reward reports the outcome, and the correlation between the two trains the feedback pathway. Dust already has the noise and the reward, but it lacks the pathway.
+The apical teaching signal is only approximate, so the brain must learn it somehow. Lansdell, Prakash and Kording (2020) proposed that the brain learns its feedback weights from noise. Neurons jitter, a neuromodulatory reward reports the outcome, and the correlation between the two trains the feedback pathway. Dust already has the noise and the reward, but it lacks the pathway.
 
 Apical adds it, and for every module $$m$$ I keep a feedback matrix $$B_m$$ that maps the network's output error at a token, $$e_t$$, to a predicted error at the module's output.
 
@@ -155,7 +155,7 @@ The keys show the cause, because later tokens read the key at token t, so the tr
 
 **Figure 4. Averaging separates noise from bias.** Cosine to the backprop gradient of the mean of N independent K=16 estimates on a single fixed batch. Unbiased estimators (Dust, Apical) keep rising toward 1. Biased ones (feedback only, precision-weighted) level off. The embedding layers (not shown) level off near 0.7 for every method. Result 4 traces that plateau to Dust's credit rule for embeddings.
 
-This result bears on tuning Dust. The Dust paper shortlists noise scales and credit decays by their cosine to backprop on a single batch, then lets training choose among them. **A single-batch cosine rewards any change that trades noise for bias.** The averaging curve costs a few hundred extra estimates on one batch, and it shows the bias as the height where the curve levels off. I would use that height as the screen. Readers can run the same check more widely by measuring cosine similarity across sample sizes from 1 to 4,096 and confirming whether a persistent bias plateau appears.
+This bears on how Dust is tuned, which the next section takes up. The averaging curve costs a few hundred extra estimates on one batch, and reads off the bias as the height where the curve levels off.
 
 ## The statistic that ranks estimators backwards
 
@@ -172,8 +172,6 @@ This finding changes a decision the Dust team makes in practice, and I rank it t
 </figure>
 
 If single-batch cosine is the filter that picks which estimator or hyperparameter to scale, it will prefer the biased one, which looks aligned every step and quietly accumulates error through momentum. The averaging test costs one extra loop and gives the right ordering.
-
-The same bias story shows up at noise scale in the speedrun numbers above, where the control variate matters most at 16 draws per token and fades by 256 draws.
 
 Kept unbiased, the feedback helps where Dust is noisiest. **Apical has lower test loss than Dust in every seed-paired comparison at K=16 and K=64.** It also varies less across seeds, which is what variance reduction should do, and watching the seed spread shrink made me trust the mechanism more. At K=256 the advantage is gone, and Apical wins 2 of 3 pairs, by -0.001 on average.
 
@@ -197,8 +195,6 @@ Kept unbiased, the feedback helps where Dust is noisiest. **Apical has lower tes
 **Figure 6. Validation loss during training at K=16**, mean of 3 seeds. The precision-weighted version falls behind within the first hundred steps and never catches up.
 
 To express the K=16 gain as population, I interpolated Dust's loss log-linearly between K=16 and K=64. **Apical at K=16 matches Dust with about 33 draws, roughly twice the population.** Apical closes about 53% of the gap between Dust at K=16 and Dust at K=64.
-
-The control variate substantially reduces variance at small virtual population sizes, for example 16 draws per token, and becomes redundant at large population sizes, for example 256 draws, where raw noise averages out naturally. That matches what I measured.
 
 Equal population can still mean unequal cost, so I timed both methods. In the sweep, my first Apical implementation took about twice as long per run as Dust at K=16. At that price, Dust could double its population and match Apical. Almost all of the overhead was waste. The code repeated a clean forward pass and a logit jitter, computed split-half estimates even when they went unused, and inverted a 65-by-65 matrix that forced a GPU-to-CPU sync every step. The method itself adds one small matrix product per module plus the regression update. That is about 1% of the arithmetic of the perturbed forward passes.
 
