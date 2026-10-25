@@ -612,6 +612,7 @@ nav {
 }
 /* Posts render on a brighter background, in one wide reading column, left-aligned. */
 html:has(body.is-post) { background: var(--post-bg); }
+body.is-post #neural-bg { display: none; }
 .rp { max-width: 1240px; margin: 0 auto; padding: 10px 24px 48px; }
 .rp-masthead { margin: 0; padding: 2px 0 26px; text-align: left; }
 /* Two columns: a sticky table of contents on the left, the article on the right. */
@@ -629,11 +630,11 @@ html:has(body.is-post) { background: var(--post-bg); }
 .rp-toc { position: sticky; top: 92px; align-self: start; max-height: calc(100vh - 120px); overflow-y: auto; }
 .rp-toc > summary { cursor: default; list-style: none; font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .rp-toc > summary::-webkit-details-marker { display: none; }
-.rp-toc nav { display: block; }
-.rp-toc nav a { display: block; font-family: var(--sans); font-size: 0.84rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; }
-.rp-toc nav a.toc-sub { padding-left: 24px; font-size: 0.8rem; }
-.rp-toc nav a:hover { color: var(--ink); }
-.rp-toc nav a.active { color: var(--accent); border-left-color: var(--accent); }
+.rp-toc #rpContents { display: block; }
+.rp-toc #rpContents a { display: block; width: 100%; box-sizing: border-box; font-family: var(--sans); font-size: 0.84rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; }
+.rp-toc #rpContents a.toc-sub { padding-left: 24px; font-size: 0.8rem; }
+.rp-toc #rpContents a:hover { color: var(--ink); }
+.rp-toc #rpContents a.active { color: var(--accent); border-left-color: var(--accent); }
 .rp-toc-top { display: inline-block; margin-top: 16px; font-family: var(--sans); font-size: 0.76rem; color: var(--accent); text-decoration: none; }
 .rp-toc-top:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* On narrow screens the TOC collapses to a labelled box above the article. */
