@@ -612,8 +612,10 @@ nav {
 }
 /* Posts render on a brighter background, in one wide reading column, left-aligned. */
 html:has(body.is-post) { background: var(--post-bg); }
-.rp { max-width: 1080px; margin: 0 auto; padding: 10px 24px 48px; }
-.rp-masthead { margin: 0; padding: 2px 0 30px; text-align: left; }
+.rp { max-width: 1240px; margin: 0 auto; padding: 10px 24px 48px; }
+.rp-masthead { margin: 0; padding: 2px 0 26px; text-align: left; }
+/* Two columns: a sticky table of contents on the left, the article on the right. */
+.rp-layout { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 56px; align-items: start; }
 .rp-head { margin-bottom: 52px; }
 .rp-eyebrow { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin: 0 0 22px; }
 .rp-eyebrow a { color: var(--accent); text-decoration: none; }
@@ -623,16 +625,26 @@ html:has(body.is-post) { background: var(--post-bg); }
 .rp-dek { font-family: var(--sans); font-size: clamp(1.1rem, 2vw, 1.28rem); line-height: 1.45; color: var(--muted); margin: 16px 0 0; max-width: 72ch; }
 .rp-hero { margin: 30px 0 0; max-width: none; }
 
-/* Collapsible Contents box, like a classic blog table of contents. */
-.rp-contents { margin: 2px 0 34px; border: 1px solid var(--read-card-edge); background: var(--read-card); border-radius: 10px; }
-.rp-contents > summary { cursor: pointer; list-style: none; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 13px 18px; }
-.rp-contents > summary::-webkit-details-marker { display: none; }
-.rp-contents > summary::before { content: '\25B8'; display: inline-block; margin-right: 10px; color: var(--accent); transition: transform 0.15s ease; }
-.rp-contents[open] > summary::before { transform: rotate(90deg); }
-.rp-contents nav { display: block; padding: 2px 18px 16px; }
-.rp-contents nav a { display: block; font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; color: var(--muted); text-decoration: none; padding: 6px 0; border-top: 1px solid var(--read-card-edge); }
-.rp-contents nav a:first-child { border-top: none; }
-.rp-contents nav a:hover { color: var(--accent); }
+/* Sticky left-sidebar table of contents. */
+.rp-toc { position: sticky; top: 92px; align-self: start; max-height: calc(100vh - 120px); overflow-y: auto; }
+.rp-toc > summary { cursor: default; list-style: none; font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.rp-toc > summary::-webkit-details-marker { display: none; }
+.rp-toc nav { display: block; }
+.rp-toc nav a { display: block; font-family: var(--sans); font-size: 0.84rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; }
+.rp-toc nav a.toc-sub { padding-left: 24px; font-size: 0.8rem; }
+.rp-toc nav a:hover { color: var(--ink); }
+.rp-toc nav a.active { color: var(--accent); border-left-color: var(--accent); }
+.rp-toc-top { display: inline-block; margin-top: 16px; font-family: var(--sans); font-size: 0.76rem; color: var(--accent); text-decoration: none; }
+.rp-toc-top:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* On narrow screens the TOC collapses to a labelled box above the article. */
+@media (max-width: 980px) {
+  .rp-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .rp-toc { position: static; max-height: none; overflow: visible; margin: 2px 0 30px; border: 1px solid var(--read-card-edge); background: var(--read-card); border-radius: 10px; padding: 12px 16px; }
+  .rp-toc > summary { cursor: pointer; margin-bottom: 0; }
+  .rp-toc[open] > summary { margin-bottom: 10px; }
+  .rp-toc > summary::before { content: '\25B8'; display: inline-block; margin-right: 9px; color: var(--accent); transition: transform 0.15s ease; }
+  .rp-toc[open] > summary::before { transform: rotate(90deg); }
+}
 .rp-hero img { width: 100%; height: auto; display: block; border-radius: 10px; }
 .rp-hero figcaption { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); line-height: 1.5; margin-top: 10px; }
 
