@@ -13,6 +13,7 @@
   --border: rgba(23, 9, 15, 0.18);
   --read-card: #fffdf7;
   --read-card-edge: rgba(23, 9, 15, 0.06);
+  --post-bg: #ffffff;
   --nav-bg: rgba(244, 239, 227, 0.86);
   --neuron-rgb: 206, 74, 130;
   --glitch-rgb: 156, 28, 140;
@@ -38,6 +39,7 @@
   --border: rgba(246, 171, 212, 0.20);
   --read-card: #18121a;
   --read-card-edge: rgba(246, 171, 212, 0.12);
+  --post-bg: #0a0a0a;
   --nav-bg: rgba(0, 0, 0, 0.72);
   --neuron-rgb: 255, 130, 200;
   --glitch-rgb: 255, 134, 207;
@@ -608,17 +610,18 @@ nav {
   padding: 0;
   box-shadow: none;
 }
-/* Thin reading-progress bar across the very top of a post. */
-.rp-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 1000; transition: width 0.08s linear; }
-/* Centered masthead above the article grid (title, meta, optional dek and hero image). */
-.rp-masthead { max-width: 900px; margin: 0 auto; padding: 4px 0 26px; text-align: center; }
+/* Posts render on a brighter background, in one wide reading column, left-aligned. */
+html:has(body.is-post) { background: var(--post-bg); }
+.rp { max-width: 1080px; margin: 0 auto; padding: 10px 24px 48px; }
+.rp-masthead { margin: 0; padding: 2px 0 30px; text-align: left; }
 .rp-head { margin-bottom: 52px; }
 .rp-eyebrow { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin: 0 0 22px; }
 .rp-eyebrow a { color: var(--accent); text-decoration: none; }
 .rp-eyebrow a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .rp-title { font-family: var(--sans); font-size: clamp(2.3rem, 4.6vw, 3.4rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.02em; margin: 0; }
-.rp-dek { font-family: var(--sans); font-size: clamp(1.1rem, 2vw, 1.3rem); line-height: 1.45; color: var(--muted); margin: 22px auto 0; max-width: 54ch; }
-.rp-hero { margin: 44px auto 0; max-width: 900px; }
+.rp-meta { font-family: var(--sans); font-size: 0.85rem; letter-spacing: 0.01em; color: var(--muted); margin: 18px 0 0; }
+.rp-dek { font-family: var(--sans); font-size: clamp(1.1rem, 2vw, 1.28rem); line-height: 1.45; color: var(--muted); margin: 16px 0 0; max-width: 72ch; }
+.rp-hero { margin: 30px 0 0; max-width: none; }
 .rp-hero img { width: 100%; height: auto; display: block; border-radius: 10px; }
 .rp-hero figcaption { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); line-height: 1.5; margin-top: 10px; }
 

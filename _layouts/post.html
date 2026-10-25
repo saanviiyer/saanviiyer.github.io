@@ -1,157 +1,26 @@
 ---
 layout: default
 ---
-<div class="rp-progress" id="rpProgress" aria-hidden="true"></div>
+<article class="rp">
+  <header class="rp-masthead">
+    <p class="rp-eyebrow"><a href="{{ '/writing/' | relative_url }}">&larr; back to writing</a></p>
+    <h1 class="rp-title">{{ page.title }}</h1>
+    <p class="rp-meta">{{ page.date | date: "%B %-d, %Y" }} &middot; {{ content | strip_html | number_of_words | divided_by: 200 | plus: 1 }} min read</p>
+    {% if page.dek %}<p class="rp-dek">{{ page.dek }}</p>{% endif %}
+    {% if page.image %}
+    <figure class="rp-hero">
+      <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">
+      {% if page.image_caption %}<figcaption>{{ page.image_caption }}</figcaption>{% endif %}
+    </figure>
+    {% endif %}
+  </header>
 
-<header class="rp-masthead">
-  <p class="rp-eyebrow"><a href="{{ '/writing/' | relative_url }}">&larr; writing</a>{% if page.tag %}, {{ page.tag }}{% endif %}, {{ page.date | date: "%b %-d, %Y" }}</p>
-  <h1 class="rp-title">{{ page.title }}</h1>
-  {% if page.dek %}<p class="rp-dek">{{ page.dek }}</p>{% endif %}
-  {%- comment -%}
-    Lab-style metadata block. Renders only when a post declares `authors`,
-    so every existing post is untouched. Purely additive.
-  {%- endcomment -%}
-  {% if page.authors %}
-  <div class="nv-meta">
-    <div class="nv-meta-col">
-      <p class="nv-meta-label">Authors</p>
-      <p class="nv-meta-val">{% for a in page.authors %}<span>{{ a }}</span>{% endfor %}</p>
-    </div>
-    {% if page.affiliations %}
-    <div class="nv-meta-col">
-      <p class="nv-meta-label">Affiliations</p>
-      <p class="nv-meta-val">{% for a in page.affiliations %}<span>{{ a }}</span>{% endfor %}</p>
-    </div>
-    {% endif %}
-    <div class="nv-meta-col">
-      <p class="nv-meta-label">Published</p>
-      <p class="nv-meta-val"><span>{{ page.date | date: "%B %-d, %Y" }}</span>{% if page.updated %}<span>updated {{ page.updated | date: "%B %-d, %Y" }}</span>{% endif %}</p>
-    </div>
-    {% if page.artifact %}
-    <div class="nv-meta-col">
-      <p class="nv-meta-label">Artifact</p>
-      <p class="nv-meta-val"><span>{{ page.artifact }}</span></p>
-    </div>
-    {% endif %}
+  <div class="rp-body">
+    {{ content }}
   </div>
-  {% endif %}
-  {% if page.image %}
-  <figure class="rp-hero">
-    <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">
-    {% if page.image_caption %}<figcaption>{{ page.image_caption }}</figcaption>{% endif %}
-  </figure>
-  {% endif %}
-</header>
 
-<div class="wm-shell{% if page.section != 'technical' %} wm-notoc{% endif %}">
-  <aside class="wm-toc" aria-label="On this page">
-    <p class="wm-toc-label">on this page</p>
-    <div id="wmTocNav"></div>
-  </aside>
-
-  <article class="research-post">
-    <div class="rp-body">
-      {{ content }}
-    </div>
-
-    <p class="post-back"><a href="{{ '/writing/' | relative_url }}">&larr; all writing</a></p>
-  </article>
-</div>
-
-<script>
-/* Thin reading-progress bar at the top, driven by scroll position. Additive:
-   if this never runs the bar simply stays at zero width and the post reads fine. */
-(function () {
-  var bar = document.getElementById('rpProgress');
-  if (!bar) return;
-  function update() {
-    var h = document.documentElement;
-    var max = (h.scrollHeight - h.clientHeight) || 1;
-    var pct = Math.min(100, Math.max(0, (h.scrollTop || document.body.scrollTop) / max * 100));
-    bar.style.width = pct + '%';
-  }
-  update();
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
-})();
-</script>
-
-<script>
-/* Build the "on this page" table of contents from the post's h2 headings,
-   and highlight the current section while scrolling. The post reads normally
-   if this never runs: the TOC is purely additive. */
-(function () {
-  var body = document.querySelector('.research-post .rp-body');
-  var nav = document.getElementById('wmTocNav');
-  if (!body || !nav) return;
-  var heads = body.querySelectorAll(':scope > h2');
-  if (heads.length < 2) {
-    var aside = document.querySelector('.wm-toc');
-    if (aside) aside.style.display = 'none';
-    var shell = document.querySelector('.wm-shell');
-    if (shell) shell.classList.add('wm-notoc');
-    return;
-  }
-  var links = [];
-  heads.forEach(function (h, i) {
-    if (!h.id) {
-      h.id = 'sec-' + (i + 1) + '-' + (h.textContent || '').toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
-    }
-    var a = document.createElement('a');
-    a.href = '#' + h.id;
-    a.textContent = h.textContent;
-    nav.appendChild(a);
-    links.push(a);
-  });
-  if (!('IntersectionObserver' in window)) return;
-  var byId = {};
-  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      links.forEach(function (a) { a.classList.remove('active'); });
-      var a = byId[e.target.id];
-      if (a) a.classList.add('active');
-    });
-  }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
-  heads.forEach(function (h) { io.observe(h); });
-})();
-</script>
-
-
-<script>
-/* Additive scroll reveals for research posts.
-
-   Content is visible without this script: nothing here un-hides anything, it
-   only replays a short fade-and-lift as blocks come into view. If
-   IntersectionObserver is missing, the user prefers reduced motion, or the
-   script simply never runs, the post reads normally. */
-(function () {
-  var root = document.querySelector('.research-post .rp-body');
-  if (!root) return;
-  if (!('IntersectionObserver' in window)) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var blocks = root.querySelectorAll(
-    ':scope > h2, :scope > p, :scope > ul, :scope > ol, :scope > blockquote, :scope > table');
-  if (!blocks.length) return;
-
-  var io = new IntersectionObserver(function (entries) {
-    var n = 0;
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      var el = e.target;
-      if (el.tagName === 'H2') el.classList.add('rp-h2');
-      el.style.animationDelay = (Math.min(n++, 3) * 60) + 'ms';
-      el.classList.add('rp-reveal');
-      io.unobserve(el);
-    });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-
-  blocks.forEach(function (el) { io.observe(el); });
-})();
-</script>
+  <p class="post-back"><a href="{{ '/writing/' | relative_url }}">&larr; back to writing</a></p>
+</article>
 
 {% if page.math %}
 <script>
