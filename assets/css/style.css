@@ -13,7 +13,7 @@
   --border: rgba(23, 9, 15, 0.18);
   --read-card: #fffdf7;
   --read-card-edge: rgba(23, 9, 15, 0.06);
-  --post-bg: #ffffff;
+  --post-bg: #faf6ec;
   --nav-bg: rgba(244, 239, 227, 0.86);
   --neuron-rgb: 206, 74, 130;
   --glitch-rgb: 156, 28, 140;
@@ -622,6 +622,17 @@ html:has(body.is-post) { background: var(--post-bg); }
 .rp-meta { font-family: var(--sans); font-size: 0.85rem; letter-spacing: 0.01em; color: var(--muted); margin: 18px 0 0; }
 .rp-dek { font-family: var(--sans); font-size: clamp(1.1rem, 2vw, 1.28rem); line-height: 1.45; color: var(--muted); margin: 16px 0 0; max-width: 72ch; }
 .rp-hero { margin: 30px 0 0; max-width: none; }
+
+/* Collapsible Contents box, like a classic blog table of contents. */
+.rp-contents { margin: 2px 0 34px; border: 1px solid var(--read-card-edge); background: var(--read-card); border-radius: 10px; }
+.rp-contents > summary { cursor: pointer; list-style: none; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 13px 18px; }
+.rp-contents > summary::-webkit-details-marker { display: none; }
+.rp-contents > summary::before { content: '\25B8'; display: inline-block; margin-right: 10px; color: var(--accent); transition: transform 0.15s ease; }
+.rp-contents[open] > summary::before { transform: rotate(90deg); }
+.rp-contents nav { display: block; padding: 2px 18px 16px; }
+.rp-contents nav a { display: block; font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; color: var(--muted); text-decoration: none; padding: 6px 0; border-top: 1px solid var(--read-card-edge); }
+.rp-contents nav a:first-child { border-top: none; }
+.rp-contents nav a:hover { color: var(--accent); }
 .rp-hero img { width: 100%; height: auto; display: block; border-radius: 10px; }
 .rp-hero figcaption { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); line-height: 1.5; margin-top: 10px; }
 
@@ -654,6 +665,19 @@ html:has(body.is-post) { background: var(--post-bg); }
   .wm-shell, .wm-shell.wm-notoc { grid-template-columns: minmax(0, 900px); justify-content: center; column-gap: 0; }
   .wm-toc { display: none; }
 }
+
+/* Writing index: a clean list, title and date inline, short description below. */
+.wlist { list-style: none; margin: 10px 0 0; padding: 0; }
+.witem { padding: 20px 0; border-top: 1px solid var(--border); }
+.witem:first-child { border-top: none; padding-top: 6px; }
+.witem-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; }
+.witem-title { font-family: var(--sans); font-size: 1.22rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.witem-title:hover { color: var(--accent); }
+.witem-date { font-family: var(--sans); font-size: 0.9rem; color: var(--muted); }
+.witem-tag { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-soft); border-radius: 999px; padding: 1px 8px; }
+.witem-x { color: var(--muted); line-height: 1; }
+.witem-x:hover { color: var(--accent); }
+.witem-dek { font-family: var(--sans); font-size: 0.96rem; line-height: 1.55; color: var(--muted); margin: 6px 0 0; max-width: 74ch; }
 
 /* legacy pages still using .post-body keep a readable centered column */
 .post-body { max-width: min(100%, 1040px); margin: 0 auto; }

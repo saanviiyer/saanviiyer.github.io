@@ -15,12 +15,41 @@ layout: default
     {% endif %}
   </header>
 
+  <details class="rp-contents" id="rpContentsBox" hidden>
+    <summary>Contents</summary>
+    <nav id="rpContents"></nav>
+  </details>
+
   <div class="rp-body">
     {{ content }}
   </div>
 
   <p class="post-back"><a href="{{ '/writing/' | relative_url }}">&larr; back to writing</a></p>
 </article>
+
+<script>
+/* Collapsible "Contents" box, built from the post's h2 headings. Additive:
+   if this never runs the box stays hidden and the post reads normally. */
+(function () {
+  var box = document.getElementById('rpContentsBox');
+  var nav = document.getElementById('rpContents');
+  var body = document.querySelector('.rp-body');
+  if (!box || !nav || !body) return;
+  var heads = body.querySelectorAll(':scope > h2');
+  if (heads.length < 2) return;
+  heads.forEach(function (h, i) {
+    if (!h.id) {
+      h.id = 'sec-' + (i + 1) + '-' + (h.textContent || '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+    }
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    nav.appendChild(a);
+  });
+  box.hidden = false;
+})();
+</script>
 
 {% if page.math %}
 <script>
