@@ -662,13 +662,14 @@ body.is-post #neural-bg { display: none; }
 .rp-body h2 { font-family: var(--sans); font-size: 1.72rem; font-weight: 700; letter-spacing: -0.015em; line-height: 1.22; margin: 66px 0 18px; scroll-margin-top: 100px; }
 .rp-body h3 { font-family: var(--sans); font-size: 1.24rem; font-weight: 700; margin: 44px 0 14px; }
 /* Collapsible sections: the caret hangs in the left margin, as on Kevin Wu's posts. */
-.rp-body h2.rp-foldable { position: relative; cursor: pointer; }
+.rp-body .rp-foldable { position: relative; cursor: pointer; }
 .rp-fold { all: unset; position: absolute; left: -1.15em; top: 0.12em; width: 0.9em; text-align: center; font-size: 0.82em; line-height: 1.22; color: var(--muted); cursor: pointer; transition: transform 0.18s ease, color 0.15s; }
-.rp-body h2.rp-foldable:hover .rp-fold, .rp-fold:focus-visible { color: var(--accent); }
+.rp-body h3 .rp-fold { left: -1.25em; font-size: 0.8em; line-height: 1.4; }
+.rp-body .rp-foldable:hover .rp-fold, .rp-fold:focus-visible { color: var(--accent); }
 .rp-fold:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
-.rp-body h2.is-collapsed .rp-fold { transform: rotate(-90deg); }
-.rp-body h2.is-collapsed { margin-bottom: 0; }
-.rp-sec[hidden] { display: none; }
+.rp-body .is-collapsed .rp-fold { transform: rotate(-90deg); }
+.rp-body h2.is-collapsed, .rp-body h3.is-collapsed { margin-bottom: 0; }
+.rp-sec[hidden], .rp-sub[hidden] { display: none; }
 @media (max-width: 980px) { .rp-fold { position: static; display: inline-block; margin-right: 0.35em; } }
 .rp-body ul, .rp-body ol { margin: 0 0 26px; padding-left: 1.4rem; }
 .rp-body li { font-family: var(--sans); font-size: 1.1rem; line-height: 1.7; margin-bottom: 11px; }

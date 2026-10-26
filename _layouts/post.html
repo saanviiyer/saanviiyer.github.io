@@ -88,13 +88,16 @@ layout: default
   if (!body) return;
   var heads = Array.prototype.slice.call(body.querySelectorAll(':scope > h2'));
   if (heads.length < 2) return;
-  heads.forEach(function (h, i) {
-    if (!h.id) h.id = 'sec-' + (i + 1);
+  var count = 0;
+  // Wrap everything after heading h, up to the next heading in stopTags, in a
+  // collapsible block, and give h a caret that opens and closes it.
+  function fold(h, stopTags, cls) {
+    if (!h.id) h.id = 'sec-' + (++count);
     var sec = document.createElement('div');
-    sec.className = 'rp-sec';
+    sec.className = cls;
     sec.id = h.id + '-body';
     var n = h.nextSibling;
-    while (n && !(n.nodeType === 1 && n.tagName === 'H2')) {
+    while (n && !(n.nodeType === 1 && stopTags.test(n.tagName))) {
       var next = n.nextSibling;
       if (!(n.nodeType === 1 && /^(SCRIPT|LINK|STYLE)$/.test(n.tagName))) sec.appendChild(n);
       n = next;
@@ -120,12 +123,26 @@ layout: default
       set(sec.hidden);
     });
     h._rpOpen = function () { set(true); };
+    return sec;
+  }
+  heads.forEach(function (h) {
+    var sec = fold(h, /^H2$/, 'rp-sec');
+    // Subsections fold inside their section, up to the next subsection.
+    Array.prototype.slice.call(sec.querySelectorAll(':scope > h3')).forEach(function (h3) {
+      fold(h3, /^H[23]$/, 'rp-sub');
+    });
   });
+  // Open the heading a link points to, and every section it sits inside.
   function openFor(hash) {
     var t = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
     if (!t) return;
-    var h = t.tagName === 'H2' ? t : (t.closest && t.closest('.rp-sec') ? t.closest('.rp-sec').previousElementSibling : null);
-    if (h && h._rpOpen) h._rpOpen();
+    if (t._rpOpen) t._rpOpen();
+    var box = t.closest && t.closest('.rp-sec, .rp-sub');
+    while (box) {
+      var h = box.previousElementSibling;
+      if (h && h._rpOpen) h._rpOpen();
+      box = box.parentElement && box.parentElement.closest('.rp-sec, .rp-sub');
+    }
   }
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href^="#"]');
