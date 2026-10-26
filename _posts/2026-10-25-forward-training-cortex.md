@@ -25,7 +25,7 @@ excerpt: "Biological circuits cannot run backprop. I test whether brain-like loc
 
 Most deep learning architectures rely on backpropagation to optimize weight matrices and compute exact gradients by propagating continuous error signals backwards through network layers. In contrast, biological neural circuits in the mammalian brain physically cannot execute backprop, relying instead on forward learning.
 
-**Code.** The Apical Dust experiments are at [github.com/saanviiyer/apical-dust](https://github.com/saanviiyer/apical-dust). Terms in <span class="ft-def" tabindex="0">magenta<span class="ft-pop" role="tooltip">Like this. Hover, tap, or tab to a magenta term for a short definition.</span></span> have a definition on hover, and every hand-drawn diagram of mine sits behind an animation: tap the animation to flip it over.
+**Code.** The Apical Dust experiments are at [github.com/saanviiyer/apical-dust](https://github.com/saanviiyer/apical-dust). Terms in <span class="ft-def" tabindex="0">magenta<span class="ft-pop" role="tooltip">Like this. Hover, tap, or tab to a magenta term for a short definition.</span></span> have a definition on hover. Every hand-drawn diagram of mine sits behind an animation, and tapping the animation flips it over.
 
 ## Why should we care?
 
