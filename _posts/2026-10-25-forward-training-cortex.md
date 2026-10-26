@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Our brains don't run on backprop, so why do our models?"
-dek: "Training with no backprop using local learning rules & forward-only transformers"
+dek: "Training without backprop using local learning rules & forward-only transformers"
 date: 2026-10-25
 tag: "NeuroAI"
 section: technical
