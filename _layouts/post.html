@@ -74,6 +74,64 @@ layout: default
 })();
 </script>
 
+<script>
+/* Collapsible sections: click a section heading (or its caret) to close or
+   open everything up to the next heading. Runs after the contents sidebar is
+   built, so the sidebar keeps its links; following a sidebar link reopens a
+   closed section. Additive: without this script every section stays open. */
+(function () {
+  var body = document.querySelector('.rp-body');
+  if (!body) return;
+  var heads = Array.prototype.slice.call(body.querySelectorAll(':scope > h2'));
+  if (heads.length < 2) return;
+  heads.forEach(function (h, i) {
+    if (!h.id) h.id = 'sec-' + (i + 1);
+    var sec = document.createElement('div');
+    sec.className = 'rp-sec';
+    sec.id = h.id + '-body';
+    var n = h.nextSibling;
+    while (n && !(n.nodeType === 1 && n.tagName === 'H2')) {
+      var next = n.nextSibling;
+      if (!(n.nodeType === 1 && /^(SCRIPT|LINK|STYLE)$/.test(n.tagName))) sec.appendChild(n);
+      n = next;
+    }
+    h.parentNode.insertBefore(sec, h.nextSibling);
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'rp-fold';
+    b.setAttribute('aria-expanded', 'true');
+    b.setAttribute('aria-controls', sec.id);
+    b.setAttribute('aria-label', 'Close section');
+    b.textContent = '▾';
+    h.insertBefore(b, h.firstChild);
+    h.classList.add('rp-foldable');
+    function set(open) {
+      sec.hidden = !open;
+      h.classList.toggle('is-collapsed', !open);
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-label', open ? 'Close section' : 'Open section');
+    }
+    h.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a')) return;
+      set(sec.hidden);
+    });
+    h._rpOpen = function () { set(true); };
+  });
+  function openFor(hash) {
+    var t = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!t) return;
+    var h = t.tagName === 'H2' ? t : (t.closest && t.closest('.rp-sec') ? t.closest('.rp-sec').previousElementSibling : null);
+    if (h && h._rpOpen) h._rpOpen();
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a) openFor(a.getAttribute('href'));
+  });
+  window.addEventListener('hashchange', function () { openFor(location.hash); });
+  openFor(location.hash);
+})();
+</script>
+
 {% if page.math %}
 <script>
   window.MathJax = { tex: {

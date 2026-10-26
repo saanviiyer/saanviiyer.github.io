@@ -39,6 +39,10 @@
   --ft-sketch: #2a1d25;
 }
 
+/* Experiment titles in dark pink. */
+.rp-body h2.ft-exp { color: #b4296c; }
+:root[data-theme="dark"] .rp-body h2.ft-exp { color: #ff86cf; }
+
 /* ---------- figures ---------- */
 .rp-body .ft-fig { margin: 44px 0 42px; display: block; }
 .ft-card { background: var(--ft-card); border: 1px solid var(--ft-edge); border-radius: 14px; padding: 18px 18px 14px; }

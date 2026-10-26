@@ -21,7 +21,7 @@ redirect_from:
 excerpt: "Biological circuits cannot run backprop. I test whether brain-like local learning rules forget less (they do not, once learning is held fixed), then add a cortical top-down feedback pathway to Q Labs' Dust, a forward-only transformer pretraining method, as an unbiased control variate that is worth about twice the population."
 ---
 
-<link rel="stylesheet" href="/assets/css/forward-training.css?v=2">
+<link rel="stylesheet" href="/assets/css/forward-training.css?v=3">
 
 Most deep learning architectures rely on backpropagation to optimize weight matrices and compute exact gradients by propagating continuous error signals backwards through network layers. In contrast, biological neural circuits in the mammalian brain physically cannot execute backprop, relying instead on forward learning.
 
@@ -56,6 +56,7 @@ Looking into how I could test local learning rules compared to backprop, I was s
 </figure>
 
 ## Experiment 1: Local rules vs. backprop in continual learning
+{: .ft-exp}
 
 To rigorously test whether local learning rules protect against catastrophic forgetting, I evaluated Feedback Alignment (FA), Direct Feedback Alignment (DFA), and Predictive Coding (PC) against backpropagation on class-incremental Split-CIFAR-10 ([Krizhevsky, 2009](#ref-krizhevsky2009)). Every rule trains the same two-layer network, so credit assignment is the only thing that changes. Rather than force every rule to one accuracy, I built a ladder of eleven backprop runs weakened only by fewer epochs or a lower learning rate, and compared each rule with backprop at the same learning accuracy. I measured backward transfer (BWT) to quantify retention after learning subsequent tasks.
 
@@ -182,6 +183,7 @@ Dust is limited in its per-token gradient noise variance, as suppressing gradien
 I built a framework that adds on to Dust by integrating a top-down linear feedback pathway to suppress estimator variance, while also guaranteeing mathematical unbiasedness.
 
 ## Experiment 2: Forward pretraining with Apical Dust
+{: .ft-exp}
 
 Weight perturbation vs. node perturbation vs. Apical Dust:
 
@@ -319,4 +321,4 @@ I'd love to hear <span class="ft-def" tabindex="0">feedback<span class="ft-pop" 
   <li id="ref-karpathy2015">Karpathy, A. (2015). The unreasonable effectiveness of recurrent neural networks (char-rnn and the Tiny Shakespeare dataset). Blog post.</li>
 </ol>
 
-<script src="/assets/js/forward-training.js?v=2" defer></script>
+<script src="/assets/js/forward-training.js?v=3" defer></script>
