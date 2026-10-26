@@ -16,7 +16,6 @@ permalink: /writing/
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
         {% if post.x_url %}<a class="witem-x" href="{{ post.x_url }}" target="_blank" rel="noopener" aria-label="Thread on X"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="fill: currentColor; vertical-align: -1px;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>{% endif %}
       </div>
-      {% if post.excerpt %}<p class="witem-dek">{{ post.excerpt | strip_html | strip_newlines | truncatewords: 28 }}</p>{% endif %}
     </li>
     {% endfor %}
 
@@ -25,7 +24,6 @@ permalink: /writing/
         <a class="witem-title" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">Integrated Core RFP, ML-guided directed evolution of PETases</a>
         <span class="witem-date">Spring 2026</span>
       </div>
-      <p class="witem-dek">A research proposal on model-guided directed evolution of PETases for plastic degradation.</p>
     </li>
   </ul>
 
@@ -41,7 +39,6 @@ permalink: /writing/
         <span class="witem-date">{{ p.date | date: "%B %Y" }}</span>
         <span class="witem-tag">Substack</span>
       </div>
-      {% if p.subtitle %}<p class="witem-dek">{{ p.subtitle | strip_html | truncatewords: 28 }}</p>{% endif %}
     </li>
     {% endfor %}
 
@@ -53,7 +50,6 @@ permalink: /writing/
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
       </div>
-      {% if post.excerpt %}<p class="witem-dek">{{ post.excerpt | strip_html | strip_newlines | truncatewords: 28 }}</p>{% endif %}
     </li>
     {% endfor %}
   </ul>
