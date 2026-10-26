@@ -64,7 +64,7 @@ permalink: /playground/sae/
   <div class="sae-head">
     <a class="sae-eyebrow" href="{{ '/playground/' | relative_url }}">&larr; playground</a>
     <h1 class="sae-title">Sparse autoencoders, live</h1>
-    <p class="sae-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. Here I build one from scratch, train it in your browser on a toy dataset where I know the ground-truth features, and then open a Neuronpedia-style atlas so you can read off what each learned feature detects. Everything on this page is computed live, nothing is precomputed or made up.</p>
+    <p class="sae-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. I build one from scratch here and train it in your browser on a toy dataset where I know the ground-truth features. A Neuronpedia-style atlas at the end shows what each learned feature detects. Your browser computes everything on this page live, and I precomputed or made up nothing.</p>
   </div>
 
   <div class="sae-progress">
@@ -84,7 +84,7 @@ permalink: /playground/sae/
   </div>
 
   <div class="sae-foot">
-    <p>Why a toy with known ground truth: on a real model you never know the true features, so you cannot check whether the autoencoder found them. Here I plant 8 features, pack them into 6 dimensions, and see whether the autoencoder recovers them, which is the same logic behind the superposition work this builds on. The real <a href="https://www.neuronpedia.org/" target="_blank" rel="noopener">Neuronpedia</a> does this at scale on language models.</p>
+    <p>I use a toy with known ground truth because on a real model you never know the true features, so you cannot check whether the autoencoder found them. Here I pack 8 planted features into 6 dimensions and check whether the autoencoder recovers them. The superposition work this page builds on uses the same logic. The real <a href="https://www.neuronpedia.org/" target="_blank" rel="noopener">Neuronpedia</a> does this at scale on language models.</p>
   </div>
 </section>
 
@@ -247,16 +247,16 @@ permalink: /playground/sae/
   }
 
   var STEPS = [
-    { title: 'The problem: superposition',
-      body: 'A neural network has more concepts to represent than it has neurons, so it stores several per direction. A single neuron then lights up for unrelated things, which makes it hard to read. I mimic this by planting <b>' + K + ' concepts</b> (A to H) as random directions and packing them into a <b>' + D + '-dimensional</b> activation vector. With more concepts (' + K + ') than dimensions (' + D + '), the model cannot give each concept its own axis, so they overlap. That overlap is <b>superposition</b>. Each input below switches on one or two concepts, and you see only the ' + D + ' numbers, not the concepts.',
+    { title: 'The problem of superposition',
+      body: 'A neural network has more concepts to represent than it has neurons, so it stores several concepts per direction. A single neuron then lights up for unrelated things, and that makes it hard to read. I mimic this by planting <b>' + K + ' concepts</b> (A to H) as random directions and packing them into a <b>' + D + '-dimensional</b> activation vector. With more concepts (' + K + ') than dimensions (' + D + '), the model cannot give each concept its own axis, so the concepts overlap. Researchers call this overlap <b>superposition</b>. Each input below switches on one or two concepts. You see only the ' + D + ' numbers and never the concepts themselves.',
       build: function (p) {
-        p.innerHTML = '<div class="sae-row"><span>a few inputs (each square is a concept, brightness is its strength):</span></div><div id="sae-demo"></div><p class="sae-note">The network sees the raw vector, not these chips. The task of a sparse autoencoder is to recover the chips from the vector.</p>';
+        p.innerHTML = '<div class="sae-row"><span>a few inputs, where each square is a concept and its brightness shows strength</span></div><div id="sae-demo"></div><p class="sae-note">The network sees only the raw vector. A sparse autoencoder has to recover these chips from that vector.</p>';
         var d = document.createElement('div');
         for (var n = 0; n < 6; n++) { var row = document.createElement('div'); row.style.margin = '5px 0'; row.innerHTML = chips(n); d.appendChild(row); }
         $('sae-demo').appendChild(d);
       } },
-    { title: 'The idea: a sparse autoencoder',
-      body: 'An autoencoder squeezes an input through a bottleneck and reconstructs it. A <b>sparse</b> autoencoder does the opposite of squeezing: it uses <b>more</b> hidden units than the input has dimensions (' + H + ' here, for ' + D + ' inputs), but forces almost all of them to stay off on any given input. Reconstruction keeps the features faithful, the sparsity penalty keeps them few, and together they push each hidden unit toward one concept.',
+    { title: 'The sparse autoencoder idea',
+      body: 'An autoencoder squeezes an input through a bottleneck and reconstructs it. A <b>sparse</b> autoencoder widens the layer instead and uses <b>more</b> hidden units than the input has dimensions (' + H + ' here, for ' + D + ' inputs). It then forces almost all of those units to stay off on any given input. The reconstruction term keeps the features faithful while the sparsity penalty keeps them few. Together the two pressures push each hidden unit toward one concept.',
       build: function (p) {
         p.innerHTML = '<div class="sae-arch">' +
           '<div class="box">input<small>' + D + ' dims</small></div><span class="arrow">&rarr;</span>' +
@@ -264,22 +264,22 @@ permalink: /playground/sae/
           '<div class="box" style="border-color:var(--accent)">sparse code<small>' + H + ' features, mostly 0</small></div><span class="arrow">&rarr;</span>' +
           '<div class="box">decoder<small>Wᵀ</small></div><span class="arrow">&rarr;</span>' +
           '<div class="box">reconstruction<small>' + D + ' dims</small></div></div>' +
-          '<p class="sae-note">Loss = reconstruction error + λ times the L1 size of the code. The L1 term is the sparsity pressure. Next you train it.</p>';
+          '<p class="sae-note">Loss = reconstruction error + λ times the L1 size of the code. The L1 term supplies the sparsity pressure. You train it on the next step.</p>';
       } },
     { title: 'Train it',
-      body: 'This runs real stochastic gradient descent in your browser, with decoder columns renormalized each step so the sparsity penalty cannot be gamed. Watch the loss fall and the number of active features per input drop from all ' + H + ' toward a handful, close to how many concepts an input actually contains.',
+      body: 'This step runs real stochastic gradient descent in your browser. I renormalize the decoder columns after each step so the model cannot game the sparsity penalty. As the loss falls, watch the number of active features per input drop from all ' + H + ' toward a handful, close to how many concepts an input actually contains.',
       build: function (p) {
         p.innerHTML = '<canvas class="sae-canvas" id="sae-loss"></canvas>' +
           '<div class="sae-row"><button class="sae-btn solid" id="sae-train">train</button>' +
           '<button class="sae-btn" id="sae-reset">reset</button>' +
           '<span class="sae-stat" id="sae-tstat">step <b>0</b></span></div>' +
-          '<p class="sae-note">Let it reach "done" (about 1500 steps) before the next step, where you read the features it learned.</p>';
+          '<p class="sae-note">Let it reach "done" (about 1500 steps) before you move on. The next step reads out the features it learned.</p>';
         var cv = $('sae-loss'); drawLoss(cv);
         $('sae-train').addEventListener('click', function () { startTrain(this, cv, $('sae-tstat')); });
         $('sae-reset').addEventListener('click', function () { running = false; initSAE(); drawLoss(cv); $('sae-tstat').innerHTML = 'step <b>0</b>'; $('sae-train').textContent = 'train'; });
       } },
     { title: 'The feature atlas (a tiny Neuronpedia)',
-      body: 'Each card is one hidden unit of the trained autoencoder. The label is what I can verify it detects, by comparing its decoder direction to the planted concepts. Below each label are the inputs that make it fire hardest. A healthy run recovers all ' + K + ' concepts as <b>monosemantic</b> features, and because there are ' + H + ' units for ' + K + ' concepts, some concepts get captured by more than one unit. That duplication is <b>feature splitting</b>, a real effect in large autoencoders too.',
+      body: 'Each card shows one hidden unit of the trained autoencoder. I compare its decoder direction to the planted concepts, so the label states what I can verify it detects. Under the label sit the inputs that make the unit fire hardest. A healthy run recovers all ' + K + ' concepts as <b>monosemantic</b> features. With ' + H + ' units for ' + K + ' concepts, some concepts end up in more than one unit. This duplication, called <b>feature splitting</b>, happens in large autoencoders too.',
       build: function (p) {
         if (step < 50) { p.innerHTML = '<p class="sae-note">Train the autoencoder on the previous step first, then come back.</p>'; return; }
         var feats = analyze();
@@ -296,11 +296,11 @@ permalink: /playground/sae/
         var mono = feats.filter(function (f) { return f.cls === 'mono'; });
         var covered = {}; mono.forEach(function (f) { covered[f.best] = 1; });
         var mdup = feats.filter(function (f) { return f.cls === 'mono'; }).length;
-        html += '<p class="sae-note">This run recovered <b>' + Object.keys(covered).length + ' of ' + K + '</b> planted concepts across ' + mdup + ' monosemantic units, with ' + feats.filter(function (f) { return f.cls === 'dead'; }).length + ' dead. Reconstruction keeps them honest, so a feature cannot label itself for a concept it does not actually decode. Turn the sparsity dial up on the next step and watch units die.</p>';
+        html += '<p class="sae-note">This run recovered <b>' + Object.keys(covered).length + ' of ' + K + '</b> planted concepts across ' + mdup + ' monosemantic units, with ' + feats.filter(function (f) { return f.cls === 'dead'; }).length + ' dead. Reconstruction keeps the features honest, so no feature can claim a concept it does not actually decode. Turn the sparsity dial up on the next step and watch units die.</p>';
         p.innerHTML = html;
       } },
     { title: 'The sparsity dial',
-      body: 'The one knob that matters is λ, the weight on the sparsity penalty. Too low and features stay polysemantic and reconstruction is good. Too high and features die and reconstruction suffers. Drag it, retrain, and watch the trade-off in the atlas.',
+      body: 'The one knob that matters is λ, the weight on the sparsity penalty. When λ is too low, features stay polysemantic even though reconstruction looks good. When it is too high, features die and reconstruction suffers. Drag the slider and retrain to see the trade-off in the atlas.',
       build: function (p) {
         p.innerHTML = '<div class="sae-row"><label>λ (sparsity)</label><input type="range" id="sae-lam" min="1" max="40" value="' + Math.round(lam * 200) + '"><span class="sae-stat">λ = <b id="sae-lamv">' + lam.toFixed(3) + '</b></span></div>' +
           '<div class="sae-row"><button class="sae-btn solid" id="sae-retrain">retrain from scratch</button><span class="sae-stat" id="sae-rstat"></span></div>' +
@@ -324,9 +324,9 @@ permalink: /playground/sae/
         });
       } },
     { title: 'What to take away',
-      body: 'A sparse autoencoder does not add information, it reorganizes it. Trained with reconstruction plus an L1 penalty on an overcomplete code, it trades a dense, polysemantic representation for a sparse one where single units line up with single concepts, which is what makes a feature atlas readable. The honest test is the one here: plant features you know, hide them, and check recovery, because on a real model you only ever see the vector.',
+      body: 'A sparse autoencoder reorganizes information without adding any. I train it with a reconstruction loss plus an L1 penalty on an overcomplete code. It then trades a dense, polysemantic representation for a sparse one in which single units line up with single concepts. That alignment is what makes a feature atlas readable. On a real model you only ever see the vector, so the honest test is the one on this page. You hide features you planted yourself and check whether the autoencoder recovers them.',
       build: function (p) {
-        p.innerHTML = '<p class="sae-note">This is the mechanism behind feature dashboards like Neuronpedia, scaled from my 8 planted concepts to the tens of thousands of features a large autoencoder finds in a language model. The same two failure modes, dead features and polysemantic leftovers, show up there too.</p>' +
+        p.innerHTML = '<p class="sae-note">Feature dashboards like Neuronpedia run on this same mechanism. They scale it from my 8 planted concepts to the tens of thousands of features a large autoencoder finds in a language model. Dead features and polysemantic leftovers, the two failure modes you saw here, show up there too.</p>' +
           '<div class="sae-row" style="margin-top:14px"><a class="sae-btn" href="{{ '/writing/interpretability/' | relative_url }}">read the interpretability writeup</a><a class="sae-btn" href="{{ '/playground/' | relative_url }}">more playground</a></div>';
       } }
   ];

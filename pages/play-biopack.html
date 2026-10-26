@@ -63,8 +63,8 @@ permalink: /playground/biopack/
   <div class="bp-head">
     <p class="bp-sub" style="margin-bottom:6px;"><a href="{{ '/playground/' | relative_url }}" style="color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:0.72rem;">&larr; playground</a></p>
     <h1 class="bp-title">BioPack</h1>
-    <p class="bp-sub">A forward-only workspace for protein structure and stability on a small, bounded panel of well-characterised benign proteins. BioPack takes a protein and a single mutation and returns a stability estimate, or a refusal that says where the query first fell outside what the panel and the calibration data support. It has no sequence design and no optimisation loop, on purpose.</p>
-    <div class="bp-demo-note"><strong>This is a demo.</strong> The structures below are real deposited PDB coordinates for the panel proteins, but every model output on this page (the stability estimate, the cross-model agreement, the calibration curve) is a synthetic placeholder generated in your browser for illustration. None of it is a real prediction or biological evidence.</div>
+    <p class="bp-sub">I built BioPack as a forward-only workspace for protein structure and stability on a small panel of well-characterised benign proteins. You give it a protein and one mutation, and it returns a stability estimate or a refusal. A refusal names the first place where the query falls outside what the panel and the calibration data support. I left out sequence design and any optimisation loop on purpose.</p>
+    <div class="bp-demo-note"><strong>This is a demo.</strong> The structures below are real deposited PDB coordinates for the panel proteins. Every model output on this page is a synthetic placeholder that your browser generates for illustration, and that includes all three analysis panels. None of it is a real prediction or biological evidence.</div>
     <p class="bp-links"><a href="https://github.com/saanviiyer/biopack" target="_blank" rel="noopener">biopack repository</a><a href="{{ '/playground/' | relative_url }}">more playground</a></p>
   </div>
 
@@ -117,35 +117,35 @@ permalink: /playground/biopack/
       <div class="bp-card">
         <h3>analysis panels <span class="bp-synthetic">synthetic</span></h3>
         <div class="bp-stat">
-          <div class="bp-stat-top"><span>predicted &Delta;&Delta;G (forward)</span><span class="bp-stat-val" id="bp-ddg">&mdash;</span></div>
+          <div class="bp-stat-top"><span>predicted &Delta;&Delta;G (forward)</span><span class="bp-stat-val" id="bp-ddg">&ndash;</span></div>
           <div class="bp-bar err"><span id="bp-ddgbar" style="width:0;"></span></div>
-          <p class="bp-cap">A single-point stability estimate with an error bar. Placeholder values, not calibrated kcal/mol.</p>
+          <p class="bp-cap">This panel shows a single-point stability estimate with an error bar. The values are placeholders and are not calibrated in kcal/mol.</p>
         </div>
         <div class="bp-stat">
-          <div class="bp-stat-top"><span>cross-model agreement</span><span class="bp-stat-val" id="bp-agree">&mdash;</span></div>
+          <div class="bp-stat-top"><span>cross-model agreement</span><span class="bp-stat-val" id="bp-agree">&ndash;</span></div>
           <div class="bp-bar"><span id="bp-agreebar" style="width:0;"></span></div>
-          <p class="bp-cap">How closely two stand-in models land on the same answer. Placeholder.</p>
+          <p class="bp-cap">This panel shows how closely two stand-in models agree. The value is a placeholder.</p>
         </div>
         <div class="bp-stat" style="margin-bottom:4px;">
-          <div class="bp-stat-top"><span>calibration</span><span class="bp-stat-val" id="bp-calib">&mdash;</span></div>
+          <div class="bp-stat-top"><span>calibration</span><span class="bp-stat-val" id="bp-calib">&ndash;</span></div>
           <svg id="bp-calib-svg" viewBox="0 0 220 120" width="100%" height="120" style="margin-top:8px;" aria-label="Synthetic calibration curve"></svg>
-          <p class="bp-cap">Predicted confidence against observed accuracy on the panel. Placeholder curve.</p>
+          <p class="bp-cap">This curve plots predicted confidence against observed accuracy on the panel. The curve is a placeholder.</p>
         </div>
       </div>
     </div>
   </div>
 
   <div class="bp-foot">
-    <p>The six refusal reasons are the real contribution of BioPack: a query is answered only after it clears every gate, and the refusal names the first one it fails.</p>
+    <p>I see the six refusal reasons as the real contribution of BioPack. BioPack answers a query only after the query clears every gate. When a query fails, the refusal names the first gate it fails.</p>
     <ul class="bp-gatelist">
-      <li>off panel &mdash; the accession is not one of the panel proteins</li>
-      <li>position out of range &mdash; the mutation position exceeds the sequence length</li>
-      <li>wildtype mismatch &mdash; the stated wild-type residue does not match the parent</li>
-      <li>no calibration &mdash; the query lies outside the region with reference data</li>
-      <li>below noise floor &mdash; the effect asked about is smaller than the assay floor</li>
-      <li>model unavailable &mdash; the backend could not be reached</li>
+      <li><strong>off panel</strong> means the accession is not one of the panel proteins.</li>
+      <li><strong>position out of range</strong> means the mutation position exceeds the sequence length.</li>
+      <li><strong>wildtype mismatch</strong> means the stated wild-type residue does not match the parent sequence.</li>
+      <li><strong>no calibration</strong> means the query lies outside the region with reference data.</li>
+      <li><strong>below noise floor</strong> means the effect in question is smaller than the assay floor.</li>
+      <li><strong>model unavailable</strong> means BioPack could not reach the backend.</li>
     </ul>
-    <p style="margin-top:14px;">This page runs entirely in your browser on GitHub Pages. The live research version needs a Python backend to run the real stability models and the calibration arm; the repository at <a href="https://github.com/saanviiyer/biopack" target="_blank" rel="noopener">github.com/saanviiyer/biopack</a> has the forward-only API, the frozen benign panel, and the gates. The wild-type, calibration, noise-floor and model-backend checks run there, not in this static demo.</p>
+    <p style="margin-top:14px;">This page runs entirely in your browser on GitHub Pages. The live research version needs a Python backend to run the real stability models and the calibration arm. The repository at <a href="https://github.com/saanviiyer/biopack" target="_blank" rel="noopener">github.com/saanviiyer/biopack</a> holds the forward-only API and the gates, along with the frozen benign panel. The wild-type, calibration, noise-floor and model-backend checks run only in that repository, so this static demo skips them.</p>
   </div>
 </section>
 

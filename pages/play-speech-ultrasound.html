@@ -47,7 +47,7 @@ description: One speech experiment run through functional ultrasound of auditory
   <p class="su-eyebrow"><a href="{{ '/playground/' | relative_url }}">&larr; playground</a></p>
   <h1 class="su-title">Speech in ultrasound and in silico</h1>
 
-  <p class="su-desc">I ran one speech experiment through two systems: a functional ultrasound (fUSI) recording of auditory cortex, and Meta's TRIBE v2 brain foundation model, which predicts fMRI responses from audio, text and video. In the ultrasound data, I measured the blood-response timing directly. The original pipeline's &minus;1.6 s onset shift went the wrong way: the best fit was +2.8 s, which held on held-out blocks, and the response was broader than the fMRI model assumes (center of mass 7.3 s vs 5.3 s). I then replayed the same block design through TRIBE with acoustic controls, and found that its audio pathway treats time-reversed speech as speech. Its text pathway restores the response only when a transcriber can recover the words (93% for vocoded speech). Along the way I found and fixed a transcript-placement bug in TRIBE's pipeline, and built a tested, reproducible codebase that recovers effects planted in synthetic data.</p>
+  <p class="su-desc">I ran one speech experiment through two systems. The first is a functional ultrasound (fUSI) recording of auditory cortex. The second is Meta's TRIBE v2, a brain foundation model that predicts fMRI responses from audio, text and video. In the ultrasound data, I measured the blood-response timing directly. The original pipeline shifted event onsets by &minus;1.6 s, and that shift went the wrong way. The best fit was +2.8 s, and it held on held-out blocks. The response was also broader than the fMRI model assumes, with a center of mass of 7.3 s against 5.3 s. I then replayed the same block design through TRIBE with acoustic controls and found that its audio pathway treats time-reversed speech as speech. Its text pathway restores the response only when a transcriber can recover the words (93% for vocoded speech). Along the way I found and fixed a transcript-placement bug in TRIBE's pipeline. I also built a tested, reproducible codebase that recovers effects planted in synthetic data.</p>
 
   <p class="su-links">
     <a href="https://github.com/saanviiyer/fusi-tribe-speech" target="_blank" rel="noopener">code and methods</a>
@@ -59,7 +59,7 @@ description: One speech experiment run through functional ultrasound of auditory
   <!-- 1. Onset-shift explorer -->
   <section class="su-fig" id="fig-onset" hidden>
     <h2>1, Onset-shift explorer</h2>
-    <p class="su-sub">The measured fUSI signal in auditory cortex, with the fitted Glover model overlaid for a chosen onset shift. The original pipeline assumed &minus;1.6 s; the data prefer +2.8 s.</p>
+    <p class="su-sub">This plot shows the measured fUSI signal in auditory cortex. I overlaid the fitted Glover model, the standard fMRI response shape, at the onset shift you choose. The original pipeline assumed &minus;1.6 s, and the data prefer +2.8 s.</p>
     <div class="su-panel">
       <div class="su-canvas-wrap"><canvas id="c-onset" height="300" role="img" aria-label="Measured fUSI ROI signal over time with task blocks shaded and the fitted model overlaid"></canvas></div>
       <div class="su-controls" role="group" aria-label="Onset shift presets">
@@ -86,7 +86,7 @@ description: One speech experiment run through functional ultrasound of auditory
   <!-- 2. Response shapes -->
   <section class="su-fig" id="fig-shapes" hidden>
     <h2>2, Response shapes</h2>
-    <p class="su-sub">Each response peak-normalized over 0&ndash;25 s, with its center of mass marked (computed over 0&ndash;40 s). The measured ultrasound response is slower and broader than the fMRI convention; TRIBE's prediction is faster.</p>
+    <p class="su-sub">I normalized each response to its own peak over 0&ndash;25 s and marked its center of mass, which I computed over 0&ndash;40 s. The measured ultrasound response is slower and broader than the fMRI convention. TRIBE's prediction is faster.</p>
     <div class="su-panel">
       <div class="su-canvas-wrap"><canvas id="c-shapes" height="300" role="img" aria-label="Three peak-normalized response shapes with their centers of mass marked"></canvas></div>
       <div class="su-controls" role="group" aria-label="Toggle response curves">
@@ -101,7 +101,7 @@ description: One speech experiment run through functional ultrasound of auditory
   <!-- 3. What does the model treat as speech? -->
   <section class="su-fig" id="fig-treat" hidden>
     <h2>3, What does the model treat as speech?</h2>
-    <p class="su-sub">TRIBE's block-locked prediction for a control condition against the matched speech block. Retention is control response divided by speech response: 1 means the model treats the control like speech, 0 means it ignores it. These are model predictions, not brain measurements.</p>
+    <p class="su-sub">This panel plots TRIBE's block-locked prediction for a control condition next to the matched speech block. I define retention as the control response divided by the speech response. A retention of 1 means the model treats the control like speech, and 0 means the model ignores it. These curves are model predictions. I did not measure them in a brain.</p>
     <div class="su-panel">
       <div class="su-controls" role="group" aria-label="Control condition">
         <span class="su-grouplabel">control</span>
@@ -141,7 +141,7 @@ description: One speech experiment run through functional ultrasound of auditory
   <!-- 4. Does hearing the words help? -->
   <section class="su-fig" id="fig-words" hidden>
     <h2>4, Does hearing the words help?</h2>
-    <p class="su-sub">Change in TRIBE's retention when the text pathway is added, by control. Each bar is labeled with the fraction of words a transcriber recovered. Bars whose 95% interval excludes zero are solid; the rest are faded. Intact is the null check.</p>
+    <p class="su-sub">Each bar shows how much TRIBE's retention changes for one control when I add the text pathway. The label under each bar gives the fraction of words a transcriber recovered. I drew a bar solid when its 95% interval excludes zero and faded it otherwise. The intact condition is the null check.</p>
     <div class="su-panel">
       <div class="su-controls" role="group" aria-label="Region">
         <span class="su-grouplabel">region</span>
@@ -157,9 +157,9 @@ description: One speech experiment run through functional ultrasound of auditory
   </section>
 
   <ul class="su-caveats" hidden id="su-caveats">
-    <li>This is one recording with one synthetic voice.</li>
-    <li>The TRIBE results are model predictions, not brain measurements.</li>
-    <li>In this data, a slow response and a late event clock cannot be told apart.</li>
+    <li>I analyzed one recording with one synthetic voice.</li>
+    <li>The TRIBE results are model predictions. I did not measure them in a brain.</li>
+    <li>In this data, I cannot tell a slow response apart from a late event clock.</li>
   </ul>
 
   <p class="su-back"><a href="{{ '/playground/' | relative_url }}">&larr; back to playground</a></p>
@@ -397,7 +397,7 @@ description: One speech experiment run through functional ultrasound of auditory
   function load(){ if(started) return; started=true; statusEl.textContent='Loading figures…';
     fetch(DATA_URL).then(function(r){ if(!r.ok) throw new Error('fetch '+r.status); return r.json(); })
       .then(function(d){ DATA=d; build(); })
-      .catch(function(e){ statusEl.innerHTML='Could not load the interactive data. The figures and full results are in the <a href="https://github.com/saanviiyer/fusi-tribe-speech" target="_blank" rel="noopener">code repository</a>.'; console.error(e); });
+      .catch(function(e){ statusEl.innerHTML='The interactive data did not load. You can find the figures and full results in the <a href="https://github.com/saanviiyer/fusi-tribe-speech" target="_blank" rel="noopener">code repository</a>.'; console.error(e); });
   }
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ load(); io.disconnect(); } }); },{rootMargin:'200px'});
