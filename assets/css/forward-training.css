@@ -1,0 +1,108 @@
+/* "Our brains don't run on backprop": figures, flip cards, hover definitions.
+   One colour code for every animation in the post:
+   input blue, noise green, output orange, backprop / true gradient navy,
+   weight perturbation red, Dust teal, Apical Dust magenta, bias pink. */
+:root {
+  --ft-input: #3b6fb6;
+  --ft-noise: #3f8a3a;
+  --ft-output: #d07a2a;
+  --ft-true: #26406e;
+  --ft-weight: #b8323f;
+  --ft-dust: #1f8aa3;
+  --ft-apical: #9c1c8c;
+  --ft-bias: #e0699a;
+  --ft-fa: #7d5ba6;
+  --ft-dfa: #b5832b;
+  --ft-pc: #c4533a;
+  --ft-replay: #3f9a3f;
+  --ft-card: #fffdf7;
+  --ft-edge: rgba(23, 9, 15, 0.10);
+  --ft-grid: rgba(23, 9, 15, 0.08);
+  --ft-sketch: #f6e4e6;
+}
+:root[data-theme="dark"] {
+  --ft-input: #84aaeb;
+  --ft-noise: #7cc46c;
+  --ft-output: #f0a35a;
+  --ft-true: #b9c9f2;
+  --ft-weight: #f27f89;
+  --ft-dust: #62c8de;
+  --ft-apical: #ff86cf;
+  --ft-bias: #ffb3d2;
+  --ft-fa: #bba3e8;
+  --ft-dfa: #e8b968;
+  --ft-pc: #f0927a;
+  --ft-replay: #82cf86;
+  --ft-card: #18121a;
+  --ft-edge: rgba(246, 171, 212, 0.14);
+  --ft-grid: rgba(246, 171, 212, 0.10);
+  --ft-sketch: #2a1d25;
+}
+
+/* ---------- figures ---------- */
+.rp-body .ft-fig { margin: 44px 0 42px; display: block; }
+.ft-card { background: var(--ft-card); border: 1px solid var(--ft-edge); border-radius: 14px; padding: 18px 18px 14px; }
+.ft-card svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ft-card canvas { display: block; width: 100%; aspect-ratio: 16 / 8.5; }
+.rp-body .ft-fig figcaption { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.84rem; line-height: 1.55; color: var(--muted); margin-top: 12px; }
+.rp-body .ft-fig figcaption strong { color: var(--ink); }
+
+.ft-t { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 13.5px; font-weight: 500; fill: var(--ink); }
+.ft-tm { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 12.5px; fill: var(--muted); }
+.ft-b { font-weight: 700; }
+.ft-h { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 15px; font-weight: 800; }
+.ft-axis { stroke: var(--ft-grid); stroke-width: 1; }
+.ft-axis-strong { stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.2; }
+
+.ft-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 12px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.76rem; color: var(--muted); }
+.ft-k { display: inline-flex; align-items: center; gap: 6px; }
+.ft-k i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+.ft-k.ft-k-dash i { height: 0; width: 16px; border-radius: 0; border-top: 2.5px dashed; background: none !important; }
+
+.ft-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 12px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.8rem; color: var(--muted); }
+.ft-btn { font-family: inherit; font-size: 0.76rem; border: 1px solid var(--ft-apical); color: var(--ft-apical); background: transparent; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+.ft-btn:hover, .ft-btn[aria-pressed="true"] { background: var(--ft-apical); color: var(--ft-card); }
+.ft-range { display: inline-flex; align-items: center; gap: 10px; flex: 1; min-width: 220px; }
+.ft-range input { flex: 1; min-width: 120px; accent-color: var(--ft-apical); }
+.ft-readout { font-variant-numeric: tabular-nums; }
+.ft-readout b { color: var(--ink); }
+
+/* ---------- colour key ---------- */
+.ft-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 18px; padding: 14px 18px; margin: 26px 0 30px; background: var(--ft-card); border: 1px solid var(--ft-edge); border-radius: 12px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.8rem; color: var(--muted); }
+.ft-key p { grid-column: 1 / -1; margin: 0 0 2px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---------- flip cards: animation on the front, my sketch on the back ---------- */
+.ft-flip { perspective: 1800px; }
+.ft-flip-inner { display: grid; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.ft-face { grid-area: 1 / 1; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; }
+.ft-face > .ft-card { flex: 1; }
+.ft-front { cursor: pointer; }
+/* The sketch sizes itself to the animation's box, so the card never grows. */
+.ft-back { position: absolute; inset: 0; transform: rotateY(180deg); align-items: center; justify-content: center; background: var(--ft-sketch); border-radius: 14px; padding: 14px; cursor: pointer; }
+.ft-back img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; }
+.ft-flip-btn { font-family: inherit; font-size: 0.76rem; border: 1px solid var(--ft-apical); color: var(--ft-apical); background: transparent; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+.ft-flip-btn:hover, .ft-flip-btn[aria-pressed="true"] { background: var(--ft-apical); color: var(--ft-card); }
+.ft-flip.is-flipped .ft-flip-inner { transform: rotateY(180deg); }
+.ft-flip.is-flipped .ft-front, .ft-flip:not(.is-flipped) .ft-back { pointer-events: none; }
+.ft-flip-bar { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.76rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .ft-flip-inner { transition: none; } }
+
+/* ---------- hover definitions ---------- */
+.ft-def { position: relative; color: var(--ft-apical); text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; border-radius: 3px; }
+.ft-def:focus-visible { outline: 2px solid var(--ft-apical); outline-offset: 2px; }
+.ft-pop { position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(calc(-50% + var(--ft-shift, 0px))) translateY(4px); width: max-content; max-width: min(300px, 82vw); background: var(--ink); color: var(--post-bg, #faf6ec); font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.8rem; font-weight: 400; font-style: normal; line-height: 1.45; letter-spacing: 0; text-align: left; white-space: normal; padding: 9px 12px; border-radius: 9px; box-shadow: 0 10px 28px rgba(23, 9, 15, 0.22); opacity: 0; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 30; }
+.ft-def.ft-below .ft-pop { bottom: auto; top: calc(100% + 10px); }
+.ft-def:hover .ft-pop, .ft-def:focus .ft-pop, .ft-def.is-open .ft-pop { opacity: 1; transform: translateX(calc(-50% + var(--ft-shift, 0px))) translateY(0); }
+
+/* ---------- tables ---------- */
+.rp-body .ft-table { width: 100%; border-collapse: collapse; margin: 18px 0 26px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.ft-table th, .ft-table td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--ft-edge); }
+.ft-table th { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.ft-table tr.ft-hl td { font-weight: 700; color: var(--ink); }
+.ft-table td i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 8px; vertical-align: 0; }
+.ft-table-wrap { overflow-x: auto; }
+
+/* ---------- references ---------- */
+.rp-body .ft-refs { font-size: 0.95rem; }
+.rp-body .ft-refs li { margin-bottom: 8px; }
+.ft-refs li:target { background: color-mix(in srgb, var(--ft-apical) 12%, transparent); border-radius: 6px; }
