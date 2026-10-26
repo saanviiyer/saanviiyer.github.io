@@ -43,7 +43,7 @@ Biological neurons are separated by structure and function, as evidenced through
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="neuron"></div>
-  <figcaption><strong>Two inputs, one neuron.</strong> A schematic pyramidal neuron, coloured the way every figure in this post is: blue for bottom-up input, magenta for top-down feedback, orange for output. Turn feedback off and the output falls back to single spikes. Coincident apical input turning spikes into bursts is one proposed way top-down signals could act as a local teaching signal (<a href="#ref-larkum2013">Larkum, 2013</a>).</figcaption>
+  <figcaption><strong>Two inputs, one neuron.</strong> I drew a schematic pyramidal neuron in the colours every figure here uses. Blue is bottom-up input and magenta is top-down feedback, and the axon carries the orange output. Turn feedback off and the output drops back to single spikes. One proposal says top-down signals teach a neuron by turning its spikes into bursts when apical input arrives at the same time (<a href="#ref-larkum2013">Larkum, 2013</a>).</figcaption>
 </figure>
 
 **I first tested whether these local learning rules can provide a solution towards continual learning. Local, biologically plausible learning rules (like <span class="ft-def" tabindex="0">Feedback Alignment<span class="ft-pop" role="tooltip">A hack around weight transport: instead of mirroring the forward weights, the error is sent back through a fixed random matrix. The forward weights adapt until the random feedback becomes useful, so the model learns to interpret a random language.</span></span>, <span class="ft-def" tabindex="0">Direct Feedback Alignment<span class="ft-pop" role="tooltip">Instead of passing the error back layer by layer, the final output error is piped to every hidden layer at once through its own random projection. More local than feedback alignment.</span></span>, and <span class="ft-def" tabindex="0">Predictive Coding<span class="ft-pop" role="tooltip">The brain as a prediction machine: each layer constantly predicts what the layer below it will do, and only the error in that prediction is passed along.</span></span>) have shown potential in protecting neural networks against catastrophic forgetting ([Lillicrap et al., 2016](#ref-lillicrap2016); [Nøkland, 2016](#ref-nokland2016); [Rao and Ballard, 1999](#ref-rao1999); [Whittington and Bogacz, 2017](#ref-whittington2017)). Continual learning and <span class="ft-def" tabindex="0">catastrophic forgetting<span class="ft-pop" role="tooltip">The overwriting of historical task representations when a network learns a new distribution (McCloskey and Cohen, 1989).</span></span> are two sides of the same coin, as continual learning requires acquiring new task distributions without inducing catastrophic forgetting, or the overwriting of historical task representations.**
@@ -52,7 +52,7 @@ Looking into how I could test local learning rules compared to backprop, I was s
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="confound"></div>
-  <figcaption><strong>Learning less looks like forgetting less.</strong> Along backprop's trade-off curve, a network that learns more also forgets more. Compare a local rule against a backprop baseline that learned more and the rule looks protective; slide the comparison down to matched learning accuracy and the gap collapses to +0.21 points, the largest edge any local rule showed (predictive coding). Replay sits 10.6 points above the curve. The axes are schematic; the two gaps are measured.</figcaption>
+  <figcaption><strong>Learning less looks like forgetting less.</strong> On backprop's curve, a network that learns more also forgets more. If you compare a local rule with a backprop run that learned more, the rule looks protective. Slide the comparison to matched learning accuracy and the gap shrinks to +0.21 points, the largest edge any local rule showed (predictive coding). Replay sits 10.6 points above the curve. I drew the axes schematically, but both gaps are measured.</figcaption>
 </figure>
 
 ## Experiment 1: Local rules vs. backprop in continual learning
@@ -90,7 +90,7 @@ Raw backward transfer sits near −83 points for every rule, because a single gr
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="bwt"></div>
-  <figcaption><strong>Every rule forgets about as much as backprop.</strong> Each bar is how much less a rule forgets than backprop at the same learning accuracy, with its 95% interval, on Split-CIFAR-10 across 16 seeds. The three local rules sit within a third of a point of zero. Add replay to see the one change that moves retention.</figcaption>
+  <figcaption><strong>Every rule forgets about as much as backprop.</strong> Each bar shows how much less a rule forgets than backprop at the same learning accuracy, with its 95% interval (Split-CIFAR-10, 16 seeds). All three local rules land within a third of a point of zero. Add replay to see the one change that moves retention.</figcaption>
 </figure>
 
 **Findings**
@@ -124,7 +124,7 @@ Dust takes a different approach with **node perturbation** ([Fiete and Seung, 20
     <div class="ft-face ft-back"><img src="/assets/images/forward-training/sketch-perturbation.webp" alt="My hand-drawn sketch comparing weight perturbation (EGGROLL), which makes a noisy copy of every weight with variance proportional to the parameter count P, against node perturbation (Dust), which perturbs token activations with variance proportional to d over K." loading="lazy"></div>
   </div>
   <div class="ft-flip-bar"><button class="ft-flip-btn" type="button">Flip to see my sketch</button><span>or tap the animation</span></div>
-  <figcaption><strong>Where the noise goes.</strong> Weight perturbation puts noise on every one of the P weights, so its variance grows with the parameter count. Node perturbation leaves the weights clean and adds independent noise to each layer output at every token, so one sequence pass tests many perturbations and the variance only grows with the activation width d, divided by the population K.</figcaption>
+  <figcaption><strong>Where the noise goes.</strong> Weight perturbation adds noise to all P weights, so its variance grows with the parameter count. Node perturbation leaves the weights clean and adds fresh noise to each layer output at every token. One sequence pass then tests many perturbations, and the variance grows only with the activation width d divided by the population K.</figcaption>
 </figure>
 
 Dust uses credit assignment via centered loss reduction, by computing scalar loss reductions for each token. A reward scalar is assigned to the perturbation at any individual token by accumulating downstream loss reductions discounted by a gamma factor. So with this, layers are perturbed in isolated passes using cached clean forward activations to eliminate noise interference across the deep Transformer blocks. Therefore, attention internals are scored per-head on alignment with estimated error vectors at the attention block output, and L2 normalization is used for optimization. Finally, the language model head is updated with this zeroth-order stochastic logit perturbation via single-pass cross-entropy evaluation at much lower computational cost.
@@ -135,7 +135,7 @@ Dust uses credit assignment via centered loss reduction, by computing scalar los
     <div class="ft-face ft-back"><img src="/assets/images/forward-training/sketch-credit.webp" alt="My hand-drawn sketch of Dust's credit assignment: token IDs, embeddings and transformer blocks feed a target block m whose clean input is cached, then later blocks, the LM head, logits and per-token losses." loading="lazy"></div>
   </div>
   <div class="ft-flip-bar"><button class="ft-flip-btn" type="button">Flip to see my sketch</button><span>or tap the animation</span></div>
-  <figcaption><strong>Dust's credit assignment: which parts of the model contributed to the outcome?</strong> A clean forward pass saves the activations entering the target block m, so the expensive early blocks never run twice. The isolated pass then reuses that cache, perturbs block m, and reruns only the blocks downstream of it to read off per-token losses.</figcaption>
+  <figcaption><strong>Which parts of the model earned the outcome?</strong> A clean forward pass saves the activations that enter the target block m, so the early blocks never run twice. The isolated pass reuses that cache to perturb block m, then reruns only the blocks after it to read off per-token losses.</figcaption>
 </figure>
 
 $$
@@ -151,7 +151,7 @@ $$
     <div class="ft-face ft-back"><img src="/assets/images/forward-training/sketch-isolated-pass.webp" alt="My hand-drawn sketch of the isolated pass: cached input, selected MLP with noise added, downstream blocks, LM head and logits, per-token losses, centered loss reduction, the output error estimate, and the local weight update." loading="lazy"></div>
   </div>
   <div class="ft-flip-bar"><button class="ft-flip-btn" type="button">Flip to see my sketch</button><span>or tap the animation</span></div>
-  <figcaption><strong>One isolated pass, step by step.</strong> The equations above, as a pipeline. The live panel underneath is real arithmetic in 128 dimensions: K noise draws, centred-loss rewards, and the estimate ê of the output error. It is unbiased, so more draws keep pulling it toward the true error, and at K = 16 it lands near the per-step cosine Dust shows on real MLP layers. The update keeps the same form as backprop's, error times input, even though the error came from forward passes alone.</figcaption>
+  <figcaption><strong>One isolated pass, step by step.</strong> This pipeline follows the equations above. The live panel underneath runs the real arithmetic in 128 dimensions. It scores K noise draws with centred-loss rewards and uses them to estimate the output error ê. The estimate is unbiased, so more draws keep pulling it toward the true error. At K = 16 it lands near the per-step cosine Dust shows on real MLP layers. The update keeps backprop's form, error times input, even though only forward passes produced the error.</figcaption>
 </figure>
 
 Dust is limited in its per-token gradient noise variance, as suppressing gradient noise in Dust means scaling to thousands of population draws, which incurs substantial compute overhead. But here, a top-down feedback pathway can provide an unbiased control variate that suppresses this variance without requiring these additional population draws and still retaining a backprop-free approach. Enter Apical Dust!
@@ -164,7 +164,7 @@ Dust is limited in its per-token gradient noise variance, as suppressing gradien
     <div class="ft-face ft-back"><img src="/assets/images/forward-training/sketch-apical.webp" alt="My hand-drawn sketch comparing standard Dust, where the estimated error has high variance at small K, with Apical Dust, which adds a feedback map, a predicted error, adjusted perturbation rewards, and a residual estimate that stays unbiased for any feedback map." loading="lazy"></div>
   </div>
   <div class="ft-flip-bar"><button class="ft-flip-btn" type="button">Flip to see my sketch</button><span>or tap the animation</span></div>
-  <figcaption><strong>Standard Dust vs. Apical Dust.</strong> Both estimators aim at the same gradient. Apical Dust first predicts it with a learned feedback map, then uses the noise only to estimate what the prediction missed, which is why its estimates cluster tighter around the same centre.</figcaption>
+  <figcaption><strong>Standard Dust vs. Apical Dust.</strong> Both estimators aim at the same gradient. Apical Dust first predicts that gradient with a learned feedback map. It then spends the noise only on what the prediction missed, so its estimates cluster tighter around the same centre.</figcaption>
 </figure>
 
 I built a framework that adds on to Dust by integrating a top-down linear feedback pathway to suppress estimator variance, while also guaranteeing mathematical unbiasedness.
@@ -176,7 +176,7 @@ Weight perturbation vs. node perturbation vs. Apical Dust:
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="variance"></div>
-  <figcaption><strong>How close does each step point to the true gradient?</strong> Each dartboard shows recent single-step estimates around the true gradient (navy). Weight perturbation is close to random, Dust is centred but noisy, and Apical Dust is centred with less spread. Raise K to tighten both. The curves are calibrated so Dust's per-step cosine at K = 16 matches the 0.26 measured on MLP layers, Apical's variance is set to the measured 2× population equivalence, and the weight-perturbation board assumes about 10⁴ parameters per activation dimension.</figcaption>
+  <figcaption><strong>How close does each step point to the true gradient?</strong> Each dartboard shows recent single-step estimates around the true gradient in navy. Weight perturbation looks close to random. Dust stays centred but noisy, and Apical Dust stays centred with less spread. Raise K to tighten both. I calibrated the boards so Dust's per-step cosine at K = 16 matches the 0.26 I measured on MLP layers, and Apical's variance matches the measured 2× population equivalence. The weight-perturbation board assumes about 10⁴ parameters per activation dimension.</figcaption>
 </figure>
 
 **Setup**
@@ -203,7 +203,7 @@ Weight perturbation vs. node perturbation vs. Apical Dust:
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="ladder"></div>
-  <figcaption><strong>The population ladder.</strong> Test loss from the table, with error bars. Apical Dust beats Dust in every seed pair at K = 16 and 64, and the advantage is gone by K = 256, where raw noise averages out on its own. Read across from Apical at K = 16 to the Dust curve and it lands near K = 33. Toggle the fixed-Dust runs from the summary at the end.</figcaption>
+  <figcaption><strong>The population ladder.</strong> These points come from the table, with error bars. Apical Dust beats Dust in every seed pair at K = 16 and 64. By K = 256 the advantage disappears, because raw noise averages out on its own. Read across from Apical at K = 16 and you hit the Dust curve near K = 33. The toggle adds the fixed-Dust runs from the summary at the end.</figcaption>
 </figure>
 
 The initial naive implementation incurred GPU synchronization bottlenecks during CPU matrix inversion. Fixing host-device bottlenecks by keeping iterative online ridge regression directly on the GPU reduced execution overhead to match plain Dust:
@@ -218,7 +218,7 @@ But directly replacing gradient estimates with top-down feedback predictions int
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="cv"></div>
-  <figcaption><strong>A control variate shrinks the noise, not the target.</strong> A toy two-dimensional picture. Dust's estimates (teal) scatter around the true gradient. Apical Dust's (magenta) scatter only by the part of the gradient the feedback map fails to predict, so a better map shrinks the cloud while it stays centred on the same point. At the default the variance halves, which is what the measured result says: Apical at K = 16 performs like Dust at K ≈ 33.</figcaption>
+  <figcaption><strong>A control variate shrinks the noise and keeps the target.</strong> This is a toy two-dimensional picture. Dust's estimates (teal) scatter around the true gradient. Apical Dust's estimates (magenta) scatter only by the part of the gradient the feedback map fails to predict. A better map therefore shrinks the cloud while its centre stays put. At the default setting the variance halves, which matches the measured result that Apical at K = 16 performs like Dust at K ≈ 33.</figcaption>
 </figure>
 
 Specifically, the algorithm I used was to predict the expected output error using top-down linear feedback, then adjust the perturbed reward signals, then estimate the residual from perturbation draws, and then add the prediction back. This provides a mathematical guarantee of unbiasedness, since the expected value of the stochastic perturbation correction term cancels out the linear prediction.
@@ -232,7 +232,7 @@ $$
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="unbiased"></div>
-  <figcaption><strong>Unbiased for any feedback map.</strong> Two running averages. Trusting the feedback prediction alone (pink) converges to wherever the prediction points. The control variate (magenta) adds a noisy correction whose average is exactly what the prediction got wrong, so it converges to the true gradient however wrong the map is. Turn the map further off and only the noise grows, never the bias.</figcaption>
+  <figcaption><strong>Unbiased for any feedback map.</strong> The figure tracks two running averages. If you trust the feedback prediction alone (pink), the average converges to wherever the prediction points. The control variate (magenta) adds a noisy correction that averages out to the prediction's error, so it converges to the true gradient however wrong the map is. Turn the map further off and only the noise grows. The bias stays at zero.</figcaption>
 </figure>
 
 ## Telling noise from bias
@@ -251,7 +251,7 @@ So, how can we reliably decouple zero-mean stochastic noise from persistent dire
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="averaging"></div>
-  <figcaption><strong>The Averaging Test, animated.</strong> Reused from the earlier version of this post. On one batch the biased feedback-weighted update (pink) often points closer to the true gradient than the unbiased control variate (magenta). Average more batches and it flips: the control variate converges onto the gradient while the biased average stays locked at an angle. Vectors are schematic; the backwards ranking is the measured result.</figcaption>
+  <figcaption><strong>The Averaging Test, animated.</strong> I reused this animation from the earlier version of this post. On a single batch, the biased feedback-weighted update (pink) often points closer to the true gradient than the unbiased control variate (magenta). Average more batches and the order flips. The control variate converges onto the gradient, while the biased average stays locked at an angle. The vectors are schematic, but the backwards ranking is the measured result.</figcaption>
 </figure>
 
 While unbiased estimators steadily approach 1 as N tends to infinity, biased estimators plateau below this. This plateau height quantitatively isolates systematic bias in a few hundred estimates because averaging treats the two kinds of error differently. The average of N estimates equals the true gradient plus the bias plus a noise term. The noise is fresh on every draw, so it shrinks as 1/√N. The bias is the same on every draw, so it doesn't shrink at all. By N = 256 the noise has fallen to 1/16 of its size in a single estimate, so almost all of the remaining gap below cosine 1 is bias. The test needs only one fixed batch and one backprop gradient as the reference, so it runs in minutes. A full training run would take hours and would mix bias and noise together in the final loss.
@@ -262,7 +262,7 @@ Using this Averaging Test across the transformer layer types revealed interestin
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="plateau"></div>
-  <figcaption><strong>The embedding stalls first.</strong> The Averaging Test per layer type. Plateau heights are measured; the curve shapes leading up to them are schematic. Give the embeddings future-token credit to watch their plateau rise from 0.71 to 0.78.</figcaption>
+  <figcaption><strong>The embedding stalls first.</strong> This chart runs the Averaging Test on each layer type. I measured the plateau heights, and the curve shapes leading up to them are schematic. Give the embeddings future-token credit to watch their plateau rise from 0.71 to 0.78.</figcaption>
 </figure>
 
 Looking into the original Dust architecture, Dust originally assigned gamma = 0 for token embeddings, which credited an embedding jitter only for its immediate token loss. But token embeddings also flow into the residual stream and influence later tokens through attention. When I gave embeddings future-token credit by setting gamma = 0.9, the Averaging Test plateau rose from 0.71 to 0.78.
