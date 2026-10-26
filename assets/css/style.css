@@ -622,6 +622,8 @@ body.is-post #neural-bg { display: none; }
 .rp-masthead { margin: 0; padding: 2px 0 26px; text-align: left; }
 /* Two columns: a sticky table of contents on the left, the article on the right. */
 .rp-layout { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 56px; align-items: start; }
+/* Posts without a contents sidebar read in one column, the same width as a sidebar post's text. */
+.rp-layout.rp-notoc, .rp-layout:has(> .rp-toc[hidden]) { grid-template-columns: minmax(0, 920px); }
 .rp-head { margin-bottom: 52px; }
 .rp-eyebrow { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin: 0 0 22px; }
 .rp-eyebrow a { color: var(--accent); text-decoration: none; }

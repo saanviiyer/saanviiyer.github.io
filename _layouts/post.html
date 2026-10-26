@@ -41,7 +41,11 @@ layout: default
   if (!box || !nav || !body) return;
   var heads = body.querySelectorAll(':scope > h2, :scope > h3');
   var h2count = body.querySelectorAll(':scope > h2').length;
-  if (h2count < 2) return;
+  if (h2count < 2) {
+    var lay = document.querySelector('.rp-layout');
+    if (lay) lay.classList.add('rp-notoc');
+    return;
+  }
 
   var links = [], byId = {};
   heads.forEach(function (h, i) {
