@@ -29,7 +29,7 @@ Most deep learning architectures rely on backpropagation to optimize weight matr
 
 ## Why should we care?
 
-The benefit to studying the biological brain is that it has the advantage of evolution. This evolved system has persisted and improved over billions of years, and the programmatic nature of nature suggests how our brains must be optimized for efficiency. Key challenges in modern architectures, such as continual learning, catastrophic forgetting, pretraining efficiency, and generalization, are naturally addressed in biological neural systems. Reverse engineering and understanding our algorithms can help us find out exactly what is happening to inspire and enhance models.
+The benefit to studying the biological brain is that it has the advantage of evolution. This evolved system has persisted and improved over billions of years, and the programmatic nature of nature suggests how our brains must be optimized for efficiency. Key challenges in modern architectures, such as continual learning, catastrophic forgetting, pretraining efficiency, and generalization, are naturally addressed in biological neural systems. I believe it's worth reverse engineering and understanding our algorithms to find out exactly what is happening to inspire and enhance models.
 
 ## How do we know the brain doesn't use backprop?
 
