@@ -208,14 +208,14 @@
      2. The confound: a rule that learns less also forgets less (schematic)
      ===================================================================== */
   FIG.confound = function (root) {
-    legend(root, [['true', 'backprop trade-off curve'], ['fa', 'local rule (feedback alignment)'], ['replay', 'local rules + replay']]);
+    legend(root, [['true', 'backprop trade-off curve'], ['pc', 'local rule (predictive coding)'], ['replay', 'backprop + replay']]);
     var svg = svgRoot(root, 860, 360, 'Schematic plot of backward transfer against learning accuracy. Comparing a local rule to backprop trained to a higher accuracy makes the rule look like it forgets less; at matched accuracy the gap nearly disappears, while replay sits far above the curve.');
-    var X0 = 90, X1 = 820, Y0 = 26, Y1 = 300, A0 = 0.35, A1 = 0.90, B0 = -16, B1 = 27;
+    var X0 = 90, X1 = 820, Y0 = 26, Y1 = 300, A0 = 0.35, A1 = 0.90, B0 = -16, B1 = 13;
     function X(a) { return X0 + (a - A0) / (A1 - A0) * (X1 - X0); }
     function Y(b) { return Y1 - (b - B0) / (B1 - B0) * (Y1 - Y0); }
     function bwt(a) { return 2 - 16 * (a - A0) / (A1 - A0); }
-    var RA = 0.5, EDGE = 0.7, REP = 24.9;
-    [-10, 0, 10, 20].forEach(function (b) { line(svg, X0, Y(b), X1, Y(b), b === 0 ? 'stroke:var(--muted);stroke-opacity:.45' : 'stroke:var(--ft-grid)'); });
+    var RA = 0.5, EDGE = 0.21, REP = 10.6;
+    [-10, 0, 10].forEach(function (b) { line(svg, X0, Y(b), X1, Y(b), b === 0 ? 'stroke:var(--muted);stroke-opacity:.45' : 'stroke:var(--ft-grid)'); });
     line(svg, X0, Y0, X0, Y1, 'stroke:var(--muted);stroke-opacity:.45');
     T(svg, X0 + (X1 - X0) / 2, 344, 'accuracy on the new task (schematic axis)', 'ft-tm', null, 'middle');
     var yl = T(svg, 24, (Y0 + Y1) / 2, 'backward transfer, higher = less forgetting', 'ft-tm', null, 'middle');
@@ -226,13 +226,13 @@
     T(svg, X(0.89), Y(bwt(0.89)) - 16, 'backprop: learn more, forget more', 'ft-tm', 'fill:var(--ft-true)', 'end');
 
     var guide = line(svg, 0, Y0, 0, Y1, 'stroke:var(--ft-true);stroke-opacity:.25;stroke-dasharray:4 4');
-    var level = line(svg, X(RA), Y(bwt(RA) + EDGE), 0, Y(bwt(RA) + EDGE), 'stroke:var(--ft-fa);stroke-opacity:.5;stroke-dasharray:2 4');
-    var bracket = line(svg, 0, 0, 0, 0, 'stroke:var(--ft-fa);stroke-width:3;stroke-linecap:round');
+    var level = line(svg, X(RA), Y(bwt(RA) + EDGE), 0, Y(bwt(RA) + EDGE), 'stroke:var(--ft-pc);stroke-opacity:.5;stroke-dasharray:2 4');
+    var bracket = line(svg, 0, 0, 0, 0, 'stroke:var(--ft-pc);stroke-width:3;stroke-linecap:round');
     var bp = S('circle', { r: 6.5, style: 'fill:var(--ft-true)' }, svg);
-    S('circle', { cx: X(RA), cy: Y(bwt(RA) + EDGE), r: 7.5, style: 'fill:var(--ft-fa)' }, svg);
-    T(svg, X(RA), Y(bwt(RA) + EDGE) - 15, 'local rule', 'ft-t ft-b', 'fill:var(--ft-fa)', 'middle');
+    S('circle', { cx: X(RA), cy: Y(bwt(RA) + EDGE), r: 7.5, style: 'fill:var(--ft-pc)' }, svg);
+    T(svg, X(RA), Y(bwt(RA) + EDGE) - 15, 'local rule', 'ft-t ft-b', 'fill:var(--ft-pc)', 'middle');
     S('circle', { cx: X(RA), cy: Y(bwt(RA) + REP), r: 7.5, style: 'fill:var(--ft-replay)' }, svg);
-    T(svg, X(RA) + 13, Y(bwt(RA) + REP) + 5, 'local rules + replay: +24.9 pts above backprop (measured)', 'ft-t ft-b', 'fill:var(--ft-replay)');
+    T(svg, X(RA) + 13, Y(bwt(RA) + REP) + 5, 'backprop + replay: +10.6 pts at matched learning (measured)', 'ft-t ft-b', 'fill:var(--ft-replay)');
     var tag = T(svg, 0, 0, 'backprop compared here', 'ft-tm', 'fill:var(--ft-true)');
 
     var cmp = 0.9, playing = !REDUCE, dir = -1;
@@ -249,7 +249,7 @@
       tag.setAttribute('text-anchor', x > 700 ? 'end' : 'middle');
       tag.setAttribute('x', x > 700 ? x + 8 : x); tag.setAttribute('y', yb + 24);
       var e = (bwt(RA) + EDGE) - bwt(cmp);
-      ro.innerHTML = 'apparent advantage of the local rule: <b>+' + e.toFixed(1) + ' pts</b>' + (cmp <= 0.505 ? ' (the measured gap at matched accuracy)' : '');
+      ro.innerHTML = 'apparent advantage of the local rule: <b>+' + e.toFixed(1) + ' pts</b>' + (cmp <= 0.505 ? ' (the measured edge at matched learning, the largest of any local rule)' : '');
       if (document.activeElement !== sl) sl.value = Math.round(cmp * 100);
     }
     draw();
@@ -267,47 +267,54 @@
      3. Experiment 1 results: backward transfer per rule (measured)
      ===================================================================== */
   FIG.bwt = function (root) {
+    // Retention vs backprop at matched learning accuracy, gap-corrected,
+    // 16 seeds, Split-CIFAR-10 (locality study, matched-learning table).
     var rows = [
-      ['Backprop', 'true', '62.4%', -29.1],
-      ['Feedback alignment', 'fa', '62.4%', -28.4],
-      ['Direct feedback alignment', 'dfa', '58.1%', -31.2],
-      ['Predictive coding', 'pc', '65.2%', -25.7],
-      ['Local rules + replay (500 samples)', 'replay', null, -4.2]
+      ['Feedback alignment', 'fa', 'learned to 83.1%', -0.08, -0.21, 0.05],
+      ['Direct feedback alignment', 'dfa', 'learned to 81.7%', -0.11, -0.28, 0.06],
+      ['Predictive coding', 'pc', 'learned to 85.0%', 0.21, 0.11, 0.31],
+      ['Backprop + replay', 'replay', 'learned to 83.0%', 10.6, 10.0, 11.1],
+      ['FA + replay', 'replay', 'learned to 81.2%', 10.7, 10.2, 11.2],
+      ['DFA + replay', 'replay', 'learned to 80.3%', 12.3, 11.8, 12.7],
+      ['PC + replay', 'replay', 'learned to 84.1%', 9.9, 9.6, 10.2]
     ];
-    var svg = svgRoot(root, 860, 330, 'Bar chart of backward transfer on Split-CIFAR-10. Backprop -29.1 percent, feedback alignment -28.4, direct feedback alignment -31.2, predictive coding -25.7, and local rules with a 500-sample replay buffer -4.2.');
-    var Z = 800, L = 300;
-    function X(v) { return Z + v / 35 * (Z - L); }
-    [-30, -20, -10, 0].forEach(function (v) {
-      line(svg, X(v), 30, X(v), 300, v === 0 ? 'stroke:var(--muted);stroke-opacity:.5' : 'stroke:var(--ft-grid)');
-      T(svg, X(v), 320, v + '%', 'ft-tm', null, 'middle');
+    var svg = svgRoot(root, 860, 420, 'Bar chart of how much less each rule forgets than backprop at matched learning accuracy. Feedback alignment -0.08, direct feedback alignment -0.11, predictive coding +0.21, all within a third of a point of zero. With replay: backprop +10.6, feedback alignment +10.7, direct feedback alignment +12.3, predictive coding +9.9.');
+    var Z = 330, R = 820;
+    function X(v) { return Z + v / 13 * (R - Z); }
+    [-1, 0, 2, 4, 6, 8, 10, 12].forEach(function (v) {
+      line(svg, X(v), 30, X(v), 390, v === 0 ? 'stroke:var(--muted);stroke-opacity:.6;stroke-width:1.4' : 'stroke:var(--ft-grid)');
+      T(svg, X(v), 410, (v > 0 ? '+' : '') + v, 'ft-tm', null, 'middle');
     });
-    T(svg, Z, 20, 'no forgetting', 'ft-tm', null, 'middle');
-    T(svg, L, 20, 'more forgetting', 'ft-tm', null, 'middle');
+    T(svg, X(0) + 6, 20, 'no difference from backprop', 'ft-tm');
     var bars = rows.map(function (rw, i) {
-      var y = 40 + i * 52, g = S('g', i === 4 ? { style: 'opacity:0;transition:opacity .5s' } : null, svg);
+      var y = 34 + i * 50, rep = i >= 3, g = S('g', rep ? { style: 'opacity:0;transition:opacity .5s' } : null, svg);
       T(g, 16, y + 16, rw[0], 'ft-t ft-b', 'fill:' + col(rw[1]));
-      T(g, 16, y + 33, rw[2] ? 'initial accuracy ' + rw[2] : 'initial accuracy not reported', 'ft-tm');
-      var rect = S('rect', { x: Z, y: y + 6, width: 0, height: 26, rx: 4, style: 'fill:' + col(rw[1]) + ';opacity:.85' }, g);
-      S('title', null, rect).textContent = rw[0] + ': backward transfer ' + rw[3] + '%';
-      var val = T(g, Z, y + 24, rw[3].toFixed(1) + '%', 'ft-t ft-b', 'fill:' + col(rw[1]), 'end');
-      return { g: g, rect: rect, val: val, v: rw[3], shown: i < 4, p: 0 };
+      T(g, 16, y + 33, rw[2], 'ft-tm');
+      var rect = S('rect', { x: X(0), y: y + 9, width: 0, height: 22, rx: 4, style: 'fill:' + col(rw[1]) + ';opacity:.85' }, g);
+      var ci = line(g, X(rw[4]), y + 20, X(rw[5]), y + 20, 'stroke:var(--ink);stroke-width:2;opacity:0');
+      S('title', null, rect).textContent = rw[0] + ': ' + (rw[3] > 0 ? '+' : '') + rw[3] + ' points [' + rw[4] + ', ' + rw[5] + ']';
+      var fmt = function (n) { return (n > 0 ? '+' : '') + n.toFixed(Math.abs(n) < 1 ? 2 : 1); };
+      var big = rw[3] > 5;
+      var val = T(g, 0, y + 25, fmt(rw[3]) + ' [' + fmt(rw[4]) + ', ' + fmt(rw[5]) + ']', 'ft-t ft-b', 'fill:' + (big ? 'var(--ft-card)' : col(rw[1])));
+      return { g: g, rect: rect, ci: ci, val: val, v: rw[3], hi: rw[5], big: big, shown: !rep, p: 0 };
     });
-    var c = ctrls(root);
-    var rb = btn(c, 'add a 500-sample replay buffer', function () {
-      bars[4].shown = !bars[4].shown;
-      bars[4].g.style.opacity = bars[4].shown ? 1 : 0;
-      rb.setAttribute('aria-pressed', bars[4].shown ? 'true' : 'false');
-      rb.textContent = bars[4].shown ? 'remove the replay buffer' : 'add a 500-sample replay buffer';
-      if (!bars[4].shown) bars[4].p = 0;
+    var c = ctrls(root), showRep = false;
+    var rb = btn(c, 'add a replay buffer', function () {
+      showRep = !showRep;
+      bars.slice(3).forEach(function (b) { b.shown = showRep; b.g.style.opacity = showRep ? 1 : 0; if (!showRep) b.p = 0; });
+      rb.setAttribute('aria-pressed', showRep ? 'true' : 'false');
+      rb.textContent = showRep ? 'remove the replay buffer' : 'add a replay buffer';
     });
-    out(c).innerHTML = 'Split-CIFAR-10, ResNet-18. Closer to 0 is less forgetting.';
+    out(c).innerHTML = 'points of backward transfer, at matched learning accuracy, 95% intervals';
     register(svg, function (t, dt, still) {
       bars.forEach(function (b) {
         var target = b.shown ? 1 : 0;
         b.p = still ? target : b.p + (target - b.p) * Math.min(1, dt * 4);
-        var w = (Z - X(b.v)) * ease(b.p);
-        b.rect.setAttribute('x', Z - w); b.rect.setAttribute('width', w);
-        b.val.setAttribute('x', Z - w - 8);
+        var e = ease(b.p), xe = X(b.v * e);
+        b.rect.setAttribute('x', Math.min(X(0), xe)); b.rect.setAttribute('width', Math.max(Math.abs(xe - X(0)), b.p > 0.02 ? 2 : 0));
+        b.ci.style.opacity = e;
+        b.val.setAttribute('x', b.big ? X(0) + 12 : Math.max(X(b.hi), X(0)) + 10);
+        b.val.style.opacity = e;
       });
     });
   };

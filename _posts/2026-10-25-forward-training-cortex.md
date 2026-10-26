@@ -21,7 +21,7 @@ redirect_from:
 excerpt: "Biological circuits cannot run backprop. I test whether brain-like local learning rules forget less (they do not, once learning is held fixed), then add a cortical top-down feedback pathway to Q Labs' Dust, a forward-only transformer pretraining method, as an unbiased control variate that is worth about twice the population."
 ---
 
-<link rel="stylesheet" href="/assets/css/forward-training.css?v=1">
+<link rel="stylesheet" href="/assets/css/forward-training.css?v=2">
 
 Most deep learning architectures rely on backpropagation to optimize weight matrices and compute exact gradients by propagating continuous error signals backwards through network layers. In contrast, biological neural circuits in the mammalian brain physically cannot execute backprop, relying instead on forward learning.
 
@@ -52,53 +52,59 @@ Looking into how I could test local learning rules compared to backprop, I was s
 
 <figure class="ft-fig">
   <div class="ft-card" data-ft="confound"></div>
-  <figcaption><strong>Learning less looks like forgetting less.</strong> Along backprop's trade-off curve, a network that learns more also forgets more. Compare a local rule against a backprop baseline that learned more and the rule looks protective; slide the comparison down to matched accuracy and the gap collapses to the +0.7 points measured between feedback alignment and backprop at the same 62.4% initial accuracy. Only replay sits far above the curve. The axes are schematic; the two gaps are from the table below.</figcaption>
+  <figcaption><strong>Learning less looks like forgetting less.</strong> Along backprop's trade-off curve, a network that learns more also forgets more. Compare a local rule against a backprop baseline that learned more and the rule looks protective; slide the comparison down to matched learning accuracy and the gap collapses to +0.21 points, the largest edge any local rule showed (predictive coding). Replay sits 10.6 points above the curve. The axes are schematic; the two gaps are measured.</figcaption>
 </figure>
 
 ## Experiment 1: Local rules vs. backprop in continual learning
 
-To rigorously test whether local learning rules protect against catastrophic forgetting, I evaluated Feedback Alignment (FA), Direct Feedback Alignment (DFA), and Predictive Coding (PC) against backpropagation on Split-CIFAR-10 and Split-CIFAR-100 benchmarks ([Krizhevsky, 2009](#ref-krizhevsky2009)). I trained ResNet-18 architectures ([He et al., 2016](#ref-he2016)) across both tasks, controlling initial task accuracy by tuning learning rates and epoch durations to ensure fair baseline comparison. I measured backward transfer (BWT) to quantify retention after learning subsequent tasks.
+To rigorously test whether local learning rules protect against catastrophic forgetting, I evaluated Feedback Alignment (FA), Direct Feedback Alignment (DFA), and Predictive Coding (PC) against backpropagation on class-incremental Split-CIFAR-10 ([Krizhevsky, 2009](#ref-krizhevsky2009)). Every rule trains the same two-layer network, so credit assignment is the only thing that changes. Rather than force every rule to one accuracy, I built a ladder of eleven backprop runs weakened only by fewer epochs or a lower learning rate, and compared each rule with backprop at the same learning accuracy. I measured backward transfer (BWT) to quantify retention after learning subsequent tasks.
 
 **Setup**
 
-- **Benchmarks:** Split-CIFAR-10 and Split-CIFAR-100.
-- **Architecture:** ResNet-18.
-- **Methods tested:** Feedback Alignment (FA), Direct Feedback Alignment (DFA), Predictive Coding (PC), and backprop.
-- **Control method:** tuned learning rates and epoch durations to ensure all models reached identical initial task accuracy before measuring BWT.
-- **Metric:** backward transfer (BWT), to quantify accuracy retention on previous tasks after learning new ones.
+- **Benchmarks:** Split-CIFAR-10 (five tasks of two classes), with Split-CIFAR-100 and Split-FashionMNIST as replications. One growing output head and no task labels at test time.
+- **Architecture:** a shared two-layer MLP, with a small ResNet as a replication ([He et al., 2016](#ref-he2016)).
+- **Methods tested:** FA, DFA, PC, and backprop, each with and without a replay buffer.
+- **Control method:** the eleven-run backprop ladder, matched to each rule's learning accuracy within each seed, with the small leftover gap corrected for.
+- **Metric:** BWT against learning accuracy (accuracy on each task right after training on it), across 16 seeds.
+
+Within each seed, **backward transfer turned out to be almost a deterministic function of learning accuracy: BWT = −1.44 × learning accuracy + 36.6, with an $$R^2$$ of 0.995.** Holding out each condition in turn, that line predicts backward transfer to within 1.09 points across 224 held-out predictions, so it works as a measuring instrument.
 
 **Results**
 
 <div class="ft-table-wrap">
 <table class="ft-table">
-  <thead><tr><th>Method</th><th>Dataset</th><th>Initial accuracy</th><th>Backward transfer (BWT)</th></tr></thead>
+  <thead><tr><th>Method</th><th>Learning accuracy</th><th>BWT (points)</th><th>Retention vs. backprop at matched learning</th></tr></thead>
   <tbody>
-    <tr><td><i style="background:var(--ft-true)"></i>Backpropagation baseline</td><td>Split-CIFAR-10</td><td>62.4%</td><td>−29.1%</td></tr>
-    <tr><td><i style="background:var(--ft-fa)"></i>Feedback Alignment (FA)</td><td>Split-CIFAR-10</td><td>62.4%</td><td>−28.4%</td></tr>
-    <tr><td><i style="background:var(--ft-dfa)"></i>Direct Feedback Alignment (DFA)</td><td>Split-CIFAR-10</td><td>58.1%</td><td>−31.2%</td></tr>
-    <tr><td><i style="background:var(--ft-pc)"></i>Predictive Coding (PC)</td><td>Split-CIFAR-10</td><td>65.2%</td><td>−25.7%</td></tr>
-    <tr><td><i style="background:var(--ft-pc)"></i>Predictive Coding (PC)</td><td>Split-CIFAR-100</td><td>34.8%</td><td>not measured</td></tr>
-    <tr class="ft-hl"><td><i style="background:var(--ft-replay)"></i>Local rules + experience replay (500 samples)</td><td>Split-CIFAR-10</td><td>not reported</td><td>−4.2%</td></tr>
+    <tr><td><i style="background:var(--ft-true)"></i>Backprop (full training)</td><td>83.5%</td><td>−82.8</td><td>reference</td></tr>
+    <tr><td><i style="background:var(--ft-fa)"></i>Feedback Alignment (FA)</td><td>83.1%</td><td>−82.5</td><td>−0.08 [−0.21, +0.05]</td></tr>
+    <tr><td><i style="background:var(--ft-dfa)"></i>Direct Feedback Alignment (DFA)</td><td>81.7%</td><td>−81.3</td><td>−0.11 [−0.28, +0.06]</td></tr>
+    <tr><td><i style="background:var(--ft-pc)"></i>Predictive Coding (PC)</td><td>85.0%</td><td>−84.4</td><td>+0.21 [+0.11, +0.31]</td></tr>
+    <tr class="ft-hl"><td><i style="background:var(--ft-replay)"></i>Backprop + replay</td><td>83.0%</td><td>−71.8</td><td>+10.6 [+10.0, +11.1]</td></tr>
+    <tr class="ft-hl"><td><i style="background:var(--ft-replay)"></i>FA, DFA or PC + replay</td><td>80.3–84.1%</td><td>−67.6 to −73.6</td><td>+9.9 to +12.3</td></tr>
   </tbody>
 </table>
 </div>
 
+Raw backward transfer sits near −83 points for every rule, because a single growing head forgets almost everything in this setting. The last column, retention at matched learning accuracy with its 95% interval, is the comparison that means something.
+
 <figure class="ft-fig">
   <div class="ft-card" data-ft="bwt"></div>
-  <figcaption><strong>Every rule forgets about as much as backprop.</strong> Backward transfer on Split-CIFAR-10 from the table above. Add the replay buffer to see the one change that actually moves retention.</figcaption>
+  <figcaption><strong>Every rule forgets about as much as backprop.</strong> Each bar is how much less a rule forgets than backprop at the same learning accuracy, with its 95% interval, on Split-CIFAR-10 across 16 seeds. The three local rules sit within a third of a point of zero. Add replay to see the one change that moves retention.</figcaption>
 </figure>
 
 **Findings**
 
-- **Feedback Alignment (FA):** achieved 62.4% initial accuracy on Split-CIFAR-10. Backward transfer reached −28.4%, showing forgetting rates comparable to backpropagation (−29.1%) when controlling for initial task accuracy.
-- **Direct Feedback Alignment (DFA):** reached 58.1% accuracy on Split-CIFAR-10 with a BWT of −31.2%. Direct error projections to hidden layers failed to prevent feature overwriting in deeper representations.
-- **Predictive Coding (PC):** achieved 65.2% accuracy on Split-CIFAR-10 and 34.8% on Split-CIFAR-100. While local prediction error updates slowed initial drift, BWT settled at −25.7%, demonstrating that local error minimization alone does not prevent catastrophic forgetting.
+- **Feedback Alignment (FA):** learned to 83.1% against backprop's 83.5%. At matched learning accuracy it forgot 0.08 points more [−0.21, +0.05], p = 0.14, indistinguishable from backprop.
+- **Direct Feedback Alignment (DFA):** learned to 81.7%. At matched learning accuracy it forgot 0.11 points more [−0.28, +0.06], p = 0.40, also indistinguishable.
+- **Predictive Coding (PC):** learned the most, 85.0%, and retained 0.21 points more [+0.11, +0.31], p = 0.001. I had pre-registered that a local rule retaining better at matched learning would refute my hypothesis, so I report predictive coding as a refutation. But +0.21 points is under a fifth of the instrument's own 1.09-point error and fifty times smaller than replay.
 
 **Takeaways**
 
-- **Local rules do not inherently prevent catastrophic forgetting.** When controlling for initial accuracy, FA (−28.4%) and backprop (−29.1%) exhibit virtually identical forgetting rates.
-- **Direct projections fail deep representations.** DFA resulted in worse retention (−31.2%), showing that random error projections fail to protect features from being overwritten in deeper layers.
-- **A replay buffer is necessary.** Combining local credit assignment with a modest 500-sample memory buffer boosted BWT to −4.2%.
+- **Local rules do not inherently prevent catastrophic forgetting.** At matched learning accuracy, any advantage from locality is under a third of a point.
+- **Forgetting tracks learning.** A rule that learns less forgets less for free, so a raw comparison measures the confound and not retention.
+- **A replay buffer is necessary.** Replay lifts retention by 10.6 points for backprop and by 9.9 to 12.3 points for the local rules.
+
+The relation holds on Split-CIFAR-100 and on a small ResNet ($$R^2 \ge 0.995$$), but it breaks on Split-FashionMNIST, where held-out error reaches 12.3 points, so I make no retention claims there.
 
 Hmm… so it seems local credit assignment does not improve catastrophic forgetting.
 
@@ -313,4 +319,4 @@ I'd love to hear <span class="ft-def" tabindex="0">feedback<span class="ft-pop" 
   <li id="ref-karpathy2015">Karpathy, A. (2015). The unreasonable effectiveness of recurrent neural networks (char-rnn and the Tiny Shakespeare dataset). Blog post.</li>
 </ol>
 
-<script src="/assets/js/forward-training.js?v=1" defer></script>
+<script src="/assets/js/forward-training.js?v=2" defer></script>
