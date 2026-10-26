@@ -1,9 +1,10 @@
 ---
-layout: none
+layout: post
 title: "Can a language model's neurons solve Connections?"
 date: 2026-10-24
 tag: "Interpretability"
 section: technical
+dek: "Shared-neuron and activation-similarity solvers on five Qwen models."
 rank: 5.5
 thumb: /assets/images/connections-neurons/thumb.svg
 permalink: /writing/connections/
@@ -12,84 +13,30 @@ redirect_from:
   - /writing/connections-neurons/
 excerpt: "If HAIL, RAIN, SLEET and SNOW light up the same neurons, a puzzle solver should fall out for free. I tested that on 1,217 puzzles and five Qwen models. It half works, for a different reason than I expected."
 ---
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Can a language model's neurons solve Connections?, Saanvi S. Subramanian</title>
-<meta name="description" content="Can a language model's neurons solve NYT Connections? Shared-neuron and activation-similarity solvers on five Qwen models.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one reading column; the puzzle board and two charts break out slightly wider. Tile colours come from the game's four difficulty levels. */
-:root {
-  --bg: #fbfaf7;
-  --fg: #1d1c1a;
-  --muted: #5f5c55;
-  --rule: #e2dfd6;
-  --tile: #efede6;
-  --tile-fg: #1d1c1a;
-  --yellow: #f9df6d;
-  --green: #a0c35a;
-  --blue: #b0c4ef;
-  --purple: #ba81c5;
-  --ink-res: #3456a6;
-  --ink-mlp: #4f7417;
-  --ink-neuron: #7a3a8c;
-  --ink-sae: #a37800;
-  --ink-flat: #8b877d;
-  --sel-bg: #5a5852;
-  --sel-fg: #fbfaf7;
+/* Connections post components on the shared post layout. Text colours follow the
+   site theme; the tile colours are the game's four difficulty levels. */
+.rp-body {
+  --fg: var(--ink); --bg: var(--post-bg); --rule: rgba(23, 9, 15, 0.12);
+  --tile: #efe9dc; --tile-fg: #1d1c1a;
+  --yellow: #f9df6d; --green: #a0c35a; --cx-blue: #b0c4ef; --purple: #ba81c5;
+  --ink-res: #3456a6; --ink-mlp: #4f7417; --ink-neuron: #7a3a8c; --ink-sae: #a37800; --ink-flat: #8b877d;
+  --sel-bg: #5a5852; --sel-fg: #fbfaf7;
   --display: "Libre Franklin", "Franklin Gothic Medium", "Helvetica Neue", Arial, sans-serif;
-  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #161614; --fg: #ecebe6; --muted: #a8a59c; --rule: #2f2e2a; --tile: #2a2926; --tile-fg: #ecebe6;
-    --ink-res: #8fb0ff; --ink-mlp: #a9d36a; --ink-neuron: #d39be2; --ink-sae: #e6c34a; --ink-flat: #8d8a82; --sel-bg: #d9d6cc; --sel-fg: #161614;
-    color-scheme: dark;
-  }
+:root[data-theme="dark"] .rp-body {
+  --rule: rgba(246, 171, 212, 0.16); --tile: #2a2926; --tile-fg: #ecebe6;
+  --ink-res: #8fb0ff; --ink-mlp: #a9d36a; --ink-neuron: #d39be2; --ink-sae: #e6c34a; --ink-flat: #8d8a82;
+  --sel-bg: #d9d6cc; --sel-fg: #161614;
 }
-:root[data-theme="dark"] {
-  --bg: #161614; --fg: #ecebe6; --muted: #a8a59c; --rule: #2f2e2a; --tile: #2a2926; --tile-fg: #ecebe6;
-  --ink-res: #8fb0ff; --ink-mlp: #a9d36a; --ink-neuron: #d39be2; --ink-sae: #e6c34a; --ink-flat: #8d8a82; --sel-bg: #d9d6cc; --sel-fg: #161614;
-  color-scheme: dark;
-}
-body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 1.12rem; line-height: 1.65; }
-.page { max-width: 77.5rem; margin: 0 auto; padding-block: 3.5rem 5rem; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 1.4rem; }
-/* Two columns: sticky table of contents on the left, article on the right. */
-.c-layout { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 56px; align-items: start; }
-.c-main { display: grid; gap: 1.4rem; min-width: 0; }
-.c-toc { position: sticky; top: 2rem; align-self: start; max-height: calc(100vh - 4rem); overflow-y: auto; }
-.c-toc-label { font-family: var(--display); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .7rem; }
-.c-toc nav a { display: block; font-family: var(--display); font-size: .84rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid var(--rule); }
-.c-toc nav a:hover { color: var(--fg); }
-.c-toc nav a.active { color: var(--fg); border-left-color: var(--purple); font-weight: 600; }
-.c-toc-top { display: inline-block; margin-top: 1rem; font-family: var(--display); font-size: .78rem; color: var(--muted); text-decoration: none; }
-.c-toc-top:hover { color: var(--fg); }
-@media (max-width: 900px) { .c-layout { grid-template-columns: 1fr; gap: 0; } .c-toc { display: none; } }
-h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 6vw, 3.1rem); line-height: 1.08; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; margin: 1.6rem 0 0; text-wrap: balance; }
-p { margin: 0; }
-.dek { font-size: 1.28rem; color: var(--muted); line-height: 1.5; }
-.tldr { border-left: 4px solid var(--purple); background: var(--tile); border-radius: 0 6px 6px 0; padding: 1rem 1.1rem; display: grid; gap: .5rem; }
-.tldr h2 { margin: 0; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.tldr ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .4rem; font-size: 1.02rem; line-height: 1.5; }
-.back { font-family: var(--display); font-size: .85rem; margin: 0; }
-.back a { color: var(--muted); text-decoration: none; }
-.back a:hover, .back a:focus-visible { color: var(--fg); text-decoration: underline; }
-.byline { font-family: var(--display); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: .8rem; }
-code, .mono { font-family: var(--mono); font-size: .88em; }
-a { color: var(--ink-res); text-underline-offset: 2px; }
-a:focus-visible { outline: 2px solid var(--ink-res); outline-offset: 2px; }
-strong { font-weight: 600; }
+.rp-body .tldr, .rp-body figure, .rp-body .stats { margin: 1.8rem 0; }
+.rp-body .tldr { border-left: 4px solid var(--purple); background: var(--tile); border-radius: 0 6px 6px 0; padding: 1rem 1.1rem; display: grid; gap: .5rem; color: var(--tile-fg); }
+.rp-body .tldr h2 { margin: 0; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.rp-body .tldr p { font-size: 1.02rem; line-height: 1.55; margin: 0; }
 
 /* board */
-figure { margin: .6rem 0; display: grid; gap: .6rem; }
-figcaption { font-family: var(--display); font-size: .84rem; color: var(--muted); line-height: 1.45; }
+.rp-body figure { display: grid; gap: .6rem; }
+.rp-body figcaption { font-family: var(--display); font-size: .84rem; color: var(--muted); line-height: 1.45; }
 .board { display: grid; gap: 8px; }
 .row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; position: relative; }
 .tile { background: var(--tile); color: var(--tile-fg); border-radius: 6px; min-height: 64px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: clamp(.68rem, 2.4vw, .95rem); letter-spacing: .02em; text-align: center; padding: 4px; overflow-wrap: anywhere; }
@@ -119,67 +66,47 @@ figcaption { font-family: var(--display); font-size: .84rem; color: var(--muted)
 .cmp th[scope="row"] { text-align: left; font-weight: 600; }
 .cmp thead th { color: var(--muted); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; }
 .cmp td { font-variant-numeric: tabular-nums; }
-ul.notes { margin: 0; padding-left: 1.2rem; display: grid; gap: .45rem; }
-.end { font-family: var(--display); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
+.rp-body ul.notes { margin: 0; padding-left: 1.2rem; display: grid; gap: .45rem; }
+.rp-body .end { font-family: var(--display); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
 
-/* Standalone reset (the artifact host used to supply these) */
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; color-scheme: light; }
-:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-body { margin: 0; }
-img, svg { max-width: 100%; }
-
-/* Animations: only for viewers who haven't asked for reduced motion. Without JS everything is static and visible. */
+/* Animations: only for viewers who have not asked for reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
   @keyframes drop { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
   @keyframes sweep { from { opacity: 0; clip-path: inset(0 100% 0 0 round 6px); } to { opacity: 1; clip-path: inset(0 0 0 0 round 6px); } }
-
-  h1, .dek, .byline, .tldr { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
-  h1 { animation-delay: .08s; }
-  .dek { animation-delay: .16s; }
-  .byline { animation-delay: .24s; }
-  .tldr { animation-delay: .32s; }
-
   .board .tile { animation: drop .45s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(.45s + var(--i, 0) * 45ms); }
   .board .solved { animation: sweep .7s cubic-bezier(.65,0,.35,1) both; animation-delay: 1.15s; }
-
   .js .chart polyline.draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.4s cubic-bezier(.65,0,.35,1); }
   .js .chart circle, .js .chart .lab, .js .chart polyline.fade { opacity: 0; transition: opacity .5s ease; }
   .js .chart.in polyline.draw { stroke-dashoffset: 0; }
   .js .chart.in circle, .js .chart.in .lab, .js .chart.in polyline.fade { opacity: 1; transition-delay: 1.1s; }
-
   .js .cmp tbody tr { opacity: 0; transform: translateY(8px); transition: opacity .5s ease, transform .5s ease; transition-delay: calc(var(--i, 0) * 90ms); }
   .js .cmp.in tbody tr { opacity: 1; transform: none; }
 }
 
-/* TL;DR as a paragraph */
-.tldr p { font-size: 1.02rem; line-height: 1.55; }
-
 /* playable board */
-.play { margin: .6rem 0; display: grid; gap: .7rem; padding: 1rem; border: 1px solid var(--rule); border-radius: 10px; }
+.play { display: grid; gap: .7rem; padding: 1rem; border: 1px solid var(--rule); border-radius: 10px; background: color-mix(in srgb, var(--bg) 70%, #ffffff); }
 .play-head { display: grid; gap: .15rem; }
-.play-head h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.05rem; }
-.play-sub { margin: 0; font-family: var(--display); font-size: .84rem; color: var(--muted); }
+.rp-body .play-head h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.05rem; }
+.rp-body .play-sub { margin: 0; font-family: var(--display); font-size: .84rem; color: var(--muted); }
 .play-solved { display: grid; gap: 8px; }
 .play-solved:empty { display: none; }
 .prow { border-radius: 6px; min-height: 64px; display: grid; place-content: center; text-align: center; font-family: var(--display); color: #1d1c1a; padding: 6px; }
 .prow b { font-weight: 800; letter-spacing: .04em; }
 .prow span { font-size: .9rem; }
-.prow.yellow { background: var(--yellow); } .prow.green { background: var(--green); } .prow.blue { background: var(--blue); } .prow.purple { background: var(--purple); }
+.prow.yellow { background: var(--yellow); } .prow.green { background: var(--green); } .prow.blue { background: var(--cx-blue); } .prow.purple { background: var(--purple); }
 .play-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .play-grid:empty { display: none; }
 .ptile { appearance: none; border: 0; cursor: pointer; background: var(--tile); color: var(--tile-fg); border-radius: 6px; min-height: 64px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: clamp(.68rem, 2.4vw, .95rem); letter-spacing: .02em; text-align: center; padding: 4px; overflow-wrap: anywhere; transition: background-color .15s ease, color .15s ease, transform .12s ease; }
 .ptile:hover { filter: brightness(.97); }
-.ptile:focus-visible, .pbtn:focus-visible { outline: 2px solid var(--ink-res); outline-offset: 2px; }
+.ptile:focus-visible, .pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ptile[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 .ptile:disabled { cursor: default; }
-.play-msg { margin: 0; min-height: 1.4em; font-family: var(--display); font-size: .9rem; font-weight: 600; text-align: center; }
+.rp-body .play-msg { margin: 0; min-height: 1.4em; font-family: var(--display); font-size: .9rem; font-weight: 600; text-align: center; }
 .play-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem; }
 .play-mistakes { font-family: var(--display); font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .play-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
-.pbtn { appearance: none; cursor: pointer; font-family: var(--display); font-weight: 600; font-size: .85rem; padding: .5rem .95rem; border-radius: 999px; border: 1px solid var(--fg); background: transparent; color: var(--fg); }
-.pbtn.primary { background: var(--fg); color: var(--bg); }
+.pbtn { appearance: none; cursor: pointer; font-family: var(--display); font-weight: 600; font-size: .85rem; padding: .5rem .95rem; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); }
+.pbtn.primary { background: var(--accent); color: var(--bg); }
 .pbtn:disabled { opacity: .4; cursor: default; }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes pshake { 0%, 100% { transform: none; } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
@@ -191,21 +118,8 @@ img, svg { max-width: 100%; }
   .ptile:active:not(:disabled) { transform: scale(.97); }
 }
 </style>
-</head>
-<body>
-<article class="page">
-  <p class="back"><a href="/writing/">&larr; Writing</a></p>
-  <h1>Can a language model's neurons solve Connections?</h1>
 
-  <div class="c-layout">
-    <aside class="c-toc">
-      <div class="c-toc-label">Contents</div>
-      <nav id="cToc"></nav>
-      <a class="c-toc-top" href="#top">&uarr; Back to top</a>
-    </aside>
-    <main class="c-main">
-
-  <section class="tldr" aria-label="TL;DR">
+<section class="tldr" aria-label="TL;DR">
     <h2>TL;DR</h2>
     <p>I was inspired by a comment on X to test how LLMs play Connections! Grouping Connections words by representation similarity works well, as Qwen3.8-27B finds up to 1.12 of 4 groups per puzzle, compared to just 0.006 by chance. However, shared neurons do not drive this success. In fact, scoring groups by neurons that all four words share underperforms plain cosine similarity across every model size, and interpretable sparse autoencoder (SAE) features fare even worse. There does not appear to be a weather neuron. When I ask the models directly, they find fewer groups, and thinking before answering (or reasoning) improves the score but it still falls short. Finally, feeding the similarity solver's top candidates to a thinking model looked like the best approach at first, but a date split revealed that the model merely memorized puzzles published before its release date.</p>
   </section>
@@ -351,10 +265,6 @@ img, svg { max-width: 100%; }
   <p>Finally, I ran Qwen3-8B and Qwen3.8-27B on an A100 GPU while running the smaller models on a laptop. Because Qwen3.8 belongs to a newer generation, its 27B score reflects architectural changes alongside increased scale.</p>
 
   <p class="end">The community archive <a href="https://github.com/Eyefyre/NYT-Connections-Answers">Eyefyre/NYT-Connections-Answers</a> provided the puzzle dataset. I used Qwen3-0.6B, 1.7B, and 4B, alongside <a href="https://huggingface.co/Qwen/SAE-Res-Qwen3-1.7B-Base-W32K-L0_50">Qwen-Scope SAEs</a> and <a href="https://huggingface.co/mwhanna/qwen3-1.7b-transcoders-lowl0">mwhanna transcoders</a>. I ran activation experiments on an M-series MacBook and GPU runs on a single A100.</p>
-
-    </main>
-  </div>
-</article>
 
 <script>
 (function () {
@@ -512,36 +422,3 @@ img, svg { max-width: 100%; }
   reset();
 })();
 </script>
-<script>
-/* Build the left table of contents from the article's section headings. */
-(function () {
-  var toc = document.getElementById('cToc');
-  var main = document.querySelector('.c-main');
-  if (!toc || !main) return;
-  var heads = main.querySelectorAll(':scope > h2');
-  if (heads.length < 2) { var box = document.querySelector('.c-toc'); if (box) box.style.display = 'none'; return; }
-  var links = [], byId = {};
-  heads.forEach(function (h, i) {
-    if (!h.id) {
-      h.id = 's-' + (i + 1) + '-' + (h.textContent || '').toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
-    }
-    var a = document.createElement('a');
-    a.href = '#' + h.id;
-    a.textContent = h.textContent;
-    toc.appendChild(a);
-    links.push(a); byId[h.id] = a;
-  });
-  if (!('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      links.forEach(function (a) { a.classList.remove('active'); });
-      var a = byId[e.target.id]; if (a) a.classList.add('active');
-    });
-  }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
-  heads.forEach(function (h) { io.observe(h); });
-})();
-</script>
-</body>
-</html>

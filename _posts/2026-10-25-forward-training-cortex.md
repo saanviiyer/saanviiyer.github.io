@@ -114,19 +114,6 @@ But can these methods enhance forward-pass pretraining efficiency? I have high h
 ## Dust: pretraining with forward passes only
 
 I was inspired to pursue this question from Dust, Q Labs' backprop-free transformer pretraining approach ([Dahal et al., 2026](#ref-dust)). This is a <span class="ft-def" tabindex="0">zeroth-order<span class="ft-pop" role="tooltip">Trains a neural network without calculating gradients, so no backprop: it only ever evaluates the loss, and infers which way to move from how the loss responds to small random changes.</span></span> optimization designed to pretrain transformer architectures using exclusively forward evaluations. Sounds familiar, right?
-
-<div class="ft-key">
-  <p>Colour key for the animations below</p>
-  <span class="ft-k"><i style="background:var(--ft-input)"></i>input</span>
-  <span class="ft-k"><i style="background:var(--ft-noise)"></i>noise</span>
-  <span class="ft-k"><i style="background:var(--ft-output)"></i>output, logits, losses</span>
-  <span class="ft-k"><i style="background:var(--ft-true)"></i>backprop, true gradient</span>
-  <span class="ft-k"><i style="background:var(--ft-weight)"></i>weight perturbation</span>
-  <span class="ft-k"><i style="background:var(--ft-dust)"></i>Dust (node perturbation)</span>
-  <span class="ft-k"><i style="background:var(--ft-apical)"></i>Apical Dust</span>
-  <span class="ft-k"><i style="background:var(--ft-bias)"></i>a biased estimate</span>
-</div>
-
 Classic forward-only training strategies rely on **weight perturbation** (adding stochastic noise to estimate updates using just forward passes), but these scale poorly as a result of the millions to billions of parameters in the network ([Werfel et al., 2003](#ref-werfel2003); [Salimans et al., 2017](#ref-salimans2017)). Weight-perturbation variance explodes proportionally with total parameter count, which causes the gradient estimators to become too noisy.
 
 Dust takes a different approach with **node perturbation** ([Fiete and Seung, 2006](#ref-fiete2006)), which injects Gaussian noise vector perturbations directly in the linear layer activation outputs at each token position, and provides a more local solution that scales with the activation output dimension as opposed to the total parameter count. This enables a single forward pass over a batch to evaluate thousands of candidate perturbations simultaneously.
