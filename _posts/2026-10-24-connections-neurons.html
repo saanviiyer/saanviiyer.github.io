@@ -59,7 +59,18 @@ excerpt: "If HAIL, RAIN, SLEET and SNOW light up the same neurons, a puzzle solv
   color-scheme: dark;
 }
 body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 1.12rem; line-height: 1.65; }
-.page { max-width: 44rem; margin: 0 auto; padding-block: 3.5rem 5rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 1.4rem; }
+.page { max-width: 77.5rem; margin: 0 auto; padding-block: 3.5rem 5rem; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 1.4rem; }
+/* Two columns: sticky table of contents on the left, article on the right. */
+.c-layout { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 56px; align-items: start; }
+.c-main { display: grid; gap: 1.4rem; min-width: 0; }
+.c-toc { position: sticky; top: 2rem; align-self: start; max-height: calc(100vh - 4rem); overflow-y: auto; }
+.c-toc-label { font-family: var(--display); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .7rem; }
+.c-toc nav a { display: block; font-family: var(--display); font-size: .84rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid var(--rule); }
+.c-toc nav a:hover { color: var(--fg); }
+.c-toc nav a.active { color: var(--fg); border-left-color: var(--purple); font-weight: 600; }
+.c-toc-top { display: inline-block; margin-top: 1rem; font-family: var(--display); font-size: .78rem; color: var(--muted); text-decoration: none; }
+.c-toc-top:hover { color: var(--fg); }
+@media (max-width: 900px) { .c-layout { grid-template-columns: 1fr; gap: 0; } .c-toc { display: none; } }
 h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 6vw, 3.1rem); line-height: 1.08; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
 h2 { font-family: var(--display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; margin: 1.6rem 0 0; text-wrap: balance; }
 p { margin: 0; }
@@ -185,6 +196,14 @@ img, svg { max-width: 100%; }
 <article class="page">
   <p class="back"><a href="/writing/">&larr; Writing</a></p>
   <h1>Can a language model's neurons solve Connections?</h1>
+
+  <div class="c-layout">
+    <aside class="c-toc">
+      <div class="c-toc-label">Contents</div>
+      <nav id="cToc"></nav>
+      <a class="c-toc-top" href="#top">&uarr; Back to top</a>
+    </aside>
+    <main class="c-main">
 
   <section class="tldr" aria-label="TL;DR">
     <h2>TL;DR</h2>
@@ -332,6 +351,9 @@ img, svg { max-width: 100%; }
   <p>Finally, I ran Qwen3-8B and Qwen3.8-27B on an A100 GPU while running the smaller models on a laptop. Because Qwen3.8 belongs to a newer generation, its 27B score reflects architectural changes alongside increased scale.</p>
 
   <p class="end">The community archive <a href="https://github.com/Eyefyre/NYT-Connections-Answers">Eyefyre/NYT-Connections-Answers</a> provided the puzzle dataset. I used Qwen3-0.6B, 1.7B, and 4B, alongside <a href="https://huggingface.co/Qwen/SAE-Res-Qwen3-1.7B-Base-W32K-L0_50">Qwen-Scope SAEs</a> and <a href="https://huggingface.co/mwhanna/qwen3-1.7b-transcoders-lowl0">mwhanna transcoders</a>. I ran activation experiments on an M-series MacBook and GPU runs on a single A100.</p>
+
+    </main>
+  </div>
 </article>
 
 <script>
@@ -488,6 +510,37 @@ img, svg { max-width: 100%; }
     } else if (act.dataset.act === 'again') reset();
   });
   reset();
+})();
+</script>
+<script>
+/* Build the left table of contents from the article's section headings. */
+(function () {
+  var toc = document.getElementById('cToc');
+  var main = document.querySelector('.c-main');
+  if (!toc || !main) return;
+  var heads = main.querySelectorAll(':scope > h2');
+  if (heads.length < 2) { var box = document.querySelector('.c-toc'); if (box) box.style.display = 'none'; return; }
+  var links = [], byId = {};
+  heads.forEach(function (h, i) {
+    if (!h.id) {
+      h.id = 's-' + (i + 1) + '-' + (h.textContent || '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+    }
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    toc.appendChild(a);
+    links.push(a); byId[h.id] = a;
+  });
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove('active'); });
+      var a = byId[e.target.id]; if (a) a.classList.add('active');
+    });
+  }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
+  heads.forEach(function (h) { io.observe(h); });
 })();
 </script>
 </body>
