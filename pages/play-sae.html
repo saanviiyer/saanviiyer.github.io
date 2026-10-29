@@ -70,7 +70,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="vector"><div class="sx-card">
         <span class="sx-n">01</span>
-        <p>A language model turns each token into a long list of numbers at every layer. We call each list an <b>activation</b>. GPT-3 uses 12,288 numbers per token. My toy uses 3, so you can see each activation as a point.</p>
+        <p>A language model turns each token into a long list of numbers at every layer. We call each list an <b>activation</b>. GPT-3 uses 12,288 numbers per token. My toy uses 3, so you can see each activation as a point. The LessWrong guide calls the space of all these points the activation space.</p>
         <p>The point on the right is one activation. Its three numbers give its coordinates on three axes, and each axis stands for one neuron.</p>
       </div></div>
 
@@ -95,7 +95,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step tall" data-scene="sparse"><div class="sx-card">
         <span class="sx-n">05</span>
-        <p>Overlap does little harm when few concepts appear at once, a property called <b>sparsity</b>. Here, <span data-v="single">…</span> of the inputs hold one concept and the rest hold two or more. As you scroll, the picture first lights the one-concept inputs, which sit on the six lines. Then it lights the others, which fill the thin fans between pairs of lines.</p>
+        <p>Overlap does little harm when few concepts appear at once. Researchers call this property <b>sparsity</b>. Here, <span data-v="single">…</span> of the inputs hold one concept and the rest hold two or more. As you scroll, the picture first lights the one-concept inputs, which sit on the six lines. Then it lights the others, which fill the thin fans between pairs of lines.</p>
         <p class="src">The LessWrong guide uses a coffee mug as an example. You describe a mug by its size and its use, and you need no astronomy, so most feature activations stay at zero. Karvonen notes that a fact such as one celebrity's birthplace can appear in fewer than one in a billion training tokens, and large models still learn it.</p>
       </div></div>
 
@@ -107,7 +107,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="arch"><div class="sx-card">
         <span class="sx-n">07</span>
-        <p>A <b>sparse autoencoder</b> tries to find the hidden directions from the points alone. It has two parts. The encoder turns an activation into one score per feature. The decoder turns the scores back into an activation, \(\hat{\mathbf{x}}\).</p>
+        <p>Karvonen starts from a regular autoencoder. It squeezes an input through a smaller middle layer and then rebuilds the input, and the squeeze makes the rebuild imperfect. A <b>sparse autoencoder</b> does the opposite and makes the middle layer wider. Its encoder turns an activation into one score per feature, and its decoder turns the scores back into an activation, \(\hat{\mathbf{x}}\). From these two steps alone, it tries to find the hidden directions.</p>
         <p>My autoencoder has 12 features for 3 neurons, so its middle layer is four times wider than its input. Each arrow shows one feature's decoder vector. I have not trained it yet, so the arrows point in random directions.</p>
         <p class="src">Karvonen explains why the extra width needs a rule. A layer this wide could copy its input and tell us nothing. A sparsity penalty keeps most scores at zero for each input. The LessWrong guide adds that the scores become the feature activations and the decoder vectors become the feature vectors.</p>
       </div></div>
@@ -171,14 +171,14 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step xtall" data-scene="steer"><div class="sx-card">
         <span class="sx-n">16</span>
-        <p>A name you read off examples might fit by coincidence. To test it, you change the activation yourself and watch what happens, a method called <b>steering</b>. A decoder vector has the same shape as an activation, so you can add it straight in.</p>
+        <p>A name you read off examples might fit by coincidence. To test it, you change the activation yourself and watch what happens. Researchers call this <b>steering</b>. A decoder vector has the same shape as an activation, so you can add it straight in.</p>
         <p>Scroll to add more of feature <span data-v="fj">…</span>'s decoder vector to one input, up to 2.4 times its length. The point moves along the arrow. The panel shows every score before and after, and the score of feature <span data-v="fj">…</span> rises from <span data-v="steer0">…</span> to <span data-v="steer1">…</span>.</p>
         <p class="src">Karvonen describes the same test on Claude. When Anthropic added the Golden Gate Bridge feature to Claude's activations, Claude mentioned the bridge in every response.</p>
       </div></div>
 
       <div class="sx-step" data-scene="limits"><div class="sx-card">
         <span class="sx-n">17</span>
-        <p>My toy has 3 dimensions and 12 features, and I planted all 6 concepts myself. That is <b>what the toy cannot show</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you no planted directions to check against.</p>
+        <p>My toy has 3 dimensions and 12 features, and I planted all 6 concepts myself, so it cannot show you <b>what a real model hides</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you no planted directions to check against.</p>
         <p class="src">Karvonen describes a chain of stand-ins. The training loss stands in for the proxy metrics. The metrics stand in for human judgments of which features read clearly. Those judgments stand in for the real goal, an understanding of how the model works.</p>
         <p class="src">The LessWrong guide lists open questions. Nobody has proved that models store concepts by superposition, and one argument says that autoencoders find combinations of features instead of single features. The guide also finds it surprising that a network full of nonlinear functions has activations that split so well into weighted sums.</p>
         <p class="src">Both guides still count sparse autoencoders as real progress. Karvonen argues that so simple an objective would not find readable features unless the model had learned something meaningful.</p>
@@ -201,8 +201,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
   </div>
 
   <div class="sx-after">
-    <h2>Further reading</h2>
-    <p>The two guides this page follows, and the sparse autoencoder papers from my reading list that I return to most.</p>
+    <h2>Check out other SAE writing I like!</h2>
     <ul class="sx-refs">
       <li><a href="https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html" target="_blank" rel="noopener">An intuitive explanation of sparse autoencoders for LLM interpretability</a><span>Adam Karvonen, 2024.</span></li>
       <li><a href="https://www.lesswrong.com/posts/8YnHuN55XJTDwGPMr/a-gentle-introduction-to-sparse-autoencoders" target="_blank" rel="noopener">A gentle introduction to sparse autoencoders</a><span>LessWrong, 2024.</span></li>
