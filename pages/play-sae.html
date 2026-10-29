@@ -71,7 +71,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="vector"><div class="sx-card">
         <span class="sx-n">01</span>
-        <p>At every layer, a language model turns each token into a long list of numbers called an <b>activation</b>. GPT-3 uses 12,288 numbers per token. This example uses 3, so <b>each activation is a point you can see</b>. Each axis stands for one neuron, and the point's coordinates are that neuron's values.</p>
+        <p>At every layer, a language model turns each token into a long list of numbers called an <b>activation</b>. GPT-3 uses 12,288 numbers per token. My simulation uses 3, so <b>each activation is a point you can see</b>. Each axis stands for one neuron, and the point's coordinates are that neuron's values.</p>
       </div></div>
 
       <div class="sx-step" data-scene="cloud"><div class="sx-card">
@@ -81,14 +81,14 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="concepts"><div class="sx-card">
         <span class="sx-n">03</span>
-        <p>I built this data, so I know what it holds. Each input contains one or two of <b>6 hidden concepts</b>, labelled A to F, and <b>each concept has its own direction</b>. An input that holds only concept A sits on A's line, and its distance from the center shows how much of A it holds.</p>
+        <p>Each input contains one or two of <b>6 hidden concepts</b>, labelled A to F, and <b>each concept has its own direction</b>. An input that holds only concept A sits on A's line, and its distance from the center shows how much of A it holds.</p>
         $$\mathbf{x} = \sum_{i=1}^{6} w_i\,\mathbf{f}_i$$
         <p class="src">The LessWrong guide writes activations this way. Each \(\mathbf{f}_i\) is a <b>feature vector</b> of length 1, and the weight \(w_i\) is the <b>feature activation</b>, how much of that feature the input holds.</p>
       </div></div>
 
       <div class="sx-step" data-scene="angles"><div class="sx-card">
         <span class="sx-n">04</span>
-        <p>Three dimensions fit at most three directions at right angles, so <b>six directions must overlap</b>. Here every pair meets at 63.4° or 116.6°, an overlap of \(|\cos\theta| = 0.447\). Researchers call this packing of more features than neurons <b>superposition</b>.</p>
+        <p>Three dimensions fit at most three directions at right angles to each other, but six do not fit. <b>The six directions overlap</b>, and every pair meets at 63.4° or 116.6°, an overlap of \(|\cos\theta| = 0.447\). Researchers call this packing of more features than neurons <b>superposition</b>.</p>
         <p class="src">The LessWrong guide states the superposition hypothesis. Models learn feature vectors that are <b>almost orthogonal</b>, and in high dimensions the number of such directions grows exponentially (the Johnson–Lindenstrauss lemma).</p>
       </div></div>
 
@@ -172,7 +172,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="limits"><div class="sx-card">
         <span class="sx-n">17</span>
-        <p>This example has 3 dimensions and 12 features, and I planted every concept, so it <b>cannot show what a real model hides</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you <b>no planted directions to check against</b>.</p>
+        <p>My simulation has 3 dimensions and 12 features, and I planted every concept, so it <b>cannot show what a real model hides</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you <b>no planted directions to check against</b>.</p>
         <p class="src">Karvonen describes a <b>chain of stand-ins</b>. The training loss stands in for proxy metrics, the metrics stand in for human judgment, and that judgment stands in for understanding the model.</p>
         <p class="src">The LessWrong guide notes that <b>nobody has proved superposition</b>, that autoencoders may find combinations of features instead of single ones, and that it is surprising a nonlinear network splits so cleanly into weighted sums.</p>
         <p class="src">Still, Karvonen argues that so simple an objective <b>would not find readable features unless the model had learned something meaningful</b>.</p>
