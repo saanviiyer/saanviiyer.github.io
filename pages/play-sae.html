@@ -21,6 +21,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
   .sx-step.xtall { min-height: 300vh; }
   .sx-card { position: sticky; top: 13vh; background: var(--read-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; box-shadow: 0 10px 30px rgba(23, 9, 15, 0.06); transition: opacity 0.35s; opacity: 0.35; }
   .sx-step.on .sx-card { opacity: 1; }
+  .sx-card b { font-weight: 700; }
   .sx-card h2 { font-family: var(--sans); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 10px; }
   .sx-card p { font-family: 'Source Serif 4', Georgia, serif; font-size: 0.98rem; line-height: 1.62; margin: 0 0 10px; }
   .sx-card p:last-child { margin-bottom: 0; }
@@ -68,124 +69,124 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
     <div class="sx-steps" id="sx-steps">
 
       <div class="sx-step" data-scene="vector"><div class="sx-card">
-        <span class="sx-n">01</span><h2>An activation is a point</h2>
-        <p>A language model turns each token into a long list of numbers at every layer. Each list is an activation. GPT-3 uses 12,288 numbers per token. The toy on this page uses 3, so that each activation is a point that you can see.</p>
-        <p>The point on the right is one activation. Its three numbers are its coordinates on three axes, and each axis is one neuron.</p>
+        <span class="sx-n">01</span>
+        <p>A language model turns each token into a long list of numbers at every layer. We call each list an <b>activation</b>. GPT-3 uses 12,288 numbers per token. My toy uses 3, so you can see each activation as a point.</p>
+        <p>The point on the right is one activation. Its three numbers give its coordinates on three axes, and each axis stands for one neuron.</p>
       </div></div>
 
       <div class="sx-step" data-scene="cloud"><div class="sx-card">
-        <span class="sx-n">02</span><h2>Many inputs</h2>
-        <p>These are the activations for 600 different inputs. The model has only these coordinates. Nothing in the data says what any point means.</p>
+        <span class="sx-n">02</span>
+        <p>Here I plot the activations for <b>600 different inputs</b>. The model sees only these coordinates. Nothing in the data tells it what any point means.</p>
       </div></div>
 
       <div class="sx-step" data-scene="concepts"><div class="sx-card">
-        <span class="sx-n">03</span><h2>Hidden directions</h2>
-        <p>I made this data, so I know what it contains. Each input holds one or two of 6 hidden concepts, labelled A to F. Each concept has its own direction. An input that holds only concept A lies on A's line, and its distance from the center tells how much of A it holds.</p>
+        <span class="sx-n">03</span>
+        <p>I made this data, so I know what it holds. Each input contains one or two of 6 <b>hidden concepts</b>, which I label A to F. I gave each concept its own direction. An input that holds only concept A sits on A's line, and its distance from the center shows how much of A it holds.</p>
         $$\mathbf{x} = \sum_{i=1}^{6} w_i\,\mathbf{f}_i$$
-        <p class="src">The LessWrong guide writes activations in this form. Each \(\mathbf{f}_i\) is a feature vector of length 1. The weight \(w_i\) is the feature activation, the amount of that feature in the input. The meaning attached to \(\mathbf{f}_i\) is its feature description.</p>
+        <p class="src">The LessWrong guide writes activations in this form. Each \(\mathbf{f}_i\) is a feature vector of length 1. The weight \(w_i\) is the feature activation, which measures how much of that feature the input holds. The guide calls the meaning of \(\mathbf{f}_i\) its feature description.</p>
       </div></div>
 
       <div class="sx-step" data-scene="angles"><div class="sx-card">
-        <span class="sx-n">04</span><h2>Superposition</h2>
-        <p>In three dimensions, at most three directions can be at right angles to each other. Six cannot. In this toy every pair of concept directions meets at 63.4° or 116.6°, so any two of them overlap with \(|\cos\theta| = 0.447\).</p>
-        <p>Storing more features than there are neurons, at the cost of some overlap, is called superposition.</p>
-        <p class="src">The LessWrong guide states the superposition hypothesis. Models learn feature vectors that are almost orthogonal, so that many features fit in a small space. In high dimensions the number of nearly orthogonal directions grows exponentially (the Johnson–Lindenstrauss lemma).</p>
+        <span class="sx-n">04</span>
+        <p>Three dimensions fit at most three directions at right angles to each other. Six do not fit. In my toy every pair of concept directions meets at 63.4° or 116.6°, so any two of them overlap with \(|\cos\theta| = 0.447\).</p>
+        <p>The model stores more features than it has neurons and pays for it with overlap. Researchers call this <b>superposition</b>.</p>
+        <p class="src">The LessWrong guide states the superposition hypothesis. Models learn feature vectors that are almost orthogonal, so many features fit in a small space. In high dimensions the number of nearly orthogonal directions grows exponentially (the Johnson–Lindenstrauss lemma).</p>
       </div></div>
 
       <div class="sx-step tall" data-scene="sparse"><div class="sx-card">
-        <span class="sx-n">05</span><h2>Sparsity</h2>
-        <p>Overlap does little harm when few concepts are active at once. Here, <span data-v="single">…</span> of the inputs hold one concept and the rest hold two or more. As you scroll, the picture first lights the one-concept inputs, which lie on the six lines. Then it lights the others, which fill the thin fans between pairs of lines.</p>
-        <p class="src">The LessWrong guide gives a coffee mug as an example. A description of a mug needs its size and its use, and no astronomy, so most feature activations are zero. Karvonen notes that a fact such as one celebrity's birthplace can appear in fewer than one in a billion training tokens, and large models still learn it.</p>
+        <span class="sx-n">05</span>
+        <p>Overlap does little harm when few concepts appear at once, a property called <b>sparsity</b>. Here, <span data-v="single">…</span> of the inputs hold one concept and the rest hold two or more. As you scroll, the picture first lights the one-concept inputs, which sit on the six lines. Then it lights the others, which fill the thin fans between pairs of lines.</p>
+        <p class="src">The LessWrong guide uses a coffee mug as an example. You describe a mug by its size and its use, and you need no astronomy, so most feature activations stay at zero. Karvonen notes that a fact such as one celebrity's birthplace can appear in fewer than one in a billion training tokens, and large models still learn it.</p>
       </div></div>
 
       <div class="sx-step tall" data-scene="neurons"><div class="sx-card">
-        <span class="sx-n">06</span><h2>Why single neurons mislead</h2>
-        <p>The direct way to read a network is one neuron at a time. Superposition breaks that method. A neuron measures the input along its own axis, and every concept direction that leans toward that axis moves it. As you scroll, the picture lights each neuron in turn. In this toy, <span data-v="perNeuron">…</span> of the 6 concepts move each neuron.</p>
+        <span class="sx-n">06</span>
+        <p>The direct way to read a network goes one neuron at a time, and superposition breaks it. A neuron measures the input along its own axis, so every concept direction that leans toward that axis moves it. As you scroll, the picture lights each neuron in turn. In my toy, <span data-v="perNeuron">…</span> of the 6 concepts move each neuron, which makes every neuron <b>polysemantic</b>.</p>
         <p class="src">Karvonen describes one neuron in a language model that responded to academic citations, English dialogue, HTTP requests and Korean text.</p>
       </div></div>
 
       <div class="sx-step" data-scene="arch"><div class="sx-card">
-        <span class="sx-n">07</span><h2>The autoencoder</h2>
-        <p>A sparse autoencoder tries to find the hidden directions from the points alone. It has two parts. The encoder turns an activation into one score per feature. The decoder turns the scores back into an activation, \(\hat{\mathbf{x}}\).</p>
-        <p>This autoencoder has 12 features for 3 neurons, so its middle layer is four times wider than its input. Each arrow is one feature's decoder vector. Training has not started yet, so the arrows point in random directions.</p>
+        <span class="sx-n">07</span>
+        <p>A <b>sparse autoencoder</b> tries to find the hidden directions from the points alone. It has two parts. The encoder turns an activation into one score per feature. The decoder turns the scores back into an activation, \(\hat{\mathbf{x}}\).</p>
+        <p>My autoencoder has 12 features for 3 neurons, so its middle layer is four times wider than its input. Each arrow shows one feature's decoder vector. I have not trained it yet, so the arrows point in random directions.</p>
         <p class="src">Karvonen explains why the extra width needs a rule. A layer this wide could copy its input and tell us nothing. A sparsity penalty keeps most scores at zero for each input. The LessWrong guide adds that the scores become the feature activations and the decoder vectors become the feature vectors.</p>
       </div></div>
 
       <div class="sx-step" data-scene="loss"><div class="sx-card">
-        <span class="sx-n">08</span><h2>What training minimizes</h2>
-        <p>Training changes the encoder and the decoder to lower one number, the loss.</p>
+        <span class="sx-n">08</span>
+        <p>Training adjusts the encoder and the decoder to lower one number, the <b>loss</b>.</p>
         $$\mathcal{L} = \lVert \mathbf{x} - \hat{\mathbf{x}} \rVert^2 + \lambda \sum_{j} c_j$$
-        <p>The first term is the squared distance between an input and its reconstruction, the red line on the right. The second term adds up the feature scores \(c_j\) and multiplies the sum by \(\lambda\), the L1 coefficient. A larger \(\lambda\) pushes more scores to zero.</p>
-        <p>After each step I rescale every decoder vector to length 1. Without that rule, the model could shrink the scores and stretch the decoder vectors to avoid the penalty.</p>
+        <p>The first term measures the squared distance between an input and its reconstruction, the red line on the right. The second term adds up the feature scores \(c_j\) and multiplies the sum by \(\lambda\), the L1 coefficient. A larger \(\lambda\) pushes more scores to zero.</p>
+        <p>After each step I rescale every decoder vector to length 1. Without that rule, the model could shrink the scores and stretch the decoder vectors to dodge the penalty.</p>
         <p class="src">Karvonen points out that nothing in this loss asks for readable features. Readable features appear as a side effect of sparsity and accurate reconstruction.</p>
       </div></div>
 
       <div class="sx-step xtall" data-scene="train"><div class="sx-card">
-        <span class="sx-n">09</span><h2>Training</h2>
-        <p>Scroll to train. When the page loaded, it trained this autoencoder for 2,400 steps with \(\lambda = 0.4\) and batches of 32 inputs, and it saved a snapshot every 10 steps. Your scroll position selects the snapshot.</p>
-        <p>The arrows start at random and turn onto the concept lines. When an arrow comes within about 25° of a concept, it takes that concept's color.</p>
+        <span class="sx-n">09</span>
+        <p>Scroll to <b>train</b>. When you opened this page, your browser trained this autoencoder for 2,400 steps with \(\lambda = 0.4\) and batches of 32 inputs, and it saved a snapshot every 10 steps. Your scroll position picks the snapshot.</p>
+        <p>The arrows start at random and turn onto the concept lines. When an arrow comes within about 25° of a concept, I give it that concept's color.</p>
       </div></div>
 
       <div class="sx-step" data-scene="dead"><div class="sx-card">
-        <span class="sx-n">10</span><h2>Dead features</h2>
-        <p>Some arrows never settle. In this run, <span data-v="dead">…</span> of the 12 features fire on fewer than 1% of the inputs. These are dead features, drawn as pulsing dashed lines. They use compute and explain nothing.</p>
+        <span class="sx-n">10</span>
+        <p>Some arrows never settle. In this run, <span data-v="dead">…</span> of the 12 features fire on fewer than 1% of the inputs. Researchers call these <b>dead features</b>, and I draw them as pulsing dashed lines. They use compute and explain nothing.</p>
         <p class="src">The LessWrong guide reports that about 65% of the features in Anthropic's largest autoencoder were dead.</p>
       </div></div>
 
       <div class="sx-step xtall" data-scene="forward"><div class="sx-card">
-        <span class="sx-n">11</span><h2>One input, step by step</h2>
-        <p>Follow one input through the trained autoencoder. Scroll slowly.</p>
+        <span class="sx-n">11</span>
+        <p>Follow <b>one input</b> through the trained autoencoder, and scroll slowly.</p>
         <p>The encoder multiplies the activation by a matrix and adds a bias, which gives one score per feature. The ReLU function then sets every negative score to zero. Most scores end at zero, so the code is sparse.</p>
-        <p>The decoder multiplies the code by a second matrix. That product is a sum of the decoder vectors, each scaled by its score. On the right the scaled vectors join head to tail, and the last one ends at the reconstruction \(\hat{\mathbf{x}}\).</p>
+        <p>The decoder multiplies the code by a second matrix. That product adds up the decoder vectors, each scaled by its score. On the right the scaled vectors join head to tail, and the last one ends at the reconstruction \(\hat{\mathbf{x}}\).</p>
         <p class="src">Karvonen describes the whole model as a matrix, then a ReLU, then a matrix. On GPT-3 with an expansion factor of 4, the encoder maps 12,288 numbers to 49,152 scores, and researchers aim for fewer than 100 nonzero scores.</p>
       </div></div>
 
       <div class="sx-step" data-scene="feature"><div class="sx-card">
-        <span class="sx-n">12</span><h2>A decoder vector is a feature</h2>
-        <p>The last picture shows why people call decoder vectors features. Each time feature <span data-v="fj">…</span> scores above zero, the decoder adds a scaled copy of its arrow to the reconstruction. The lit points are the inputs where that happens, brighter for higher scores.</p>
-        <p class="src">Karvonen gives an example. Suppose GPT-3 stores "Golden Retriever" as one direction and decoder vector 317 learns that direction. Each time feature 317 turns on, a scaled Golden Retriever vector goes into the reconstruction. This works because a vector times a matrix is a weighted sum of the matrix's rows.</p>
+        <span class="sx-n">12</span>
+        <p>The last picture shows why people call <b>decoder vectors features</b>. Each time feature <span data-v="fj">…</span> scores above zero, the decoder adds a scaled copy of its arrow to the reconstruction. The lit points mark the inputs where that happens, brighter for higher scores.</p>
+        <p class="src">Karvonen gives an example. Suppose GPT-3 stores "Golden Retriever" as one direction and decoder vector 317 learns that direction. Each time feature 317 turns on, the decoder adds a scaled Golden Retriever vector to the reconstruction. This works because multiplying a vector by a matrix takes a weighted sum of the matrix's rows.</p>
       </div></div>
 
       <div class="sx-step" data-scene="encdec"><div class="sx-card">
-        <span class="sx-n">13</span><h2>Two vectors per feature</h2>
-        <p>Each feature has two vectors. The thick arrow is the decoder vector, the direction the feature writes. The thin arrow is the encoder vector. It decides when the feature turns on, so it must also ignore the concepts that overlap with this one.</p>
+        <span class="sx-n">13</span>
+        <p>Each feature has <b>two vectors</b>. The thick arrow shows the decoder vector, the direction the feature writes. The thin arrow shows the encoder vector. The encoder vector decides when the feature turns on, so it must also ignore the concepts that overlap with this one.</p>
         <p><span data-v="encdecText">…</span></p>
         <p class="src">Karvonen reports that in real autoencoders the encoder and decoder vectors of a feature have a median cosine similarity of about 0.5.</p>
       </div></div>
 
       <div class="sx-step xtall" data-scene="lambda"><div class="sx-card">
-        <span class="sx-n">14</span><h2>The sparsity trade-off</h2>
-        <p>The value of \(\lambda\) sets a trade-off. The page trained two more autoencoders on the same data, one with \(\lambda = 0.02\) and one with \(\lambda = 1.2\). As you scroll, the picture moves from 0.02 to 0.4 to 1.2.</p>
+        <span class="sx-n">14</span>
+        <p>The value of \(\lambda\) sets a <b>trade-off</b>. Your browser trained two more autoencoders on the same data, one with \(\lambda = 0.02\) and one with \(\lambda = 1.2\). As you scroll, the picture moves from 0.02 to 0.4 to 1.2.</p>
         <p>With \(\lambda = 0.02\), about <span data-v="lowL0">…</span> features stay on per input and the reconstruction explains <span data-v="lowFve">…</span> of the variance. The arrows find only <span data-v="lowCov">…</span> of the 6 concepts. With \(\lambda = 1.2\), the arrows find <span data-v="highCov">…</span> of 6, but the penalty shrinks every score, and the reconstruction explains only <span data-v="highFve">…</span>.</p>
-        <p class="src">Karvonen describes how researchers compare autoencoders. They plot L0, the mean number of nonzero scores, against loss recovered, which measures how much of the model's own loss survives when the reconstruction replaces the activation. This toy has no language model, so it reports variance explained in place of loss recovered.</p>
-        <p class="src">Karvonen now prefers BatchTopK autoencoders. A BatchTopK autoencoder keeps the k largest scores across a batch and sets the others to zero, so k sets the sparsity directly and no penalty needs tuning. The LessWrong guide mentions the related k-sparse autoencoders that OpenAI used.</p>
+        <p class="src">Karvonen describes how researchers compare autoencoders. They plot L0, the mean number of nonzero scores, against loss recovered, which measures how much of the model's own loss survives when the reconstruction replaces the activation. My toy has no language model, so I report variance explained in place of loss recovered.</p>
+        <p class="src">Karvonen now prefers BatchTopK autoencoders. A BatchTopK autoencoder keeps the k largest scores across a batch and sets the others to zero, so you set the sparsity directly with k and tune no penalty. The LessWrong guide mentions the related k-sparse autoencoders that OpenAI used.</p>
       </div></div>
 
       <div class="sx-step" data-scene="reading"><div class="sx-card">
-        <span class="sx-n">15</span><h2>Naming a feature</h2>
-        <p>On a real model nobody knows the true directions, so people name features from examples. The panel on the right lists the inputs that fire feature <span data-v="fj">…</span> most strongly, with the concepts that each input holds.</p>
+        <span class="sx-n">15</span>
+        <p>On a real model nobody knows the true directions, so researchers <b>name features from examples</b>. The panel on the right lists the inputs that fire feature <span data-v="fj">…</span> most strongly, with the concepts that each input holds.</p>
         <p class="src">The LessWrong guide describes the method that Anthropic used. They ran a large set of text through the model, collected the passages where a feature scored highest, and wrote a short description that fit them, such as "food places". Karvonen calls the usual check a gut reaction, because natural language gives no ground truth.</p>
-        <p>This toy does give a ground truth, so the name can be checked. Feature <span data-v="fj">…</span> points within 25° of concept <span data-v="fc">…</span>.</p>
+        <p>My toy gives a ground truth, so I can check the name. Feature <span data-v="fj">…</span> points within 25° of concept <span data-v="fc">…</span>.</p>
       </div></div>
 
       <div class="sx-step xtall" data-scene="steer"><div class="sx-card">
-        <span class="sx-n">16</span><h2>Steering</h2>
-        <p>A name taken from examples can be a coincidence. A stronger test changes the activation and watches the result. A decoder vector has the same shape as an activation, so you can add it directly.</p>
+        <span class="sx-n">16</span>
+        <p>A name you read off examples might fit by coincidence. To test it, you change the activation yourself and watch what happens, a method called <b>steering</b>. A decoder vector has the same shape as an activation, so you can add it straight in.</p>
         <p>Scroll to add more of feature <span data-v="fj">…</span>'s decoder vector to one input, up to 2.4 times its length. The point moves along the arrow. The panel shows every score before and after, and the score of feature <span data-v="fj">…</span> rises from <span data-v="steer0">…</span> to <span data-v="steer1">…</span>.</p>
         <p class="src">Karvonen describes the same test on Claude. When Anthropic added the Golden Gate Bridge feature to Claude's activations, Claude mentioned the bridge in every response.</p>
       </div></div>
 
       <div class="sx-step" data-scene="limits"><div class="sx-card">
-        <span class="sx-n">17</span><h2>What the toy cannot show</h2>
-        <p>This toy has 3 dimensions and 12 features, and I planted all 6 concepts myself. Anthropic's largest autoencoder had about 34 million features, and a real model offers no planted directions to check against.</p>
-        <p class="src">Karvonen describes a chain of stand-ins. The training loss stands in for the proxy metrics. The metrics stand in for human judgments of which features are readable. Those judgments stand in for the real goal, an understanding of how the model works.</p>
-        <p class="src">The LessWrong guide lists open questions. Nobody has proved that models store concepts by superposition, and one argument says that autoencoders find combinations of features instead of single features. It is also surprising that a network full of nonlinear functions has activations that split so well into weighted sums.</p>
+        <span class="sx-n">17</span>
+        <p>My toy has 3 dimensions and 12 features, and I planted all 6 concepts myself. That is <b>what the toy cannot show</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you no planted directions to check against.</p>
+        <p class="src">Karvonen describes a chain of stand-ins. The training loss stands in for the proxy metrics. The metrics stand in for human judgments of which features read clearly. Those judgments stand in for the real goal, an understanding of how the model works.</p>
+        <p class="src">The LessWrong guide lists open questions. Nobody has proved that models store concepts by superposition, and one argument says that autoencoders find combinations of features instead of single features. The guide also finds it surprising that a network full of nonlinear functions has activations that split so well into weighted sums.</p>
         <p class="src">Both guides still count sparse autoencoders as real progress. Karvonen argues that so simple an objective would not find readable features unless the model had learned something meaningful.</p>
       </div></div>
 
       <div class="sx-step" data-scene="sandbox"><div class="sx-card">
-        <span class="sx-n">18</span><h2>Your turn</h2>
-        <p>Choose a sparsity rule and train a new autoencoder. Click any point to see its scores.</p>
+        <span class="sx-n">18</span>
+        <p><b>Your turn.</b> Choose a sparsity rule and train a new autoencoder. Click any point to see its scores.</p>
         <div class="sx-ctl"><span>rule</span><button class="sx-btn" id="sb-l1" aria-pressed="true">L1 penalty</button><button class="sx-btn" id="sb-tk">TopK</button></div>
         <div class="sx-ctl" id="sb-lrow"><span>λ</span><input type="range" id="sb-l" min="0" max="9" value="6"><b id="sb-lv">0.4</b></div>
         <div class="sx-ctl" id="sb-krow" style="display:none"><span>k</span><input type="range" id="sb-k" min="1" max="3" value="1"><b id="sb-kv">1</b></div>
