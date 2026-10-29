@@ -98,7 +98,7 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
 <section class="sv">
   <a class="sv-eyebrow" href="{{ '/playground/' | relative_url }}">&larr; playground</a>
   <h1 class="sv-title">Sparse autoencoders, live</h1>
-  <p class="sv-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. I train one from scratch in your browser on a toy model where I planted the true features myself, so you can watch it find them. The 3D view shows the activation space itself. Drag it to rotate. Your browser computes everything on this page, and I precomputed or made up nothing.</p>
+  <p class="sv-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. I train one from scratch in your browser on a toy model where I planted the true features myself, so you can watch it find them. The 3D view shows the activation space itself. Drag it to rotate. Your browser computes everything on this page, and I precomputed or made up nothing. To read more, see my <a href="{{ '/writing/sparse-autoencoders/' | relative_url }}" style="color:var(--accent)">companion post</a>, which walks through the ideas behind each chapter.</p>
 
   <div class="sv-tabs" id="sv-tabs" role="tablist"></div>
 
@@ -448,11 +448,11 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
 
   // ---- chapters ---------------------------------------------------------------
   var CH = [
-    { tab: 'superposition', title: 'Six concepts, three neurons',
-      body: '<p>Picture the activations of one layer as a point in space, with one axis per neuron. I give this toy layer <b>3 neurons</b> but ask it to carry <b>6 concepts</b>. Every point in the 3D view is one input.</p>' +
-        '<p>Each concept owns a direction, and an input is a weighted sum of the directions for the concepts it contains.</p>' +
+    { tab: 'superposition', title: 'Superposition',
+      body: '<p>I treat the activations of one layer as a point in space, with one axis per neuron. I give this toy layer <b>3 neurons</b> and ask it to carry <b>6 concepts</b>. Each point in the 3D view stands for one input.</p>' +
+        '<p>Each concept owns a direction. An input adds up the directions of the concepts it contains, and each concept\'s strength scales its direction.</p>' +
         '<div class="sv-math">x = w<sub>1</sub>f<sub>1</sub> + w<sub>2</sub>f<sub>2</sub> + &hellip; + w<sub>6</sub>f<sub>6</sub></div>' +
-        '<p>Six directions cannot all sit at right angles in 3D, so they overlap. Researchers call this <b>superposition</b>. It works only because inputs are <b>sparse</b>. Most inputs contain one concept, so the data lies along six rays and the thin fans between pairs of them. Those rays and fans form the shape a sparse autoencoder has to find.</p>',
+        '<p>Six directions cannot all sit at right angles in 3D, so they overlap. Researchers call this overlap <b>superposition</b>. Sparsity makes it workable. Most inputs contain one concept, so the data hugs six rays and the thin fans between pairs of them. A sparse autoencoder has to find those rays and fans.</p>',
       enter: function () {
         scene = { points: true, colorBy: 'grey', gt: false };
         legend('');
@@ -462,9 +462,9 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         $('c1-reveal').onclick = function () { var on = scene.colorBy === 'grey'; scene.colorBy = on ? 'concept' : 'grey'; legend(on ? 'concepts' : ''); this.textContent = on ? 'hide the concepts' : 'reveal the concepts'; };
         $('c1-rays').onclick = function () { scene.gt = !scene.gt; this.textContent = scene.gt ? 'hide concept rays' : 'show concept rays'; };
       } },
-    { tab: 'neurons', title: 'Why single neurons mislead',
-      body: '<p>The obvious way to read a network is one neuron at a time. Superposition breaks that. Because the concept directions do not line up with the neuron axes, each neuron responds to several unrelated concepts. Researchers call such a neuron <b>polysemantic</b>.</p>' +
-        '<p>Pick a neuron. I color each input by how strongly that neuron fires, and the bars show how much each concept drives it. Four of the six concepts move every neuron here, so no neuron has a clean meaning.</p>',
+    { tab: 'neurons', title: 'Polysemantic neurons',
+      body: '<p>The obvious way to read a network goes one neuron at a time. Superposition breaks that approach. The concept directions do not line up with the neuron axes, so each neuron responds to several unrelated concepts. Researchers call such a neuron <b>polysemantic</b>.</p>' +
+        '<p>Pick a neuron. I color each input by how strongly that neuron fires, and the bars show how much each concept drives it. Four of the six concepts move every neuron here, so no single neuron carries a clean meaning.</p>',
       enter: function () {
         scene = { points: true, colorBy: 'neuron', neuron: 0, gt: true };
         legend('<span><i style="background:var(--accent)"></i>neuron fires positive</span><span><i style="background:var(--robin)"></i>negative</span>');
@@ -478,19 +478,19 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         [0, 1, 2].forEach(function (q) { $('c2-n' + q).onclick = function () { show(q); }; });
         show(0);
       } },
-    { tab: 'the autoencoder', title: 'A wider layer that must stay quiet',
-      body: '<p>An ordinary autoencoder squeezes its input through a narrow bottleneck and rebuilds it. A <b>sparse</b> autoencoder goes the other way. It gives itself <b>more</b> hidden units than the input has dimensions, ' + H + ' here for ' + D + ' neurons, and then forces almost all of them to stay off on any one input.</p>' +
+    { tab: 'the autoencoder', title: 'The sparse autoencoder',
+      body: '<p>An ordinary autoencoder squeezes its input through a narrow bottleneck and rebuilds it. A <b>sparse</b> autoencoder does the opposite. It gives itself <b>more</b> hidden units than the input has dimensions, ' + H + ' here for ' + D + ' neurons, and then forces almost all of them to stay off on any one input.</p>' +
         '<div class="sv-arch"><div class="box">x<small>' + D + ' neurons</small></div><span class="arrow">&rarr;</span><div class="box">encoder<small>ReLU(W<sub>enc</sub>x + b)</small></div><span class="arrow">&rarr;</span><div class="box" style="border-color:var(--accent)">code<small>' + H + ' features, mostly 0</small></div><span class="arrow">&rarr;</span><div class="box">decoder<small>W<sub>dec</sub></small></div><span class="arrow">&rarr;</span><div class="box">x&#770;<small>' + D + ' neurons</small></div></div>' +
-        '<div class="sv-math">loss = &Vert;x &minus; x&#770;&Vert;&sup2; + &lambda; &middot; &Sigma; code<sub>j</sub></div>' +
-        '<p>The first term keeps the features faithful and the L1 term keeps them few. Each row of the decoder is a <b>feature direction</b>, one arrow in the 3D view. Right now I initialized all ' + H + ' at random, and none of them points along a concept yet.</p>',
+        '<div class="sv-math">loss = &Vert;x &minus; x&#770;&Vert;&sup2; + &lambda; &Sigma; code<sub>j</sub></div>' +
+        '<p>The first term keeps the features faithful and the L1 term keeps them few. Each decoder vector defines a <b>feature direction</b>, which I draw as one arrow in the 3D view. I start all ' + H + ' at random, so none points along a concept yet.</p>',
       enter: function () {
         initSAE(); scene = { points: true, colorBy: 'concept', gt: true, decoder: true, featNums: true };
         legend('concepts');
-        $('sv-ctl').innerHTML = '<p class="sv-note">Solid arrows show decoder directions, coloured once one lands on a concept. Dashed rays show the true concepts I planted. Training should swing the arrows onto the rays.</p>';
+        $('sv-ctl').innerHTML = '<p class="sv-note">Solid arrows show the decoder directions, and I color an arrow once it lands on a concept. Dashed rays mark the concepts I planted. Training should swing the arrows onto the rays.</p>';
       } },
-    { tab: 'one input', title: 'One input, through the autoencoder',
-      body: '<p>Click any point in the 3D view to send it through a trained autoencoder. The cells below show each vector, with darker cells for larger values.</p>' +
-        '<p>The encoder scores all ' + H + ' features and ReLU zeros the negative ones. A few survive, and the largest belong to the concepts the input actually holds. The decoder then rebuilds the input as a weighted sum of decoder rows, drawn head to tail in the 3D view. The reconstruction x&#770; lands next to x.</p>',
+    { tab: 'one input', title: 'The forward pass',
+      body: '<p>Click any point in the 3D view to send it through a trained autoencoder. The cells below show each vector, and darker cells mean larger values.</p>' +
+        '<p>The encoder scores all ' + H + ' features and ReLU zeros the negative scores. A few features survive, and the largest belong to the concepts the input actually holds. The decoder then rebuilds the input by adding up decoder vectors, each scaled by its code value. The 3D view draws them head to tail, and the rebuilt point x&#770; lands next to x.</p>',
       enter: function () {
         ensureTrained(); var info = analyze();
         scene = { points: true, colorBy: 'concept', gt: true, decoder: true, info: info, sample: 0 };
@@ -506,19 +506,19 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
             '<div class="sv-vec"><span class="nm">pre-activation</span>' + cells(e.pre, css('--accent', '#9c1c8c'), mxp, true) + '</div>' +
             '<div class="sv-op">&darr; ReLU</div>' +
             '<div class="sv-vec"><span class="nm">sparse code</span>' + cells(e.code, css('--accent', '#9c1c8c'), mxp) + '</div>' +
-            '<div class="sv-op">&darr; &Sigma; code<sub>j</sub> &middot; d<sub>j</sub></div>' +
+            '<div class="sv-op">&darr; &Sigma; code<sub>j</sub> d<sub>j</sub></div>' +
             '<div class="sv-vec"><span class="nm">x&#770; (rebuilt)</span>' + cells(r, css('--navy', '#26406e'), 1.6, true) + '</div>' +
             tiles([['features on', on + ' of ' + H], ['error', Math.hypot(r[0] - x[0], r[1] - x[1], r[2] - x[2]).toFixed(2)]]);
         }
         scene.pick = show;
         $('sv-ctl').innerHTML = '<div id="c4-flow" class="sv-flow"></div><div class="sv-ctl"><button class="sv-btn" id="c4-rand">random input</button></div>' +
-          '<p class="sv-note">The rebuilt point falls a little short of x. The L1 penalty shrinks every code value slightly, and that shrinkage is the price of sparsity.</p>';
+          '<p class="sv-note">The rebuilt point falls a little short of x because the L1 penalty shrinks every code value slightly. That shrinkage is the price of sparsity.</p>';
         $('c4-rand').onclick = function () { show((rnd() * N) | 0); };
         show(0);
       } },
-    { tab: 'train it', title: 'Train it live',
-      body: '<p>Now I train from scratch with real gradient descent in your browser. Watch the decoder arrows. They start scattered, then swing toward the dashed concept rays, leaving fading trails. When an arrow lands on a ray I color it to match.</p>' +
-        '<p>A few arrows never find any input to fire on. They stop moving and stay grey. These <b>dead features</b> plague real autoencoders too. Anthropic reported about 65% dead features in its largest one.</p>',
+    { tab: 'train it', title: 'Training',
+      body: '<p>Here I train from scratch with real gradient descent in your browser. Watch the decoder arrows. They start scattered, then swing toward the dashed concept rays and leave fading trails. I color each arrow once it lands on a ray.</p>' +
+        '<p>A few arrows never find an input to fire on, so they stop moving and stay grey. These <b>dead features</b> plague real autoencoders too. Anthropic found about 65% of the features in its largest autoencoder dead.</p>',
       enter: function () {
         initSAE(); scene = { points: true, colorBy: 'concept', gt: true, decoder: true, trails: true, loss: true, info: analyze() };
         legend('concepts');
@@ -533,9 +533,9 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         $('c5-reset').onclick = function () { initSAE(); scene.info = analyze(); training = true; $('c5-play').textContent = 'pause'; update(false); };
         $('c5-speed').oninput = function () { trainSpeed = +this.value; };
       } },
-    { tab: 'sparsity dial', title: 'The sparsity dial',
-      body: '<p>One knob decides what the autoencoder learns. With λ too low, the arrows settle between concepts and reconstruction looks perfect, but each feature mixes several concepts. Raise λ and the arrows snap onto the rays, though reconstruction gets worse because every code shrinks.</p>' +
-        '<p>Many groups now skip λ and use <b>TopK</b> instead, which keeps only the k largest features per input. OpenAI used it at scale, and Karvonen recommends its batch version, BatchTopK. Try both and retrain.</p>',
+    { tab: 'sparsity dial', title: 'Choosing the sparsity',
+      body: '<p>One knob decides what the autoencoder learns. When λ sits too low, the arrows settle between concepts. Reconstruction looks perfect, but each feature mixes several concepts. When I raise λ, the arrows snap onto the rays, and reconstruction suffers because the penalty shrinks every code.</p>' +
+        '<p>Many groups now skip λ and use <b>TopK</b> instead, which keeps only the k largest features per input. OpenAI scaled this approach to GPT-4, and Karvonen recommends its batch version, BatchTopK. Try both and retrain.</p>',
       enter: function () {
         scene = { points: true, colorBy: 'concept', gt: true, decoder: true, trails: true, loss: true, info: analyze() };
         legend('concepts');
@@ -564,9 +564,9 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         $('c6-go').onclick = function () { initSAE(); scene.info = analyze(); trainSpeed = 12; training = true; onTick = update; this.disabled = true; this.textContent = 'training…'; };
         onTick = update; sync(); update(false);
       } },
-    { tab: 'feature atlas', title: 'The feature atlas, a tiny Neuronpedia',
-      body: '<p>Each card shows one feature of the trained autoencoder. On a real model you label a feature by reading the inputs that fire it hardest. Here I can also check the label, because I know the true concepts. A card says <b>detects concept X</b> only when its decoder arrow points within about 25° of that concept.</p>' +
-        '<p>Hover a card to light up its arrow and the inputs it fires on. The thin arrow shows its encoder direction. In large autoencoders the two differ a lot, with a median cosine near 0.5 in Karvonen\'s writeup, because the encoder must also suppress overlapping concepts. In this small toy they mostly agree. With ' + H + ' features for ' + K + ' concepts, a concept sometimes claims two features. Researchers call that <b>feature splitting</b>.</p>',
+    { tab: 'feature atlas', title: 'The feature atlas',
+      body: '<p>Each card shows one feature of the trained autoencoder. On a real model you label a feature by reading the inputs that fire it hardest. Here I can also check each label against the concepts I planted. A card says <b>detects concept X</b> only when its decoder arrow points within about 25° of that concept.</p>' +
+        '<p>Hover a card to light up its arrow and the inputs it fires on. The thin arrow shows its encoder direction. In large autoencoders the encoder and decoder directions differ a lot, with a median cosine near 0.5 in Karvonen\'s writeup, because the encoder also has to suppress overlapping concepts. In this small toy they mostly agree. With ' + H + ' features for ' + K + ' concepts, a concept sometimes claims two features. Researchers call that <b>feature splitting</b>.</p>',
       enter: function () {
         ensureTrained(); var info = analyze();
         scene = { points: true, colorBy: 'concept', gt: true, decoder: true, info: info };
@@ -574,11 +574,11 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         var html = '<div class="sv-atlas">';
         info.feats.forEach(function (f) {
           html += '<div class="sv-feat" data-j="' + f.j + '"><h4>feature ' + f.j + '</h4><div class="lab ' + f.cls + '"' + (f.cls === 'mono' ? ' style="color:' + COLORS[f.best] + '"' : '') + '>' + f.label + '</div>' +
-            '<div class="meta">fires on ' + (100 * f.rate).toFixed(0) + '% of inputs' + (f.cls !== 'dead' ? '<br>enc&middot;dec cos ' + f.encdec.toFixed(2) : '') + '</div>';
+            '<div class="meta">fires on ' + (100 * f.rate).toFixed(0) + '% of inputs' + (f.cls !== 'dead' ? '<br>encoder vs decoder cos ' + f.encdec.toFixed(2) : '') + '</div>';
           f.top.forEach(function (n) { html += '<div>' + chips(n) + '</div>'; });
           html += '</div>';
         });
-        html += '</div><p class="sv-note">This run found <b>' + info.covered + ' of ' + K + '</b> planted concepts, with ' + info.dead + ' dead features. Reconstruction keeps features honest, so no feature can claim a concept it does not actually decode.</p>';
+        html += '</div><p class="sv-note">This run found <b>' + info.covered + ' of ' + K + '</b> planted concepts and left ' + info.dead + ' features dead. Reconstruction keeps features honest, so no feature can claim a concept it does not actually decode.</p>';
         $('sv-ctl').innerHTML = html;
         var cards = document.querySelectorAll('.sv-feat');
         function pickF(j) {
@@ -593,8 +593,8 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         });
         $('sv-ctl').querySelector('.sv-atlas').addEventListener('mouseleave', function () { pickF(null); });
       } },
-    { tab: 'steering', title: 'Steering with a feature',
-      body: '<p>If a feature really means something, adding its decoder direction to an activation should push the model toward that meaning. Anthropic did exactly this with a Golden Gate Bridge feature. Turned up far enough, Claude began to describe itself as the bridge.</p>' +
+    { tab: 'steering', title: 'Steering',
+      body: '<p>If a feature really means something, adding its decoder direction to an activation should push the model toward that meaning. Anthropic tested exactly this with a Golden Gate Bridge feature. When they turned it up far enough, Claude began to describe itself as the bridge.</p>' +
         '<p>Pick a feature and drag α. The input slides along the feature arrow, and the code below shows that feature switching on while the others hold still. Click any point to steer a different input.</p>',
       enter: function () {
         ensureTrained(); var info = analyze(), alive = info.feats.filter(function (f) { return f.cls === 'mono'; });
@@ -602,7 +602,7 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         var st = { n: 0, j: alive[0].j, alpha: 1.2, color: featColor(alive[0]) || css('--accent', '#9c1c8c') };
         scene = { points: true, colorBy: 'grey', gt: true, decoder: true, info: info, steer: st };
         legend('');
-        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>feature</label><span class="sv-seg" id="c8-feats">' + alive.map(function (f) { return '<button data-j="' + f.j + '">f' + f.j + (f.cls === 'mono' ? ' &middot; ' + NAMES[f.best] : '') + '</button>'; }).join('') + '</span></div>' +
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>feature</label><span class="sv-seg" id="c8-feats">' + alive.map(function (f) { return '<button data-j="' + f.j + '">f' + f.j + (f.cls === 'mono' ? ' (' + NAMES[f.best] + ')' : '') + '</button>'; }).join('') + '</span></div>' +
           '<div class="sv-ctl"><label>α</label><input type="range" id="c8-a" min="-10" max="25" value="12"><b id="c8-av"></b></div><div id="c8-flow" class="sv-flow"></div>';
         function show() {
           var x0 = X[st.n], x1 = add(x0, scale(Wd[st.j], st.alpha)), c0 = encode(x0).code, c1 = encode(x1).code;
@@ -617,15 +617,16 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
         scene.pick = function (n) { st.n = n; show(); };
         show();
       } },
-    { tab: 'takeaways', title: 'What to take away',
-      body: '<p>A sparse autoencoder reorganizes information without adding any. I trained it with a reconstruction loss plus a sparsity penalty on an overcomplete code. It traded the dense, polysemantic neurons for a sparse code in which single features line up with single concepts. That alignment makes a feature atlas readable.</p>' +
-        '<p>On a real model you only ever see the cloud, never the rays, so the honest test is the one on this page. You plant features yourself and check whether the autoencoder recovers them. Neuronpedia runs this same mechanism at scale, with tens of thousands of features per layer of a language model. The two failures you saw here, dead features and mixed leftovers, show up there too.</p>' +
-        '<p>Some questions stay open. Nobody has shown that real models store concepts as clean linear directions, and a feature an autoencoder finds might combine several smaller ones. I find the toy useful exactly because it lets me check.</p>',
+    { tab: 'takeaways', title: 'Takeaways',
+      body: '<p>A sparse autoencoder reorganizes information without adding any. I trained one with a reconstruction loss and a sparsity penalty on an overcomplete code. It traded dense, polysemantic neurons for a sparse code in which single features line up with single concepts, and that alignment makes a feature atlas readable.</p>' +
+        '<p>On a real model you only ever see the cloud and never the rays, so the honest test is the one on this page. You plant features yourself and check whether the autoencoder recovers them. Neuronpedia runs this same mechanism at scale, with tens of thousands of features per layer of a language model. The two failures you saw here, dead features and mixed leftovers, show up there too.</p>' +
+        '<p>Some questions stay open. Nobody has shown that real models store concepts as clean linear directions, and a feature an autoencoder finds might combine several smaller ones. I find the toy useful exactly because it lets me check. My <a href="{{ '/writing/sparse-autoencoders/' | relative_url }}">companion post</a> covers the ideas behind every chapter.</p>',
       enter: function () {
         ensureTrained();
         scene = { points: true, colorBy: 'concept', gt: true, decoder: true, encoder: true, info: analyze() };
         legend('concepts');
         $('sv-ctl').innerHTML = '<p class="sv-note">Further reading</p><ol class="sv-refs">' +
+          '<li><a href="{{ '/writing/sparse-autoencoders/' | relative_url }}">Sparse autoencoders, from superposition to steering</a>, my companion post</li>' +
           '<li><a href="https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html" target="_blank" rel="noopener">An intuitive explanation of sparse autoencoders</a>, Adam Karvonen</li>' +
           '<li><a href="https://www.lesswrong.com/posts/8YnHuN55XJTDwGPMr/a-gentle-introduction-to-sparse-autoencoders" target="_blank" rel="noopener">A gentle introduction to sparse autoencoders</a>, LessWrong</li>' +
           '<li><a href="https://transformer-circuits.pub/2022/toy_model/index.html" target="_blank" rel="noopener">Toy models of superposition</a>, Elhage et al. 2022</li>' +
@@ -633,7 +634,7 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
           '<li><a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html" target="_blank" rel="noopener">Scaling monosemanticity</a>, Templeton et al. 2024</li>' +
           '<li><a href="https://arxiv.org/abs/2406.04093" target="_blank" rel="noopener">Scaling and evaluating sparse autoencoders</a>, Gao et al. 2024</li>' +
           '<li><a href="https://www.neuronpedia.org/" target="_blank" rel="noopener">Neuronpedia</a></li></ol>' +
-          '<div class="sv-ctl"><a class="sv-btn" href="{{ '/writing/interpretability/' | relative_url }}">read my interpretability writeup</a><a class="sv-btn" href="{{ '/playground/' | relative_url }}">more playground</a></div>';
+          '<div class="sv-ctl"><a class="sv-btn solid" href="{{ '/writing/sparse-autoencoders/' | relative_url }}">read more</a><a class="sv-btn" href="{{ '/writing/interpretability/' | relative_url }}">my interpretability writeup</a><a class="sv-btn" href="{{ '/playground/' | relative_url }}">more playground</a></div>';
       } }
   ];
 
@@ -641,7 +642,7 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   function go(i) {
     training = false; onTick = null; trainSpeed = 3; cur = i;
     var c = CH[i];
-    $('sv-kicker').textContent = 'chapter ' + (i + 1) + ' · ' + c.tab;
+    $('sv-kicker').textContent = 'chapter ' + (i + 1);
     $('sv-h').textContent = c.title;
     $('sv-body').innerHTML = c.body;
     $('sv-ctl').innerHTML = '';
