@@ -1,0 +1,36 @@
+/* Extra pieces for the sparse autoencoder post. Figure frames, buttons and
+   legends come from forward-training.css. */
+.sp-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: center; }
+.sp-row canvas { aspect-ratio: 1 / 1; }
+.sp-side { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.78rem; color: var(--muted); }
+.sp-vec { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+.sp-vec > span:first-child { width: 96px; flex: none; }
+.sp-op { padding-left: 106px; color: var(--ft-apical); font-size: 0.72rem; margin: 2px 0; }
+.sp-cells { display: inline-flex; flex-wrap: wrap; gap: 2px; }
+.sp-cell { width: 16px; height: 16px; border-radius: 3px; border: 1px solid var(--ft-edge); }
+.sp-chips { display: inline-flex; gap: 2px; }
+.sp-chip { width: 11px; height: 11px; border-radius: 2px; }
+.is-post .rp-body p.sp-note, .sp-note { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.8rem; line-height: 1.5; color: var(--muted); margin: 10px 0 4px; }
+.sp-labels { margin-top: 6px; }
+.sp-top { display: flex; align-items: center; gap: 12px; margin: 3px 0; }
+.sp-bar { flex: 1; max-width: 260px; height: 9px; border-radius: 3px; background: var(--ft-grid); position: relative; }
+.sp-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--ft-apical); }
+.sp-guess { margin-top: 10px; }
+
+/* the papers */
+.sp-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
+.sp-papers { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 0 0 30px; }
+.sp-paper { background: var(--ft-card); border: 1px solid var(--ft-edge); border-radius: 12px; padding: 14px 16px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; }
+.sp-paper .tg { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ft-apical); }
+.sp-paper h4 { font-size: 0.92rem; line-height: 1.35; margin: 4px 0 4px; }
+.sp-paper h4 a { color: var(--ink); text-decoration: none; }
+.sp-paper h4 a:hover { color: var(--ft-apical); }
+.sp-paper .by { font-size: 0.74rem; color: var(--muted); margin-bottom: 6px; }
+.sp-paper details { font-size: 0.82rem; line-height: 1.5; color: var(--ink); }
+.sp-paper summary { cursor: pointer; color: var(--ft-apical); font-size: 0.76rem; }
+.sp-paper details p { margin: 6px 0 0; }
+
+@media (max-width: 700px) {
+  .sp-row { grid-template-columns: 1fr; }
+  .sp-op { padding-left: 0; }
+}
