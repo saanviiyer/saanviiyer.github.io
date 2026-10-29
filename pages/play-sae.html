@@ -76,7 +76,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="cloud"><div class="sx-card">
         <span class="sx-n">02</span>
-        <p>Here are the activations for <b>600 different inputs</b>. The model sees only these coordinates, with no understanding of what the points mean.</p>
+        <p>Here are the activations for 600 different inputs. The model sees only these coordinates, with <b>no understanding of what the points mean</b>.</p>
       </div></div>
 
       <div class="sx-step" data-scene="concepts"><div class="sx-card">
@@ -88,19 +88,19 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="angles"><div class="sx-card">
         <span class="sx-n">04</span>
-        <p>Three dimensions fit at most three directions at right angles to each other, but six do not fit. <b>The six directions overlap</b>, and every pair meets at 63.4° or 116.6°, an overlap of \(|\cos\theta| = 0.447\). Researchers call this packing of more features than neurons superposition.</p>
+        <p>Three dimensions fit at most three directions at right angles to each other, but six do not fit. <b>The six directions overlap</b>, and every pair meets at 63.4° or 116.6°, an overlap of \(|\cos\theta| = 0.447\). Researchers call this packing of more features than neurons <b>superposition</b>.</p>
         <p class="src">The LessWrong guide states the superposition hypothesis. Models learn feature vectors that are almost orthogonal, and in high dimensions the number of such directions grows exponentially (the Johnson–Lindenstrauss lemma).</p>
       </div></div>
 
       <div class="sx-step tall" data-scene="sparse"><div class="sx-card">
         <span class="sx-n">05</span>
-        <p>Overlap does little harm when <b>few concepts appear at once</b>, a property researchers call sparsity. Here, <span data-v="single">…</span> of the inputs hold one concept. Scroll to light the one-concept inputs on the six lines, then the rest in the thin fans between them.</p>
+        <p>Overlap does little harm when few concepts appear at once, a property researchers call <b>sparsity</b>. Here, <span data-v="single">…</span> of the inputs hold one concept. Scroll to light the one-concept inputs on the six lines, then the rest in the thin fans between them.</p>
         <p class="src">The LessWrong guide's example is a coffee mug. You describe it by size and use and need no astronomy, so most feature activations stay at zero. Karvonen adds that one celebrity's birthplace can appear in fewer than one in a billion training tokens, and large models still learn it.</p>
       </div></div>
 
       <div class="sx-step tall" data-scene="neurons"><div class="sx-card">
         <span class="sx-n">06</span>
-        <p>Superposition breaks the direct way of reading a network, <b>one neuron at a time</b>. A neuron measures the input along its own axis, so every concept leaning toward that axis moves it. Scroll to light each neuron in turn. Here <span data-v="perNeuron">…</span> of the 6 concepts move every neuron, so each neuron is polysemantic.</p>
+        <p>Superposition breaks the direct way of reading a network, one neuron at a time. A neuron measures the input along its own axis, so every concept leaning toward that axis moves it. Scroll to light each neuron in turn. Here <span data-v="perNeuron">…</span> of the 6 concepts move every neuron, so <b>each neuron is polysemantic</b>.</p>
         <p class="src">Karvonen describes a real neuron that responded to academic citations, English dialogue, HTTP requests and Korean text.</p>
       </div></div>
 
@@ -116,12 +116,12 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
         <p>Training adjusts the encoder and decoder to lower the <b>loss</b>.</p>
         $$\mathcal{L} = \lVert \mathbf{x} - \hat{\mathbf{x}} \rVert^2 + \lambda \sum_{j} c_j$$
         <p>The first term is the reconstruction error, the red line on the right. The second adds up the feature scores \(c_j\) and multiplies them by \(\lambda\), the L1 coefficient. A larger \(\lambda\) pushes more scores to zero. I rescale every decoder vector to length 1 after each step, so the model cannot dodge the penalty by shrinking scores.</p>
-        <p class="src">Karvonen points out that nothing in this loss asks for readable features. They appear as a side effect of sparsity and accurate reconstruction.</p>
+        <p class="src">Karvonen points out that <b>nothing in this loss asks for readable features</b>. They appear as a side effect of sparsity and accurate reconstruction.</p>
       </div></div>
 
       <div class="sx-step xtall" data-scene="train"><div class="sx-card">
         <span class="sx-n">09</span>
-        <p><b>Scroll to train.</b> Your browser trained this autoencoder for 2,400 steps with \(\lambda = 0.4\) and saved a snapshot every 10 steps, and your scroll position picks the snapshot. The arrows turn onto the concept lines, and each takes a concept's color once it comes within 25° of it.</p>
+        <p>Scroll to train. Your browser trained this autoencoder for 2,400 steps with \(\lambda = 0.4\) and saved a snapshot every 10 steps, and your scroll position picks the snapshot. The arrows turn onto the concept lines, and each takes a concept's color once it comes within 25° of it.</p>
       </div></div>
 
       <div class="sx-step" data-scene="dead"><div class="sx-card">
@@ -132,8 +132,8 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step xtall" data-scene="forward"><div class="sx-card">
         <span class="sx-n">11</span>
-        <p>Scroll slowly to follow <b>one input</b> through the trained autoencoder. The encoder multiplies the activation by a matrix and adds a bias, giving one score per feature. ReLU sets every negative score to zero, so most scores end at zero.</p>
-        <p>The decoder multiplies those scores by a second matrix, which adds up the decoder vectors, each scaled by its score. On the right they join head to tail and end at the reconstruction \(\hat{\mathbf{x}}\).</p>
+        <p>Scroll slowly to follow one input through the trained autoencoder. The encoder multiplies the activation by a matrix and adds a bias, giving one score per feature. <b>ReLU sets every negative score to zero</b>, so most scores end at zero.</p>
+        <p>The decoder multiplies those scores by a second matrix, which <b>adds up the decoder vectors, each scaled by its score</b>. On the right they join head to tail and end at the reconstruction \(\hat{\mathbf{x}}\).</p>
         <p class="src">Karvonen sums up the model as a matrix, then a ReLU, then a matrix. On GPT-3 with 4 times the width, the encoder maps 12,288 numbers to 49,152 scores, and researchers aim for fewer than 100 nonzero scores.</p>
       </div></div>
 
@@ -145,7 +145,7 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step" data-scene="encdec"><div class="sx-card">
         <span class="sx-n">13</span>
-        <p>Each feature has <b>two vectors</b>. The thick decoder vector is the direction the feature writes. The thin encoder vector decides when the feature turns on, so it also has to ignore overlapping concepts. <span data-v="encdecText">…</span></p>
+        <p>Each feature has two vectors. The thick decoder vector is the direction the feature writes. The thin encoder vector decides when the feature turns on, so it also has to ignore overlapping concepts. <span data-v="encdecText">…</span></p>
         <p class="src">Karvonen reports a median cosine of about 0.5 between the two vectors in real autoencoders.</p>
       </div></div>
 
@@ -165,14 +165,14 @@ description: "A scroll-driven explainer of sparse autoencoders. Your browser tra
 
       <div class="sx-step xtall" data-scene="steer"><div class="sx-card">
         <span class="sx-n">16</span>
-        <p>A name read off examples might fit by coincidence. To test it, you <b>change the activation and watch what happens</b>. Researchers call this steering. A decoder vector has the same shape as an activation, so you can add it straight in.</p>
+        <p>A name read off examples might fit by coincidence. To test it, you change the activation and watch what happens. Researchers call this <b>steering</b>. A decoder vector has the same shape as an activation, so you can add it straight in.</p>
         <p>Scroll to add up to 2.4 times feature <span data-v="fj">…</span>'s decoder vector to one input. The point slides along the arrow, and its score rises from <span data-v="steer0">…</span> to <span data-v="steer1">…</span>.</p>
         <p class="src">When Anthropic added the Golden Gate Bridge feature to Claude's activations, Karvonen notes, Claude mentioned the bridge in every response.</p>
       </div></div>
 
       <div class="sx-step" data-scene="limits"><div class="sx-card">
         <span class="sx-n">17</span>
-        <p>My simulation has 3 dimensions and 12 features, and I planted every concept, so it <b>cannot show what a real model hides</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you no planted directions to check against.</p>
+        <p>My simulation has 3 dimensions and 12 features, and I planted every concept, so it <b>cannot show what a real model hides</b>. Anthropic's largest autoencoder had about 34 million features, and a real model gives you <b>no planted directions to check against</b>.</p>
         <p class="src">Karvonen describes a chain of stand-ins. The training loss stands in for proxy metrics, the metrics stand in for human judgment, and that judgment stands in for understanding the model.</p>
         <p class="src">The LessWrong guide notes that nobody has proved superposition, that autoencoders may find combinations of features instead of single ones, and that it is surprising a nonlinear network splits so cleanly into weighted sums.</p>
         <p class="src">Still, Karvonen argues that so simple an objective would not find readable features unless the model had learned something meaningful.</p>
