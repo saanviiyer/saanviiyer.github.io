@@ -1,14 +1,15 @@
 ---
 title: Sparse autoencoders, live, Saanvi S. Subramanian
 permalink: /playground/sae/
-description: "A sparse autoencoder trained live in your browser, with a 3D view of the activation space it untangles."
+description: "A sparse autoencoder trained live in your browser, in ten chapters that follow two of the best guides to how they work."
 ---
 
 <style>
   .sv { max-width: 1240px; margin: 0 auto; font-family: var(--sans); color: var(--ink); }
   .sv-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); text-decoration: none; }
   .sv-title { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; margin: 6px 0 8px; }
-  .sv-sub { font-size: 1rem; line-height: 1.55; color: var(--muted); max-width: 78ch; margin: 0 0 20px; }
+  .sv-sub { font-size: 1rem; line-height: 1.55; color: var(--muted); max-width: 80ch; margin: 0 0 20px; }
+  .sv-sub a { color: var(--accent); }
 
   .sv-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; scrollbar-width: thin; }
   .sv-tab { flex: none; font-family: var(--code); font-size: 0.7rem; letter-spacing: 0.02em; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--read-card); color: var(--muted); cursor: pointer; white-space: nowrap; }
@@ -17,28 +18,35 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   .sv-tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .sv-tab.on b { color: #fff; }
 
-  .sv-stage { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
-  .sv-view { position: relative; border: 1px solid var(--border); border-radius: 16px; background: var(--read-card); overflow: hidden; height: clamp(380px, 68vh, 660px); touch-action: none; }
-  .sv-view canvas { display: block; width: 100%; height: 100%; cursor: grab; }
-  .sv-view canvas.drag { cursor: grabbing; }
+  .sv-stage { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: 18px; align-items: start; }
+  .sv-view { position: relative; border: 1px solid var(--border); border-radius: 16px; background: var(--read-card); overflow: hidden; height: clamp(400px, 70vh, 680px); touch-action: none; }
+  .sv-view canvas { display: block; width: 100%; height: 100%; }
   .sv-hint { position: absolute; right: 12px; bottom: 10px; font-family: var(--code); font-size: 0.64rem; color: var(--muted); pointer-events: none; }
-  .sv-legend { position: absolute; left: 12px; top: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; font-family: var(--code); font-size: 0.64rem; color: var(--muted); pointer-events: none; max-width: 70%; }
+  .sv-legend { position: absolute; left: 12px; top: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; font-family: var(--code); font-size: 0.64rem; color: var(--muted); pointer-events: none; max-width: 72%; }
   .sv-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
   .sv-spin { position: absolute; right: 10px; top: 8px; }
 
-  .sv-panel { border: 1px solid var(--border); border-radius: 16px; background: var(--read-card); padding: 20px 20px 16px; max-height: clamp(380px, 68vh, 660px); display: flex; flex-direction: column; }
-  .sv-scroll { overflow-y: auto; flex: 1; padding-right: 4px; }
+  .sv-panel { border: 1px solid var(--border); border-radius: 16px; background: var(--read-card); padding: 20px 20px 16px; height: clamp(400px, 70vh, 680px); display: flex; flex-direction: column; }
+  .sv-scroll { overflow-y: auto; flex: 1; padding-right: 6px; }
   .sv-kicker { font-family: var(--code); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
   .sv-h { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; margin: 4px 0 10px; }
-  .sv-body p { font-size: 0.95rem; line-height: 1.6; margin: 0 0 10px; }
+  .sv-body p { font-size: 0.94rem; line-height: 1.6; margin: 0 0 10px; }
   .sv-body b { font-weight: 600; }
   .sv-note { font-size: 0.82rem; line-height: 1.5; color: var(--muted); margin: 8px 0; }
   .sv-math { font-family: var(--code); font-size: 0.8rem; background: var(--accent-soft); border-radius: 8px; padding: 8px 10px; margin: 8px 0 12px; line-height: 1.6; }
 
+  .sv-notes { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 10px; }
+  .sv-notes h3 { font-family: var(--code); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 500; }
+  .sv-notes ul { list-style: none; padding: 0; margin: 0; }
+  .sv-notes li { font-size: 0.84rem; line-height: 1.5; margin: 0 0 8px; padding-left: 0; }
+  .sv-src { display: inline-block; font-family: var(--code); font-size: 0.56rem; letter-spacing: 0.04em; text-transform: uppercase; border-radius: 4px; padding: 1px 5px; margin-right: 6px; vertical-align: 1px; color: #fff; }
+  .sv-src.k { background: var(--robin); }
+  .sv-src.l { background: var(--accent); }
+
   .sv-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin: 12px 0; }
   .sv-tile { border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
   .sv-tile span { display: block; font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-  .sv-tile b { display: block; font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
+  .sv-tile b { display: block; font-size: 1.12rem; font-weight: 700; margin-top: 2px; }
 
   .sv-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0; font-size: 0.82rem; color: var(--muted); }
   .sv-ctl label { font-family: var(--code); font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase; }
@@ -46,20 +54,19 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   .sv-btn { font-family: var(--code); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 13px; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 999px; cursor: pointer; }
   .sv-btn:hover:not(:disabled) { background: var(--accent-soft); }
   .sv-btn:disabled { opacity: 0.35; cursor: default; }
-  .sv-btn.solid { background: var(--accent); color: #fff; }
+  .sv-btn.solid, .sv-btn[aria-pressed="true"] { background: var(--accent); color: #fff; }
   .sv-btn.small { padding: 4px 9px; font-size: 0.62rem; }
-  .sv-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+  .sv-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .sv-seg button { font-family: var(--code); font-size: 0.64rem; padding: 5px 10px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
   .sv-seg button.on { background: var(--accent); color: #fff; }
 
   .sv-nav { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 8px; border-top: 1px solid var(--border); }
 
-  /* Karvonen-style cell grids */
-  .sv-flow { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+  .sv-flow { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; }
   .sv-vec { display: flex; align-items: center; gap: 8px; }
   .sv-vec .nm { font-family: var(--code); font-size: 0.62rem; color: var(--muted); width: 92px; flex: none; }
   .sv-cells { display: flex; gap: 2px; flex-wrap: wrap; }
-  .sv-cell { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border); font-family: var(--code); font-size: 0.5rem; display: flex; align-items: center; justify-content: center; color: var(--ink); }
+  .sv-cell { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border); }
   .sv-op { font-family: var(--code); font-size: 0.6rem; color: var(--accent); padding-left: 100px; }
 
   .sv-bars { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
@@ -79,42 +86,45 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   .sv-feat h4 { font-size: 0.8rem; font-weight: 600; margin: 0 0 2px; }
   .sv-feat .lab { font-family: var(--code); font-size: 0.58rem; letter-spacing: 0.03em; text-transform: uppercase; }
   .sv-feat .lab.dead { color: var(--berry); }
-  .sv-feat .lab.mono { color: var(--robin); }
   .sv-feat .lab.mixed { color: var(--muted); }
+  .sv-atlas.quiz .lab:not(.dead) { filter: blur(5px); }
   .sv-feat .meta { font-family: var(--code); font-size: 0.6rem; color: var(--muted); margin: 4px 0; }
   .sv-chips { display: inline-flex; gap: 2px; margin: 1px 0; }
   .sv-chip { width: 10px; height: 10px; border-radius: 2px; }
 
-  .sv-refs { font-size: 0.82rem; line-height: 1.55; padding-left: 18px; margin: 6px 0; }
+  .sv-refs { font-size: 0.82rem; line-height: 1.5; padding-left: 18px; margin: 6px 0 12px; }
+  .sv-refs li { margin-bottom: 6px; }
   .sv-refs a { color: var(--accent); }
+  .sv-refs span { color: var(--muted); }
 
   @media (max-width: 860px) {
     .sv-stage { grid-template-columns: 1fr; }
-    .sv-view { height: min(78vw, 460px); }
-    .sv-panel { max-height: none; }
+    .sv-view { height: min(80vw, 460px); }
+    .sv-panel { height: auto; }
   }
 </style>
 
 <section class="sv">
   <a class="sv-eyebrow" href="{{ '/playground/' | relative_url }}">&larr; playground</a>
   <h1 class="sv-title">Sparse autoencoders, live</h1>
-  <p class="sv-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. I train one from scratch in your browser on a toy model where I planted the true features myself, so you can watch it find them. The 3D view shows the activation space itself. Drag it to rotate. Your browser computes everything on this page, and I precomputed or made up nothing. To read more, see my <a href="{{ '/writing/sparse-autoencoders/' | relative_url }}" style="color:var(--accent)">companion post</a>, which walks through the ideas behind each chapter.</p>
+  <p class="sv-sub">A sparse autoencoder pulls apart the tangled features a model packs into too few dimensions. I train them from scratch in your browser on a toy model where I planted the true features, so you can watch every step happen. The ten chapters follow two guides, Adam Karvonen's <a href="https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html" target="_blank" rel="noopener">intuitive explanation</a> and <a href="https://www.lesswrong.com/posts/8YnHuN55XJTDwGPMr/a-gentle-introduction-to-sparse-autoencoders" target="_blank" rel="noopener">a gentle introduction on LessWrong</a>, and each chapter ends with their key points. Your browser computes everything, and I precomputed nothing.</p>
 
   <div class="sv-tabs" id="sv-tabs" role="tablist"></div>
 
   <div class="sv-stage">
     <div class="sv-view" id="sv-view">
-      <canvas id="sv-cv" aria-label="3D view of the activation space"></canvas>
+      <canvas id="sv-cv" aria-label="interactive view"></canvas>
       <div class="sv-legend" id="sv-legend"></div>
       <button class="sv-btn small sv-spin" id="sv-spin" type="button">pause spin</button>
-      <div class="sv-hint">drag to rotate</div>
+      <div class="sv-hint" id="sv-hint">drag to rotate</div>
     </div>
     <div class="sv-panel">
-      <div class="sv-scroll">
+      <div class="sv-scroll" id="sv-scroll">
         <div class="sv-kicker" id="sv-kicker"></div>
         <h2 class="sv-h" id="sv-h"></h2>
         <div class="sv-body" id="sv-body"></div>
         <div id="sv-ctl"></div>
+        <div class="sv-notes" id="sv-notes"></div>
       </div>
       <div class="sv-nav">
         <button class="sv-btn" id="sv-prev" type="button">&larr; back</button>
@@ -129,24 +139,27 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
 
-  // ---- seeded RNG and tiny vector helpers -------------------------------------
+  // ---- seeded RNG and vector helpers ------------------------------------------
   var _s = 20261028;
   function rnd() { _s = (_s * 1103515245 + 12345) & 0x7fffffff; return _s / 0x7fffffff; }
   function randn() { var u = rnd() || 1e-9, v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(6.283185 * v); }
   function zeros(n) { var a = []; for (var i = 0; i < n; i++) a.push(0); return a; }
   function unit(v) { var m = Math.hypot(v[0], v[1], v[2]) || 1e-9; return [v[0] / m, v[1] / m, v[2] / m]; }
   function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+  function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+  function scale(v, s) { return [v[0] * s, v[1] * s, v[2] * s]; }
+  function css(name, fb) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fb; }
 
   // ---- the toy world ----------------------------------------------------------
   // 6 concepts in 3 neurons. I use the 6 axes of an icosahedron, the most
   // evenly spread set of 6 directions in 3D, so every pair overlaps equally.
   var D = 3, K = 6, H = 12, N = 600, P_ON = 0.06;
   var NAMES = ['A', 'B', 'C', 'D', 'E', 'F'];
-  var COLORS = ['#9c1c8c', '#2f93ab', '#d07a2a', '#3f8a3a', '#26406e', '#cf4d87'];
+  var COLORS = ['#9c1c8c', '#2f93ab', '#d07a2a', '#3f8a3a', '#5b6fd0', '#cf4d87'];
   var g = (1 + Math.sqrt(5)) / 2;
   var GT = [[0, 1, g], [0, -1, g], [1, g, 0], [-1, g, 0], [g, 0, 1], [g, 0, -1]].map(unit);
   var X = [], Z = [], VAR = 0, AVG_ON = 0;
-  (function makeWorld() {
+  (function () {
     for (var n = 0; n < N; n++) {
       var z = zeros(K), any = false;
       for (var k = 0; k < K; k++) if (rnd() < P_ON) { z[k] = 0.6 + rnd() * 0.9; any = true; }
@@ -162,270 +175,191 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   })();
   function dominant(n) { var z = Z[n], b = 0; for (var k = 1; k < K; k++) if (z[k] > z[b]) b = k; return b; }
 
-  // ---- the sparse autoencoder -------------------------------------------------
-  // code = ReLU(We x + be), recon = sum_j code_j * Wd_j. Each decoder row Wd_j is
-  // a feature direction, renormalized to unit length after every step so the
-  // model cannot shrink codes to dodge the L1 penalty. Adam does the updates.
-  var cfg = { mode: 'l1', lam: 0.4, k: 1, lr: 0.01 };
-  var We, be, Wd, M, V, t, step, lossHist, trails;
-  function zl(a) { return a.map(function (r) { return Array.isArray(r) ? zeros(r.length) : 0; }); }
-  function initSAE() {
-    We = []; be = []; Wd = [];
-    for (var j = 0; j < H; j++) { var v = unit([randn(), randn(), randn()]); Wd.push(v.slice()); We.push(v.slice()); be.push(0); }
-    M = { We: zl(We), be: zl(be), Wd: zl(Wd) }; V = { We: zl(We), be: zl(be), Wd: zl(Wd) };
-    t = 0; step = 0; lossHist = []; trails = Wd.map(function (w) { return [w.slice()]; });
-  }
-  function encode(x) {
-    var pre = [], code = [];
-    for (var j = 0; j < H; j++) { var a = be[j] + dot(We[j], x); pre.push(a); code.push(a > 0 ? a : 0); }
-    if (cfg.mode === 'topk') {
-      var idx = code.map(function (c, j) { return [c, j]; }).sort(function (a, b) { return b[0] - a[0]; });
-      for (var r = cfg.k; r < H; r++) code[idx[r][1]] = 0;
-    }
-    return { pre: pre, code: code };
-  }
-  function decode(c) { var r = [0, 0, 0]; for (var j = 0; j < H; j++) if (c[j]) for (var i = 0; i < D; i++) r[i] += c[j] * Wd[j][i]; return r; }
-  function adam(P, G, Mm, Vv, bs) {
-    for (var a = 0; a < P.length; a++) {
-      if (Array.isArray(P[a])) { adam(P[a], G[a], Mm[a], Vv[a], bs); continue; }
-      var gg = G[a] / bs;
-      Mm[a] = 0.9 * Mm[a] + 0.1 * gg; Vv[a] = 0.999 * Vv[a] + 0.001 * gg * gg;
-      P[a] -= cfg.lr * (Mm[a] / (1 - Math.pow(0.9, t))) / (Math.sqrt(Vv[a] / (1 - Math.pow(0.999, t))) + 1e-8);
-    }
-  }
-  function trainStep(bs) {
-    var gWe = zl(We), gbe = zl(be), gWd = zl(Wd), loss = 0;
-    for (var b = 0; b < bs; b++) {
-      var x = X[(rnd() * N) | 0], c = encode(x).code, r = decode(c), dr = [];
-      for (var i = 0; i < D; i++) { var d = r[i] - x[i]; loss += d * d; dr.push(2 * d); }
-      for (var j = 0; j < H; j++) {
-        if (c[j] <= 0) continue;
-        var dc = 0;
-        if (cfg.mode === 'l1') { loss += cfg.lam * c[j]; dc = cfg.lam; }
-        for (i = 0; i < D; i++) { gWd[j][i] += dr[i] * c[j]; dc += Wd[j][i] * dr[i]; }
-        for (i = 0; i < D; i++) gWe[j][i] += dc * x[i];
-        gbe[j] += dc;
+  // ---- a sparse autoencoder ---------------------------------------------------
+  // code = ReLU(We x + be), recon = sum_j code_j * Wd_j. I renormalize each
+  // decoder vector after every step so the model cannot shrink codes to dodge
+  // the L1 penalty. Adam does the updates. TopK keeps the k largest codes.
+  function makeSAE(cfg) {
+    var m = { cfg: cfg, step: 0, t: 0, lossHist: [] };
+    function zl(a) { return a.map(function (r) { return Array.isArray(r) ? zeros(r.length) : 0; }); }
+    m.We = []; m.be = []; m.Wd = [];
+    for (var j = 0; j < H; j++) { var v = unit([randn(), randn(), randn()]); m.Wd.push(v.slice()); m.We.push(v.slice()); m.be.push(0); }
+    var M = { We: zl(m.We), be: zl(m.be), Wd: zl(m.Wd) }, V = { We: zl(m.We), be: zl(m.be), Wd: zl(m.Wd) };
+    m.trails = m.Wd.map(function (w) { return [w.slice()]; });
+    m.encode = function (x) {
+      var pre = [], code = [];
+      for (var j = 0; j < H; j++) { var a = m.be[j] + dot(m.We[j], x); pre.push(a); code.push(a > 0 ? a : 0); }
+      if (cfg.mode === 'topk') {
+        var idx = code.map(function (c, j) { return [c, j]; }).sort(function (a, b) { return b[0] - a[0]; });
+        for (var r = cfg.k; r < H; r++) code[idx[r][1]] = 0;
+      }
+      return { pre: pre, code: code };
+    };
+    m.decode = function (c) { var r = [0, 0, 0]; for (var j = 0; j < H; j++) if (c[j]) for (var i = 0; i < D; i++) r[i] += c[j] * m.Wd[j][i]; return r; };
+    function adam(P, G, Mm, Vv, bs) {
+      for (var a = 0; a < P.length; a++) {
+        if (Array.isArray(P[a])) { adam(P[a], G[a], Mm[a], Vv[a], bs); continue; }
+        var gg = G[a] / bs;
+        Mm[a] = 0.9 * Mm[a] + 0.1 * gg; Vv[a] = 0.999 * Vv[a] + 0.001 * gg * gg;
+        P[a] -= 0.01 * (Mm[a] / (1 - Math.pow(0.9, m.t))) / (Math.sqrt(Vv[a] / (1 - Math.pow(0.999, m.t))) + 1e-8);
       }
     }
-    t++;
-    adam(We, gWe, M.We, V.We, bs); adam(be, gbe, M.be, V.be, bs); adam(Wd, gWd, M.Wd, V.Wd, bs);
-    for (var j2 = 0; j2 < H; j2++) Wd[j2] = unit(Wd[j2]);
-    step++;
-    if (step % 5 === 0) {
-      lossHist.push(loss / bs);
-      trails.forEach(function (tr, j) { tr.push(Wd[j].slice()); if (tr.length > 70) tr.shift(); });
-    }
+    m.train = function (bs) {
+      var gWe = zl(m.We), gbe = zl(m.be), gWd = zl(m.Wd), loss = 0;
+      for (var b = 0; b < bs; b++) {
+        var x = X[(rnd() * N) | 0], c = m.encode(x).code, r = m.decode(c), dr = [];
+        for (var i = 0; i < D; i++) { var d = r[i] - x[i]; loss += d * d; dr.push(2 * d); }
+        for (var j = 0; j < H; j++) {
+          if (c[j] <= 0) continue;
+          var dc = 0;
+          if (cfg.mode === 'l1') { loss += cfg.lam * c[j]; dc = cfg.lam; }
+          for (i = 0; i < D; i++) { gWd[j][i] += dr[i] * c[j]; dc += m.Wd[j][i] * dr[i]; }
+          for (i = 0; i < D; i++) gWe[j][i] += dc * x[i];
+          gbe[j] += dc;
+        }
+      }
+      m.t++;
+      adam(m.We, gWe, M.We, V.We, bs); adam(m.be, gbe, M.be, V.be, bs); adam(m.Wd, gWd, M.Wd, V.Wd, bs);
+      for (var j2 = 0; j2 < H; j2++) m.Wd[j2] = unit(m.Wd[j2]);
+      m.step++;
+      if (m.step % 5 === 0) {
+        m.lossHist.push(loss / bs);
+        m.trails.forEach(function (tr, j) { tr.push(m.Wd[j].slice()); if (tr.length > 70) tr.shift(); });
+      }
+    };
+    m.analyze = function () {
+      var codes = X.map(function (x) { return m.encode(x).code; }), feats = [], mse = 0, l0 = 0;
+      X.forEach(function (x, n) { var r = m.decode(codes[n]); for (var i = 0; i < D; i++) mse += (r[i] - x[i]) * (r[i] - x[i]) / N; });
+      for (var j = 0; j < H; j++) {
+        var fire = 0, acts = [];
+        for (var n = 0; n < N; n++) { var c = codes[n][j]; if (c > 1e-3) { fire++; l0 += 1 / N; } acts.push([c, n]); }
+        acts.sort(function (a, b) { return b[0] - a[0]; });
+        var sims = GT.map(function (gv) { return dot(m.Wd[j], gv); }), best = 0;
+        for (var k = 1; k < K; k++) if (sims[k] > sims[best]) best = k;
+        var rate = fire / N, cls = rate < 0.01 ? 'dead' : sims[best] > 0.9 ? 'mono' : 'mixed';
+        feats.push({ j: j, cls: cls, best: best, rate: rate, encdec: dot(unit(m.We[j]), m.Wd[j]),
+          label: cls === 'dead' ? 'dead, never fires' : cls === 'mono' ? 'detects concept ' + NAMES[best] : 'mixed',
+          top: acts.slice(0, 4).filter(function (a) { return a[0] > 1e-3; }).map(function (a) { return a[1]; }) });
+      }
+      var cov = {}; feats.forEach(function (f) { if (f.cls === 'mono') cov[f.best] = 1; });
+      m.info = { feats: feats, covered: Object.keys(cov).length, dead: feats.filter(function (f) { return f.cls === 'dead'; }).length, fve: Math.max(0, 1 - mse / VAR), l0: l0 };
+      return m.info;
+    };
+    m.fit = function (steps) { while (m.step < steps) m.train(32); m.analyze(); return m; };
+    m.analyze();
+    return m;
   }
-  var TARGET = 2400;
-  function ensureTrained() { if (step < TARGET) { while (step < TARGET) trainStep(32); } }
+  var TARGET = 2400, MAIN = null;
+  function main() { if (!MAIN) MAIN = makeSAE({ mode: 'l1', lam: 0.4 }).fit(TARGET); return MAIN; }
+  function fcol(f) { return f.cls === 'mono' ? COLORS[f.best] : null; }
 
-  // ---- reading out what the autoencoder learned --------------------------------
-  function analyze() {
-    var codes = X.map(function (x) { return encode(x).code; });
-    var feats = [], mse = 0, l0 = 0;
-    X.forEach(function (x, n) { var r = decode(codes[n]); for (var i = 0; i < D; i++) mse += (r[i] - x[i]) * (r[i] - x[i]) / N; });
-    for (var j = 0; j < H; j++) {
-      var fire = 0, acts = [], sum = 0;
-      for (var n = 0; n < N; n++) { var c = codes[n][j]; if (c > 1e-3) { fire++; l0 += 1 / N; } sum += c; acts.push([c, n]); }
-      acts.sort(function (a, b) { return b[0] - a[0]; });
-      var sims = GT.map(function (gv) { return dot(Wd[j], gv); });
-      var best = 0; for (var k = 1; k < K; k++) if (sims[k] > sims[best]) best = k;
-      var rate = fire / N, cls, label;
-      if (rate < 0.01) { cls = 'dead'; label = 'dead, never fires'; }
-      else if (sims[best] > 0.9) { cls = 'mono'; label = 'detects concept ' + NAMES[best]; }
-      else { cls = 'mixed'; label = 'mixed'; }
-      feats.push({ j: j, cls: cls, label: label, best: best, cos: sims[best], rate: rate,
-        encdec: dot(unit(We[j]), Wd[j]), top: acts.slice(0, 4).filter(function (a) { return a[0] > 1e-3; }).map(function (a) { return a[1]; }) });
-    }
-    var covered = {}; feats.forEach(function (f) { if (f.cls === 'mono') covered[f.best] = 1; });
-    return { feats: feats, covered: Object.keys(covered).length, dead: feats.filter(function (f) { return f.cls === 'dead'; }).length,
-      fve: Math.max(0, 1 - mse / VAR), l0: l0 };
-  }
-  function featColor(f) { return f.cls === 'mono' ? COLORS[f.best] : null; }
-
-  // ---- the 3D view ------------------------------------------------------------
-  var cv = $('sv-cv'), ctx = cv.getContext('2d'), DPR = 1, W = 0, Hh = 0;
+  // ---- the view: a draggable 3D projection, or a 2D chart ---------------------
+  var cv = $('sv-cv'), ctx = cv.getContext('2d'), W = 0, Hh = 0;
   var yaw = 0.7, pitch = 0.42, spin = true, dragging = false, lastX = 0, lastY = 0, moved = 0;
-  var scene = {};
-  function css(name, fb) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fb; }
+  var scene = { draw: function () {} };
   function resize() {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    var DPR = Math.min(2, window.devicePixelRatio || 1);
     W = cv.clientWidth; Hh = cv.clientHeight;
-    cv.width = W * DPR; cv.height = Hh * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    cv.width = Math.round(W * DPR); cv.height = Math.round(Hh * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
   function proj(p) {
     var cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-    var x1 = cy * p[0] + sy * p[1], y1 = -sy * p[0] + cy * p[1];
-    var z2 = cp * p[2] - sp * y1, y2 = sp * p[2] + cp * y1;
+    var x1 = cy * p[0] + sy * p[1], y1 = -sy * p[0] + cy * p[1], z2 = cp * p[2] - sp * y1, y2 = sp * p[2] + cp * y1;
     var s = Math.min(W, Hh) / 4.6;
     return [W / 2 + s * x1, Hh * 0.56 - s * z2, y2];
   }
-  function line(a, b, color, w, dash, alpha) {
-    var A = proj(a), B = proj(b);
-    ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.strokeStyle = color; ctx.lineWidth = w || 1;
-    if (dash) ctx.setLineDash(dash);
-    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke(); ctx.restore();
+  function line(a, b, col, w, dash, al) {
+    var A = proj(a), B = proj(b); ctx.save(); ctx.globalAlpha = al == null ? 1 : al; ctx.strokeStyle = col; ctx.lineWidth = w || 1;
+    if (dash) ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke(); ctx.restore();
   }
-  function arrow(a, b, color, w, alpha) {
+  function arrow(a, b, col, w, al) {
     var A = proj(a), B = proj(b), ang = Math.atan2(B[1] - A[1], B[0] - A[0]), L = Math.hypot(B[0] - A[0], B[1] - A[1]);
-    ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w || 2;
+    ctx.save(); ctx.globalAlpha = al == null ? 1 : al; ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 2;
     ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
     var hl = Math.min(10, L * 0.4);
-    if (hl > 2) {
-      ctx.beginPath(); ctx.moveTo(B[0], B[1]);
-      ctx.lineTo(B[0] - hl * Math.cos(ang - 0.42), B[1] - hl * Math.sin(ang - 0.42));
-      ctx.lineTo(B[0] - hl * Math.cos(ang + 0.42), B[1] - hl * Math.sin(ang + 0.42)); ctx.closePath(); ctx.fill();
-    }
+    if (hl > 2) { ctx.beginPath(); ctx.moveTo(B[0], B[1]); ctx.lineTo(B[0] - hl * Math.cos(ang - 0.42), B[1] - hl * Math.sin(ang - 0.42)); ctx.lineTo(B[0] - hl * Math.cos(ang + 0.42), B[1] - hl * Math.sin(ang + 0.42)); ctx.closePath(); ctx.fill(); }
     ctx.restore();
   }
-  function label(p, text, color, size) {
-    var A = proj(p); ctx.save(); ctx.fillStyle = color; ctx.font = (size || 11) + 'px "DM Mono", ui-monospace, monospace';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, A[0], A[1]); ctx.restore();
+  function dotAt(p, r, col, al, ring) {
+    var A = proj(p); ctx.save(); ctx.globalAlpha = al; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(A[0], A[1], r, 0, 6.2832); ctx.fill();
+    if (ring) { ctx.globalAlpha = 1; ctx.lineWidth = 2; ctx.strokeStyle = ring; ctx.stroke(); } ctx.restore();
   }
-  function scale(v, s) { return [v[0] * s, v[1] * s, v[2] * s]; }
-  function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
-  function dotAt(p, r, color, alpha, ring) {
-    var A = proj(p); ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = color;
-    ctx.beginPath(); ctx.arc(A[0], A[1], r, 0, 6.2832); ctx.fill();
-    if (ring) { ctx.globalAlpha = 1; ctx.lineWidth = 2; ctx.strokeStyle = ring; ctx.stroke(); }
-    ctx.restore();
+  function label(p, t, col, size) {
+    var A = proj(p); ctx.save(); ctx.fillStyle = col; ctx.font = (size || 11) + 'px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, A[0], A[1]); ctx.restore();
   }
-
-  function draw() {
-    if (!W) resize();
-    var ink = css('--ink', '#17090f'), muted = css('--muted', '#6a2350'), accent = css('--accent', '#9c1c8c');
-    var faint = css('--border', 'rgba(23,9,15,.18)');
-    ctx.clearRect(0, 0, W, Hh);
-    var sc = scene;
-
-    // neuron axes, the basis the network actually stores
+  function axes(hot) {
+    var mu = css('--muted', '#6a2350'), acc = css('--accent', '#9c1c8c');
     for (var i = 0; i < 3; i++) {
-      var e = [0, 0, 0]; e[i] = 2.1; var en = [0, 0, 0]; en[i] = -2.1;
-      var hot = sc.neuron === i;
-      line(en, e, hot ? accent : muted, hot ? 2.5 : 1, hot ? null : [3, 4], hot ? 0.95 : 0.35);
-      label(scale(e, 1.1), 'n' + (i + 1), hot ? accent : muted, hot ? 13 : 11);
-    }
-
-    // the ground-truth concept rays
-    if (sc.gt) GT.forEach(function (gv, k) {
-      line([0, 0, 0], scale(gv, 2.25), COLORS[k], 1.4, [5, 4], 0.75);
-      label(scale(gv, 2.45), NAMES[k], COLORS[k], 13);
-    });
-
-    // the data cloud
-    if (sc.points) {
-      var feats = sc.feat != null ? true : false, codes = null, mx = 1e-9;
-      if (feats) { codes = X.map(function (x) { return encode(x).code[sc.feat]; }); codes.forEach(function (c) { if (c > mx) mx = c; }); }
-      var order = X.map(function (x, n) { return [proj(x)[2], n]; }).sort(function (a, b) { return a[0] - b[0]; });
-      order.forEach(function (o) {
-        var n = o[1], x = X[n], col, al = 0.75, r = 2.4;
-        if (sc.colorBy === 'grey') { col = muted; al = 0.45; }
-        else if (sc.colorBy === 'neuron') {
-          var a = x[sc.neuron] / 1.6; col = a >= 0 ? accent : css('--robin', '#2f93ab'); al = 0.12 + 0.85 * Math.min(1, Math.abs(a)); r = 1.6 + 2 * Math.min(1, Math.abs(a));
-        } else if (feats) {
-          var f = codes[n] / mx; col = f > 0.001 ? COLORS[sc.featBest != null ? sc.featBest : 0] : muted; al = f > 0.001 ? 0.25 + 0.75 * f : 0.12; r = f > 0.001 ? 2 + 2.5 * f : 1.6;
-          if (sc.featBest == null && f > 0.001) col = accent;
-        } else { col = COLORS[dominant(n)]; }
-        dotAt(x, r, col, al);
-      });
-    }
-
-    // decoder directions, the features the autoencoder learned
-    if (sc.decoder) {
-      var info = sc.info || analyze();
-      if (sc.trails) trails.forEach(function (tr, j) {
-        if (tr.length < 2) return;
-        ctx.save(); ctx.strokeStyle = featColor(info.feats[j]) || muted; ctx.lineWidth = 1.2;
-        for (var q = 1; q < tr.length; q++) {
-          var A = proj(scale(tr[q - 1], 1.75)), B = proj(scale(tr[q], 1.75));
-          ctx.globalAlpha = 0.5 * q / tr.length; ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
-        }
-        ctx.restore();
-      });
-      Wd.forEach(function (w, j) {
-        var f = info.feats[j], col = featColor(f) || muted, hot = sc.feat === j;
-        if (sc.feat != null && !hot) { arrow([0, 0, 0], scale(w, 1.75), col, 1.2, 0.18); return; }
-        if (f.cls === 'dead') { line([0, 0, 0], scale(w, 1.75), muted, 1, [2, 3], 0.45); return; }
-        arrow([0, 0, 0], scale(w, 1.75), col, hot ? 4 : 2.4, 0.95);
-        if (sc.encoder || hot) arrow([0, 0, 0], scale(unit(We[j]), 1.4), col, 1.2, 0.5);
-        if (hot || sc.featNums) label(scale(w, 1.95), 'f' + j, col, 11);
-      });
-    }
-
-    // one input pushed through the autoencoder, decoder rows added head to tail
-    if (sc.sample != null) {
-      var x = X[sc.sample], c = encode(x).code, cur = [0, 0, 0], info2 = sc.info || analyze();
-      dotAt(x, 7, css('--navy', '#26406e'), 0.9);
-      label(add(x, [0, 0, 0.28]), 'x', css('--navy', '#26406e'), 13);
-      var act = c.map(function (v, j) { return [v, j]; }).filter(function (a) { return a[0] > 1e-3; }).sort(function (a, b) { return b[0] - a[0]; });
-      act.forEach(function (a) {
-        var nxt = add(cur, scale(Wd[a[1]], a[0]));
-        arrow(cur, nxt, featColor(info2.feats[a[1]]) || muted, 3, 0.95); cur = nxt;
-      });
-      dotAt(cur, 5, accent, 1, '#fff');
-      label(add(cur, [0, 0, -0.28]), 'x̂', accent, 13);
-    }
-
-    // steering, one feature direction added to an input
-    if (sc.steer) {
-      var s = sc.steer, x0 = X[s.n], x1 = add(x0, scale(Wd[s.j], s.alpha));
-      dotAt(x0, 6, css('--navy', '#26406e'), 0.9); label(add(x0, [0, 0, 0.26]), 'x', css('--navy', '#26406e'), 12);
-      arrow(x0, x1, s.color, 3.5, 0.95);
-      dotAt(x1, 7, s.color, 1, '#fff'); label(add(x1, [0, 0, 0.3]), 'x + αd', s.color, 12);
-    }
-
-    // loss inset while training
-    if (sc.loss && lossHist.length > 2) {
-      var bx = 14, by = Hh - 74, bw = Math.min(220, W * 0.4), bh = 54, lh = lossHist.slice(-300);
-      var mxl = Math.max.apply(null, lh), mnl = Math.min.apply(null, lh);
-      ctx.save(); ctx.strokeStyle = faint; ctx.strokeRect(bx, by, bw, bh);
-      ctx.strokeStyle = accent; ctx.lineWidth = 1.6; ctx.beginPath();
-      lh.forEach(function (v, i2) { var px = bx + 4 + i2 / (lh.length - 1) * (bw - 8), py = by + 4 + (1 - (v - mnl) / ((mxl - mnl) || 1)) * (bh - 8); if (i2) ctx.lineTo(px, py); else ctx.moveTo(px, py); });
-      ctx.stroke(); ctx.fillStyle = muted; ctx.font = '10px "DM Mono", ui-monospace, monospace';
-      ctx.fillText('loss, step ' + step, bx, by - 5); ctx.restore();
+      var e = [0, 0, 0]; e[i] = 2.1; var en = [0, 0, 0]; en[i] = -2.1; var h = hot === i;
+      line(en, e, h ? acc : mu, h ? 2.5 : 1, h ? null : [3, 4], h ? 0.95 : 0.35); label(scale(e, 1.1), 'n' + (i + 1), h ? acc : mu, h ? 13 : 11);
     }
   }
+  function rays() { GT.forEach(function (gv, k) { line([0, 0, 0], scale(gv, 2.25), COLORS[k], 1.4, [5, 4], 0.75); label(scale(gv, 2.45), NAMES[k], COLORS[k], 13); }); }
+  function cloud(colorFn) {
+    X.map(function (x, n) { return [proj(x)[2], n]; }).sort(function (a, b) { return a[0] - b[0]; }).forEach(function (o) {
+      var s = colorFn(o[1]); dotAt(X[o[1]], s[2] || 2.4, s[0], s[1]);
+    });
+  }
+  function decoders(m, opts) {
+    opts = opts || {}; var mu = css('--muted', '#6a2350');
+    if (opts.trails) m.trails.forEach(function (tr, j) {
+      if (tr.length < 2) return; var col = fcol(m.info.feats[j]) || mu;
+      for (var q = 1; q < tr.length; q++) line(scale(tr[q - 1], 1.75), scale(tr[q], 1.75), col, 1.2, null, 0.5 * q / tr.length);
+    });
+    m.Wd.forEach(function (w, j) {
+      var f = m.info.feats[j], col = fcol(f) || mu, hot = opts.hot === j;
+      if (opts.hot != null && !hot) { arrow([0, 0, 0], scale(w, 1.75), col, 1.2, 0.18); return; }
+      if (f.cls === 'dead') { line([0, 0, 0], scale(w, 1.75), mu, 1, [2, 3], 0.45); return; }
+      arrow([0, 0, 0], scale(w, 1.75), col, hot ? 4 : 2.4, 0.92);
+      if (hot) { arrow([0, 0, 0], scale(unit(m.We[j]), 1.4), col, 1.2, 0.55); }
+      if (hot || opts.nums) label(scale(w, 1.95), 'f' + j, col, 11);
+    });
+  }
+  function lossInset(m) {
+    if (m.lossHist.length < 3) return;
+    var bx = 14, by = Hh - 74, bw = Math.min(220, W * 0.4), bh = 54, lh = m.lossHist.slice(-300);
+    var mx = Math.max.apply(null, lh), mn = Math.min.apply(null, lh), acc = css('--accent', '#9c1c8c'), mu = css('--muted', '#6a2350');
+    ctx.save(); ctx.strokeStyle = css('--border', 'rgba(0,0,0,.18)'); ctx.strokeRect(bx, by, bw, bh);
+    ctx.strokeStyle = acc; ctx.lineWidth = 1.6; ctx.beginPath();
+    lh.forEach(function (v, i) { var px = bx + 4 + i / (lh.length - 1) * (bw - 8), py = by + 4 + (1 - (v - mn) / ((mx - mn) || 1)) * (bh - 8); if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); });
+    ctx.stroke(); ctx.fillStyle = mu; ctx.font = '10px "DM Mono", ui-monospace, monospace'; ctx.fillText('loss, step ' + m.step, bx, by - 5); ctx.restore();
+  }
 
-  // ---- animation loop ---------------------------------------------------------
-  var training = false, trainSpeed = 3, onTick = null, visible = true;
-  function frame() {
+  var visible = true;
+  (function frame(ts) {
     if (visible) {
-      if (spin && !dragging) yaw += 0.0035;
-      if (training) {
-        for (var i = 0; i < trainSpeed; i++) trainStep(32);
-        if (step >= TARGET) { training = false; if (onTick) onTick(true); }
-        else if (onTick && step % 30 < trainSpeed) onTick(false);
-        scene.info = analyze();
-      }
-      draw();
+      if (!W) resize();
+      ctx.clearRect(0, 0, W, Hh);
+      if (scene.mode3d !== false && spin && !dragging) yaw += 0.0035;
+      scene.draw(ts || 0);
     }
     requestAnimationFrame(frame);
-  }
+  })();
   if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe($('sv-view'));
+  window.addEventListener('resize', resize);
 
-  cv.addEventListener('pointerdown', function (e) { dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY; cv.classList.add('drag'); cv.setPointerCapture(e.pointerId); });
+  cv.style.cursor = 'grab';
+  cv.addEventListener('pointerdown', function (e) { dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY; cv.style.cursor = 'grabbing'; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener('pointermove', function (e) {
-    if (!dragging) return;
+    if (!dragging || scene.mode3d === false) return;
     var dx = e.clientX - lastX, dy = e.clientY - lastY; moved += Math.abs(dx) + Math.abs(dy);
     yaw += dx * 0.008; pitch = Math.max(-1.4, Math.min(1.4, pitch + dy * 0.008)); lastX = e.clientX; lastY = e.clientY;
   });
   cv.addEventListener('pointerup', function (e) {
-    dragging = false; cv.classList.remove('drag');
-    if (moved < 6 && scene.pick) {
+    dragging = false; cv.style.cursor = 'grab';
+    if (moved < 6 && scene.pick && scene.mode3d !== false) {
       var r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = 1e9;
       X.forEach(function (x, n) { var p = proj(x), d = (p[0] - mx) * (p[0] - mx) + (p[1] - my) * (p[1] - my); if (d < bd) { bd = d; best = n; } });
       if (best >= 0 && bd < 400) scene.pick(best);
     }
   });
-  window.addEventListener('resize', function () { resize(); });
   $('sv-spin').addEventListener('click', function () { spin = !spin; this.textContent = spin ? 'pause spin' : 'spin'; });
 
   // ---- panel helpers ----------------------------------------------------------
-  function tiles(list) { return '<div class="sv-tiles">' + list.map(function (t2) { return '<div class="sv-tile"><span>' + t2[0] + '</span><b>' + t2[1] + '</b></div>'; }).join('') + '</div>'; }
+  function tiles(list) { return '<div class="sv-tiles">' + list.map(function (t) { return '<div class="sv-tile"><span>' + t[0] + '</span><b>' + t[1] + '</b></div>'; }).join('') + '</div>'; }
   function legend(kind) {
-    var L = $('sv-legend');
-    if (kind === 'concepts') L.innerHTML = NAMES.map(function (n, k) { return '<span><i style="background:' + COLORS[k] + '"></i>concept ' + n + '</span>'; }).join('');
-    else L.innerHTML = kind || '';
+    $('sv-legend').innerHTML = kind === 'concepts' ? NAMES.map(function (n, k) { return '<span><i style="background:' + COLORS[k] + '"></i>concept ' + n + '</span>'; }).join('') : (kind || '');
   }
   function chips(n) {
     var z = Z[n], s = '<span class="sv-chips">';
@@ -434,8 +368,8 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
   }
   function cells(vals, color, maxAbs, signed) {
     return '<div class="sv-cells">' + vals.map(function (v) {
-      var a = Math.min(1, Math.abs(v) / (maxAbs || 1)), col = signed && v < 0 ? css('--robin', '#2f93ab') : color;
-      return '<span class="sv-cell" title="' + v.toFixed(2) + '" style="background:' + (Math.abs(v) < 1e-3 ? 'transparent' : col) + ';opacity:' + (Math.abs(v) < 1e-3 ? 0.5 : (0.25 + 0.75 * a).toFixed(2)) + '"></span>';
+      var a = Math.min(1, Math.abs(v) / (maxAbs || 1)), col = signed && v < 0 ? css('--robin', '#2f93ab') : color, off = Math.abs(v) < 1e-3;
+      return '<span class="sv-cell" title="' + v.toFixed(2) + '" style="background:' + (off ? 'transparent' : col) + ';opacity:' + (off ? 0.5 : (0.25 + 0.75 * a).toFixed(2)) + '"></span>';
     }).join('') + '</div>';
   }
   function bars(rows) {
@@ -444,219 +378,352 @@ description: "A sparse autoencoder trained live in your browser, with a 3D view 
       return '<div class="sv-bar"><span style="width:62px">' + r[0] + '</span><div class="tr"><span class="mid"></span><i style="left:' + left + '%;width:' + w + '%;background:' + r[2] + '"></i></div><span style="width:36px;text-align:right">' + r[1].toFixed(2) + '</span></div>';
     }).join('') + '</div>';
   }
+  function notes(list) {
+    return '<h3>from the guides</h3><ul>' + list.map(function (n) {
+      return '<li><span class="sv-src ' + (n[0] === 'k' ? 'k">Karvonen' : 'l">LessWrong') + '</span>' + n[1] + '</li>';
+    }).join('') + '</ul>';
+  }
+  function set3d(on) { scene.mode3d = on; $('sv-spin').style.display = on ? '' : 'none'; $('sv-hint').textContent = on ? 'drag to rotate' : ''; }
   var MAXCOS = 0; for (var a = 0; a < K; a++) for (var b = a + 1; b < K; b++) MAXCOS = Math.max(MAXCOS, Math.abs(dot(GT[a], GT[b])));
+
+  // the trade-off sweep, shared across visits
+  var LAMS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.2], KS = [1, 2, 3], SWEEP = { pts: [], tops: [], started: false };
+  function runSweep() {
+    if (SWEEP.started) return; SWEEP.started = true; var i = 0;
+    (function next() {
+      if (i < LAMS.length) { var m = makeSAE({ mode: 'l1', lam: LAMS[i] }).fit(TARGET); SWEEP.pts.push(m.info); i++; setTimeout(next, 0); }
+      else if (i < LAMS.length + KS.length) { var m2 = makeSAE({ mode: 'topk', k: KS[i - LAMS.length] }).fit(TARGET); SWEEP.tops.push(m2.info); i++; setTimeout(next, 0); }
+    })();
+  }
 
   // ---- chapters ---------------------------------------------------------------
   var CH = [
-    { tab: 'superposition', title: 'Superposition',
-      body: '<p>I treat the activations of one layer as a point in space, with one axis per neuron. I give this toy layer <b>3 neurons</b> and ask it to carry <b>6 concepts</b>. Each point in the 3D view stands for one input.</p>' +
-        '<p>Each concept owns a direction. An input adds up the directions of the concepts it contains, and each concept\'s strength scales its direction.</p>' +
-        '<div class="sv-math">x = w<sub>1</sub>f<sub>1</sub> + w<sub>2</sub>f<sub>2</sub> + &hellip; + w<sub>6</sub>f<sub>6</sub></div>' +
-        '<p>Six directions cannot all sit at right angles in 3D, so they overlap. Researchers call this overlap <b>superposition</b>. Sparsity makes it workable. Most inputs contain one concept, so the data hugs six rays and the thin fans between pairs of them. A sparse autoencoder has to find those rays and fans.</p>',
+    { tab: 'superposition', title: 'Features as directions',
+      body: '<p>I treat the activations of one layer as a point in space, with one axis per neuron. I give this toy layer <b>3 neurons</b> and ask it to carry <b>6 concepts</b>. Each point stands for one input.</p>' +
+        '<p>Each concept owns a direction, and an input adds up the directions of the concepts it holds, scaled by how strongly each appears.</p>' +
+        '<div class="sv-math">x = w<sub>1</sub>f<sub>1</sub> + w<sub>2</sub>f<sub>2</sub> + &hellip; + w<sub>6</sub>f<sub>6</sub></div>',
+      notes: [['l', 'Interpretability tries to see past input and output. Mechanistic interpretability bets that we can reverse engineer a model into something like a program, bottom-up.'],
+        ['l', 'Activations should break down into basic vectors called <b>features</b>, one per atomic concept such as "German shepherd". The vector is the feature vector, its meaning is the feature description, and its weight w is the feature activation.'],
+        ['l', 'Think of features as the variables in the model\'s hypothetical program.']],
       enter: function () {
-        scene = { points: true, colorBy: 'grey', gt: false };
-        legend('');
-        $('sv-ctl').innerHTML = '<div class="sv-ctl"><button class="sv-btn solid" id="c1-reveal">reveal the concepts</button><button class="sv-btn" id="c1-rays">show concept rays</button></div>' +
+        set3d(true); var reveal = false, showRays = false, mu;
+        scene.draw = function () { mu = css('--muted', '#6a2350'); axes(); if (showRays) rays(); cloud(function (n) { return reveal ? [COLORS[dominant(n)], 0.75] : [mu, 0.45]; }); };
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><button class="sv-btn" id="c1-r">reveal the concepts</button><button class="sv-btn" id="c1-d">show concept directions</button></div>' +
           tiles([['neurons', D], ['concepts', K], ['concepts per input', AVG_ON.toFixed(2)], ['overlap |cos|', MAXCOS.toFixed(2)]]) +
-          '<p class="sv-note">The model only ever sees the grey cloud. Reveal the concepts to see what it hides, then rotate the view until the rays line up.</p>';
-        $('c1-reveal').onclick = function () { var on = scene.colorBy === 'grey'; scene.colorBy = on ? 'concept' : 'grey'; legend(on ? 'concepts' : ''); this.textContent = on ? 'hide the concepts' : 'reveal the concepts'; };
-        $('c1-rays').onclick = function () { scene.gt = !scene.gt; this.textContent = scene.gt ? 'hide concept rays' : 'show concept rays'; };
+          '<p class="sv-note">The model only ever sees the grey cloud. Reveal the concepts, then rotate until the directions line up.</p>';
+        $('c1-r').onclick = function () { reveal = !reveal; this.setAttribute('aria-pressed', reveal); legend(reveal ? 'concepts' : ''); };
+        $('c1-d').onclick = function () { showRays = !showRays; this.setAttribute('aria-pressed', showRays); };
       } },
+
     { tab: 'neurons', title: 'Polysemantic neurons',
-      body: '<p>The obvious way to read a network goes one neuron at a time. Superposition breaks that approach. The concept directions do not line up with the neuron axes, so each neuron responds to several unrelated concepts. Researchers call such a neuron <b>polysemantic</b>.</p>' +
-        '<p>Pick a neuron. I color each input by how strongly that neuron fires, and the bars show how much each concept drives it. Four of the six concepts move every neuron here, so no single neuron carries a clean meaning.</p>',
+      body: '<p>The obvious way to read a network goes one neuron at a time. Superposition breaks that approach. The concept directions do not line up with the neuron axes, so each neuron responds to several unrelated concepts.</p>' +
+        '<p>Pick a neuron. I color each input by how strongly that neuron fires, and the bars show how much each concept drives it. Four of the six concepts move every neuron here.</p>',
+      notes: [['k', 'Individual neurons do not line up with single concepts. One neuron in a language model fired on academic citations, English dialogue, HTTP requests and Korean text.'],
+        ['k', 'Researchers call this <b>superposition</b>. A network represents concepts as combinations of neurons.']],
       enter: function () {
-        scene = { points: true, colorBy: 'neuron', neuron: 0, gt: true };
+        set3d(true); var nr = 0;
+        scene.draw = function () {
+          var acc = css('--accent', '#9c1c8c'), rob = css('--robin', '#2f93ab');
+          axes(nr); rays();
+          cloud(function (n) { var a = X[n][nr] / 1.6; return [a >= 0 ? acc : rob, 0.12 + 0.85 * Math.min(1, Math.abs(a)), 1.6 + 2 * Math.min(1, Math.abs(a))]; });
+        };
         legend('<span><i style="background:var(--accent)"></i>neuron fires positive</span><span><i style="background:var(--robin)"></i>negative</span>');
         function show(i) {
-          scene.neuron = i;
-          $('c2-bars').innerHTML = bars(GT.map(function (gv, k) { return ['concept ' + NAMES[k], gv[i], COLORS[k]]; }));
+          nr = i; $('c2-bars').innerHTML = bars(GT.map(function (gv, k) { return ['concept ' + NAMES[k], gv[i], COLORS[k]]; }));
           [0, 1, 2].forEach(function (q) { $('c2-n' + q).classList.toggle('on', q === i); });
         }
-        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>neuron</label><span class="sv-seg"><button id="c2-n0">n1</button><button id="c2-n1">n2</button><button id="c2-n2">n3</button></span></div><div id="c2-bars"></div>' +
-          '<p class="sv-note">A neuron reads the input along its own axis. Every concept with a nonzero component on that axis leaks into it.</p>';
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>neuron</label><span class="sv-seg"><button id="c2-n0">n1</button><button id="c2-n1">n2</button><button id="c2-n2">n3</button></span></div><div id="c2-bars"></div>';
         [0, 1, 2].forEach(function (q) { $('c2-n' + q).onclick = function () { show(q); }; });
         show(0);
       } },
-    { tab: 'the autoencoder', title: 'The sparse autoencoder',
-      body: '<p>An ordinary autoencoder squeezes its input through a narrow bottleneck and rebuilds it. A <b>sparse</b> autoencoder does the opposite. It gives itself <b>more</b> hidden units than the input has dimensions, ' + H + ' here for ' + D + ' neurons, and then forces almost all of them to stay off on any one input.</p>' +
-        '<div class="sv-arch"><div class="box">x<small>' + D + ' neurons</small></div><span class="arrow">&rarr;</span><div class="box">encoder<small>ReLU(W<sub>enc</sub>x + b)</small></div><span class="arrow">&rarr;</span><div class="box" style="border-color:var(--accent)">code<small>' + H + ' features, mostly 0</small></div><span class="arrow">&rarr;</span><div class="box">decoder<small>W<sub>dec</sub></small></div><span class="arrow">&rarr;</span><div class="box">x&#770;<small>' + D + ' neurons</small></div></div>' +
-        '<div class="sv-math">loss = &Vert;x &minus; x&#770;&Vert;&sup2; + &lambda; &Sigma; code<sub>j</sub></div>' +
-        '<p>The first term keeps the features faithful and the L1 term keeps them few. Each decoder vector defines a <b>feature direction</b>, which I draw as one arrow in the 3D view. I start all ' + H + ' at random, so none points along a concept yet.</p>',
+
+    { tab: 'sparsity', title: 'Sparsity makes superposition work',
+      body: '<p>Here I pack features into a flat 2D plane. Each feature reads its value back by measuring the input along its own direction. The outlined bars show the true strengths and the filled bars show what each feature reads.</p>' +
+        '<p>Up to four features fit with no harmful overlap. Add a fifth and the directions start to overlap. With <b>sparse</b> inputs, one feature fires at a time and the readout stays close to the truth. With <b>dense</b> inputs, the overlaps pile up into errors.</p>',
+      notes: [['l', '<b>Sparsity.</b> Most things need only a few concepts to describe them. A coffee mug involves size, color and use, and nothing about planets or algebra, so most feature activations sit at zero.'],
+        ['k', 'Many real variables are naturally sparse. A celebrity\'s birthplace might appear in fewer than one in a billion training tokens, yet large models still learn it.'],
+        ['l', '<b>Superposition.</b> Past n features in n dimensions, vectors must interfere. The hypothesis says models learn almost orthogonal feature vectors, and the Johnson–Lindenstrauss lemma lets the number of such directions grow exponentially with dimension.'],
+        ['l', 'That leaves four questions. How do we recover feature vectors and activations? How do we attach meanings? How do we make the set of features large? How do we make it sparse? Sparse autoencoders answer all four.']],
       enter: function () {
-        initSAE(); scene = { points: true, colorBy: 'concept', gt: true, decoder: true, featNums: true };
-        legend('concepts');
-        $('sv-ctl').innerHTML = '<p class="sv-note">Solid arrows show the decoder directions, and I color an arrow once it lands on a concept. Dashed rays mark the concepts I planted. Training should swing the arrows onto the rays.</p>';
+        set3d(false); legend('');
+        var n = 5, mode = 'sparse', z = [], shown = [0, 0], from = [0, 0], t0 = 0, last = -1e9;
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>features</label><input type="range" id="c3-n" min="2" max="9" value="5"><b id="c3-nv">5</b></div>' +
+          '<div class="sv-ctl"><button class="sv-btn" id="c3-s" aria-pressed="true">sparse inputs</button><button class="sv-btn" id="c3-d">dense inputs</button></div><div id="c3-t"></div>';
+        $('c3-n').oninput = function () { n = +this.value; $('c3-nv').textContent = n; last = -1e9; };
+        $('c3-s').onclick = function () { mode = 'sparse'; this.setAttribute('aria-pressed', true); $('c3-d').setAttribute('aria-pressed', false); last = -1e9; };
+        $('c3-d').onclick = function () { mode = 'dense'; this.setAttribute('aria-pressed', true); $('c3-s').setAttribute('aria-pressed', false); last = -1e9; };
+        var hue = function (i) { return 'hsl(' + Math.round(300 + i * 40) % 360 + ',58%,46%)'; }, lastTxt = '';
+        scene.draw = function (ts) {
+          if (ts - last > 1600) {
+            last = ts; z = zeros(n);
+            if (mode === 'sparse') z[(rnd() * n) | 0] = 0.7 + 0.3 * rnd();
+            else for (var i = 0; i < n; i++) if (rnd() < 0.5) z[i] = 0.5 + 0.5 * rnd();
+            from = shown.slice(); t0 = ts;
+          }
+          var dirs = []; for (var i2 = 0; i2 < n; i2++) dirs.push([Math.cos(6.2832 * i2 / n + 0.3), Math.sin(6.2832 * i2 / n + 0.3)]);
+          var x = [0, 0]; z.forEach(function (a, i) { if (dirs[i]) { x[0] += a * dirs[i][0]; x[1] += a * dirs[i][1]; } });
+          var p = Math.min(1, (ts - t0) / 500); p = p * p * (3 - 2 * p);
+          shown = [from[0] + (x[0] - from[0]) * p, from[1] + (x[1] - from[1]) * p];
+          var ink = css('--ink', '#17090f'), mu = css('--muted', '#6a2350'), wide = W > 560;
+          var cx = wide ? W * 0.3 : W / 2, cy = wide ? Hh / 2 : Hh * 0.3, R = wide ? Math.min(W * 0.22, Hh * 0.36) : Math.min(W * 0.36, Hh * 0.24);
+          ctx.strokeStyle = css('--border', 'rgba(0,0,0,.18)'); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.stroke();
+          dirs.forEach(function (d, i) {
+            ctx.strokeStyle = hue(i); ctx.fillStyle = hue(i); ctx.lineWidth = 2.4; ctx.globalAlpha = z[i] ? 1 : 0.45;
+            var ex = cx + R * d[0], ey = cy - R * d[1]; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
+            ctx.beginPath(); ctx.arc(ex, ey, 4, 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+          });
+          ctx.fillStyle = ink; ctx.beginPath(); ctx.arc(cx + R * shown[0] * 0.75, cy - R * shown[1] * 0.75, 7, 0, 6.2832); ctx.fill();
+          var bx = wide ? W * 0.6 : W * 0.1, by = wide ? Hh * 0.2 : Hh * 0.6, bw = wide ? W * 0.34 : W * 0.8, rowH = Math.min(26, (wide ? Hh * 0.6 : Hh * 0.36) / n), err = 0, over = 0;
+          for (var a2 = 0; a2 < n; a2++) for (var b2 = a2 + 1; b2 < n; b2++) over = Math.max(over, dirs[a2][0] * dirs[b2][0] + dirs[a2][1] * dirs[b2][1]);
+          ctx.font = '11px "DM Mono", ui-monospace, monospace'; ctx.fillStyle = mu; ctx.fillText('true (outline) vs read (fill)', bx, by - 10);
+          dirs.forEach(function (d, i) {
+            var r = Math.max(0, d[0] * shown[0] + d[1] * shown[1]), y = by + i * rowH; err += Math.abs(r - (z[i] || 0)) / n;
+            ctx.fillStyle = hue(i); ctx.globalAlpha = 0.85; ctx.fillRect(bx, y, bw * Math.min(1.4, r) / 1.4, rowH * 0.62); ctx.globalAlpha = 1;
+            ctx.strokeStyle = ink; ctx.lineWidth = 1.2; ctx.strokeRect(bx, y, Math.max(1, bw * (z[i] || 0) / 1.4), rowH * 0.62);
+          });
+          var txt = tiles([['worst overlap', Math.max(0, over).toFixed(2)], ['readout error', err.toFixed(2)]]);
+          if (txt !== lastTxt && $('c3-t')) { $('c3-t').innerHTML = txt; lastTxt = txt; }
+        };
       } },
-    { tab: 'one input', title: 'The forward pass',
-      body: '<p>Click any point in the 3D view to send it through a trained autoencoder. The cells below show each vector, and darker cells mean larger values.</p>' +
-        '<p>The encoder scores all ' + H + ' features and ReLU zeros the negative scores. A few features survive, and the largest belong to the concepts the input actually holds. The decoder then rebuilds the input by adding up decoder vectors, each scaled by its code value. The 3D view draws them head to tail, and the rebuilt point x&#770; lands next to x.</p>',
+
+    { tab: 'the autoencoder', title: 'A wider layer that must stay quiet',
+      body: '<p>An ordinary autoencoder squeezes its input through a narrow layer and rebuilds it. A <b>sparse</b> autoencoder does the opposite. It gives itself <b>more</b> hidden units than the input has dimensions, ' + H + ' here for ' + D + ' neurons, and then forces almost all of them to stay off on any one input.</p>' +
+        '<div class="sv-arch"><div class="box">x<small>' + D + ' neurons</small></div><span class="arrow">&rarr;</span><div class="box">encoder<small>ReLU(W<sub>enc</sub>x + b)</small></div><span class="arrow">&rarr;</span><div class="box" style="border-color:var(--accent)">code<small>' + H + ' features, mostly 0</small></div><span class="arrow">&rarr;</span><div class="box">decoder<small>W<sub>dec</sub></small></div><span class="arrow">&rarr;</span><div class="box">x&#770;<small>' + D + ' neurons</small></div></div>' +
+        '<p>Each decoder vector defines a feature direction, drawn as one arrow. I start all ' + H + ' at random, so none points along a concept yet.</p>',
+      notes: [['k', 'A regular autoencoder might compress a 100 dimensional input to 50 and rebuild 100. The squeeze makes the rebuild imperfect.'],
+        ['k', 'For language models the hidden layer usually runs <b>larger</b> than the input. Without a constraint the network could just copy its input with an identity matrix, so training adds a sparsity penalty. A 100 dimensional input might expand to 200 units with only about 20 on.'],
+        ['l', 'The hidden activations become the feature activations, the decoder weights become the feature vectors, and the hidden width sets how many features you can find.'],
+        ['k', 'You train one autoencoder per location. GPT-3 has 96 layers, so covering every layer output takes 96 autoencoders.'],
+        ['l', 'Anthropic trained on a middle layer, where abstract features seemed likely. Later work mostly reads the residual stream.']],
       enter: function () {
-        ensureTrained(); var info = analyze();
-        scene = { points: true, colorBy: 'concept', gt: true, decoder: true, info: info, sample: 0 };
-        legend('concepts');
-        function show(n) {
-          scene.sample = n;
-          var x = X[n], e = encode(x), r = decode(e.code), mxp = Math.max.apply(null, e.pre.map(Math.abs));
+        set3d(true); legend('concepts'); var m = makeSAE({ mode: 'l1', lam: 0.4 });
+        scene.draw = function () { axes(); rays(); cloud(function (n) { return [COLORS[dominant(n)], 0.3, 1.8]; }); decoders(m, { nums: true }); };
+        $('sv-ctl').innerHTML = '<p class="sv-note">Solid arrows show the decoder vectors. Dashed lines mark the concepts I planted. Training should swing the arrows onto them.</p>';
+      } },
+
+    { tab: 'forward pass', title: 'A matrix, a ReLU, a matrix',
+      body: '<p>Click any point to send it through a trained autoencoder, or let the view cycle. The cells show each vector, and darker cells mean larger values.</p>' +
+        '<p>The encoder scores all ' + H + ' features and the ReLU zeros the negative scores. The decoder then rebuilds the input by adding up decoder vectors, each scaled by its code value. The view lays them head to tail, and the rebuilt point x&#770; lands next to x.</p>',
+      notes: [['k', 'An autoencoder on GPT-3 with an expansion factor of 4 maps 12,288 dimensions to 49,152, applies a ReLU, and maps back. People aim for fewer than 100 nonzero values in that code.'],
+        ['k', '<b>Decoder vectors are the features.</b> If decoder vector 317 learned "Golden Retriever", then whenever code element 317 turns on, a scaled Golden Retriever vector joins the reconstruction. Multiplying by a matrix just takes a weighted sum of its rows.'],
+        ['k', 'Each feature has two halves. The encoder vector detects the concept while ignoring others, and the decoder vector holds its true direction. In practice they differ, with a median cosine of about 0.5.'],
+        ['k', 'If only two features fire, and one means red while the other means sphere, the model might be representing a red sphere.']],
+      enter: function () {
+        set3d(true); legend('concepts'); var m = main(), n = 0, t0 = 0, last = -1e9, hold = 0;
+        function show(k) {
+          n = k; t0 = performance.now(); last = t0;
+          var x = X[n], e = m.encode(x), r = m.decode(e.code), mx = Math.max.apply(null, e.pre.map(Math.abs)) || 1, acc = css('--accent', '#9c1c8c'), nav = css('--navy', '#26406e');
           var on = e.code.filter(function (v) { return v > 1e-3; }).length;
           $('c4-flow').innerHTML =
             '<div class="sv-vec"><span class="nm">true concepts</span>' + chips(n) + '</div>' +
-            '<div class="sv-vec"><span class="nm">x (neurons)</span>' + cells(x, css('--navy', '#26406e'), 1.6, true) + '</div>' +
-            '<div class="sv-op">&darr; W<sub>enc</sub> x + b</div>' +
-            '<div class="sv-vec"><span class="nm">pre-activation</span>' + cells(e.pre, css('--accent', '#9c1c8c'), mxp, true) + '</div>' +
+            '<div class="sv-vec"><span class="nm">x (neurons)</span>' + cells(x, nav, 1.6, true) + '</div>' +
+            '<div class="sv-op">&darr; multiply by the encoder</div>' +
+            '<div class="sv-vec"><span class="nm">scores</span>' + cells(e.pre, acc, mx, true) + '</div>' +
             '<div class="sv-op">&darr; ReLU</div>' +
-            '<div class="sv-vec"><span class="nm">sparse code</span>' + cells(e.code, css('--accent', '#9c1c8c'), mxp) + '</div>' +
-            '<div class="sv-op">&darr; &Sigma; code<sub>j</sub> d<sub>j</sub></div>' +
-            '<div class="sv-vec"><span class="nm">x&#770; (rebuilt)</span>' + cells(r, css('--navy', '#26406e'), 1.6, true) + '</div>' +
+            '<div class="sv-vec"><span class="nm">sparse code</span>' + cells(e.code, acc, mx) + '</div>' +
+            '<div class="sv-op">&darr; weighted sum of decoder vectors</div>' +
+            '<div class="sv-vec"><span class="nm">x&#770; (rebuilt)</span>' + cells(r, nav, 1.6, true) + '</div>' +
             tiles([['features on', on + ' of ' + H], ['error', Math.hypot(r[0] - x[0], r[1] - x[1], r[2] - x[2]).toFixed(2)]]);
         }
-        scene.pick = show;
-        $('sv-ctl').innerHTML = '<div id="c4-flow" class="sv-flow"></div><div class="sv-ctl"><button class="sv-btn" id="c4-rand">random input</button></div>' +
-          '<p class="sv-note">The rebuilt point falls a little short of x because the L1 penalty shrinks every code value slightly. That shrinkage is the price of sparsity.</p>';
-        $('c4-rand').onclick = function () { show((rnd() * N) | 0); };
+        scene.pick = function (k) { hold = performance.now() + 9000; show(k); };
+        scene.draw = function (ts) {
+          if (performance.now() > hold && ts - last > 3400) show((rnd() * N) | 0);
+          var mu = css('--muted', '#6a2350'), nav = css('--navy', '#26406e'), acc = css('--accent', '#9c1c8c');
+          axes(); rays(); cloud(function () { return [mu, 0.18, 1.8]; });
+          var x = X[n], cd = m.encode(x).code, p = Math.min(1, (performance.now() - t0) / 1100), cur = [0, 0, 0];
+          var act = cd.map(function (a, j) { return [a, j]; }).filter(function (a) { return a[0] > 1e-3; }).sort(function (a, b) { return b[0] - a[0]; });
+          dotAt(x, 7, nav, 0.9); label(add(x, [0, 0, 0.3]), 'x', nav, 13);
+          act.forEach(function (a, i) {
+            var seg = Math.max(0, Math.min(1, p * act.length - i)); if (!seg) return;
+            var nxt = add(cur, scale(m.Wd[a[1]], a[0] * seg)); arrow(cur, nxt, fcol(m.info.feats[a[1]]) || mu, 3, 0.95); cur = nxt;
+          });
+          if (p >= 1) { dotAt(cur, 5, acc, 1, '#fff'); label(add(cur, [0, 0, -0.3]), 'x̂', acc, 13); }
+        };
+        $('sv-ctl').innerHTML = '<div id="c4-flow" class="sv-flow"></div>';
         show(0);
       } },
-    { tab: 'train it', title: 'Training',
-      body: '<p>Here I train from scratch with real gradient descent in your browser. Watch the decoder arrows. They start scattered, then swing toward the dashed concept rays and leave fading trails. I color each arrow once it lands on a ray.</p>' +
-        '<p>A few arrows never find an input to fire on, so they stop moving and stay grey. These <b>dead features</b> plague real autoencoders too. Anthropic found about 65% of the features in its largest autoencoder dead.</p>',
+
+    { tab: 'training', title: 'Train it live',
+      body: '<p>Here I train from scratch with real gradient descent in your browser. The decoder arrows start scattered, then swing onto the dashed concept directions and leave fading trails. I color each arrow once it lands on a concept.</p>' +
+        '<p>A few arrows never find an input to fire on, so they stop moving and stay grey. These are <b>dead features</b>.</p>',
+      notes: [['k', 'The loss adds reconstruction error to an L1 penalty on the encoded representation, not on the weights, scaled by an <b>L1 coefficient</b>. That coefficient sets the trade-off between sparsity and accuracy.'],
+        ['k', 'Nobody optimizes for interpretability. Interpretable features fall out as a side effect of asking for sparsity and reconstruction.'],
+        ['k', 'Implementations add extras like bias terms and normalization. The most common one constrains the length of each decoder vector, which I do here.'],
+        ['l', 'Sparsity also helps meaning. If every feature fired on all our text, none would have a clear description.'],
+        ['l', 'Dead features waste compute at scale. Anthropic found about 65% of the features in its largest autoencoder dead.']],
       enter: function () {
-        initSAE(); scene = { points: true, colorBy: 'concept', gt: true, decoder: true, trails: true, loss: true, info: analyze() };
-        legend('concepts');
-        $('sv-ctl').innerHTML = '<div class="sv-ctl"><button class="sv-btn solid" id="c5-play">pause</button><button class="sv-btn" id="c5-reset">restart</button><label>speed</label><input type="range" id="c5-speed" min="1" max="10" value="3"></div><div id="c5-tiles"></div>';
-        function update(done) {
-          var i2 = scene.info || analyze();
-          $('c5-tiles').innerHTML = tiles([['step', step + ' / ' + TARGET], ['concepts found', i2.covered + ' / ' + K], ['features on per input', i2.l0.toFixed(1)], ['dead', i2.dead + ' / ' + H], ['variance explained', (100 * i2.fve).toFixed(0) + '%']]);
-          if (done) $('c5-play').textContent = 'done';
-        }
-        onTick = update; training = true; update(false);
-        $('c5-play').onclick = function () { if (step >= TARGET) return; training = !training; this.textContent = training ? 'pause' : 'train'; };
-        $('c5-reset').onclick = function () { initSAE(); scene.info = analyze(); training = true; $('c5-play').textContent = 'pause'; update(false); };
-        $('c5-speed').oninput = function () { trainSpeed = +this.value; };
+        set3d(true); legend('concepts'); var m = makeSAE({ mode: 'l1', lam: 0.4 }), speed = 3, playing = true, lastTxt = '';
+        scene.draw = function () {
+          if (playing && m.step < TARGET) { for (var i = 0; i < speed; i++) m.train(32); if (m.step % 15 < speed || m.step >= TARGET) m.analyze(); }
+          axes(); rays(); cloud(function (n) { return [COLORS[dominant(n)], 0.25, 1.8]; }); decoders(m, { trails: true }); lossInset(m);
+          var txt = tiles([['step', m.step + ' / ' + TARGET], ['concepts found', m.info.covered + ' / ' + K], ['features on per input', m.info.l0.toFixed(1)], ['dead', m.info.dead + ' / ' + H], ['variance explained', Math.round(100 * m.info.fve) + '%']]);
+          if (txt !== lastTxt) { $('c5-t').innerHTML = txt; lastTxt = txt; }
+          if (m.step >= TARGET) $('c5-p').textContent = 'done';
+        };
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><button class="sv-btn solid" id="c5-p">pause</button><button class="sv-btn" id="c5-r">restart</button><label>speed</label><input type="range" id="c5-s" min="1" max="10" value="3"></div><div id="c5-t"></div>';
+        $('c5-p').onclick = function () { if (m.step >= TARGET) return; playing = !playing; this.textContent = playing ? 'pause' : 'train'; };
+        $('c5-r').onclick = function () { m = makeSAE({ mode: 'l1', lam: 0.4 }); playing = true; $('c5-p').textContent = 'pause'; };
+        $('c5-s').oninput = function () { speed = +this.value; };
       } },
-    { tab: 'sparsity dial', title: 'Choosing the sparsity',
-      body: '<p>One knob decides what the autoencoder learns. When λ sits too low, the arrows settle between concepts. Reconstruction looks perfect, but each feature mixes several concepts. When I raise λ, the arrows snap onto the rays, and reconstruction suffers because the penalty shrinks every code.</p>' +
-        '<p>Many groups now skip λ and use <b>TopK</b> instead, which keeps only the k largest features per input. OpenAI scaled this approach to GPT-4, and Karvonen recommends its batch version, BatchTopK. Try both and retrain.</p>',
+
+    { tab: 'trade-off', title: 'Sparsity against reconstruction',
+      body: '<p>Your browser now trains 13 autoencoders, 10 with different λ and 3 with TopK. Each point plots how many features stay on per input against how much variance the autoencoder explains. I shade each point by how many planted concepts it found.</p>' +
+        '<p>Low λ keeps many features on and explains nearly everything, but finds few concepts. High λ finds every concept but explains less. Drag λ to read off any point.</p>',
+      notes: [['k', 'Researchers compare autoencoders by plotting <b>L0</b>, the average number of nonzero code values, against <b>Loss Recovered</b>, how much of the model\'s loss survives when you swap in the reconstruction. Better methods push the curve toward the corner.'],
+        ['k', 'Neither metric enters training. L0 has no gradient and Loss Recovered costs too much to compute, so the L1 penalty stands in for both.'],
+        ['l', 'k-sparse autoencoders, used by OpenAI, always keep exactly k hidden units on.'],
+        ['k', 'Karvonen now calls the plain ReLU autoencoder a baseline and prefers <b>BatchTopK</b>. It keeps the top k values across a batch, so k sets the sparsity directly, with no penalty to tune. TopK and JumpReLU are other strong options.'],
+        ['k', 'With no language model here, I plot variance explained in place of Loss Recovered.']],
       enter: function () {
-        scene = { points: true, colorBy: 'concept', gt: true, decoder: true, trails: true, loss: true, info: analyze() };
-        legend('concepts');
-        var lamSteps = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.2];
-        var li = lamSteps.indexOf(cfg.lam); if (li < 0) li = 6;
-        $('sv-ctl').innerHTML =
-          '<div class="sv-ctl"><label>sparsity</label><span class="sv-seg"><button id="c6-l1">L1 penalty</button><button id="c6-tk">TopK</button></span></div>' +
-          '<div class="sv-ctl" id="c6-lamrow"><label>λ</label><input type="range" id="c6-lam" min="0" max="9" value="' + li + '"><b id="c6-lamv"></b></div>' +
-          '<div class="sv-ctl" id="c6-krow"><label>k</label><input type="range" id="c6-k" min="1" max="3" value="' + cfg.k + '"><b id="c6-kv"></b></div>' +
-          '<div class="sv-ctl"><button class="sv-btn solid" id="c6-go">retrain from scratch</button></div><div id="c6-tiles"></div>' +
-          '<p class="sv-note">Try λ = 0.02, then 1.2. In my runs the first explains all the variance but finds about half the concepts. The second finds every concept but explains only about half the variance. TopK with k = 1 suits this toy, since most inputs hold one concept.</p>';
-        function sync() {
-          $('c6-l1').classList.toggle('on', cfg.mode === 'l1'); $('c6-tk').classList.toggle('on', cfg.mode === 'topk');
-          $('c6-lamrow').style.display = cfg.mode === 'l1' ? '' : 'none'; $('c6-krow').style.display = cfg.mode === 'topk' ? '' : 'none';
-          $('c6-lamv').textContent = cfg.lam; $('c6-kv').textContent = cfg.k;
-        }
-        function update(done) {
-          var i2 = scene.info || analyze();
-          $('c6-tiles').innerHTML = tiles([['concepts found', i2.covered + ' / ' + K], ['dead', i2.dead + ' / ' + H], ['features on per input', i2.l0.toFixed(1)], ['variance explained', (100 * i2.fve).toFixed(0) + '%']]);
-          if (done) { $('c6-go').disabled = false; $('c6-go').textContent = 'retrain from scratch'; }
-        }
-        $('c6-l1').onclick = function () { cfg.mode = 'l1'; sync(); };
-        $('c6-tk').onclick = function () { cfg.mode = 'topk'; sync(); };
-        $('c6-lam').oninput = function () { cfg.lam = lamSteps[+this.value]; sync(); };
-        $('c6-k').oninput = function () { cfg.k = +this.value; sync(); };
-        $('c6-go').onclick = function () { initSAE(); scene.info = analyze(); trainSpeed = 12; training = true; onTick = update; this.disabled = true; this.textContent = 'training…'; };
-        onTick = update; sync(); update(false);
+        set3d(false); legend('<span><i style="background:var(--accent)"></i>L1, one point per λ</span><span><i style="background:var(--robin);border-radius:2px"></i>TopK, one point per k</span>');
+        runSweep(); var sel = 6, lastTxt = '';
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>λ</label><input type="range" id="c6-l" min="0" max="9" value="6"><b id="c6-lv">0.4</b></div><div id="c6-t"></div>';
+        $('c6-l').oninput = function () { sel = +this.value; $('c6-lv').textContent = LAMS[sel]; };
+        scene.draw = function () {
+          var mu = css('--muted', '#6a2350'), acc = css('--accent', '#9c1c8c'), rob = css('--robin', '#2f93ab'), grid = css('--border', 'rgba(0,0,0,.18)'), ink = css('--ink', '#17090f');
+          var L = 56, R = W - 24, T = 50, B = Hh - 48, xmax = 6;
+          function px(v) { return L + (R - L) * Math.min(v, xmax) / xmax; }
+          function py(f) { return B - (B - T) * f; }
+          ctx.font = '11px "DM Mono", ui-monospace, monospace'; ctx.fillStyle = mu; ctx.lineWidth = 1; ctx.strokeStyle = grid;
+          for (var q = 0; q <= 4; q++) { var y = py(q / 4); ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke(); ctx.fillText((q * 25) + '%', 14, y + 4); }
+          for (var x0 = 0; x0 <= xmax; x0++) ctx.fillText(x0, px(x0) - 3, B + 18);
+          ctx.fillText('features on per input (L0)', (L + R) / 2 - 90, Hh - 12);
+          ctx.fillText('variance explained', L, T - 14);
+          var pts = SWEEP.pts;
+          ctx.strokeStyle = acc; ctx.lineWidth = 1.6; ctx.beginPath();
+          pts.forEach(function (p, i) { if (i) ctx.lineTo(px(p.l0), py(p.fve)); else ctx.moveTo(px(p.l0), py(p.fve)); }); ctx.stroke();
+          pts.forEach(function (p, i) {
+            ctx.globalAlpha = 0.25 + 0.75 * p.covered / K; ctx.fillStyle = acc; ctx.beginPath(); ctx.arc(px(p.l0), py(p.fve), i === sel ? 9 : 6, 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+            if (i === sel) { ctx.strokeStyle = ink; ctx.lineWidth = 2; ctx.stroke(); }
+          });
+          SWEEP.tops.forEach(function (p, i) {
+            ctx.globalAlpha = 0.25 + 0.75 * p.covered / K; ctx.fillStyle = rob; ctx.fillRect(px(p.l0) - 6, py(p.fve) - 6, 12, 12); ctx.globalAlpha = 1;
+            ctx.fillStyle = mu; ctx.fillText('k=' + KS[i], px(p.l0) + 9, py(p.fve) + 4);
+          });
+          if (pts.length < LAMS.length) { ctx.fillStyle = mu; ctx.fillText('training autoencoder ' + (pts.length + 1) + ' of ' + (LAMS.length + KS.length) + '…', L + 10, T + 16); }
+          var s = pts[sel];
+          var txt = s ? tiles([['λ', LAMS[sel]], ['features on', s.l0.toFixed(1)], ['variance explained', Math.round(100 * s.fve) + '%'], ['concepts found', s.covered + ' / ' + K], ['dead', s.dead + ' / ' + H]]) : '<p class="sv-note">Still training this λ.</p>';
+          if (txt !== lastTxt) { $('c6-t').innerHTML = txt; lastTxt = txt; }
+        };
       } },
-    { tab: 'feature atlas', title: 'The feature atlas',
-      body: '<p>Each card shows one feature of the trained autoencoder. On a real model you label a feature by reading the inputs that fire it hardest. Here I can also check each label against the concepts I planted. A card says <b>detects concept X</b> only when its decoder arrow points within about 25° of that concept.</p>' +
-        '<p>Hover a card to light up its arrow and the inputs it fires on. The thin arrow shows its encoder direction. In large autoencoders the encoder and decoder directions differ a lot, with a median cosine near 0.5 in Karvonen\'s writeup, because the encoder also has to suppress overlapping concepts. In this small toy they mostly agree. With ' + H + ' features for ' + K + ' concepts, a concept sometimes claims two features. Researchers call that <b>feature splitting</b>.</p>',
+
+    { tab: 'naming features', title: 'The feature atlas',
+      body: '<p>Each card shows one feature of a trained autoencoder, with the inputs that fire it hardest. Each input appears as a row of squares, one per planted concept. Hover a card to light up its arrow, its thin encoder arrow, and the inputs it fires on.</p>' +
+        '<p>Turn on <b>guess mode</b> to hide the labels and name each feature yourself from its top inputs. I can check every label, because I planted the concepts. A card says <b>detects concept X</b> only when its decoder arrow points within about 25° of X. With ' + H + ' features for ' + K + ' concepts, a concept sometimes claims two, which researchers call <b>feature splitting</b>.</p>',
+      notes: [['l', 'Anthropic ran large text sets from The Pile and Common Crawl through the model, collected the passages where each feature fired hardest, and wrote a description that fit, such as "food places".'],
+        ['l', 'The core assumption says features fire on tokens that share one coherent meaning.'],
+        ['k', 'In practice researchers look at the top inputs and give a gut reaction. Many read cleanly, like features for the Golden Gate Bridge or neuroscience. Some do not, like a Pythia feature that fires on the last token of a relative clause modifying a sentence\'s subject.'],
+        ['k', 'That makes evaluation the main challenge. Natural language gives no ground truth, so judgments stay subjective. A toy with planted features gives you the ground truth back.']],
       enter: function () {
-        ensureTrained(); var info = analyze();
-        scene = { points: true, colorBy: 'concept', gt: true, decoder: true, info: info };
-        legend('concepts');
-        var html = '<div class="sv-atlas">';
+        set3d(true); legend('concepts'); var m = main(), info = m.info, hot = null;
+        scene.draw = function () {
+          var mu = css('--muted', '#6a2350'), acc = css('--accent', '#9c1c8c');
+          axes(); rays();
+          if (hot == null) cloud(function (n) { return [COLORS[dominant(n)], 0.6]; });
+          else {
+            var f = info.feats[hot], codes = X.map(function (x) { return m.encode(x).code[hot]; }), mx = Math.max.apply(null, codes) || 1;
+            cloud(function (n) { var a = codes[n] / mx; return a > 0.001 ? [fcol(f) || acc, 0.25 + 0.75 * a, 2 + 2.5 * a] : [mu, 0.12, 1.6]; });
+          }
+          decoders(m, { hot: hot });
+        };
+        var html = '<div class="sv-ctl"><button class="sv-btn" id="c7-q">guess mode</button></div><div class="sv-atlas" id="c7-a">';
         info.feats.forEach(function (f) {
           html += '<div class="sv-feat" data-j="' + f.j + '"><h4>feature ' + f.j + '</h4><div class="lab ' + f.cls + '"' + (f.cls === 'mono' ? ' style="color:' + COLORS[f.best] + '"' : '') + '>' + f.label + '</div>' +
-            '<div class="meta">fires on ' + (100 * f.rate).toFixed(0) + '% of inputs' + (f.cls !== 'dead' ? '<br>encoder vs decoder cos ' + f.encdec.toFixed(2) : '') + '</div>';
+            '<div class="meta">fires on ' + Math.round(100 * f.rate) + '% of inputs' + (f.cls !== 'dead' ? '<br>encoder vs decoder cos ' + f.encdec.toFixed(2) : '') + '</div>';
           f.top.forEach(function (n) { html += '<div>' + chips(n) + '</div>'; });
           html += '</div>';
         });
-        html += '</div><p class="sv-note">This run found <b>' + info.covered + ' of ' + K + '</b> planted concepts and left ' + info.dead + ' features dead. Reconstruction keeps features honest, so no feature can claim a concept it does not actually decode.</p>';
-        $('sv-ctl').innerHTML = html;
-        var cards = document.querySelectorAll('.sv-feat');
-        function pickF(j) {
-          cards.forEach(function (c) { c.classList.toggle('on', +c.dataset.j === j); });
-          scene.feat = j; scene.featBest = j != null && info.feats[j].cls === 'mono' ? info.feats[j].best : null;
-          scene.colorBy = j == null ? 'concept' : 'feature';
-          legend(j == null ? 'concepts' : '<span>brighter dots fire feature ' + j + ' harder</span>');
-        }
-        cards.forEach(function (c) {
-          c.addEventListener('mouseenter', function () { pickF(+c.dataset.j); });
-          c.addEventListener('click', function () { pickF(+c.dataset.j); });
+        $('sv-ctl').innerHTML = html + '</div><p class="sv-note">This run found <b>' + info.covered + ' of ' + K + '</b> planted concepts and left ' + info.dead + ' features dead.</p>';
+        $('c7-q').onclick = function () { var on = !$('c7-a').classList.contains('quiz'); $('c7-a').classList.toggle('quiz', on); this.setAttribute('aria-pressed', on); };
+        document.querySelectorAll('.sv-feat').forEach(function (c) {
+          c.addEventListener('mouseenter', function () { hot = +c.dataset.j; c.classList.add('on'); });
+          c.addEventListener('mouseleave', function () { hot = null; c.classList.remove('on'); });
+          c.addEventListener('click', function () { hot = +c.dataset.j; c.querySelector('.lab').style.filter = 'none'; });
         });
-        $('sv-ctl').querySelector('.sv-atlas').addEventListener('mouseleave', function () { pickF(null); });
       } },
-    { tab: 'steering', title: 'Steering',
-      body: '<p>If a feature really means something, adding its decoder direction to an activation should push the model toward that meaning. Anthropic tested exactly this with a Golden Gate Bridge feature. When they turned it up far enough, Claude began to describe itself as the bridge.</p>' +
-        '<p>Pick a feature and drag α. The input slides along the feature arrow, and the code below shows that feature switching on while the others hold still. Click any point to steer a different input.</p>',
+
+    { tab: 'steering', title: 'Steering with a feature',
+      body: '<p>A decoder vector has the same shape as the activations, so I can add it straight in, scaled by α, and watch the code respond. Pick a feature and drag α, or let it animate. The input slides along the feature arrow, and in the code that one feature switches on while the others hold still.</p>' +
+        '<p>Click any point to steer a different input. Sometimes a small push does nothing, because the input holds a concept that the feature\'s encoder works to ignore.</p>',
+      notes: [['l', 'Labels from examples could be coincidence. Steering tests them. When Anthropic boosted a Golden Gate Bridge feature, Claude mentioned the bridge more and more, until it thought it was the bridge.'],
+        ['k', 'The intervention is one line of code. Take decoder vector 317, multiply it by a scale, and add it to the activations at the layer the autoencoder was trained on.'],
+        ['l', 'Steering opens new interfaces, like sliders that make an image more cat-like, or Linus Lee\'s Prism for text.'],
+        ['l', 'Open problems remain. Nobody knows how far to push a feature, whether equal pushes have equal effects, or how to make an autoencoder find the features we want.']],
       enter: function () {
-        ensureTrained(); var info = analyze(), alive = info.feats.filter(function (f) { return f.cls === 'mono'; });
-        if (!alive.length) alive = info.feats.filter(function (f) { return f.cls !== 'dead'; });
-        var st = { n: 0, j: alive[0].j, alpha: 1.2, color: featColor(alive[0]) || css('--accent', '#9c1c8c') };
-        scene = { points: true, colorBy: 'grey', gt: true, decoder: true, info: info, steer: st };
-        legend('');
-        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>feature</label><span class="sv-seg" id="c8-feats">' + alive.map(function (f) { return '<button data-j="' + f.j + '">f' + f.j + (f.cls === 'mono' ? ' (' + NAMES[f.best] + ')' : '') + '</button>'; }).join('') + '</span></div>' +
-          '<div class="sv-ctl"><label>α</label><input type="range" id="c8-a" min="-10" max="25" value="12"><b id="c8-av"></b></div><div id="c8-flow" class="sv-flow"></div>';
-        function show() {
-          var x0 = X[st.n], x1 = add(x0, scale(Wd[st.j], st.alpha)), c0 = encode(x0).code, c1 = encode(x1).code;
-          var mx = Math.max.apply(null, c0.concat(c1)) || 1, col = css('--accent', '#9c1c8c');
+        set3d(true); legend(''); var m = main(), alive = m.info.feats.filter(function (f) { return f.cls === 'mono'; });
+        if (!alive.length) alive = m.info.feats.filter(function (f) { return f.cls !== 'dead'; });
+        var st = { n: 3, f: alive[0], alpha: 0, auto: true }, lastTxt = '';
+        $('sv-ctl').innerHTML = '<div class="sv-ctl"><label>feature</label><span class="sv-seg" id="c8-f">' + alive.map(function (f) { return '<button data-j="' + f.j + '">f' + f.j + (f.cls === 'mono' ? ' (' + NAMES[f.best] + ')' : '') + '</button>'; }).join('') + '</span></div>' +
+          '<div class="sv-ctl"><label>α</label><input type="range" id="c8-a" min="-10" max="26" value="0"><b id="c8-av"></b><button class="sv-btn small" id="c8-an" aria-pressed="true">animate</button></div><div id="c8-flow" class="sv-flow"></div>';
+        function sync() { document.querySelectorAll('#c8-f button').forEach(function (b) { b.classList.toggle('on', +b.dataset.j === st.f.j); }); $('c8-an').setAttribute('aria-pressed', st.auto); }
+        document.querySelectorAll('#c8-f button').forEach(function (b) { b.onclick = function () { st.f = m.info.feats[+b.dataset.j]; sync(); }; });
+        $('c8-a').oninput = function () { st.auto = false; st.alpha = +this.value / 10; sync(); };
+        $('c8-an').onclick = function () { st.auto = !st.auto; sync(); };
+        scene.pick = function (n) { st.n = n; };
+        sync();
+        scene.draw = function (ts) {
+          if (st.auto) { st.alpha = 1.3 + 1.3 * Math.sin(ts / 1000); $('c8-a').value = Math.round(st.alpha * 10); }
           $('c8-av').textContent = st.alpha.toFixed(1);
-          $('c8-flow').innerHTML = '<div class="sv-vec"><span class="nm">code before</span>' + cells(c0, col, mx) + '</div><div class="sv-vec"><span class="nm">code after</span>' + cells(c1, col, mx) + '</div>' +
-            tiles([['feature ' + st.j + ' before', c0[st.j].toFixed(2)], ['after', c1[st.j].toFixed(2)]]);
-          document.querySelectorAll('#c8-feats button').forEach(function (b2) { b2.classList.toggle('on', +b2.dataset.j === st.j); });
-        }
-        document.querySelectorAll('#c8-feats button').forEach(function (b2) { b2.onclick = function () { st.j = +b2.dataset.j; st.color = featColor(info.feats[st.j]) || css('--accent', '#9c1c8c'); show(); }; });
-        $('c8-a').oninput = function () { st.alpha = (+this.value) / 10; show(); };
-        scene.pick = function (n) { st.n = n; show(); };
-        show();
+          var x0 = X[st.n], x1 = add(x0, scale(m.Wd[st.f.j], st.alpha)), c0 = m.encode(x0).code, c1 = m.encode(x1).code;
+          var col = fcol(st.f) || css('--accent', '#9c1c8c'), mu = css('--muted', '#6a2350'), nav = css('--navy', '#26406e'), acc = css('--accent', '#9c1c8c');
+          axes(); rays(); cloud(function () { return [mu, 0.15, 1.8]; }); decoders(m, { hot: st.f.j });
+          dotAt(x0, 6, nav, 0.9); label(add(x0, [0, 0, 0.26]), 'x', nav, 12);
+          arrow(x0, x1, col, 3.5, 0.95); dotAt(x1, 7, col, 1, '#fff'); label(add(x1, [0, 0, 0.3]), 'x + αd', col, 12);
+          var mx = Math.max.apply(null, c0.concat(c1)) || 1;
+          var txt = '<div class="sv-vec"><span class="nm">code before</span>' + cells(c0, acc, mx) + '</div><div class="sv-vec"><span class="nm">code after</span>' + cells(c1, acc, mx) + '</div>' +
+            tiles([['f' + st.f.j + ' before', c0[st.f.j].toFixed(2)], ['f' + st.f.j + ' after', c1[st.f.j].toFixed(2)]]);
+          if (txt !== lastTxt) { $('c8-flow').innerHTML = txt; lastTxt = txt; }
+        };
       } },
-    { tab: 'takeaways', title: 'Takeaways',
-      body: '<p>A sparse autoencoder reorganizes information without adding any. I trained one with a reconstruction loss and a sparsity penalty on an overcomplete code. It traded dense, polysemantic neurons for a sparse code in which single features line up with single concepts, and that alignment makes a feature atlas readable.</p>' +
-        '<p>On a real model you only ever see the cloud and never the rays, so the honest test is the one on this page. You plant features yourself and check whether the autoencoder recovers them. Neuronpedia runs this same mechanism at scale, with tens of thousands of features per layer of a language model. The two failures you saw here, dead features and mixed leftovers, show up there too.</p>' +
-        '<p>Some questions stay open. Nobody has shown that real models store concepts as clean linear directions, and a feature an autoencoder finds might combine several smaller ones. I find the toy useful exactly because it lets me check. My <a href="{{ '/writing/sparse-autoencoders/' | relative_url }}">companion post</a> covers the ideas behind every chapter.</p>',
+
+    { tab: 'open questions', title: 'Where it gets hard',
+      body: '<p>A sparse autoencoder reorganizes information without adding any. It trades dense, polysemantic neurons for a wide, sparse code in which single features line up with single concepts. On a real model you only ever see the cloud and never the directions, so the honest test is the one this playground runs. You plant features yourself and check whether the autoencoder finds them.</p>' +
+        '<p>Both guides end with open problems, and with hope.</p>',
+      notes: [['k', 'Layers of mismatch stack up. The training loss stands in for the proxy metrics, the metrics stand in for our judgment of interpretability, and that judgment stands in for understanding the model.'],
+        ['k', 'An infinitely wide autoencoder could reach perfect Loss Recovered with an L0 of 1 and still teach us nothing.'],
+        ['l', 'Nobody has proven superposition. One argument says autoencoders find compositions of features rather than atomic ones.'],
+        ['l', 'Most work studies one layer\'s activations, not the weights or the whole model. And it seems surprising that activations decompose into linear sums at all when the network is nonlinear everywhere.'],
+        ['k', 'Still, a simple reconstruction plus sparsity objective would not find interpretable features unless the model had learned something meaningful. Anthropic calls the goal an MRI for models.'],
+        ['l', 'Sparse autoencoders are probably the first concrete result showing that mechanistic interpretability can work.']],
       enter: function () {
-        ensureTrained();
-        scene = { points: true, colorBy: 'concept', gt: true, decoder: true, encoder: true, info: analyze() };
-        legend('concepts');
-        $('sv-ctl').innerHTML = '<p class="sv-note">Further reading</p><ol class="sv-refs">' +
-          '<li><a href="{{ '/writing/sparse-autoencoders/' | relative_url }}">Sparse autoencoders, from superposition to steering</a>, my companion post</li>' +
-          '<li><a href="https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html" target="_blank" rel="noopener">An intuitive explanation of sparse autoencoders</a>, Adam Karvonen</li>' +
-          '<li><a href="https://www.lesswrong.com/posts/8YnHuN55XJTDwGPMr/a-gentle-introduction-to-sparse-autoencoders" target="_blank" rel="noopener">A gentle introduction to sparse autoencoders</a>, LessWrong</li>' +
-          '<li><a href="https://transformer-circuits.pub/2022/toy_model/index.html" target="_blank" rel="noopener">Toy models of superposition</a>, Elhage et al. 2022</li>' +
-          '<li><a href="https://transformer-circuits.pub/2023/monosemantic-features/index.html" target="_blank" rel="noopener">Towards monosemanticity</a>, Bricken et al. 2023</li>' +
-          '<li><a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html" target="_blank" rel="noopener">Scaling monosemanticity</a>, Templeton et al. 2024</li>' +
-          '<li><a href="https://arxiv.org/abs/2406.04093" target="_blank" rel="noopener">Scaling and evaluating sparse autoencoders</a>, Gao et al. 2024</li>' +
-          '<li><a href="https://www.neuronpedia.org/" target="_blank" rel="noopener">Neuronpedia</a></li></ol>' +
-          '<div class="sv-ctl"><a class="sv-btn solid" href="{{ '/writing/sparse-autoencoders/' | relative_url }}">read more</a><a class="sv-btn" href="{{ '/writing/interpretability/' | relative_url }}">my interpretability writeup</a><a class="sv-btn" href="{{ '/playground/' | relative_url }}">more playground</a></div>';
+        set3d(true); legend('concepts'); var m = main();
+        scene.draw = function () { axes(); rays(); cloud(function (n) { return [COLORS[dominant(n)], 0.6]; }); decoders(m, { nums: true }); };
+        $('sv-ctl').innerHTML =
+          '<p class="sv-note"><b>Papers from my reading list that push these questions further</b></p><ol class="sv-refs">' +
+          '<li><a href="https://arxiv.org/abs/2607.20596" target="_blank" rel="noopener">Are single-token SAE features causally necessary?</a> <span>Cho et al. 2026. Ablating 3.9M features shows that the autoencoder family changes which features matter causally.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2309.10312" target="_blank" rel="noopener">Rigorously assessing natural language explanations of neurons</a> <span>Huang et al. 2023. Even confident labels often fail observational and causal tests.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2412.09565" target="_blank" rel="noopener">Obfuscated activations bypass LLM latent-space defenses</a> <span>Bailey et al. 2024. Attacks reshape activations so monitors, autoencoders included, miss harmful behavior.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2410.06981" target="_blank" rel="noopener">Quantifying feature space universality across LLMs via SAEs</a> <span>Lan et al. 2024. Autoencoder feature spaces look similar across models up to rotation.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2502.03714" target="_blank" rel="noopener">Universal sparse autoencoders</a> <span>Thasarathan et al. 2025. One dictionary for several vision models at once.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2506.06609" target="_blank" rel="noopener">Transferring linear features across language models</a> <span>Chen et al. 2025. A transferred small-model autoencoder halves the cost of training a large one.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2504.08729" target="_blank" rel="noopener">Steering CLIP\'s vision transformer with SAEs</a> <span>Joseph et al. 2025. Brings feature steering to vision.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2506.11976" target="_blank" rel="noopener">How visual representations map to language feature space</a> <span>Venhoff et al. 2025. Uses a language model\'s own autoencoders as probes for vision inputs.</span></li>' +
+          '<li><a href="https://arxiv.org/abs/2506.04859" target="_blank" rel="noopener">Sparse autoencoders, again?</a> <span>Lu et al. 2025. A hybrid model that provably recovers data on a union of manifolds, the same shape as this toy.</span></li></ol>' +
+          '<p class="sv-note"><b>The two guides</b></p><ol class="sv-refs">' +
+          '<li><a href="https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html" target="_blank" rel="noopener">An intuitive explanation of sparse autoencoders for LLM interpretability</a> <span>Adam Karvonen</span></li>' +
+          '<li><a href="https://www.lesswrong.com/posts/8YnHuN55XJTDwGPMr/a-gentle-introduction-to-sparse-autoencoders" target="_blank" rel="noopener">A gentle introduction to sparse autoencoders</a> <span>LessWrong</span></li></ol>' +
+          '<p class="sv-note">Karvonen recommends Callum McDougall\'s Colab notebook for hands-on practice, and <a href="https://www.neuronpedia.org/" target="_blank" rel="noopener" style="color:var(--accent)">Neuronpedia</a> hosts real feature atlases.</p>';
       } }
   ];
 
   var cur = 0;
   function go(i) {
-    training = false; onTick = null; trainSpeed = 3; cur = i;
-    var c = CH[i];
+    cur = i; scene = { draw: function () {} }; var c = CH[i];
     $('sv-kicker').textContent = 'chapter ' + (i + 1);
     $('sv-h').textContent = c.title;
     $('sv-body').innerHTML = c.body;
     $('sv-ctl').innerHTML = '';
+    $('sv-notes').innerHTML = notes(c.notes);
     c.enter();
-    document.querySelectorAll('.sv-tab').forEach(function (b2, q) { b2.classList.toggle('on', q === i); b2.setAttribute('aria-selected', q === i); });
+    document.querySelectorAll('.sv-tab').forEach(function (b, q) { b.classList.toggle('on', q === i); b.setAttribute('aria-selected', q === i); });
     $('sv-prev').disabled = i === 0; $('sv-next').disabled = i === CH.length - 1;
-    var sc2 = document.querySelector('.sv-scroll'); if (sc2) sc2.scrollTop = 0;
+    $('sv-scroll').scrollTop = 0;
   }
   $('sv-tabs').innerHTML = CH.map(function (c, i) { return '<button class="sv-tab" role="tab" type="button"><b>' + (i + 1) + '</b>' + c.tab + '</button>'; }).join('');
-  document.querySelectorAll('.sv-tab').forEach(function (b2, i) { b2.onclick = function () { go(i); }; });
+  document.querySelectorAll('.sv-tab').forEach(function (b, i) { b.onclick = function () { go(i); }; });
   $('sv-prev').onclick = function () { if (cur > 0) go(cur - 1); };
   $('sv-next').onclick = function () { if (cur < CH.length - 1) go(cur + 1); };
-  window.addEventListener('themechange', draw);
 
-  initSAE(); resize(); go(0); requestAnimationFrame(frame);
+  resize(); go(0);
 })();
 </script>
