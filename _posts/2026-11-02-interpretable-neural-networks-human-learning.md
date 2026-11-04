@@ -9,6 +9,7 @@ rank: 4
 math: true
 thumb: /assets/images/interp-disrnn/latent3-rate.png
 permalink: /writing/interpretable-neural-networks/
+published: false
 excerpt: "I fit disentangled RNNs to 487 people playing bandit tasks. One fit seemed to show a learning-rate switch. It turned out to track the task, and simulated players with known answers showed that the method can both miss real mechanisms and invent false ones."
 ---
 
