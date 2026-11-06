@@ -1,0 +1,15 @@
+/* "Qwen by My Rules": before/after pairs and small extras. Everything else comes from forward-training.css. */
+.rp-body .qr-prompt { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.84rem; color: var(--muted); margin: 26px 0 8px; }
+.rp-body .qr-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .rp-body .qr-pair { grid-template-columns: 1fr; } }
+.rp-body .qr-sample { background: var(--ft-card); border: 1px solid var(--ft-edge); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.rp-body .qr-who { display: flex; justify-content: space-between; gap: 8px; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.rp-body .qr-text { font-size: 0.95rem; line-height: 1.55; white-space: pre-wrap; }
+.rp-body .qr-verdict { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.78rem; font-weight: 600; }
+.rp-body .qr-verdict.ok { color: var(--ft-replay); }
+.rp-body .qr-verdict.no { color: var(--ft-weight); }
+.rp-body .qr-sample mark { background: color-mix(in srgb, var(--ft-bias) 30%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+.rp-body .qr-note { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.84rem; line-height: 1.55; color: var(--muted); margin-top: -12px; }
+.rp-body .qr-details { margin: 14px 0 22px; }
+.rp-body .qr-details summary { cursor: pointer; font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--ft-apical); }
+.rp-body .ft-fig svg .ft-t { font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif; font-size: 12px; fill: var(--muted); }
