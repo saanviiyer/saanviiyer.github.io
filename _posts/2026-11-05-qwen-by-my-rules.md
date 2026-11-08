@@ -15,7 +15,7 @@ excerpt: "I used GRPO to retrain Qwen3-1.7B on my own style guide. RL on clean e
 
 We all know the "style" (or lack thereof) of writing that LLMs use, filled with passive, obfuscated slop. I made a list of writing rules to paste into prompts to write stronger, but I was curious about retraining a model to get it right the first time. Inspired by [Kevin Wu's blog post](https://kevin-wu.ca/blog/qwn/) on RL to retrain an LLM, I took Qwen3-1.7B, a small model that runs on my laptop, and used reinforcement learning to teach it my writing rules.
 
-RL on cleaned-up examples gave me a model that follows my rules 6.5 points more often than the base model. The harder problem, I found, was stopping models from claiming results nobody gave them. Terms in <span class="ft-def" tabindex="0">magenta<span class="ft-pop" role="tooltip">Like this. Hover over or tap a magenta term for a short definition.</span></span> have a definition on hover.
+RL on cleaned-up examples gave me a model that follows my rules 6.5 points more often than the base model. The harder problem, I found, was stopping models from claiming results nobody gave them.
 
 ## Why should we care?
 
