@@ -31,7 +31,7 @@ Some constraints are free to enforce. To ban a letter, you can block every token
 
 Here are the rules, each scored by its own checker:
 
-- **Active voice:** name who acts, so "The results were validated" fails. This rule counts three times as much as any other.
+- **Active voice:** name who acts, so "The results were validated" fails. This rule counts three times as much as any other because of how dramatically it improves readability and clarity.
 - **No superlatives:** no "best", "most important", "groundbreaking" or "novel".
 - **No banned phrasing:** no stock clichés, and no "I" plus a present-tense verb for ongoing work, such as "I aim" or "I study".
 - **No performed tone:** no put-on curiosity or dramatic openers like "Imagine…".
