@@ -15,7 +15,7 @@ excerpt: "I used GRPO to retrain Qwen3-1.7B on my own style guide. RL on clean e
 
 We all know the "style" (or lack thereof) of writing that LLMs use, filled with passive, obfuscated slop. I made a list of writing rules to paste into prompts to write stronger, but I was curious about retraining a model to get it right the first time. Inspired by [Kevin Wu's blog post](https://kevin-wu.ca/blog/qwn/) on RL to retrain an LLM, I took Qwen3-1.7B, a small model that runs on my laptop, and used reinforcement learning to teach it my writing rules.
 
-RL on cleaned-up examples gave me a model that follows my rules 6.5 points more often than the base model. The harder problem turned out to be stopping models from claiming results nobody gave them. Terms in <span class="ft-def" tabindex="0">magenta<span class="ft-pop" role="tooltip">Like this. Hover over or tap a magenta term for a short definition.</span></span> have a definition on hover.
+RL on cleaned-up examples gave me a model that follows my rules 6.5 points more often than the base model. The harder problem, I found, was stopping models from claiming results nobody gave them. Terms in <span class="ft-def" tabindex="0">magenta<span class="ft-pop" role="tooltip">Like this. Hover over or tap a magenta term for a short definition.</span></span> have a definition on hover.
 
 ## Why should we care?
 
@@ -23,17 +23,17 @@ When a model drafts an email for you, it can fail in two ways. It can sound gene
 
 ## Why can't a model just follow the rules?
 
-Some constraints are free to enforce. To ban a letter, you can block every token containing it at decoding time. My rules live in grammar and phrasing. Spotting a passive takes a parse, and a superlative takes a phrase list, so no token mask can carry them. Each rule has to sit in the reward as a checker.
+Some constraints are free to enforce. To ban a letter, you can block every token containing it at decoding time. My rules live in grammar and phrasing. Spotting a passive takes a parse, and a superlative takes a phrase list, so no token mask can carry them. So I had to write each rule into the reward as a checker.
 
-One measure runs through this post. A draft is <span class="ft-def" tabindex="0">usable<span class="ft-pop" role="tooltip">Every rule checker passes, and a judge model rates the draft at least 4 of 5 on coherence and on answering the request. The judge never sees the rules.</span></span> when it passes every rule and the judge accepts it.
+I scored every draft in this post with one measure. A draft is <span class="ft-def" tabindex="0">usable<span class="ft-pop" role="tooltip">Every rule checker passes, and a judge model rates the draft at least 4 of 5 on coherence and on answering the request. The judge never sees the rules.</span></span> when it passes every rule and the judge accepts it.
 
-A checker also invites gaming. A model that learns my checker bans "I aim" can write "My goal is", which passes and changes nothing a reader would notice. So the eval also logs <span class="ft-def" tabindex="0">substitute probes<span class="ft-pop" role="tooltip">Counters that never enter the reward, such as spaced hyphens in place of em dashes. If a rule improves while its probe rises, the model may be dodging the rule.</span></span> for each rule.
+A checker also invites gaming. A model that learns my checker bans "I aim" can write "My goal is", which passes and changes nothing a reader would notice. So I also had the eval log <span class="ft-def" tabindex="0">substitute probes<span class="ft-pop" role="tooltip">Counters that never enter the reward, such as spaced hyphens in place of em dashes. If a rule improves while its probe rises, the model may be dodging the rule.</span></span> for each rule.
 
 ## Why RL, and why GRPO?
 
 Each answer is one episode: the prompt sets the starting state, each token is an action, and one reward arrives at the end ([Sutton and Barto, 2018](#ref-sutton2018)). Value methods such as DQN estimate the worth of every action, which suits a small set of moves ([Mnih et al., 2015](#ref-mnih2015)). A language model picks from many thousands of tokens at every step, so I used a <span class="ft-def" tabindex="0">policy gradient<span class="ft-pop" role="tooltip">Raises the probability of the tokens in answers that scored well and lowers it for answers that scored badly (Williams, 1992).</span></span>.
 
-A raw reward means little alone, because 0.93 is good or bad only next to what the model usually writes for that prompt. PPO trains a second network to estimate that number ([Schulman et al., 2017](#ref-schulman2017)). <span class="ft-def" tabindex="0">GRPO<span class="ft-pop" role="tooltip">Group Relative Policy Optimization. It samples a group of answers per prompt and scores each one against the group's mean (Shao et al., 2024).</span></span> skips that network and uses the mean of a group of samples, which saves a whole network on a laptop.
+A raw reward means little alone, because 0.93 is good or bad only next to what the model usually writes for that prompt. PPO trains a second network to estimate that number ([Schulman et al., 2017](#ref-schulman2017)). <span class="ft-def" tabindex="0">GRPO<span class="ft-pop" role="tooltip">Group Relative Policy Optimization. It samples a group of answers per prompt and scores each one against the group's mean (Shao et al., 2024).</span></span> skips that network and uses the mean of a group of samples, which saved me a whole network on my laptop.
 
 **The group baseline also predicts which rules can move.** Two answers with equal scores give the gradient nothing, so a rule pushes the model only when its score differs between samples from the same prompt.
 
@@ -90,7 +90,7 @@ I first fine-tuned the model on examples, then ran RL against my rules and a jud
   <figcaption><strong>RL gains most on essays.</strong> Usable rate on 50 held-out prompts × 4 samples, by genre, on the first run's 11 rules.</figcaption>
 </figure>
 
-Here are the base and RL models on the same prompts, with the phrases behind each failure highlighted:
+Here are the base and RL models on the same prompts. I highlighted the phrase behind each failure:
 
 <div class="qr-prompt">Write a 150-word paragraph for a fellowship application explaining what open problem in metabolic network modeling I want to work on next.</div>
 <div class="qr-pair">
@@ -127,8 +127,7 @@ I’ve completed the first iteration of the sparse autoencoder model. The archit
 
 **Findings**
 
-- **Fine-tuning made the model worse:** 29.5% usable, 15.5 points below base. A note I gave the example writer about sentence length came out as clipped sentences, and fine-tuned blurbs passed the flow rule 22% of the time against 100% for base.
-- **RL recovered that loss and added a little:** 53.0%, 8 points above base. Essays rose from 11.8% to 29.4%, and sentence flow rose 36 points over the fine-tuned model.
+- **Fine-tuning made my model worse:** 29.5% usable, 15.5 points below base. A note I gave the example writer about sentence length came out as clipped sentences, and fine-tuned blurbs passed the flow rule 22% of the time against 100% for base.
 - **Active voice didn't move:** it sat at 73 to 74% for every model. Its reward score already averaged about 0.95, which left GRPO almost no difference between samples to learn from.
 
 **Takeaways**
@@ -136,11 +135,11 @@ I’ve completed the first iteration of the sparse autoencoder model. The archit
 - **A rule a parser can check is a rule RL can push,** as long as its score varies between samples.
 - **Example data sets the model's habits.** RL polishes those habits and doesn't question them.
 
-Hmm… so RL mostly undid what fine-tuning broke. And look at the third pair above. The RL email invents a loss of 0.25 after 1000 epochs and a 15% gain, and my reward scored that email as usable.
+So RL mostly undid what fine-tuning broke. But look at the third pair above! The RL email invents a loss of 0.25 after 1000 epochs and a 15% gain, and my reward scored that email as usable.
 
 ## What the score missed
 
-**A bug in my own checker.** My superlative pattern matched the sign-off "Best regards", so for a day the base model sat at 16.5% and RL looked far ahead. One regular expression moved the baseline by 28 points. Re-score the baseline after every checker fix!
+**A bug in my own checker.** My superlative pattern matched the sign-off "Best regards", so for a day the base model sat at 16.5% and RL looked far ahead. One regular expression moved my baseline by 28 points! Since then, I've re-scored the baseline after every checker fix.
 
 **Invented facts.** A writing assistant knows only what the prompt tells it. Every RL status email stated results that the prompt never gave, and a third of my training examples stated facts the prompt never gave too. It also leaves fewer blanks than base.
 
@@ -213,8 +212,6 @@ Both holes pointed to the same fix, so I retrained with better examples and a re
 
 **Findings**
 
-- **The first RL model of mine to beat base on every rule:** 37.5% against 31.0%, a gain of 6.5 points. On the first 11 rules it ties the first run, so the new rules cost nothing there.
-- **Clean data fixed most of the invention:** fine-tuning alone cut the failure rate from 19% to 3.5%, and RL held it at 4%.
 - **Paying for agency worked:** with no pay for it, the first RL run raised the flagged share from 21% to 31%. With pay, this one held it at 20%. The rule's pass rate did fall from 68% to 57%, but that came from my rounding. RL merged short sentences, and shorter drafts got a smaller allowance.
 - **An old hole came back:** the model used "I" a quarter less after RL while banned phrasing rose 14 points. Avoiding "I" dodges the rule, and the sentences stay as they were.
 
@@ -257,12 +254,11 @@ Can I catch a made-up claim when it has no number in it?
 
 - **Fine-tuning more than doubled the rate,** from 1.68 to 4.04 claims per draft, and RL brought it back to 3.00.
 - **Clean data changed almost nothing:** the first training examples carried 1.76 claims per draft and the cleaned ones 1.67, because I had cleaned them with a check that looks for numbers.
-- **Opus writes more claims per draft than my base model,** though its drafts run longer, and the guide doesn't lower the count.
 
 ## Experiment 4: A harness for any draft
 {: .ft-exp}
 
-RL changes one small model. But if the checks work on text, they can repair a draft from any model, or from a person. My first harness swapped invented specifics for blanks and sent flagged sentences to a reviser model. It lifted base drafts from 36% to 66% usable, which looked great, until I read the rewrites. "The analysis provides insights into system resilience" became "The analysis analyzes system resilience", and the false claims stayed in.
+RL changes one small model. But if the checks work on text, they can repair a draft from any model, or from a person. My first harness swapped invented specifics for blanks and sent flagged sentences to a reviser model. It lifted base drafts from 36% to 66% usable, which looked great! Then I read the rewrites. "The analysis provides insights into system resilience" became "The analysis analyzes system resilience", and the false claims stayed in.
 
 **Setup**
 
@@ -289,16 +285,14 @@ RL changes one small model. But if the checks work on text, they can repair a dr
 
 **Findings**
 
-- **Claims fell on every source,** most of all in emails, where second-run drafts went from 1.76 to 0.18.
 - **The big gain disappeared:** on the same 11 rules as the first harness, base drafts now go from 36% to 40%, and a version with the blanks but no rewrite checks reached only 42%. So most of the fall arrived with the blanks.
 - **The judge marks down honest blanks:** of the 9 drafts that lost usable status, 8 had claims cut to blanks and scored below 4 on responds. The usable rate penalizes a repair that removes a false claim.
-- **Rules only go so far:** by my reading, 8 of the 58 accepted rewrites still read badly, such as "these models integrate insights" for "these models provide insights".
 
 **Takeaway:** the 30-point gain counted drafts that still carried false claims. The harness now removes those claims reliably and leaves the usable rate about where it found it.
 
 ## Summary and next steps
 
-That was a lot! To sum the results:
+To sum the results:
 
 - **RL against my rules:** 45.0% → 53.0% usable on 11 rules.
 - **RL on clean data with two new rules:** 31.0% → 37.5% usable on 13 rules, with invented facts at 4% against 17% for the first run.
@@ -307,7 +301,7 @@ That was a lot! To sum the results:
 
 Moving forward, I want to teach the judge that a blank is an honest answer, so the usable rate stops marking down a repair that removes a false claim. I'm also planning to stop rewriting the rules that ask for a new verb or subject, and list those sentences for the writer. The part I haven't built is taste. My style guide is a list I wrote by hand, and every phrase I cut from a draft is a labeled example of what I want, so learning rules from a person's edits is the next experiment. All of this rests on one seed per run and a small local judge, so I'd want more of both before trusting small differences.
 
-I'd love to hear feedback on this project. Thanks for reading :)
+Thanks for reading :)
 
 ## References
 
