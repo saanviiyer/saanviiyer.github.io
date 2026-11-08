@@ -23,7 +23,7 @@ Large language models are phenomenal at marketing, speaking in sycophantic sloga
 
 ## Why should we care?
 
-When a model drafts an email for you, it can fail in two ways. It can sound generic, and it can state something false that you then send under your name. Neither problem goes away with a stronger model or a longer prompt. With my style guide as its system prompt, the base Qwen3-1.7B did slightly worse than with no prompt at all, 41.5% against 45.0% on the measure defined below. Claude Opus 5.5 passed every rule on 16% of drafts from a bare prompt and on 50% with the guide. A guide helps a frontier model, but half its drafts still break a rule.
+When a model drafts an email for you, it can fail in two ways. It can sound generic, and it can state something false that you then send under your name. Neither problem goes away with a stronger model or a longer prompt. With my style guide as its system prompt, the base Qwen3-1.7B did slightly worse than with no prompt at all, 41.5% against 45.0% on the measure defined below. Claude Opus 5.5 passed every rule on 16% of drafts from a bare prompt and on 50% with the guide. This guide can help a frontier model, but half of its drafts still violate my rules.
 
 ## Why can't a model just follow the rules?
 
