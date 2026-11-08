@@ -17,6 +17,10 @@ I saw a funny comment on X that LLMs have become good at everything except writi
 
 Training on cleaned-up examples and then running RL produced a model that follows my rules 6.5 points more often than the base model. I found that the harder problem was stopping models from claiming fabricated results.
 
+## Why do LLMs write like that?
+
+Large language models are phenomenal at marketing, speaking in sycophantic slogans and flowery writing that lacks substance. Good writing is marked instead by how clearly it communicates an idea. The gap starts in how these models are tuned. Human raters score polite, tidy drafts highly, so the model learns that em dashes, "delve", "tapestry" and the "it's not just X, it's Y" turn earn a high reward, and the same pressure sands off the tangents and idiosyncratic humor that mark a person's writing ([Thompson, 2025](https://www.linkedin.com/posts/nicholasxthompson_the-most-interesting-thing-in-tech-a-new-activity-7440907320953364480-kfYl); [NYT, 2025](https://www.nytimes.com/2025/12/03/magazine/chatbot-writing-style.html)). It also pulls models from different labs toward one safe corporate register. A model has no lived experience and no read on what its reader already knows, so it over-explains, falls into neat roadmaps and tidy conclusions, and reaches for an abstraction where a person would give a specific ([Reinhart et al., 2025](https://www.pnas.org/doi/10.1073/pnas.2422455122)).
+
 ## Why should we care?
 
 When a model drafts an email for you, it can fail in two ways. It can sound generic, and it can state something false that you then send under your name. Neither problem goes away with a stronger model or a longer prompt. With my style guide as its system prompt, the base Qwen3-1.7B did slightly worse than with no prompt at all, 41.5% against 45.0% on the measure defined below. Claude Opus 5.5 passed every rule on 16% of drafts from a bare prompt and on 50% with the guide. A guide helps a frontier model, but half its drafts still break a rule.
