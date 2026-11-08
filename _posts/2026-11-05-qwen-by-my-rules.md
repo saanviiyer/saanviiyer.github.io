@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Qwen by My Rules"
+title: "RLing Qwen to Write Better"
 dek: "Retraining a small LLM with RL to follow my style guide"
 date: 2026-11-05
 tag: "RL, LLMs"
