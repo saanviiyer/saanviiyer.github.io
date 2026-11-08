@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "RLing Qwen to Write Better"
-dek: "Retraining a small LLM with RL to follow my style guide"
+dek: "Retraining a small LLM with RL to follow my rules for clear writing"
 date: 2026-11-05
 tag: "RL, LLMs"
 section: technical
@@ -24,6 +24,29 @@ When a model drafts an email for you, it can fail in two ways. It can sound gene
 ## Why can't a model just follow the rules?
 
 Some constraints are free to enforce. To ban a letter, you can block every token containing it at decoding time. My rules live in grammar and phrasing. Spotting a passive takes a parse, and a superlative takes a phrase list, so no token mask can carry them. So I had to write each rule into the reward as a checker.
+
+Here are the rules, each scored by its own checker:
+
+- **Active voice:** name who acts, so "The results were validated" fails. This rule counts three times as much as any other.
+- **No superlatives:** no "best", "most important", "groundbreaking" or "novel".
+- **No banned phrasing:** no stock clichés, and no "I" plus a present-tense verb for ongoing work, such as "I aim" or "I study".
+- **No performed tone:** no put-on curiosity or dramatic openers like "Imagine…".
+- **No contrastive framing:** no "rather than", "instead of" or "not just X but Y".
+- **Punctuation:** no em dashes, and at most one colon per paragraph.
+- **Short lists:** no more than three items in a list.
+- **Sentence flow:** no run-ons, and no choppy strings of very short sentences.
+- **No origin stories:** no "ever since I…".
+- **Length:** stay in the word range for the genre, with no fragments or repetition.
+
+Experiment 2 added two more:
+
+- **No invented facts:** a number, date or name the prompt never gave should be a [blank] instead.
+- **Agency:** at most a quarter of the sentences may hide who acts behind an abstract subject or a weak verb.
+
+A judge model also rates every draft from 1 to 5 on two axes:
+
+- **Coherence:** does the draft read as clear, connected writing?
+- **Responds:** does it answer what the prompt asked for?
 
 I scored every draft in this post with one measure. A draft is <span class="ft-def" tabindex="0">usable<span class="ft-pop" role="tooltip">Every rule checker passes, and a judge model rates the draft at least 4 of 5 on coherence and on answering the request. The judge never sees the rules.</span></span> when it passes every rule and the judge accepts it.
 
@@ -49,27 +72,6 @@ I first fine-tuned the model on examples, then ran RL against my rules and a jud
 - **RL:** 125 steps of GRPO with 4 prompts × 8 samples, temperature 0.7, and a KL penalty that holds the policy near the fine-tuned model.
 - **Reward:** 0.5 × rule score + 0.5 × judge score, with Qwen3-4B as a local judge.
 - **Metric:** usable rate on 50 held-out prompts × 4 samples, with 90% intervals from a paired bootstrap over prompts.
-
-<details class="qr-details"><summary>The eleven rules</summary>
-<div class="ft-table-wrap">
-<table class="ft-table">
-  <thead><tr><th>Rule</th><th>Weight</th><th>What the checker looks for</th></tr></thead>
-  <tbody>
-    <tr><td>active_voice</td><td>3</td><td>spaCy parse: auxpass, nsubjpass, or be + past participle</td></tr>
-    <tr><td>no_em_dash</td><td>1</td><td>any em dash</td></tr>
-    <tr><td>no_contrastive</td><td>1</td><td>rather than, instead of, not just X but Y</td></tr>
-    <tr><td>list_cap</td><td>1</td><td>lists and inline series over three items</td></tr>
-    <tr><td>colon_limit</td><td>1</td><td>more than one colon in a paragraph</td></tr>
-    <tr><td>sentence_flow</td><td>1</td><td>overlong or run-on sentences, choppy runs, a mean-length floor in essays and blurbs</td></tr>
-    <tr><td>no_performed_tone</td><td>1</td><td>performed curiosity and dramatic voice (&quot;Imagine...&quot;)</td></tr>
-    <tr><td>banned_phrasing</td><td>1</td><td>I + present verb for ongoing work, audit, optimized, stock cliches</td></tr>
-    <tr><td>no_superlative</td><td>1</td><td>best, most + adjective, groundbreaking, novel, first to</td></tr>
-    <tr><td>no_anecdote</td><td>1</td><td>origin-story markers such as &quot;ever since I&quot;</td></tr>
-    <tr><td>length</td><td>1</td><td>genre word band, fragments, repetition, lowercase starts</td></tr>
-  </tbody>
-</table>
-</div>
-</details>
 
 **Results**
 
