@@ -15,7 +15,7 @@ excerpt: "I used GRPO to retrain Qwen3-1.7B on my own style guide. RL on clean e
 
 I saw a funny comment on X that LLMs have become good at everything except writing. We all know the "style" (or lack thereof) of writing that LLMs use, filled with passive, obfuscated slop. Tired of pasting my list of rules for stronger writing into every prompt, I tried retraining a model on those rules so it gets it right the first time. Inspired by [Kevin Wu's blog post](https://kevin-wu.ca/blog/qwn/) on RL to retrain an LLM, I took Qwen3-1.7B, a small local model, and used reinforcement learning to teach it my writing rules.
 
-RL on cleaned-up examples gave me a model that follows my rules 6.5 points more often than the base model. The harder problem, I found, was stopping models from claiming results nobody gave them.
+Training on cleaned-up examples and then running RL produced a model that follows my rules 6.5 points more often than the base model. I found that the harder problem was stopping models from claiming fabricated results.
 
 ## Why should we care?
 
