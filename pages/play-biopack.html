@@ -128,6 +128,17 @@ select, .btn { background: var(--raise); border: 1px solid var(--line); border-r
 .chip { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); background: var(--raise); border-radius: 4px; padding: 1px 5px; cursor: pointer; }
 .chip:hover { border-color: var(--accent); }
 .mut { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.codon { margin-top: 10px; }
+.cod { display: flex; gap: 6px; }
+.nts { display: flex; flex-direction: column; gap: 2px; }
+.nt { width: 30px; padding: 3px 0; border: 1px solid var(--line); background: var(--raise); border-radius: 5px; font-family: var(--mono); font-size: 12px; cursor: pointer; }
+.nt:hover { border-color: var(--accent); color: var(--accent); }
+.nt.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.codread { font-size: 12.5px; margin: 8px 0 0; }
+.codread b { font-family: var(--mono); }
+.rounds { margin: 10px 0 0; padding-left: 18px; font-family: var(--mono); font-size: 11.5px; line-height: 1.6; color: var(--muted); }
+.rounds li::marker { color: var(--accent); }
+.btn[disabled] { opacity: 0.45; cursor: default; }
 .mut .pick { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-size: 13px; }
 .mut table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .mut th, .mut td { text-align: right; padding: 3px 4px; border-bottom: 1px solid var(--line); }
@@ -248,6 +259,13 @@ const CARB = ['#33ff33','#00ffff','#ff33cc','#ffff00','#ff9999','#b3b3b3','#8080
 const CHAINC = ['#33ff33','#00ffff','#ff33cc','#ffff00','#ff9999','#8080ff','#ff8000','#fcd1a5','#80ffff','#bf8f4c','#a6e6a6','#ffbfdd'];
 const AA3 = {ALA:'A',ARG:'R',ASN:'N',ASP:'D',CYS:'C',GLN:'Q',GLU:'E',GLY:'G',HIS:'H',ILE:'I',LEU:'L',LYS:'K',MET:'M',PHE:'F',PRO:'P',SER:'S',THR:'T',TRP:'W',TYR:'Y',VAL:'V',MSE:'M',SEC:'U',PYL:'O',HID:'H',HIE:'H',HIP:'H',CYX:'C'};
 const NUC = {DA:'A',DC:'C',DG:'G',DT:'T',DU:'U',DI:'I',A:'A',C:'C',G:'G',U:'U',T:'T',I:'I'};
+/* Standard genetic code, table 1. Index a codon as i1*16 + i2*4 + i3 over "TCAG". */
+const NT = 'TCAG';
+const GENCODE = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG';
+const translate = c => { const i = NT.indexOf(c[0]) * 16 + NT.indexOf(c[1]) * 4 + NT.indexOf(c[2]); return i < 0 || c.length !== 3 ? null : GENCODE[i]; };
+/* One frequent human codon per amino acid. A PDB entry carries amino acids and no DNA,
+   so this stands in for a gene the structure never reports. */
+const REPCODON = {F:'TTC',L:'CTG',I:'ATC',M:'ATG',V:'GTG',S:'AGC',P:'CCC',T:'ACC',A:'GCC',Y:'TAC',H:'CAC',Q:'CAG',N:'AAC',K:'AAG',D:'GAC',E:'GAG',C:'TGC',W:'TGG',R:'CGG',G:'GGC'};
 const ONE2THREE = {A:'ALA',R:'ARG',N:'ASN',D:'ASP',C:'CYS',Q:'GLN',E:'GLU',G:'GLY',H:'HIS',I:'ILE',L:'LEU',K:'LYS',M:'MET',F:'PHE',P:'PRO',S:'SER',T:'THR',W:'TRP',Y:'TYR',V:'VAL'};
 const SOLV = new Set(['HOH','WAT','DOD','H2O','TIP','TIP3','SOL']);
 const METALS = new Set(['LI','NA','K','RB','CS','MG','CA','SR','BA','MN','FE','CO','NI','CU','ZN','CD','HG','PT','AU','AG','AL','GA','MO','W','V','CR','YB','GD','TB','EU','SM']);
@@ -276,6 +294,7 @@ let measurePick = [];
 let bgColor = '#000000';
 let focusRes = null;
 let mutTo = 'A';
+let codon = null, codonKey = '', rounds = [];
 let surfKey = '';
 let lastSeqClick = null;
 let distCount = 0;
@@ -825,7 +844,21 @@ function renderInspector() {
     if (mutTo === one) mutTo = one === 'A' ? 'G' : 'A';
     const to = mutTo;
     const row = (lab, a, b, f) => `<tr><td>${lab}</td><td>${f(a)}</td><td>${f(b)}</td><td>${typeof a === 'number' ? ((b - a) >= 0 ? '+' : '') + f(b - a) : ''}</td></tr>`;
+    const key = `${r.obj.name}/${r.chain}/${r.resi}`;
+    if (key !== codonKey) { codonKey = key; codon = REPCODON[one] || 'ATG'; }
+    const newAA = translate(codon);
     h += `<div class="mut"><div class="pick"><label for="mutto">Substitute ${esc(r.resn)}${r.resi} with</label><select id="mutto">${opts}</select></div>`;
+    h += '<div class="codon"><div class="subhead">Codon editor</div><div class="cod">';
+    for (let i = 0; i < 3; i++) {
+      h += '<div class="nts">' + [...'ACGT'].map(b => `<button type="button" class="nt${b === codon[i] ? ' on' : ''}" data-pos="${i}" data-nt="${b}" aria-pressed="${b === codon[i]}">${b}</button>`).join('') + '</div>';
+    }
+    h += '</div>';
+    const effect = newAA === null ? '' : newAA === '*' ? 'stop codon, which truncates the chain here'
+      : newAA === one ? 'silent, so the protein does not change' : `missense, ${one} becomes ${newAA}`;
+    h += `<p class="codread"><b>${esc(REPCODON[one] || '')}</b> &rarr; <b>${esc(codon)}</b>, ${esc(effect)}</p>`;
+    h += `<div class="acts"><button type="button" class="btn" data-act="keep"${newAA && newAA !== '*' && newAA !== one ? '' : ' disabled'}>Keep this round</button><button type="button" class="btn" data-act="resetcod">Reset codon</button></div>`;
+    if (rounds.length) h += `<ol class="rounds">${rounds.map(x => `<li>${esc(x)}</li>`).join('')}</ol><div class="acts"><button type="button" class="btn" data-act="clearrounds">Clear rounds</button></div>`;
+    h += '<p class="note">The structure file carries amino acids and no DNA, so the left codon is one frequent human codon for this residue and not the gene it came from. Each round records a choice you make. Nothing here searches for a better variant, and the structure keeps its original side chain.</p></div>';
     h += `<table><thead><tr><th></th><th>${one}</th><th>${to}</th><th>change</th></tr></thead><tbody>`;
     h += row('Side-chain volume (Å³)', VOL[one], VOL[to], v => v.toFixed(0));
     h += row('Hydropathy (Kyte–Doolittle)', KD[one], KD[to], v => v.toFixed(1));
@@ -852,10 +885,25 @@ function mutFlags(from, to, c) {
   if (!f.length) f.push(['info', c.rel != null && c.rel >= 0.5 ? 'Exposed position with no contacts flagged by these checks.' : 'No flags from these checks.']);
   return f;
 }
-$('#insp').addEventListener('change', e => { if (e.target.id === 'mutto') { mutTo = e.target.value; renderInspector(); } });
+$('#insp').addEventListener('change', e => { if (e.target.id === 'mutto') { mutTo = e.target.value; codon = REPCODON[mutTo] || codon; renderInspector(); } });
 $('#insp').addEventListener('click', e => {
   const c = e.target.closest('[data-res]'); if (c) { focusRes = residues[+c.dataset.res]; run(`inspect ${resSelStr(focusRes)}`); return; }
+  const nt = e.target.closest('[data-nt]');
+  if (nt && codon) {
+    codon = codon.slice(0, +nt.dataset.pos) + nt.dataset.nt + codon.slice(+nt.dataset.pos + 1);
+    const aa = translate(codon);
+    if (aa && aa !== '*' && aa !== AA3[focusRes.resn]) mutTo = aa;
+    renderInspector(); return;
+  }
   const b = e.target.closest('[data-act]'); if (!b || !focusRes) return;
+  if (b.dataset.act === 'keep') {
+    const one = AA3[focusRes.resn], aa = translate(codon);
+    rounds.push(`${focusRes.resn}${focusRes.resi} ${REPCODON[one]} to ${codon}, ${one} to ${aa}`);
+    out(` Round ${rounds.length}: ${rounds[rounds.length - 1]}. The structure still holds the original side chain.`, 'dim');
+    renderInspector(); return;
+  }
+  if (b.dataset.act === 'resetcod') { codon = REPCODON[AA3[focusRes.resn]] || codon; renderInspector(); return; }
+  if (b.dataset.act === 'clearrounds') { rounds = []; renderInspector(); return; }
   const s = resSelStr(focusRes);
   if (b.dataset.act === 'zoom') run(`zoom ${s}, 6`);
   else run(`select focus, ${s}; select env, byres (focus around 5) and not solvent and not focus; show sticks, (focus or env) and not hydrogens; polar focus; zoom focus, 7`);
@@ -1029,6 +1077,7 @@ const CMDS = {
 };
 CMDS.cls = () => { $('#log').innerHTML = ''; };
 CMDS.mutate = () => out(' Pick a residue, then use "Substitute with" in the residue inspector to compare amino acids at that position.', 'dim');
+CMDS.codon = () => out(' Pick a residue, then click bases in the codon editor to see which amino acid the new codon reads as. "Keep this round" records the change. The codon shown is a frequent human codon for that residue, since the structure file holds no DNA.', 'dim');
 
 function run(line, echo = true) {
   line = (line || '').trim(); if (!line) return;
