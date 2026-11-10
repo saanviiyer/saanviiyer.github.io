@@ -5,6 +5,7 @@ date: 2026-10-12
 tag: "Book"
 section: technical
 rank: 2
+featured: true
 math: true
 thumb: /assets/images/eval-biology-article/winners-curse.png
 permalink: /writing/evaluating-ai-for-biology/

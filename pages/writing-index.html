@@ -3,14 +3,41 @@ title: Writing, Saanvi S. Subramanian
 permalink: /writing/
 ---
 
-<section class="pf-section">
-  <h2 class="pf-heading">technical</h2>
+<style>
+/* Filter row: boxed labels, the live one filled in. */
+.wfilt { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 30px; }
+.wfilt button { font-family: "Source Serif 4", Georgia, serif; font-size: 1.04rem; line-height: 1.2;
+  background: transparent; color: var(--ink); border: 2px solid var(--ink); border-radius: 3px;
+  padding: 10px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; }
+.wfilt button:hover { background: rgba(23, 9, 15, 0.06); }
+.wfilt button[aria-pressed="true"] { background: var(--ink); color: var(--post-bg); }
+.wfilt button:focus-visible { outline: 3px solid #2f5fc4; outline-offset: 2px; }
+.wfilt .star { font-size: 0.95em; }
+.wfilt .n { font-family: var(--sans); font-size: 0.72rem; opacity: 0.6; }
+.wempty { font-family: var(--sans); color: var(--muted); padding: 18px 0; }
+:root[data-theme="dark"] .wfilt button:hover { background: rgba(255, 255, 255, 0.08); }
+</style>
 
-  {% comment %} site.posts is newest-first, so the most recent post (connections) leads. {% endcomment %}
-  <ul class="wlist">
+<section class="pf-section">
+  <nav class="wfilt" id="wfilt" aria-label="Filter writing">
+    <button type="button" data-f="first" aria-pressed="true">things to look at first <span class="star" aria-hidden="true">&#9734;</span></button>
+    <button type="button" data-f="all" aria-pressed="false">everything</button>
+    <button type="button" data-f="projects" aria-pressed="false">projects</button>
+    <button type="button" data-f="thoughts" aria-pressed="false">thoughts</button>
+    <button type="button" data-f="interpretability" aria-pressed="false">interpretability</button>
+    <button type="button" data-f="education" aria-pressed="false">education</button>
+  </nav>
+
+  <h2 class="pf-heading wsec">technical</h2>
+
+  {% comment %} site.posts is newest-first, so the most recent post leads. Each entry carries the
+  topics it belongs to, read from its own tag, and the filter row above hides the rest. {% endcomment %}
+  <ul class="wlist wsec">
     {% assign tech = site.posts | where: "section", "technical" %}
     {% for post in tech %}
-    <li class="witem">
+    {% assign t = post.tag | default: '' %}
+    {% capture topics %}{% if post.featured %}first {% endif %}{% if t contains 'Book' or t contains 'Guide' %}education {% endif %}{% if t contains 'Interpretability' or t contains 'NeuroAI' %}interpretability {% endif %}{% if t contains 'Essay' %}thoughts {% endif %}{% unless t contains 'Book' or t contains 'Guide' or t contains 'Essay' %}projects{% endunless %}{% endcapture %}
+    <li class="witem" data-topics="{{ topics | strip }}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
@@ -19,7 +46,7 @@ permalink: /writing/
     </li>
     {% endfor %}
 
-    <li class="witem">
+    <li class="witem" data-topics="projects">
       <div class="witem-head">
         <a class="witem-title" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">Integrated Core RFP, ML-guided directed evolution of PETases</a>
         <span class="witem-date">Spring 2026</span>
@@ -27,13 +54,13 @@ permalink: /writing/
     </li>
   </ul>
 
-  <h2 class="pf-heading" style="margin-top: 64px;">non-technical</h2>
+  <h2 class="pf-heading wsec" style="margin-top: 64px;">non-technical</h2>
 
-  <ul class="wlist">
+  <ul class="wlist wsec">
     <!-- Substack posts: auto-synced from the RSS feed by scripts/fetch_substack.py
          (run on a schedule by .github/workflows/substack.yml). -->
     {% for p in site.data.substack %}
-    <li class="witem">
+    <li class="witem" data-topics="thoughts">
       <div class="witem-head">
         <a class="witem-title" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a>
         <span class="witem-date">{{ p.date | date: "%B %Y" }}</span>
@@ -45,7 +72,7 @@ permalink: /writing/
     {% comment %} on-site essays (philosophy + older personal essays), newest first {% endcomment %}
     {% assign nt = site.posts | where: "section", "nontechnical" %}
     {% for post in nt %}
-    <li class="witem">
+    <li class="witem" data-topics="thoughts{% if post.featured %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
@@ -53,4 +80,75 @@ permalink: /writing/
     </li>
     {% endfor %}
   </ul>
+
+  <p class="wempty" id="wempty" hidden>Nothing here yet under that filter.</p>
 </section>
+
+<script>
+/* Filter the writing list in place. Without this script every entry stays visible. */
+(function () {
+  var bar = document.getElementById('wfilt');
+  if (!bar) return;
+  var items = Array.prototype.slice.call(document.querySelectorAll('.witem'));
+  var empty = document.getElementById('wempty');
+
+  function counts() {
+    bar.querySelectorAll('button').forEach(function (b) {
+      var f = b.dataset.f;
+      var n = f === 'all' ? items.length : items.filter(function (li) {
+        return (' ' + li.dataset.topics + ' ').indexOf(' ' + f + ' ') > -1;
+      }).length;
+      if (!b.querySelector('.n')) {
+        var s = document.createElement('span');
+        s.className = 'n';
+        b.appendChild(s);
+      }
+      b.querySelector('.n').textContent = n;
+    });
+  }
+
+  function apply(f) {
+    var shown = 0;
+    items.forEach(function (li) {
+      var on = f === 'all' || (' ' + li.dataset.topics + ' ').indexOf(' ' + f + ' ') > -1;
+      li.hidden = !on;
+      if (on) shown++;
+    });
+    /* A heading and its list disappear together once nothing under them is left. */
+    document.querySelectorAll('ul.wlist').forEach(function (ul) {
+      var any = Array.prototype.some.call(ul.querySelectorAll('.witem'), function (li) { return !li.hidden; });
+      ul.hidden = !any;
+      var h = ul.previousElementSibling;
+      while (h && !h.classList.contains('pf-heading')) h = h.previousElementSibling;
+      if (h) h.hidden = !any;
+    });
+    /* The first visible row in each list keeps the no-rule treatment. */
+    document.querySelectorAll('ul.wlist').forEach(function (ul) {
+      var first = true;
+      Array.prototype.forEach.call(ul.querySelectorAll('.witem'), function (li) {
+        if (li.hidden) return;
+        li.style.borderTop = first ? 'none' : '';
+        li.style.paddingTop = first ? '6px' : '';
+        first = false;
+      });
+    });
+    empty.hidden = shown > 0;
+    bar.querySelectorAll('button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.f === f));
+    });
+  }
+
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-f]');
+    if (!b) return;
+    apply(b.dataset.f);
+    try { localStorage.setItem('writing-filter', b.dataset.f); } catch (err) {}
+  });
+
+  var start = 'first';
+  try { var saved = localStorage.getItem('writing-filter'); if (saved) start = saved; } catch (err) {}
+  if (!bar.querySelector('button[data-f="' + start + '"]')) start = 'first';
+  counts();
+  apply(start);
+})();
+</script>

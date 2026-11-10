@@ -5,6 +5,7 @@ date: 2026-10-12
 tag: "Guide"
 section: technical
 rank: 3
+featured: true
 math: true
 dek: "An evaluation defined on outputs is gameable and incomplete. Reading the computation is the complement, and inside a protein language model the instrument turns out to be the hard part."
 authors:
