@@ -54,6 +54,7 @@ h1 em { font-style: italic; color: var(--live); }
 .ctl .hint { font-size: 12.5px; color: var(--muted); }
 
 .body { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 22px; align-items: start; }
+.body > * { min-width: 0; }
 
 .spine { display: flex; flex-direction: column; gap: 0; }
 .organ { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px;
