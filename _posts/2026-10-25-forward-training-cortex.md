@@ -6,6 +6,7 @@ date: 2026-10-25
 tag: "NeuroAI"
 section: technical
 rank: 4
+featured: true
 math: true
 thumb: /assets/images/forward-training/sketch-apical.webp
 permalink: /writing/apical-dust/

@@ -16,16 +16,17 @@ permalink: /writing/
 .wfilt .n { font-family: var(--sans); font-size: 0.72rem; opacity: 0.6; }
 .wempty { font-family: var(--sans); color: var(--muted); padding: 18px 0; }
 :root[data-theme="dark"] .wfilt button:hover { background: rgba(255, 255, 255, 0.08); }
+/* No rule above the filter row. */
+.pf-section { border-top: none; padding-top: 8px; }
 </style>
 
 <section class="pf-section">
   <nav class="wfilt" id="wfilt" aria-label="Filter writing">
     <button type="button" data-f="first" aria-pressed="true">things to look at first <span class="star" aria-hidden="true">&#9734;</span></button>
     <button type="button" data-f="all" aria-pressed="false">everything</button>
+    <button type="button" data-f="technical" aria-pressed="false">technical</button>
+    <button type="button" data-f="nontechnical" aria-pressed="false">non-technical</button>
     <button type="button" data-f="projects" aria-pressed="false">projects</button>
-    <button type="button" data-f="thoughts" aria-pressed="false">thoughts</button>
-    <button type="button" data-f="interpretability" aria-pressed="false">interpretability</button>
-    <button type="button" data-f="education" aria-pressed="false">education</button>
   </nav>
 
   <h2 class="pf-heading wsec">technical</h2>
@@ -36,7 +37,7 @@ permalink: /writing/
     {% assign tech = site.posts | where: "section", "technical" %}
     {% for post in tech %}
     {% assign t = post.tag | default: '' %}
-    {% capture topics %}{% if post.featured %}first {% endif %}{% if t contains 'Book' or t contains 'Guide' %}education {% endif %}{% if t contains 'Interpretability' or t contains 'NeuroAI' %}interpretability {% endif %}{% if t contains 'Essay' %}thoughts {% endif %}{% unless t contains 'Book' or t contains 'Guide' or t contains 'Essay' %}projects{% endunless %}{% endcapture %}
+    {% capture topics %}technical {% if post.featured %}first {% endif %}{% unless t contains 'Book' or t contains 'Guide' or t contains 'Essay' %}projects{% endunless %}{% endcapture %}
     <li class="witem" data-topics="{{ topics | strip }}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
@@ -46,7 +47,7 @@ permalink: /writing/
     </li>
     {% endfor %}
 
-    <li class="witem" data-topics="projects">
+    <li class="witem" data-topics="technical projects first">
       <div class="witem-head">
         <a class="witem-title" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">Integrated Core RFP, ML-guided directed evolution of PETases</a>
         <span class="witem-date">Spring 2026</span>
@@ -59,8 +60,9 @@ permalink: /writing/
   <ul class="wlist wsec">
     <!-- Substack posts: auto-synced from the RSS feed by scripts/fetch_substack.py
          (run on a schedule by .github/workflows/substack.yml). -->
+    {% comment %} the hobby-maxxing piece is one of the entries pinned to "things to look at first" {% endcomment %}
     {% for p in site.data.substack %}
-    <li class="witem" data-topics="thoughts">
+    <li class="witem" data-topics="nontechnical{% if p.url contains 'hobby-maxxing' %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a>
         <span class="witem-date">{{ p.date | date: "%B %Y" }}</span>
@@ -72,7 +74,7 @@ permalink: /writing/
     {% comment %} on-site essays (philosophy + older personal essays), newest first {% endcomment %}
     {% assign nt = site.posts | where: "section", "nontechnical" %}
     {% for post in nt %}
-    <li class="witem" data-topics="thoughts{% if post.featured %} first{% endif %}">
+    <li class="witem" data-topics="nontechnical{% if post.featured %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
