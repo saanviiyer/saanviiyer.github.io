@@ -1,0 +1,364 @@
+---
+layout: null
+permalink: /playground/lens/
+---
+{% raw %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neuron Lens, in Miniature, Saanvi S. Subramanian</title>
+<meta name="description" content="A neuron browser for a language model your browser trains. Every description comes from the neuron's own weights and activations.">
+<style>:root { color-scheme: dark; } body { margin: 0; } [hidden] { display: none !important; }</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: filters and a neuron list on the left, the opened neuron on the right. */
+:root {
+  --bg: #0c0e13; --slab: #141821; --raise: #1c222d; --ink: #ece6da; --muted: #8e93a3;
+  --line: #2a3140; --live: #ff6a45; --quiet: #49d6c0; --dead: #4a5365;
+  --display: "Fraunces", Georgia, serif; --sans: "Work Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+button, select, input { font: inherit; color: inherit; }
+button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--live); outline-offset: 2px; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.back { font-family: var(--mono); font-size: 12px; color: var(--quiet); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.1rem, 5.5vw, 3.2rem); line-height: 1.05; margin: 16px 0 10px; }
+h1 em { font-style: italic; color: var(--live); }
+.dek { color: var(--muted); max-width: 64ch; margin: 0 0 18px; }
+
+.stats { display: flex; flex-wrap: wrap; gap: 10px 26px; font-family: var(--mono); font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; margin-bottom: 20px; }
+.stats b { color: var(--ink); font-weight: 500; }
+.train { font-family: var(--mono); font-size: 12.5px; color: var(--live); margin-bottom: 18px; }
+
+.body { display: grid; grid-template-columns: minmax(0, 390px) minmax(0, 1fr); gap: 22px; align-items: start; }
+.body > * { min-width: 0; }
+
+.rail { background: var(--slab); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.f { font-family: var(--mono); font-size: 11.5px; background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; cursor: pointer; color: var(--muted); }
+.f:hover { border-color: var(--live); color: var(--live); }
+.f[aria-pressed="true"] { background: var(--live); border-color: var(--live); color: #0c0e13; }
+.search { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 11px; font-family: var(--mono); font-size: 12.5px; margin-bottom: 12px; }
+.list { display: flex; flex-direction: column; gap: 4px; max-height: 60vh; overflow-y: auto; }
+.nrow { text-align: left; background: transparent; border: 0; border-left: 2px solid transparent; border-radius: 6px; padding: 8px 10px; cursor: pointer; }
+.nrow:hover { background: var(--raise); }
+.nrow.on { background: var(--raise); border-left-color: var(--live); }
+.nrow .id { font-family: var(--mono); font-size: 11px; color: var(--live); }
+.nrow .d1 { display: block; font-size: 13px; margin-top: 2px; }
+.nrow .d2 { display: block; font-size: 12.5px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 13px; padding: 10px; }
+
+.panel { background: var(--slab); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+.panel h2 { font-family: var(--display); font-weight: 400; font-size: 1.7rem; margin: 0 0 2px; }
+.panel h2 span { font-family: var(--mono); font-size: 0.8rem; color: var(--live); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 16px; }
+.tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; color: var(--muted); }
+.tag.hot { border-color: var(--live); color: var(--live); }
+.sub { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 20px 0 8px; }
+.sub:first-of-type { margin-top: 0; }
+
+.ex { display: flex; flex-direction: column; gap: 5px; font-family: var(--mono); font-size: 12.5px; }
+.ex .line { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+.ex .t { padding: 2px 5px; border-radius: 4px; }
+.ex .v { color: var(--muted); margin-left: 6px; font-size: 11px; }
+
+.wb { display: flex; flex-direction: column; gap: 4px; font-family: var(--mono); font-size: 12px; }
+.wrow { display: grid; grid-template-columns: 74px minmax(0, 1fr) 46px; align-items: center; gap: 8px; }
+.wrow .bar { height: 13px; border-radius: 3px; }
+.wrow .num { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 20px 26px; }
+
+.hist { display: flex; align-items: flex-end; gap: 2px; height: 56px; }
+.hist div { flex: 1; background: var(--quiet); border-radius: 2px 2px 0 0; min-height: 1px; }
+.note { font-size: 13px; color: var(--muted); margin: 16px 0 0; }
+.keys { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-top: 14px; }
+.ft { margin-top: 34px; color: var(--muted); font-size: 13px; max-width: 72ch; }
+.ft b { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 900px) { .body { grid-template-columns: minmax(0, 1fr); } .list { max-height: 44vh; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/pages/playground/">&larr; playground</a>
+  <h1>Neuron lens, in <em>miniature</em></h1>
+  <p class="dek">Neuron Lens lets you walk through the neurons of an 8-billion-parameter model and read what each one does. Your browser cannot hold a model that size, so this page trains a small one on a language I generated, then writes every description from that neuron's own weights and activations.</p>
+
+  <div class="stats" id="stats"></div>
+  <div class="train" id="train">Training the model in your browser.</div>
+
+  <div class="body">
+    <div class="rail">
+      <div class="filters" id="filters"></div>
+      <input class="search" id="q" type="search" placeholder="search a word, such as cat" autocomplete="off">
+      <div class="list" id="list"></div>
+    </div>
+    <div class="panel" id="panel"><p class="note">The neurons appear once training finishes.</p></div>
+  </div>
+
+  <p class="ft"><b>What the labels mean.</b> A neuron fires when its activation rises above zero, and I call the words that raise it the most its trigger words. The predicts and suppresses lists come straight from the neuron's output weights, which add to or subtract from each word's score when the neuron fires. No language model writes these descriptions, so they say only what the weights say, and a neuron that does several jobs at once will look vague here. That is the honest version of what interpretability at this scale can tell you.</p>
+</div>
+
+<script>
+/* ---------- a small language with known structure ---------- */
+const CAT = {
+  det: ['the', 'a'],
+  adj: ['red', 'small', 'loud', 'cold'],
+  animal: ['cat', 'dog', 'bird', 'fox'],
+  thing: ['ball', 'cup', 'box', 'hat'],
+  verb: ['sees', 'chases', 'holds', 'drops'],
+  place: ['park', 'roof', 'garden', 'kitchen'],
+  fn: ['in', 'on', 'and', '.']
+};
+const VOCAB = [].concat(...Object.values(CAT));
+const V = VOCAB.length, IX = {}; VOCAB.forEach((w, i) => IX[w] = i);
+const catOf = {}; for (const c in CAT) CAT[c].forEach(w => catOf[w] = c);
+const CTX = 3, DE = 12, H = 32, DIN = CTX * DE;
+
+let seed = 20261109;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+const pick = a => a[Math.floor(rnd() * a.length)];
+const randn = () => { const u = rnd() || 1e-9, v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(6.283185307 * v); };
+
+/* Every sentence comes from one of these frames, so each word sits in a role the model can learn. */
+function sentence() {
+  const f = Math.floor(rnd() * 4);
+  if (f === 0) return ['the', pick(CAT.adj), pick(CAT.animal), pick(CAT.verb), 'the', pick(CAT.adj), pick(CAT.thing), '.'];
+  if (f === 1) return ['a', pick(CAT.animal), pick(CAT.verb), 'a', pick(CAT.thing), 'in', 'the', pick(CAT.place), '.'];
+  if (f === 2) return ['the', pick(CAT.animal), 'and', 'the', pick(CAT.animal), pick(CAT.verb), 'the', pick(CAT.thing), '.'];
+  return ['a', pick(CAT.adj), pick(CAT.thing), 'on', 'the', pick(CAT.place), '.'];
+}
+const data = [];
+for (let s = 0; s < 900; s++) {
+  const w = sentence().map(x => IX[x]);
+  for (let i = CTX; i < w.length; i++) data.push({ ctx: w.slice(i - CTX, i), y: w[i] });
+}
+
+/* ---------- the model: three words in, one word out ---------- */
+const E = [], W1 = [], b1 = new Array(H).fill(0), W2 = [], b2 = new Array(V).fill(0);
+for (let v = 0; v < V; v++) E.push(Array.from({ length: DE }, () => randn() * 0.5));
+for (let h = 0; h < H; h++) W1.push(Array.from({ length: DIN }, () => randn() * 0.18));
+for (let v = 0; v < V; v++) W2.push(Array.from({ length: H }, () => randn() * 0.18));
+
+const mk = a => a.map(r => Array.isArray(r) ? r.map(() => 0) : 0);
+const mE = mk(E), vE = mk(E), mW1 = mk(W1), vW1 = mk(W1), mb1 = mk(b1), vb1 = mk(b1),
+      mW2 = mk(W2), vW2 = mk(W2), mb2 = mk(b2), vb2 = mk(b2);
+let step = 0;
+
+function inputVec(ctx) { const x = new Array(DIN).fill(0); for (let p = 0; p < CTX; p++) for (let d = 0; d < DE; d++) x[p * DE + d] = E[ctx[p]][d]; return x; }
+function hidden(x) { const h = []; for (let i = 0; i < H; i++) { let a = b1[i]; for (let d = 0; d < DIN; d++) a += W1[i][d] * x[d]; h.push(a > 0 ? a : 0); } return h; }
+function logits(h) { const o = []; for (let v = 0; v < V; v++) { let a = b2[v]; for (let i = 0; i < H; i++) a += W2[v][i] * h[i]; o.push(a); } return o; }
+function softmax(a) { const m = Math.max(...a), e = a.map(v => Math.exp(v - m)), s = e.reduce((x, y) => x + y, 0); return e.map(v => v / s); }
+
+function adam(P, G, M, Vv, lr) {
+  for (let i = 0; i < P.length; i++) {
+    if (Array.isArray(P[i])) { adam(P[i], G[i], M[i], Vv[i], lr); continue; }
+    const g = G[i];
+    M[i] = 0.9 * M[i] + 0.1 * g; Vv[i] = 0.999 * Vv[i] + 0.001 * g * g;
+    P[i] -= lr * (M[i] / (1 - Math.pow(0.9, step))) / (Math.sqrt(Vv[i] / (1 - Math.pow(0.999, step))) + 1e-8);
+  }
+}
+function trainStep(bs) {
+  const gE = mk(E), gW1 = mk(W1), gb1 = mk(b1), gW2 = mk(W2), gb2 = mk(b2);
+  let loss = 0;
+  for (let b = 0; b < bs; b++) {
+    const ex = data[Math.floor(rnd() * data.length)];
+    const x = inputVec(ex.ctx), h = hidden(x), p = softmax(logits(h));
+    loss -= Math.log(Math.max(1e-9, p[ex.y]));
+    const dlog = p.slice(); dlog[ex.y] -= 1;
+    const dh = new Array(H).fill(0);
+    for (let v = 0; v < V; v++) { gb2[v] += dlog[v]; for (let i = 0; i < H; i++) { gW2[v][i] += dlog[v] * h[i]; dh[i] += dlog[v] * W2[v][i]; } }
+    const dx = new Array(DIN).fill(0);
+    for (let i = 0; i < H; i++) {
+      if (h[i] <= 0) continue;
+      gb1[i] += dh[i];
+      for (let d = 0; d < DIN; d++) { gW1[i][d] += dh[i] * x[d]; dx[d] += dh[i] * W1[i][d]; }
+    }
+    for (let p2 = 0; p2 < CTX; p2++) for (let d = 0; d < DE; d++) gE[ex.ctx[p2]][d] += dx[p2 * DE + d];
+  }
+  const n = 1 / bs;
+  const sc = g => { if (Array.isArray(g[0])) g.forEach(sc); else for (let i = 0; i < g.length; i++) g[i] *= n; };
+  [gE, gW1, gb1, gW2, gb2].forEach(sc);
+  step++;
+  adam(E, gE, mE, vE, 0.02); adam(W1, gW1, mW1, vW1, 0.02); adam(b1, gb1, mb1, vb1, 0.02);
+  adam(W2, gW2, mW2, vW2, 0.02); adam(b2, gb2, mb2, vb2, 0.02);
+  return loss / bs;
+}
+
+/* ---------- what each neuron turns out to do ---------- */
+let NEU = [], lastLoss = 0, acc = 0;
+function measure() {
+  const sample = data.slice(0, 1200);
+  const act = Array.from({ length: H }, () => []);
+  let right = 0;
+  sample.forEach(ex => {
+    const h = hidden(inputVec(ex.ctx));
+    const p = logits(h);
+    if (p.indexOf(Math.max(...p)) === ex.y) right++;
+    for (let i = 0; i < H; i++) act[i].push(h[i]);
+  });
+  acc = right / sample.length;
+
+  NEU = [];
+  for (let i = 0; i < H; i++) {
+    const a = act[i];
+    const live = a.filter(v => v > 1e-4).length / a.length;
+    const peak = Math.max(...a);
+    const order = a.map((v, k) => [v, k]).sort((x, y) => y[0] - x[0]);
+    const tops = order.slice(0, 6).filter(x => x[0] > 1e-4).map(x => ({ ctx: sample[x[1]].ctx, y: sample[x[1]].y, v: x[0] }));
+
+    /* Trigger words: the mean activation when a word sits in the slot just before the prediction. */
+    const perWord = new Array(V).fill(0), cnt = new Array(V).fill(0);
+    sample.forEach((ex, k) => { const w = ex.ctx[CTX - 1]; perWord[w] += a[k]; cnt[w]++; });
+    const trig = perWord.map((s, w) => ({ w, v: cnt[w] ? s / cnt[w] : 0 })).sort((x, y) => y.v - x.v);
+
+    const out = W2.map((row, v) => ({ v, w: row[i] })).sort((x, y) => y.w - x.w);
+    const hist = new Array(14).fill(0);
+    a.forEach(v => { const b = Math.min(13, Math.floor((v / (peak || 1)) * 14)); hist[b]++; });
+
+    NEU.push({ i, live, peak, tops, trig, out, hist,
+      preds: out.slice(0, 4).filter(x => x.w > 0.05),
+      supps: out.slice(-4).reverse().filter(x => x.w < -0.05) });
+  }
+  NEU.forEach(n => {
+    n.d1 = describeTriggers(n);
+    n.d2 = describeOutput(n);
+    n.kind = n.live < 0.02 ? 'dead' : (n.preds.length && n.preds[0].w > Math.abs((n.supps[0] || { w: 0 }).w) ? 'predictor' : 'suppressor');
+    n.narrow = n.trig[0].v > 0 && n.trig[1].v < n.trig[0].v * 0.25;
+  });
+}
+const names = list => list.map(x => VOCAB[x.v !== undefined ? x.v : x.w]).join(', ');
+function sharedCat(words) {
+  const cs = new Set(words.map(w => catOf[VOCAB[w]]));
+  return cs.size === 1 ? [...cs][0] : null;
+}
+const CATNAME = { det: 'the determiners', adj: 'adjectives', animal: 'animal words', thing: 'object words', verb: 'verbs', place: 'place words', fn: 'the joining words' };
+function describeTriggers(n) {
+  if (n.live < 0.02) return 'never fires on this corpus';
+  const top = n.trig.filter(t => t.v > n.trig[0].v * 0.45).slice(0, 4);
+  const c = sharedCat(top.map(t => t.w));
+  const ws = top.map(t => VOCAB[t.w]).join(', ');
+  if (top.length === 1) return `fires after ${VOCAB[top[0].w]}`;
+  return c ? `fires after ${CATNAME[c]} (${ws})` : `fires after ${ws}`;
+}
+function describeOutput(n) {
+  if (!n.preds.length && !n.supps.length) return 'moves no word much';
+  const pc = sharedCat(n.preds.map(p => p.v));
+  const sc = sharedCat(n.supps.map(p => p.v));
+  const p = n.preds.length ? `pushes up ${pc ? CATNAME[pc] : names(n.preds.slice(0, 3))}` : '';
+  const s = n.supps.length ? `pushes down ${sc ? CATNAME[sc] : names(n.supps.slice(0, 3))}` : '';
+  return [p, s].filter(Boolean).join(', ');
+}
+
+/* ---------- the viewer ---------- */
+const $ = s => document.querySelector(s);
+let open = 0, filter = 'all', query = '';
+const FILTERS = [['all', 'All'], ['predictor', 'Predictors'], ['suppressor', 'Suppressors'], ['narrow', 'One word'], ['dead', 'Dead']];
+
+function shown() {
+  let l = NEU.filter(n => filter === 'all' ? true : filter === 'narrow' ? n.narrow && n.kind !== 'dead' : n.kind === filter);
+  if (query) {
+    const q = query.toLowerCase();
+    l = l.filter(n => (n.d1 + ' ' + n.d2).toLowerCase().includes(q) || n.trig.slice(0, 4).some(t => VOCAB[t.w].includes(q)));
+  }
+  return l.sort((a, b) => b.peak - a.peak);
+}
+function renderRail() {
+  $('#filters').innerHTML = FILTERS.map(([k, l]) =>
+    `<button class="f" type="button" data-f="${k}" aria-pressed="${filter === k}">${l} <span>${k === 'all' ? NEU.length : NEU.filter(n => k === 'narrow' ? n.narrow && n.kind !== 'dead' : n.kind === k).length}</span></button>`).join('');
+  const l = shown();
+  $('#list').innerHTML = l.length ? l.map(n =>
+    `<button class="nrow${n.i === open ? ' on' : ''}" type="button" data-n="${n.i}">
+      <span class="id">n${n.i}</span>
+      <span class="d1">${n.d1}</span><span class="d2">${n.d2}</span></button>`).join('')
+    : '<p class="empty">No neuron matches that.</p>';
+}
+const heat = (v, p) => { const a = Math.max(0, Math.min(1, v / (p || 1))); return `background: rgba(255,106,69,${a * 0.85}); color:${a > 0.5 ? '#0c0e13' : 'var(--ink)'}`; };
+function bars(list, sign) {
+  const m = Math.max(...list.map(x => Math.abs(x.w)), 1e-6);
+  return '<div class="wb">' + list.map(x =>
+    `<div class="wrow"><span>${VOCAB[x.v]}</span>
+      <span><span class="bar" style="width:${Math.max(2, Math.abs(x.w) / m * 100)}%; background:${sign > 0 ? 'var(--live)' : 'var(--quiet)'}"></span></span>
+      <span class="num">${x.w.toFixed(2)}</span></div>`).join('') + '</div>';
+}
+function renderPanel() {
+  const n = NEU[open]; if (!n) return;
+  let h = `<h2>Neuron <span>n${n.i}</span></h2><p class="note" style="margin:0">${n.d1}, and it ${n.d2}.</p>`;
+  h += `<div class="tags"><span class="tag ${n.kind === 'dead' ? '' : 'hot'}">${n.kind}</span>`;
+  h += `<span class="tag">fires on ${(n.live * 100).toFixed(0)}% of contexts</span>`;
+  if (n.narrow && n.kind !== 'dead') h += '<span class="tag">one word</span>';
+  h += `<span class="tag">peak ${n.peak.toFixed(2)}</span></div>`;
+
+  if (n.kind === 'dead') {
+    h += '<p class="note">This neuron stays at zero across the sample, so it carries nothing. Networks this small usually keep a few.</p>';
+    $('#panel').innerHTML = h; return;
+  }
+
+  h += '<div class="sub">Where it fires hardest</div><div class="ex">';
+  h += n.tops.map(t => `<div class="line">${t.ctx.map((w, k) =>
+    `<span class="t" style="${k === CTX - 1 ? heat(t.v, n.peak) : 'background:var(--raise)'}">${VOCAB[w]}</span>`).join('')}
+    <span class="t" style="background:transparent;color:var(--muted)">&rarr; ${VOCAB[t.y]}</span><span class="v">${t.v.toFixed(2)}</span></div>`).join('');
+  h += '</div>';
+
+  h += '<div class="two"><div><div class="sub">Trigger words, mean activation</div>';
+  const m = n.trig[0].v || 1;
+  h += '<div class="wb">' + n.trig.slice(0, 6).map(t =>
+    `<div class="wrow"><span>${VOCAB[t.w]}</span><span><span class="bar" style="width:${Math.max(2, t.v / m * 100)}%; background:var(--live)"></span></span><span class="num">${t.v.toFixed(2)}</span></div>`).join('') + '</div>';
+  h += '</div><div><div class="sub">Activation spread</div>';
+  const hm = Math.max(...n.hist);
+  h += '<div class="hist">' + n.hist.map(c => `<div style="height:${Math.max(1, c / hm * 100)}%"></div>`).join('') + '</div>';
+  h += '<p class="note" style="margin-top:6px">Left is silent, right is its peak.</p></div></div>';
+
+  h += '<div class="two"><div><div class="sub">Predicts, output weight</div>' + bars(n.out.slice(0, 5), 1) + '</div>';
+  h += '<div><div class="sub">Suppresses</div>' + bars(n.out.slice(-5).reverse(), -1) + '</div></div>';
+  h += '<p class="keys">Press j and k to step through the list, and / to search.</p>';
+  $('#panel').innerHTML = h;
+}
+function renderStats() {
+  const params = V * DE + H * DIN + H + V * H + V;
+  $('#stats').innerHTML = `<span><b>${H}</b> neurons</span><span><b>${V}</b> words</span><span><b>${CTX}</b> words of context</span>
+    <span><b>${params.toLocaleString()}</b> parameters</span><span><b>${data.length.toLocaleString()}</b> training contexts</span>
+    <span>loss <b>${lastLoss.toFixed(3)}</b></span><span>next word right <b>${(acc * 100).toFixed(0)}%</b></span>`;
+}
+function draw() { renderStats(); renderRail(); renderPanel(); }
+
+$('#filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; renderRail(); });
+$('#list').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (!b) return; open = +b.dataset.n; renderRail(); renderPanel(); });
+$('#q').addEventListener('input', e => { query = e.target.value.trim(); renderRail(); });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') { if (e.key === 'Escape') e.target.blur(); return; }
+  if (e.key === '/') { e.preventDefault(); $('#q').focus(); return; }
+  if (e.key !== 'j' && e.key !== 'k') return;
+  const l = shown(); if (!l.length) return;
+  let at = l.findIndex(n => n.i === open);
+  at = e.key === 'j' ? Math.min(l.length - 1, at + 1) : Math.max(0, at - 1);
+  open = l[at].i; renderRail(); renderPanel();
+  const el = document.querySelector('.nrow.on'); if (el) el.scrollIntoView({ block: 'nearest' });
+});
+
+/* Train in slices so the page stays responsive, then read the neurons off the trained weights. */
+const TOTAL = 2600;
+function trainChunk() {
+  for (let i = 0; i < 130; i++) lastLoss = trainStep(48);
+  $('#train').textContent = `Training the model in your browser, step ${step} of ${TOTAL}. Loss ${lastLoss.toFixed(3)}.`;
+  if (step % 650 === 0) { measure(); draw(); }
+  if (step < TOTAL) setTimeout(trainChunk, 0);
+  else {
+    measure(); open = NEU.slice().sort((a, b) => b.peak - a.peak)[0].i; draw();
+    $('#train').textContent = `Trained in your browser, ${step} steps. Every description below comes from these weights.`;
+  }
+}
+setTimeout(trainChunk, 30);
+</script>
+</body>
+</html>
+{% endraw %}

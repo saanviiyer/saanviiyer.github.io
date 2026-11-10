@@ -27,6 +27,12 @@ permalink: /playground/
     </div>
 
     <div class="play-item">
+      <h3 class="play-title"><a href="{{ '/playground/lens/' | relative_url }}">neuron lens, in miniature</a></h3>
+      <p class="play-line">a neuron browser, after <a href="https://neuron-lens.com/" target="_blank" rel="noopener">neuron lens</a>, which walks through the neurons of an 8-billion-parameter model. your browser cannot hold one that size, so this page trains a small language model on a grammar i wrote and then reads all 32 of its neurons. every label comes from that neuron's own weights and activations, so you can check each one against the examples it fires on.</p>
+      <p class="play-links"><a href="{{ '/playground/lens/' | relative_url }}">interactive</a></p>
+    </div>
+
+    <div class="play-item">
       <h3 class="play-title"><a href="{{ '/playground/anatomy/' | relative_url }}">anatomy of a model</a></h3>
       <p class="play-line">a transformer small enough to read all the way through. eight dimensions, two attention heads, six words, and every weight set by hand so each part does one job you can watch. click an organ to see the numbers it is working with right now, or switch one off and watch what the model loses. take out the first attention head and the model stops reaching one word back.</p>
       <p class="play-links"><a href="{{ '/playground/anatomy/' | relative_url }}">interactive</a></p>
