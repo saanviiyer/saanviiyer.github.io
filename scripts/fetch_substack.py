@@ -21,7 +21,19 @@ OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "_data", "substack.json
 
 
 def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "saanvi-site-sync/1.0"})
+    # Substack returns 403 to the default urllib agent and to short custom ones from
+    # CI ranges, so send a normal browser agent and ask for the feed content types.
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+            ),
+            "Accept": "application/rss+xml, application/xml, text/xml, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+    )
     with urllib.request.urlopen(req, timeout=30) as resp:
         return resp.read()
 
