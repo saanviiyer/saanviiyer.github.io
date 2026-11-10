@@ -214,7 +214,13 @@ function measure() {
     const live = a.filter(v => v > 1e-4).length / a.length;
     const peak = Math.max(...a);
     const order = a.map((v, k) => [v, k]).sort((x, y) => y[0] - x[0]);
-    const tops = order.slice(0, 6).filter(x => x[0] > 1e-4).map(x => ({ ctx: sample[x[1]].ctx, y: sample[x[1]].y, v: x[0] }));
+    const tops = [], seen = new Set();          // one row per distinct context, strongest first
+    for (const [v, k] of order) {
+      if (v <= 1e-4 || tops.length >= 6) break;
+      const key = sample[k].ctx.join(' ');
+      if (seen.has(key)) continue;
+      seen.add(key); tops.push({ ctx: sample[k].ctx, y: sample[k].y, v });
+    }
 
     /* Trigger words: the mean activation when a word sits in the slot just before the prediction. */
     const perWord = new Array(V).fill(0), cnt = new Array(V).fill(0);
