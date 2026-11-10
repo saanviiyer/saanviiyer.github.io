@@ -1,0 +1,391 @@
+---
+layout: null
+permalink: /playground/anatomy/
+---
+{% raw %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anatomy of a Model, Saanvi S. Subramanian</title>
+<meta name="description" content="A dissectible transformer. Click an organ to see what it computes, remove one to see what the model loses.">
+<style>:root { color-scheme: dark; } body { margin: 0; } [hidden] { display: none !important; }</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: specimen on the left, the organ you opened on the right, prediction underneath. */
+:root {
+  --bg: #0c0e13;
+  --slab: #141821;
+  --raise: #1c222d;
+  --ink: #ece6da;
+  --muted: #8e93a3;
+  --line: #2a3140;
+  --live: #ff6a45;
+  --quiet: #49d6c0;
+  --dead: #4a5365;
+  --display: "Fraunces", Georgia, serif;
+  --sans: "Work Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+button, select { font: inherit; color: inherit; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--live); outline-offset: 2px; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.back { font-family: var(--mono); font-size: 12px; color: var(--quiet); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.04; margin: 16px 0 10px; letter-spacing: -0.01em; }
+h1 em { font-style: italic; color: var(--live); }
+.dek { color: var(--muted); max-width: 62ch; margin: 0 0 6px; }
+
+.sent { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin: 26px 0 8px; }
+.slot { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.slot .ix { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.slot select { background: var(--slab); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-family: var(--mono); font-size: 14px; cursor: pointer; }
+.slot.here select { border-color: var(--live); color: var(--live); }
+.sent .fin { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-bottom: 9px; }
+.ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 22px; }
+.btn { background: var(--slab); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+.btn:hover { border-color: var(--live); color: var(--live); }
+.ctl .hint { font-size: 12.5px; color: var(--muted); }
+
+.body { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 22px; align-items: start; }
+
+.spine { display: flex; flex-direction: column; gap: 0; }
+.organ { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px;
+  background: var(--slab); border: 1px solid var(--line); border-left: 3px solid var(--live); border-radius: 10px;
+  padding: 10px 12px; cursor: pointer; text-align: left; width: 100%; }
+.organ:hover { background: var(--raise); }
+.organ.on { border-color: var(--live); background: var(--raise); }
+.organ.off { border-left-color: var(--dead); opacity: 0.55; }
+.organ .nm { font-family: var(--display); font-size: 17px; }
+.organ .sh { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+.organ .kill { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; background: transparent; color: var(--muted); cursor: pointer; }
+.organ .kill:hover { border-color: var(--live); color: var(--live); }
+.organ.off .kill { border-color: var(--dead); color: var(--dead); }
+.vein { width: 2px; height: 14px; margin-left: 24px; background: linear-gradient(var(--live), var(--line)); }
+.vein.dim { background: var(--line); }
+.spine .grp { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px 2px; }
+.spine .grp:first-child { margin-top: 0; }
+
+.panel { background: var(--slab); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; min-width: 0; }
+.panel h2 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin: 0 0 4px; }
+.panel .role { color: var(--muted); margin: 0 0 14px; }
+.eq { font-family: var(--mono); font-size: 12.5px; color: var(--quiet); background: var(--bg); border-radius: 8px; padding: 9px 12px; margin: 0 0 16px; overflow-x: auto; white-space: nowrap; }
+.sub { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 18px 0 7px; }
+.sub:first-of-type { margin-top: 0; }
+.note { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
+
+.grid { display: grid; gap: 2px; font-family: var(--mono); font-size: 10.5px; overflow-x: auto; padding-bottom: 2px; }
+.grid .cell { padding: 5px 2px; text-align: center; border-radius: 3px; min-width: 38px; font-variant-numeric: tabular-nums; }
+.grid .lab { color: var(--muted); padding: 5px 6px 5px 0; text-align: right; white-space: nowrap; }
+.grid .hed { color: var(--muted); padding: 0 2px 4px; text-align: center; }
+
+.bars { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+.bar { display: grid; grid-template-columns: 62px minmax(0, 1fr) 54px; align-items: center; gap: 9px; font-family: var(--mono); font-size: 12px; }
+.bar .fill { height: 15px; border-radius: 3px; background: var(--quiet); }
+.bar.top .fill { background: var(--live); }
+.bar .pct { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.verdict { font-size: 15px; margin: 0 0 12px; }
+.verdict b { font-family: var(--mono); color: var(--live); }
+.out { margin-top: 22px; }
+
+.ft { margin-top: 34px; color: var(--muted); font-size: 13px; max-width: 70ch; }
+.ft b { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/pages/playground/">&larr; playground</a>
+  <h1>Anatomy of a <em>model</em></h1>
+  <p class="dek">This is a working transformer with 8 dimensions, 2 attention heads and 6 words. Click an organ to read its live numbers. Switch one off to see what the model loses.</p>
+
+  <div class="sent" id="sent"></div>
+  <div class="ctl">
+    <button class="btn" type="button" id="revive">Revive every organ</button>
+    <span class="hint" id="deadcount"></span>
+  </div>
+
+  <div class="body">
+    <div class="spine" id="spine"></div>
+    <div>
+      <div class="panel" id="panel"></div>
+      <div class="panel out" id="out"></div>
+    </div>
+  </div>
+
+  <p class="ft"><b>How to read this.</b> I set every weight by hand so each part does one job you can watch, and I did not train the model. The first head reads position and looks one word back. The second head looks at the word itself. The second head looks at the word itself and writes back at a quarter of the strength. The feed-forward layer amplifies whatever the stream carries most loudly. The model therefore answers with the previous word, and whichever organ you switch off tells you which part carried that behaviour. Head 1 is the clearest cut, since the answer falls back to the word the model is standing on.</p>
+</div>
+
+<script>
+/* ---------- the specimen ---------- */
+const VOCAB = ['the', 'cat', 'dog', 'sat', 'ran', 'mat'];
+const V = VOCAB.length;      // 6 words
+const D = 8;                 // 6 token dimensions, then 2 position dimensions
+const NPOS = 8;              // the rotor repeats after 8 slots
+const PA = 6, PB = 7;        // the two position dimensions
+const SHARP = 9;             // attention temperature
+const GAIN_PREV = 1.65;      // how hard head 1 writes back
+const GAIN_SELF = 0.42;      // how hard head 2 writes back
+const BOOST = 0.95;          // how hard the feed-forward layer amplifies
+const OUT_SCALE = 3.2;       // logit scale before the softmax
+
+/* Each word owns one dimension, so dimension v is word v and the unembedding is a read-off. */
+const emb = v => { const x = new Array(D).fill(0); x[v] = 1; return x; };
+const posvec = p => { const a = 2 * Math.PI * p / NPOS; const x = new Array(D).fill(0); x[PA] = Math.cos(a); x[PB] = Math.sin(a); return x; };
+
+let tokens = [0, 1, 3, 0, 5];   // the cat sat the mat
+let open = 'head1';
+const dead = new Set();
+
+const add = (a, b) => a.map((v, i) => v + b[i]);
+const scale = (a, k) => a.map(v => v * k);
+const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+const gelu = x => 0.5 * x * (1 + Math.tanh(0.7978845608 * (x + 0.044715 * x * x * x)));
+function layernorm(x) {
+  const m = x.reduce((s, v) => s + v, 0) / x.length;
+  const varr = x.reduce((s, v) => s + (v - m) * (v - m), 0) / x.length;
+  const sd = Math.sqrt(varr + 1e-5);
+  return x.map(v => (v - m) / sd);
+}
+function softmax(a) {
+  const m = Math.max(...a); const e = a.map(v => Math.exp(v - m)); const s = e.reduce((x, y) => x + y, 0);
+  return e.map(v => v / s);
+}
+const live = k => !dead.has(k);
+
+/* ---------- the forward pass, keeping every intermediate ---------- */
+function forward() {
+  const n = tokens.length;
+  const st = { n, emb: [], pos: [], x0: [], ln1: [], attn1: [], attn2: [], head1: [], head2: [], x1: [],
+    ln2: [], hid: [], mlp: [], x2: [], ln3: [], logits: [], probs: [] };
+
+  for (let i = 0; i < n; i++) {
+    const e = live('embed') ? emb(tokens[i]) : new Array(D).fill(0);
+    const p = live('pos') ? posvec(i) : new Array(D).fill(0);
+    st.emb.push(e); st.pos.push(p); st.x0.push(add(e, p));
+  }
+
+  st.ln1 = st.x0.map(x => live('ln1') ? layernorm(x) : x.slice());
+
+  /* Head 1 rotates its query one slot back, so it lands on the word before this one.
+     Head 2 leaves the query where it is, so it lands on this word. */
+  const theta = 2 * Math.PI / NPOS;
+  for (let i = 0; i < n; i++) {
+    const qa = st.ln1[i][PA], qb = st.ln1[i][PB];
+    const q1 = [qa * Math.cos(theta) + qb * Math.sin(theta), -qa * Math.sin(theta) + qb * Math.cos(theta)];
+    const q2 = [qa, qb];
+    const s1 = [], s2 = [];
+    for (let j = 0; j < n; j++) {
+      const k = [st.ln1[j][PA], st.ln1[j][PB]];
+      const m = j <= i ? 1 : 0;                    // causal mask
+      s1.push(m ? SHARP * (q1[0] * k[0] + q1[1] * k[1]) / Math.SQRT2 : -1e9);
+      s2.push(m ? SHARP * (q2[0] * k[0] + q2[1] * k[1]) / Math.SQRT2 : -1e9);
+    }
+    const a1 = softmax(s1), a2 = softmax(s2);
+    st.attn1.push(a1); st.attn2.push(a2);
+    const mix = a => { const o = new Array(D).fill(0); for (let j = 0; j < n; j++) for (let d = 0; d < V; d++) o[d] += a[j] * st.ln1[j][d]; return o; };
+    st.head1.push(live('head1') ? scale(mix(a1), GAIN_PREV) : new Array(D).fill(0));
+    st.head2.push(live('head2') ? scale(mix(a2), GAIN_SELF) : new Array(D).fill(0));
+  }
+
+  for (let i = 0; i < n; i++) {
+    const sub = add(st.head1[i], st.head2[i]);
+    st.x1.push(live('res1') ? add(st.x0[i], sub) : sub);
+  }
+
+  st.ln2 = st.x1.map(x => live('ln2') ? layernorm(x) : x.slice());
+  for (let i = 0; i < n; i++) {
+    const h = [], o = new Array(D).fill(0);
+    for (let v = 0; v < V; v++) {                 // one neuron per word, reading its own dimension
+      const a = gelu(1.6 * st.ln2[i][v] - 0.55);
+      h.push(a); o[v] = BOOST * a;
+    }
+    st.hid.push(h);
+    st.mlp.push(live('mlp') ? o : new Array(D).fill(0));
+    st.x2.push(live('res2') ? add(st.x1[i], st.mlp[i]) : st.mlp[i]);
+  }
+
+  st.ln3 = st.x2.map(x => live('ln3') ? layernorm(x) : x.slice());
+  for (let i = 0; i < n; i++) {
+    const lg = [];
+    for (let v = 0; v < V; v++) lg.push(OUT_SCALE * dot(st.ln3[i], emb(v)));
+    st.logits.push(lg); st.probs.push(softmax(lg));
+  }
+  return st;
+}
+
+/* ---------- organs ---------- */
+const ORGANS = [
+  { k: 'embed', grp: 'Input', nm: 'Embedding', sh: 'token &rarr; 8 numbers',
+    eq: 'x = E[token]',
+    role: 'Each word owns one of the first six dimensions, so dimension 2 carries the word "dog" and nothing else. Real models share dimensions between features, and I kept them separate here so you can read the stream directly.' },
+  { k: 'pos', grp: 'Input', nm: 'Position', sh: 'slot &rarr; 2 numbers',
+    eq: 'x += [cos(2πp/8), sin(2πp/8)]',
+    role: 'The last two dimensions hold the slot as a point on a circle. Attention uses only this part, so switching it off leaves the heads with no way to tell the words apart by order.' },
+  { k: 'ln1', grp: 'Attention block', nm: 'LayerNorm 1', sh: 'rescale to mean 0',
+    eq: 'x̂ = (x − mean) / sd',
+    role: 'Centres the stream and divides by its spread, which keeps the numbers entering attention at a steady size. Switching it off leaves the two position dimensions small beside the six word dimensions, the attention scores flatten, and the reach backwards fails.' },
+  { k: 'head1', grp: 'Attention block', nm: 'Head 1, one word back', sh: 'reads position',
+    eq: 'softmax(R(−θ)pᵢ · pⱼ / √2 × 9) V',
+    role: 'The query turns one slot backwards on the position circle before it meets the keys, so the dot product peaks at the word before this one. The head then copies that word back into the stream.' },
+  { k: 'head2', grp: 'Attention block', nm: 'Head 2, this word', sh: 'reads position',
+    eq: 'softmax(pᵢ · pⱼ / √2 × 9) V',
+    role: 'The same machinery with no turn, so the peak lands on the word itself. It writes back at a quarter of the strength of head 1, which is why head 1 wins the answer.' },
+  { k: 'res1', grp: 'Attention block', nm: 'Residual 1', sh: 'add, do not replace',
+    eq: 'x = x + attn(x̂)',
+    role: 'Attention adds to the stream instead of replacing it, so the word that arrived at the input is still there afterwards. Switching this off throws that copy away.' },
+  { k: 'ln2', grp: 'Feed-forward block', nm: 'LayerNorm 2', sh: 'rescale to mean 0',
+    eq: 'x̂ = (x − mean) / sd',
+    role: 'The same rescaling before the feed-forward layer reads the stream.' },
+  { k: 'mlp', grp: 'Feed-forward block', nm: 'Feed-forward', sh: '8 &rarr; 6 &rarr; 8',
+    eq: '0.95 · GELU(1.6 x̂ − 0.55)',
+    role: 'One neuron per word fires when the stream already carries that word, and its output writes that word back. The layer amplifies whatever is loudest, which here is the word head 1 fetched, so removing it leaves the answer standing and less certain.' },
+  { k: 'res2', grp: 'Feed-forward block', nm: 'Residual 2', sh: 'add, do not replace',
+    eq: 'x = x + ff(x̂)',
+    role: 'The second add. Without it the stream holds only what the feed-forward layer wrote, which still points at the same word because that layer copies the loudest one.' },
+  { k: 'ln3', grp: 'Output', nm: 'Final LayerNorm', sh: 'rescale to mean 0',
+    eq: 'x̂ = (x − mean) / sd',
+    role: 'The last rescaling before the stream is read as scores.' },
+  { k: 'read', grp: 'Output', nm: 'Unembedding', sh: '8 numbers &rarr; 6 scores',
+    eq: 'logitᵥ = 3.2 · x̂ · Eᵥ, then softmax',
+    role: 'Reading dimension v gives the score for word v, because every word owns its dimension here. The softmax turns the six scores into probabilities.' }
+];
+
+/* ---------- rendering ---------- */
+const $ = s => document.querySelector(s);
+const heat = v => {
+  const a = Math.min(1, Math.abs(v) / 1.6);
+  const c = v >= 0 ? '255,106,69' : '73,214,192';
+  return `background: rgba(${c}, ${0.08 + a * 0.62}); color: ${a > 0.55 ? '#0c0e13' : 'var(--ink)'}`;
+};
+const fmt = v => (Math.abs(v) < 0.005 ? '0' : v.toFixed(2));
+
+function rowGrid(labels, rows, cols) {
+  let h = `<div class="grid" style="grid-template-columns: auto repeat(${cols.length}, minmax(38px, 1fr))">`;
+  h += '<div></div>' + cols.map(c => `<div class="hed">${c}</div>`).join('');
+  rows.forEach((r, i) => {
+    h += `<div class="lab">${labels[i]}</div>` + r.map(v => `<div class="cell" style="${heat(v)}">${fmt(v)}</div>`).join('');
+  });
+  return h + '</div>';
+}
+
+function renderSentence() {
+  $('#sent').innerHTML = tokens.map((t, i) =>
+    `<label class="slot${i === tokens.length - 1 ? ' here' : ''}"><span class="ix">${i}</span>
+      <select data-slot="${i}">${VOCAB.map((w, v) => `<option value="${v}"${v === t ? ' selected' : ''}>${w}</option>`).join('')}</select></label>`
+  ).join('') + '<span class="fin">&rarr; next word?</span>';
+}
+
+function renderSpine() {
+  let h = '', grp = '';
+  ORGANS.forEach((o, i) => {
+    if (o.grp !== grp) { grp = o.grp; h += `<div class="grp">${grp}</div>`; }
+    else h += `<div class="vein${dead.has(o.k) ? ' dim' : ''}"></div>`;
+    const off = dead.has(o.k);
+    h += `<div class="organ${o.k === open ? ' on' : ''}${off ? ' off' : ''}" data-organ="${o.k}" role="button" tabindex="0">
+        <span><span class="nm">${o.nm}</span><span class="sh">${o.sh}</span></span>
+        <button type="button" class="kill" data-kill="${o.k}">${off ? 'revive' : 'remove'}</button>
+      </div>`;
+  });
+  $('#spine').innerHTML = h;
+  const n = dead.size;
+  $('#deadcount').textContent = n === 0 ? 'Every organ is live.' : n === 1 ? '1 organ is switched off.' : `${n} organs are switched off.`;
+}
+
+function renderPanel(st) {
+  const o = ORGANS.find(x => x.k === open);
+  const last = st.n - 1;
+  const words = tokens.map((t, i) => `${VOCAB[t]}<sub>${i}</sub>`);
+  let h = `<h2>${o.nm}</h2><p class="role">${o.role}</p><div class="eq">${o.eq}</div>`;
+  if (dead.has(o.k)) h += '<p class="role" style="color:var(--live)">This organ is switched off, so the numbers below show what reaches the next stage without it.</p>';
+
+  if (o.k === 'embed' || o.k === 'pos' || o.k === 'ln1') {
+    const src = o.k === 'embed' ? st.emb : o.k === 'pos' ? st.pos : st.ln1;
+    h += '<div class="sub">One row per slot, one column per dimension</div>';
+    h += rowGrid(words, src, ['d0', 'd1', 'd2', 'd3', 'd4', 'd5', 'pos a', 'pos b']);
+  } else if (o.k === 'head1' || o.k === 'head2') {
+    const a = o.k === 'head1' ? st.attn1 : st.attn2;
+    h += '<div class="sub">Attention, row attends to column</div>';
+    h += rowGrid(words, a, words);
+    h += '<div class="sub">What the head writes into the stream</div>';
+    h += rowGrid(words, (o.k === 'head1' ? st.head1 : st.head2).map(r => r.slice(0, V)), VOCAB);
+  } else if (o.k === 'res1' || o.k === 'res2') {
+    const src = o.k === 'res1' ? st.x1 : st.x2;
+    h += '<div class="sub">The stream after the add</div>';
+    h += rowGrid(words, src.map(r => r.slice(0, V)), VOCAB);
+  } else if (o.k === 'ln2' || o.k === 'ln3') {
+    const src = o.k === 'ln2' ? st.ln2 : st.ln3;
+    h += '<div class="sub">The stream after rescaling</div>';
+    h += rowGrid(words, src.map(r => r.slice(0, V)), VOCAB);
+  } else if (o.k === 'mlp') {
+    h += '<div class="sub">Neuron activations, one per word</div>';
+    h += rowGrid(words, st.hid, VOCAB);
+    h += '<div class="sub">What the layer subtracts</div>';
+    h += rowGrid(words, st.mlp.map(r => r.slice(0, V)), VOCAB);
+  } else if (o.k === 'read') {
+    h += '<div class="sub">Scores at every slot</div>';
+    h += rowGrid(words, st.logits, VOCAB);
+    h += `<p class="note">The last row, slot ${last}, is the one the model answers with.</p>`;
+  }
+  $('#panel').innerHTML = h;
+}
+
+function renderOut(st) {
+  const last = st.n - 1;
+  const p = st.probs[last];
+  const top = p.indexOf(Math.max(...p));
+  const prev = last > 0 ? tokens[last - 1] : null;
+  const cur = tokens[last];
+  let verdict;
+  if (prev === null) verdict = 'With one word in the sentence there is nothing behind it to fetch.';
+  else if (top === prev) verdict = `The model answers <b>${VOCAB[top]}</b>, the word one slot back.`;
+  else if (top === cur) verdict = `The model answers <b>${VOCAB[top]}</b>, the word it is standing on. The reach backwards is gone.`;
+  else verdict = `The model answers <b>${VOCAB[top]}</b>, which is neither the word behind it nor the word it is on.`;
+
+  let h = `<h2>Prediction</h2><p class="verdict">${verdict}</p><div class="bars">`;
+  VOCAB.forEach((w, v) => {
+    h += `<div class="bar${v === top ? ' top' : ''}"><span>${w}</span>
+      <span><span class="fill" style="width:${Math.max(1, p[v] * 100)}%"></span></span>
+      <span class="pct">${(p[v] * 100).toFixed(1)}%</span></div>`;
+  });
+  $('#out').innerHTML = h + '</div>';
+}
+
+function draw() {
+  const st = forward();
+  renderSpine(); renderPanel(st); renderOut(st);
+}
+
+$('#sent').addEventListener('change', e => {
+  const s = e.target.closest('[data-slot]'); if (!s) return;
+  tokens[+s.dataset.slot] = +s.value; draw();
+});
+$('#spine').addEventListener('click', e => {
+  const k = e.target.closest('[data-kill]');
+  if (k) { const key = k.dataset.kill; dead.has(key) ? dead.delete(key) : dead.add(key); draw(); return; }
+  const o = e.target.closest('[data-organ]');
+  if (o) { open = o.dataset.organ; draw(); }
+});
+$('#spine').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const o = e.target.closest('[data-organ]'); if (!o) return;
+  e.preventDefault(); open = o.dataset.organ; draw();
+});
+$('#revive').addEventListener('click', () => { dead.clear(); draw(); });
+
+renderSentence(); draw();
+</script>
+</body>
+</html>
+{% endraw %}
