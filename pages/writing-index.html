@@ -5,14 +5,17 @@ permalink: /writing/
 
 <style>
 /* Filter row: plain words in the heading face, the live one underlined. */
-.wfilt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 34px; margin: 4px 0 42px; }
+.wfilt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin: 4px 0 42px; }
 .wfilt button { font-family: var(--serif); font-size: clamp(1.25rem, 2.1vw, 1.7rem); font-weight: 500;
-  letter-spacing: -0.035em; line-height: 1.1; background: none; border: 0; padding: 0 0 4px;
-  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
-  display: inline-flex; align-items: baseline; gap: 8px; }
-.wfilt button:hover { color: var(--ink); }
-.wfilt button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
-.wfilt button:focus-visible { outline: 2px solid #2f5fc4; outline-offset: 4px; }
+  letter-spacing: -0.035em; line-height: 1.1; border: 0; cursor: pointer;
+  background: rgba(var(--neuron-rgb), 0.13); border-radius: 14px; padding: 0.12em 0.3em 0.2em;
+  color: var(--muted); display: inline-flex; align-items: baseline; gap: 8px; }
+.wfilt button:hover { color: var(--ink); background: rgba(var(--neuron-rgb), 0.2); }
+.wfilt button[aria-pressed="true"] { color: var(--ink); background: rgba(var(--neuron-rgb), 0.28); }
+.wfilt button:focus-visible { outline: 2px solid #2f5fc4; outline-offset: 3px; }
+:root[data-theme="dark"] .wfilt button { background: rgba(255, 134, 207, 0.14); }
+:root[data-theme="dark"] .wfilt button:hover { background: rgba(255, 134, 207, 0.2); }
+:root[data-theme="dark"] .wfilt button[aria-pressed="true"] { background: rgba(255, 134, 207, 0.28); }
 .wfilt .star { font-size: 0.8em; }
 .wfilt .n { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em; opacity: 0.55; }
 .wempty { font-family: var(--sans); color: var(--muted); padding: 18px 0; }
