@@ -7,6 +7,7 @@ tag: "RL, LLMs"
 section: technical
 rank: 4
 permalink: /writing/qwen-by-my-rules/
+x_url: "https://x.com/saanvisub/status/2119706287999242681"
 excerpt: "I used GRPO to retrain Qwen3-1.7B on my own style guide. RL on clean examples beat the base model by 6.5 points, and the harder problem turned out to be stopping models from claiming results nobody gave them."
 ---
 

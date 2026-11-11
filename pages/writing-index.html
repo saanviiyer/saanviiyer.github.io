@@ -4,20 +4,21 @@ permalink: /writing/
 ---
 
 <style>
-/* Filter row: boxed labels, the live one filled in. */
-.wfilt { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 30px; }
-.wfilt button { font-family: "Source Serif 4", Georgia, serif; font-size: 1.04rem; line-height: 1.2;
-  background: transparent; color: var(--ink); border: 2px solid var(--ink); border-radius: 3px;
-  padding: 10px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; }
-.wfilt button:hover { background: rgba(23, 9, 15, 0.06); }
-.wfilt button[aria-pressed="true"] { background: var(--ink); color: var(--post-bg); }
-.wfilt button:focus-visible { outline: 3px solid #2f5fc4; outline-offset: 2px; }
-.wfilt .star { font-size: 0.95em; }
-.wfilt .n { font-family: var(--sans); font-size: 0.72rem; opacity: 0.6; }
+/* Filter row: plain words in the heading face, the live one underlined. */
+.wfilt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 34px; margin: 4px 0 42px; }
+.wfilt button { font-family: var(--serif); font-size: clamp(1.25rem, 2.1vw, 1.7rem); font-weight: 500;
+  letter-spacing: -0.035em; line-height: 1.1; background: none; border: 0; padding: 0 0 4px;
+  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+  display: inline-flex; align-items: baseline; gap: 8px; }
+.wfilt button:hover { color: var(--ink); }
+.wfilt button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.wfilt button:focus-visible { outline: 2px solid #2f5fc4; outline-offset: 4px; }
+.wfilt .star { font-size: 0.8em; }
+.wfilt .n { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em; opacity: 0.55; }
 .wempty { font-family: var(--sans); color: var(--muted); padding: 18px 0; }
-:root[data-theme="dark"] .wfilt button:hover { background: rgba(255, 255, 255, 0.08); }
-/* No rule above the filter row. */
+/* No rule above the filter row, and the two lists read as one. */
 .pf-section { border-top: none; padding-top: 8px; }
+.wlist + .wlist { margin-top: 0; }
 </style>
 
 <section class="pf-section">
@@ -28,8 +29,6 @@ permalink: /writing/
     <button type="button" data-f="nontechnical" aria-pressed="false">non-technical</button>
     <button type="button" data-f="projects" aria-pressed="false">projects</button>
   </nav>
-
-  <h2 class="pf-heading wsec">technical</h2>
 
   {% comment %} site.posts is newest-first, so the most recent post leads. Each entry carries the
   topics it belongs to, read from its own tag, and the filter row above hides the rest. {% endcomment %}
@@ -54,8 +53,6 @@ permalink: /writing/
       </div>
     </li>
   </ul>
-
-  <h2 class="pf-heading wsec" style="margin-top: 64px;">non-technical</h2>
 
   <ul class="wlist wsec">
     <!-- Substack posts: auto-synced from the RSS feed by scripts/fetch_substack.py
@@ -116,23 +113,17 @@ permalink: /writing/
       li.hidden = !on;
       if (on) shown++;
     });
-    /* A heading and its list disappear together once nothing under them is left. */
+    /* A list with nothing left in it collapses, and the two lists read as one run of
+       entries, so only the very first visible row sits without a rule above it. */
     document.querySelectorAll('ul.wlist').forEach(function (ul) {
-      var any = Array.prototype.some.call(ul.querySelectorAll('.witem'), function (li) { return !li.hidden; });
-      ul.hidden = !any;
-      var h = ul.previousElementSibling;
-      while (h && !h.classList.contains('pf-heading')) h = h.previousElementSibling;
-      if (h) h.hidden = !any;
+      ul.hidden = !Array.prototype.some.call(ul.querySelectorAll('.witem'), function (li) { return !li.hidden; });
     });
-    /* The first visible row in each list keeps the no-rule treatment. */
-    document.querySelectorAll('ul.wlist').forEach(function (ul) {
-      var first = true;
-      Array.prototype.forEach.call(ul.querySelectorAll('.witem'), function (li) {
-        if (li.hidden) return;
-        li.style.borderTop = first ? 'none' : '';
-        li.style.paddingTop = first ? '6px' : '';
-        first = false;
-      });
+    var first = true;
+    items.forEach(function (li) {
+      if (li.hidden) return;
+      li.style.borderTop = first ? 'none' : '1px solid var(--border)';
+      li.style.paddingTop = first ? '6px' : '20px';
+      first = false;
     });
     empty.hidden = shown > 0;
     bar.querySelectorAll('button').forEach(function (b) {
@@ -147,9 +138,9 @@ permalink: /writing/
     try { localStorage.setItem('writing-filter', b.dataset.f); } catch (err) {}
   });
 
-  var start = 'first';
+  var start = 'all';
   try { var saved = localStorage.getItem('writing-filter'); if (saved) start = saved; } catch (err) {}
-  if (!bar.querySelector('button[data-f="' + start + '"]')) start = 'first';
+  if (!bar.querySelector('button[data-f="' + start + '"]')) start = 'all';
   counts();
   apply(start);
 })();
