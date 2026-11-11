@@ -47,6 +47,13 @@ def short_title(full):
     return re.split(r"\s*:\s", full, maxsplit=1)[0].strip()
 
 
+# Pieces that also live on the site as their own post. The site lists its own copy, so
+# the Substack cross-post is dropped to keep one entry per piece. Match on the slug.
+CROSS_POSTED = (
+    "our-brains-dont-run-on-backprop-so",
+)
+
+
 def parse(xml_bytes):
     root = ET.fromstring(xml_bytes)
     channel = root.find("channel")
@@ -55,6 +62,8 @@ def parse(xml_bytes):
         title_full = text(it.find("title"))
         link = text(it.find("link"))
         if not title_full or not link:
+            continue
+        if any(slug in link for slug in CROSS_POSTED):
             continue
         pub = text(it.find("pubDate"))
         try:

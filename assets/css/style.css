@@ -1082,7 +1082,13 @@ footer a:hover { text-decoration: underline; }
   letter-spacing: -0.035em;
   line-height: 1;
   margin-bottom: 30px;
+  /* The word sits on a soft pink field, so a section announces itself without a rule. */
+  display: inline-block;
+  background: rgba(var(--neuron-rgb), 0.13);
+  border-radius: 18px;
+  padding: 0.12em 0.3em 0.2em;
 }
+:root[data-theme="dark"] .pf-heading { background: rgba(255, 134, 207, 0.14); }
 
 /* Experiences: prose entries, no boxes */
 .entry { margin-bottom: 24px; max-width: 86ch; }
