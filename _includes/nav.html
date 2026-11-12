@@ -1,7 +1,7 @@
 <nav>
-  <a href="{{ '/' | relative_url }}" class="nav-name">
+  <a href="{{ '/' | relative_url }}" class="nav-name" aria-label="saanvi skanda subramanian, home">
     <span>saanvi.</span>
-    <small>(officially saanvi s. subramanian)</small>
+    <small class="nav-full" aria-hidden="true">saanvi skanda subramanian</small>
   </a>
   <ul class="nav-links">
     <li><a{% if page.url == '/projects/' %} class="active" aria-current="page"{% endif %} href="{{ '/projects/' | relative_url }}">project pages</a></li>
@@ -9,4 +9,7 @@
     <li><a{% if page.url == '/more-me/' %} class="active" aria-current="page"{% endif %} href="{{ '/more-me/' | relative_url }}">more me</a></li>
     <li><a{% if page.url == '/playground/' %} class="active" aria-current="page"{% endif %} href="{{ '/playground/' | relative_url }}">playground</a></li>
   </ul>
+  <a href="{{ '/' | relative_url }}" class="nav-mark" aria-label="Home">
+    <img src="{{ '/assets/images/sss-mark.png' | relative_url }}" alt="" width="380" height="516">
+  </a>
 </nav>

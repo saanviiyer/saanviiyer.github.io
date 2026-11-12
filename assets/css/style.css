@@ -130,6 +130,17 @@ nav {
   margin-top: 5px;
 }
 
+/* The full name waits under the wordmark and appears on hover, so the corner stays quiet. */
+.nav-full { opacity: 0; transition: opacity 0.18s ease; }
+.nav-name:hover .nav-full,
+.nav-name:focus-visible .nav-full { opacity: 1; }
+
+/* The stacked S mark sits at the right end of the bar, clear of the theme switch. */
+.nav-mark { display: inline-flex; margin-left: 26px; }
+.nav-mark img { display: block; width: auto; height: 34px; }
+:root[data-theme="dark"] .nav-mark img { filter: brightness(1.12); }
+@media (max-width: 720px) { .nav-mark img { height: 26px; } }
+
 .nav-links { display: flex; gap: 30px; list-style: none; }
 
 .nav-links a {
