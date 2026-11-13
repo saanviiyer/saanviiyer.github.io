@@ -40,7 +40,7 @@ permalink: /writing/
     {% for post in tech %}
     {% assign t = post.tag | default: '' %}
     {% capture topics %}technical {% if post.featured %}first {% endif %}{% unless t contains 'Book' or t contains 'Guide' or t contains 'Essay' %}projects{% endunless %}{% endcapture %}
-    <li class="witem" data-topics="{{ topics | strip }}">
+    <li class="witem" data-date="{{ post.date | date: "%Y-%m-%d" }}" data-topics="{{ topics | strip }}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
@@ -49,7 +49,8 @@ permalink: /writing/
     </li>
     {% endfor %}
 
-    <li class="witem" data-topics="technical projects first">
+    {% comment %} the RFP has no post date; Spring 2026 sorts as April. {% endcomment %}
+    <li class="witem" data-date="2026-04-01" data-topics="technical projects first">
       <div class="witem-head">
         <a class="witem-title" href="{{ '/assets/pdfs/integrated-core-rfp.pdf' | relative_url }}" target="_blank" rel="noopener">Integrated Core RFP, ML-guided directed evolution of PETases</a>
         <span class="witem-date">Spring 2026</span>
@@ -62,7 +63,7 @@ permalink: /writing/
          (run on a schedule by .github/workflows/substack.yml). -->
     {% comment %} the hobby-maxxing piece is one of the entries pinned to "things to look at first" {% endcomment %}
     {% for p in site.data.substack %}
-    <li class="witem" data-topics="nontechnical{% if p.url contains 'hobby-maxxing' %} first{% endif %}">
+    <li class="witem" data-date="{{ p.date | date: "%Y-%m-%d" }}" data-topics="nontechnical{% if p.url contains 'hobby-maxxing' %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a>
         <span class="witem-date">{{ p.date | date: "%B %Y" }}</span>
@@ -74,7 +75,7 @@ permalink: /writing/
     {% comment %} on-site essays (philosophy + older personal essays), newest first {% endcomment %}
     {% assign nt = site.posts | where: "section", "nontechnical" %}
     {% for post in nt %}
-    <li class="witem" data-topics="nontechnical{% if post.featured %} first{% endif %}">
+    <li class="witem" data-date="{{ post.date | date: "%Y-%m-%d" }}" data-topics="nontechnical{% if post.featured %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <span class="witem-date">{{ post.date | date: "%B %Y" }}</span>
@@ -93,6 +94,17 @@ permalink: /writing/
   if (!bar) return;
   var items = Array.prototype.slice.call(document.querySelectorAll('.witem'));
   var empty = document.getElementById('wempty');
+
+  /* Entries are authored in two lists, technical then non-technical. Merge them into one
+     run and sort by date so every view reads newest first, whatever is filtered. */
+  var lists = Array.prototype.slice.call(document.querySelectorAll('ul.wlist'));
+  if (lists.length) {
+    items.sort(function (a, b) {
+      return (b.dataset.date || '').localeCompare(a.dataset.date || '');
+    });
+    items.forEach(function (li) { lists[0].appendChild(li); });
+    lists.slice(1).forEach(function (ul) { ul.parentNode.removeChild(ul); });
+  }
 
   function counts() {
     bar.querySelectorAll('button').forEach(function (b) {
