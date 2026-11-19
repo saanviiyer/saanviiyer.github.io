@@ -25,23 +25,47 @@ redirect_from:
 excerpt: "Every output-level evaluation I have stress-tested fails the moment a model or a search optimizes against it. The complement is reading the computation, not only the emission, and when I try that inside a protein language model the instrument turns out to be the hard part."
 ---
 
-**TL;DR.** I have spent a while trying to break evaluations, and the same thing happens every time. A score looks healthy on a fixed dataset and stops meaning anything the moment a model or a search optimizes against it. A zero-shot protein score ranks below counting mutations. A benchmark correlation stops predicting which designs a campaign should keep. A verifier certifies a scorer that memorized the answers. A rule that skips the question still half-answers a safety benchmark. These failures share one structural fact, that an evaluation defined on outputs is gameable and incomplete, because the output is a projection of what the model actually did. The complement is interpretability, reading the computation behind the emission. Interpretability is easy to overread too. A probe that hits AUC 0.94 collapses on held-out mechanisms, and inside a protein language model function stays causally accessible only at an interior depth I cannot pin down, where six of my twelve claims invert once I name the control. So the version I am left with is a white-box evaluation with its controls named first, and most of the work is in the instrument.
+## 1 Introduction
+
+A thermometer left in direct sun reads a real temperature. It is simply not the temperature of the room, and the longer you leave it there the more confidently wrong it gets. The reading was never the quantity you wanted. It was a quantity that tracks the one you wanted, under conditions nobody checked.
+
+Machine-learning evaluation has the same structure, and I have spent a while trying to break my own instruments to find out where it bites. The pattern repeats: a score looks healthy on a fixed dataset and stops meaning anything the moment a model or a search optimizes against it. A zero-shot protein score ranks below counting mutations. A benchmark correlation stops predicting which designs a campaign should keep. A verifier certifies a scorer that had memorized the answers. A rule that skips the question still half-answers a safety benchmark.
+
+In this piece I argue that these are one failure, not four. An evaluation defined on outputs is gameable and incomplete, because the output is a projection of the computation that produced it. The complement is interpretability, reading the computation behind the emission rather than the emission alone. Then I turn the same skepticism on that complement, inside a protein language model, and find that the instrument is where most of the difficulty lives: a probe at AUC 0.94 collapses on held-out mechanisms, function is causally accessible only in an interior band I cannot pin down, and six of my twelve claims invert once I name the control.
+
+### 1.1 Scope
+
+I make no claim here that behavioral evaluation should be replaced, and none that interpretability is more trustworthy than it is. The claim is about complementarity and about where the burden of proof sits. Nothing below is a statement about whether a model understands anything, and every number comes from a run of mine or from a cited source.
+
+### 1.2 What an evaluation would have to survive
+
+Three properties recur, and the rest of the piece tests each of them in turn against my own results.
+
+**Transfer.** Hold out whole mechanisms, families, environments or tasks. This blocks a probe from winning by memorizing a local fingerprint.
+
+**Causal intervention.** Ablate or steer the proposed feature and test whether behavior moves in the predicted direction. This separates information that is readable from information the model uses.
+
+**Optimization pressure.** Let a search optimize against the metric, then inspect the top candidates and the out-of-distribution behavior. This exposes the reward hacking that an average score conceals.
+
+They overlap, and they measure different things. Together they make a claim considerably harder to fake.
+
 
 <div class="nv-contents" role="navigation" aria-label="Contents">
   <p>Contents</p>
   <ol>
-    <li><a href="#the-pattern-scores-break-under-use">Scores break under use</a></li>
-    <li><a href="#the-complement-read-the-computation">Read the computation</a></li>
-    <li><a href="#the-probe-works-the-understanding-is-missing">The probe works, the understanding is missing</a></li>
-    <li><a href="#inside-a-protein-language-model-where-function-becomes-accessible">Where function becomes accessible</a></li>
-    <li><a href="#how-this-sits-against-the-sae-literature">Against the SAE literature</a></li>
-    <li><a href="#a-white-box-evaluation-for-protein-models">A white-box evaluation</a></li>
-    <li><a href="#what-this-adds-up-to">What this adds up to</a></li>
-    <li><a href="#references">References</a></li>
+    <li><a href="#1-introduction">Introduction</a></li>
+    <li><a href="#2-scores-break-under-use">Scores break under use</a></li>
+    <li><a href="#3-the-complement-read-the-computation">The complement: read the computation</a></li>
+    <li><a href="#4-the-probe-works-the-understanding-is-missing">The probe works, the understanding is missing</a></li>
+    <li><a href="#5-inside-a-protein-language-model-where-function-becomes-accessible">Where function becomes accessible</a></li>
+    <li><a href="#6-how-this-sits-against-the-sae-literature">Against the SAE literature</a></li>
+    <li><a href="#7-a-white-box-evaluation-for-protein-models">A white-box evaluation</a></li>
+    <li><a href="#8-discussion">Discussion</a></li>
+    <li><a href="#9-references">References</a></li>
   </ol>
 </div>
 
-## The pattern, scores break under use
+## 2 Scores break under use
 
 Start with the mechanism that recurs across them, the winner's curse. Write any score as the true quality plus an error term,
 
@@ -60,7 +84,7 @@ The more you search, the more error dominates the score. **A proxy that looks tr
     <input id="wc-slider" type="range" min="1" max="280" value="1" aria-label="Search budget">
     <span class="wc-readout">selected error <b id="wc-gap">0.0</b></span>
   </div>
-  <figcaption><strong>The winner's curse.</strong> Each candidate's proxy is its true quality plus independent error, and a search keeps the highest proxy. As the budget grows, the kept candidate's proxy climbs steeply while its true quality lags, and the gap between them is error, not quality. Drawn from Gaussian quality and Gaussian error, not fit to any dataset. It is the mechanism, not a measurement.</figcaption>
+  <figcaption><strong>Figure 1: the winner's curse.</strong> Each candidate's proxy is its true quality plus independent error, and a search keeps the highest proxy. As the budget grows, the kept candidate's proxy climbs steeply while its true quality lags, and the gap between them is error, not quality. Drawn from Gaussian quality and Gaussian error, not fit to any dataset. It is the mechanism, not a measurement.</figcaption>
 </figure>
 
 In practice, on 504 measured PET-hydrolase variants, a zero-shot ESM-2 650M score ranks activity at a within-study Spearman of 0.01, below a plain mutation count at 0.25. **The expensive model is the weakest scorer on the task it is sold for.** Reported benchmark correlation explains half the variance in top-10% selection value and only 16% at top-1%, so the number decays as selection sharpens. And when the evaluator becomes a component of an agent, it becomes an attack surface. A scorer that memorizes the measured outcomes clears a trust gate at AUROC 0.991 and adds nothing, because the gate scored it on data it had already seen.
@@ -69,7 +93,7 @@ The usual response is to patch the benchmark, adding harder examples, de-duplica
 
 Every one of these failures lives at the output. The score reads a model's emissions, the benchmark summarizes emissions over a corpus, the gate reads emitted outcomes. Each stops at the emission and passes over the computation behind it, and that is the ceiling. An output-level evaluation reads a solved task and a shortcut to the same output as identical, and **a shortcut is what an optimizer finds first.**
 
-## The complement, read the computation
+## 3 The complement, read the computation
 
 Interpretability is the move that steps off the output. It asks what internal structure produced the answer, and whether that structure is the thing you think it is. I have argued the skeptical half of this too, that interpretability evidence is easy to overread, and I still believe it. **A linear probe that recovers a concept is weak evidence that the model uses that concept.** In one case a probe reads a mutational process out of an embedding at an AUC of 0.94 on familiar processes and collapses to 0.775% on held-out ones, so it had memorized a fingerprint in place of a mechanism. Decodability is where an evaluation starts, with the rest still ahead.
 
@@ -83,7 +107,7 @@ Two results push that gap all the way open. A 2020 study makes the divergence co
 
 The skeptical half is an argument for doing interpretability carefully, and for keeping at it. The constructive version is a white-box evaluation that asks whether the property of interest is even recoverable from the model's internal activations, and whether that recovery survives a shift to unfamiliar inputs. That question is harder to game than output correlation, because the optimizer would have to install the structure itself, beyond producing the right emission. **It is also the only kind of evaluation that can separate understanding from a shortcut**, which is precisely the distinction the output-level failures above keep collapsing. The rest of this essay is three attempts to run that evaluation on trained models, and a proposal for how to do it cleanly.
 
-## The probe works, the understanding is missing
+## 4 The probe works, the understanding is missing
 
 The first attempt is a recommender that reads a protein embedding shift and ranks which mutational signature produced it. Scoring a measured transition against sampled alternatives, it reached an AUC of 0.94, and that number looked like a result. Then I held entire signatures out of training and asked it to name them among all 78. **Top-1 accuracy was 0.8%, below the 1.28% a uniform guess would get.** The probe worked, and the understanding was missing. The drop went all the way below chance, and that is what made me stop trusting the 0.94.
 
@@ -93,7 +117,7 @@ The in-distribution and held-out results fit together, and they answer different
 
 <img src="/assets/images/prism-signature-steering/loso.png" alt="Leave-signatures-out top-1 accuracy is 0.775 percent, below the 1.28 percent uniform line, and 0.0 percent with SBS17a withheld">
 
-**Figure 1. Transfer to unseen signatures.** Leave-signatures-out top-1 accuracy is 0.775%, rounded to 0.8% here, below the 1.28% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld. The probe names the signatures it trained on and fails on the ones it did not.
+**Figure 2. Transfer to unseen signatures.** Leave-signatures-out top-1 accuracy is 0.775%, rounded to 0.8% here, below the 1.28% a uniform guess over 78 classes would give, and 0.0% when SBS17a itself is withheld. The probe names the signatures it trained on and fails on the ones it did not.
 
 This is the equivalence from the previous section made concrete. The 0.94 measures the decodable and stops there. The cleaner statement is that centered RSA equals linear CKA, and both equal average linear decoding accuracy over randomized white-noise tasks, so **geometry is decodability.** That is what the 0.94 measures, and it is why the 0.94 falls short, on its own, of a claim about understanding.
 
@@ -103,9 +127,9 @@ The centroid comparison carries its own version of the seed-divergence warning. 
 
 The same pattern appears when a representation becomes a target in place of a measurement. In a separate stress test, learned fitness proxies looked respectable across the full dataset, with Spearman correlation around 0.53. **Among the top-ranked variants, where a design system would actually concentrate its effort, utility fell to about 0.15.** An unconstrained optimizer pushed the proxy five standard deviations past the natural-protein floor while producing sequences that read as implausible proteins. Average predictive performance and decision quality are different objects. A model can preserve a broad ranking over ordinary examples while giving its largest rewards to pathological ones, and selection pressure turns small blind spots into the entire output distribution.
 
-So I now want three kinds of evidence before I make a strong claim about what a model has learned. Transfer, hold out whole mechanisms, families, environments, or tasks, which blocks a probe from winning by memorizing local fingerprints. Causal intervention, ablate or steer the proposed feature and test whether behavior changes in the predicted direction, which separates readable information from information the model actually uses. Optimization pressure, let selection search against the metric, then inspect top candidates and out-of-distribution behavior, which reveals reward hacking that average scores conceal. These tests overlap but measure different things, and **together they make the claim much harder to fake.** A probe should open the next experiment.
+This section is where the three properties of Section 1.2 came from. Transfer caught the 0.94. Optimization pressure caught the proxy whose utility fell to 0.15 exactly where a campaign would look. Causal intervention is what Section 5 spends its length on, and it is the one that cost the most to run. **A probe should open the next experiment**, and on its own it closes nothing.
 
-## Inside a protein language model, where function becomes accessible
+## 5 Inside a protein language model, where function becomes accessible
 
 The second attempt goes further inside the model. If a probe reading the output embedding is reading the wrong place, then the question is where the right place is. At what depth does intervening along a fitted functional direction move the model's own output representation, and once the information is there, does it localise into individual sparse features or spread across many?
 
@@ -135,19 +159,19 @@ exempt its own.</p>
 
 <img src="/assets/images/biology-lm-interpretability/fig_depth.png" alt="Directional margin over the mean-shift null against relative depth, two independent contrast definitions, both peaking near three-quarter depth and going negative near the output">
 
-**Figure 2.** Both constructions find the interior maximum. They disagree in sign about the output region, so I report a band, with no claim about a global optimum.
+**Figure 3.** Both constructions find the interior maximum. They disagree in sign about the output region, so I report a band, with no claim about a global optimum.
 
 At the output layer the effect collapses ninety-five-fold in a single layer, from +0.0716 at layer 32 to +0.0008 at layer 33, and the cause is architectural. The output passes through `emb_layer_norm_after`, which removes most of a constant added direction, and the same collapse appears independently in a different target, so it is a property of the architecture. The absolute numbers stay small, and **the best recovery anywhere is ten percent of the full high-minus-low difference**, so any direction I can extract this way leaves ninety percent unreproduced. I stop short of calling this an emergence zone. Five layers of the sweep carry the directional margin and only one carries a protein-level interval, which locates a band. Whether the onset is sharp requires a dense depth sweep with per-protein intervals at every layer, which I have not run.
 
 <img src="/assets/images/biology-lm-interpretability/per-protein-margins.png" alt="Per-protein directional margins at layer 20 for twelve held-out proteins, all positive, spanning a factor of 23">
 
-**Figure 3.** The one cell where I have the full per-protein decomposition. All 12 proteins are positive and the mean is +0.1720, interval +0.1182 to +0.2359. Two things that pooling hides. The margins span a factor of 23, so this is not a uniform property each protein samples with noise. And on TAT_HV1BR the fitted direction moves the representation the wrong way, with the margin positive only because the null moves it further wrong.
+**Figure 4.** The one cell where I have the full per-protein decomposition. All 12 proteins are positive and the mean is +0.1720, interval +0.1182 to +0.2359. Two things that pooling hides. The margins span a factor of 23, so this is not a uniform property each protein samples with noise. And on TAT_HV1BR the fitted direction moves the representation the wrong way, with the margin positive only because the null moves it further wrong.
 
 **The sharpest result is that the null you choose selects your layer**, and it is the reason I now distrust my own earlier sweeps. Score the fitted direction the way this literature usually does, against a matched-norm random null, on a distance-to-centroid readout, selecting the layer by significance, and the answer is depth 0.97 at z = 16.24, the largest value anywhere in any sweep I ran, and that looks like a discovery. Score the same direction at the same layer against the generic mean-shift null on a directional readout, and its margin is -0.0041. It is worse than an arbitrary shift of the same size. The significant version here is the one I would have reported a year ago.
 
 <img src="/assets/images/biology-lm-interpretability/nulls-at-layer32.png" alt="Four directions at layer 32 under two readouts. On the distance readout the fitted direction dominates the random and orthogonal nulls but the mean-shift null is already two-thirds of it. On the directional readout the mean-shift null exceeds the fitted direction">
 
-**Figure 4.** The same cell, four directions, two readouts. On the left the fitted direction towers over the conventional nulls, which is where z = 16.24 comes from, but the mean shift already accounts for two-thirds of the movement. On the right the ordering inverts outright. The null reaches +0.0757 against the fitted direction's +0.0716.
+**Figure 5.** The same cell, four directions, two readouts. On the left the fitted direction towers over the conventional nulls, which is where z = 16.24 comes from, but the mean shift already accounts for two-thirds of the movement. On the right the ordering inverts outright. The null reaches +0.0757 against the fitted direction's +0.0716.
 
 The mechanism is visible once the stiffer control is in the picture. The conventional nulls miss the generic component of the movement, so a significance score computed against them is largest where that generic component is largest. Each of the three ingredients is ordinary on its own. **The combination picks the one layer at which the hypothesis loses to its own control.** Three more failures came out of the same sweep, and I report them because each one was mine. First, distance and direction disagree about the same null, at layer 20 the mean-shift null cuts distance by +0.0204, which reads as recovering 48 percent of the effect, while its directional faithfulness is -0.017, slightly anti-aligned. Second, a recovery fraction changes meaning across depths, its numerator grows as the injection point approaches the output while the denominator stays fixed, so the same property read 0.11 at depth 0.48 and 1.34 at depth 0.97, and a recovery fraction above one has stopped measuring recovery. Third, a dose-response inside the linear regime proves only linearity, at strengths of 0.5, 1 and 2 the response doubled with every doubling, which established only that the readout is linear in the injected vector.
 
@@ -157,7 +181,7 @@ If reusable parts carry function, a sparse dictionary should isolate them. I tra
 
 <img src="/assets/images/biology-lm-interpretability/alignment-vs-efficacy.png" alt="Decoder cosine against single-atom steering effect for 39 candidate atoms across three seeds, showing the highest-cosine atoms clustered at zero effect while the best-steering atoms sit at negative cosine">
 
-**Figure 5.** The circled atoms are the ones attribution selects, at cosine around 0.75 and essentially zero steering effect. The atoms that reach the supervised reference sit at negative cosine. Alignment predicts efficacy only weakly, r = +0.445 over 39 candidates.
+**Figure 6.** The circled atoms are the ones attribution selects, at cosine around 0.75 and essentially zero steering effect. The atoms that reach the supervised reference sit at negative cosine. Alignment predicts efficacy only weakly, r = +0.445 over 39 candidates.
 
 So the dictionary does contain atoms that realise the direction on their own. The best single atom recovers 86, 95 and 77 percent across seeds. What it lacks is a way to find them from alignment. In every seed the best-steering atom is strongly anti-aligned, at cosine -0.68, -0.39 and -0.67. **The sign of the alignment is systematically wrong for the atom that carries the effect**, and a mechanism for this escapes me. A related detail bears on any attribution method, seven of the 39 candidates have activation changes indistinguishable from zero, at ranks beyond 15,000 of 16,384, and nonetheless steer at +0.013 to +0.023. A feature the perturbation leaves silent stays invisible to any method based on activation change.
 
@@ -167,7 +191,7 @@ Pooling loses the structure, and the loss is dimensional. For predicting whether
 
 <img src="/assets/images/biology-lm-interpretability/fig_pooling.png" alt="AUC against components retained, for PCA of real activations and a Gaussian random projection, both declining as components are added">
 
-**Figure 6.** Both curves fall as I add components. The random projection matches the model's PCA at two components and beats it from four to sixteen, by five standard deviations at eight. Neither reaches the intervention parameters alone.
+**Figure 7.** Both curves fall as I add components. The random projection matches the model's PCA at two components and beats it from four to sixteen, by five standard deviations at eight. Neither reaches the intervention parameters alone.
 
 A random subspace of the same width carries at least as much of what predicts the outcome as the leading principal directions of the model's activations do. **The information is present, the geometry is wrong.** Every added direction costs accuracy, which is the signature of a nuisance subspace dominating the variance, and two scalars of boundary margin recover what 1,280 pooled dimensions missed, reaching 0.8846 beside the parameters. Those intervals overlap with the parameters-alone baseline, so I state that as a consistent improvement, short of demonstrated. The geometry caution from the spine applies in full here, with its meeting-note form. Procrustes alignment breaks down across unequal dimensions, 1,000 biological neurons against 10,000 artificial units, and centered RSA equals linear CKA with both equal to average linear decoding accuracy over randomized white-noise tasks, so geometry is decodability. A probe result alone settles what you can decode, and leaves what a model computes open.
 
@@ -175,13 +199,13 @@ Everything above presupposes that the tests discriminate. For nucleotide models,
 
 <img src="/assets/images/biology-lm-interpretability/fig_frame.png" alt="The reading-frame test across model classes, showing HyenaDNA's interval spanning zero, periodic Markov chains passing, and aperiodic controls collapsing to zero or inverting">
 
-**Figure 7.** The aperiodic controls locate the problem. Remove the periodicity and keep the model class, and every estimate collapses to zero or inverts. The quantity the test responds to is position-modulo-three periodicity.
+**Figure 8.** The aperiodic controls locate the problem. Remove the periodicity and keep the model class, and every estimate collapses to zero or inverts. The quantity the test responds to is position-modulo-three periodicity.
 
 Any model with that periodicity scores as representing reading frame, and a model lacking it scores as failing, regardless of whether it represents frame. This stays silent on whether genomic models represent reading frame. It says this test stays blind to the question, and since the test is mine, this is a self-check on my own instrument. The rule I would most want adopted is the one the nucleotide work bought and the protein work missed. Run the test on a model incapable of holding the representation, and report what happens. A null sequence tells you what a given model does on degraded input. **A null model tells you whether the test needs the capability in its name.** And one more reason to distrust a bare similarity score here, simplicity bias, means gradient descent prioritizes easily separable, low-frequency linear features over complex nonlinear causal structure, so if a brain and a network both latch onto the same superficial feature, RSA scores high while the model misses the deep causal structure. The control has to remove the easy feature before the similarity means anything.
 
 Reading down the effect column of this work it looks like a set of small positive findings. **Reading across to the control column, six of twelve invert.** The inversions are mundane, a conventional null, a conventional readout, an unbounded metric, a dose-response inside its linear regime, and each one is individually defensible. The practical version is to put a zero-parameter baseline beside every number. A single unfitted BLOSUM62 feature decodes fitness at 0.165 against ESM-2's 0.203, and the model's figure takes the best of 33 layers, picked on the same held-out proteins that produce its score.
 
-## How this sits against the SAE literature
+## 6 How this sits against the SAE literature
 
 Sparse autoencoders are the standard instrument for asking how a model
 organises a representation, and the bio-foundation-model literature has grown fast enough to
@@ -237,7 +261,7 @@ random null picks the single layer where the fitted direction <em>loses</em> to
 the mean shift, at z = 16.24.</p>
 </details>
 
-## A white-box evaluation for protein models
+## 7 A white-box evaluation for protein models
 
 The third piece is the proposal those two case studies argue for. I want a white-box evaluation for protein models in three parts. Rank fixed sets of already-measured benign variants, recover the assay property with linear probes on internal activations, and hold out whole families to check that the signal transfers. People usually judge a protein model by whether its score correlates with a measured property across a benchmark, and that test can pass for the wrong reason, because the model can rank sequences using a feature that happens to line up with the property on familiar data. A white-box evaluation looks inside the model, and asks whether the property is recoverable from the model's internal activations and whether that recovery survives a shift to unfamiliar proteins.
 
@@ -245,7 +269,7 @@ The evaluation has three parts that build on each other. First, I assemble fixed
 
 <img src="/assets/images/white-box-protein-eval/eval-schematic.png" alt="Schematic of the evaluation, from fixed sets of measured benign variants, to linear probes on internal activations, to a held-out-family test that blocks shortcut scoring">
 
-**Figure 8.** The evaluation runs in three steps, from fixed sets of measured benign variants, to linear probes on the model's internal activations, to a held-out-family test that blocks shortcut scoring.
+**Figure 9.** The evaluation runs in three steps, from fixed sets of measured benign variants, to linear probes on the model's internal activations, to a held-out-family test that blocks shortcut scoring.
 
 **The held-out-family split is what makes the evaluation informative**, because a probe that reads a shortcut will do well on families it trained on and fall off on new ones. If the probe recovers the property on held-out families, that is evidence the model represents something about the property that generalizes. If the probe falls off, the earlier correlation was standing on family-specific structure, and the score holds only inside its training distribution. This is the same held-out logic that collapsed the 0.94 probe above, promoted from a diagnostic into the design of the evaluation itself.
 
@@ -253,7 +277,7 @@ The evaluation has three parts that build on each other. First, I assemble fixed
 
 I state the biosecurity boundary first. **I fix the safety boundary before any experiment runs, so the design stays clear of uplift.** All of this work uses only benign, already-measured proteins, generates no new functional sequences, runs no wet-lab validation, and releases no reusable steering probe. The output is an evaluation and a report of where a model's representation carries an assay property and where it falls short, which is a statement about the model. It remains an evaluation, and stops short of a design tool.
 
-## What this adds up to
+## 8 Discussion
 
 My claim is narrower than a call to replace behavioral evaluation, and I think it is more useful. **Behavioral evaluation is necessary and, on its own, structurally insufficient.** It will keep breaking under optimization because it reads a projection of the computation. So the evaluations I trust do two things at once. They test the output under the exact pressure the model faces, with trivial baselines and top-tail utility, and they test confound controls and held-out transfer. And they test the computation, asking what is recoverable inside the model and whether it survives a distribution shift.
 
@@ -312,7 +336,7 @@ The shared question across all of it, protein design, world models, alignment, i
 })();
 </script>
 
-## References
+## 9 References
 
 <ol class="nv-refs">
 <li><b>Interpreting Bio-Foundation Models with Sparse Autoencoders.</b>
