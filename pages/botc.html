@@ -1,0 +1,69 @@
+---
+title: Computational Complexity of Blood on the Clocktower
+permalink: /botc/
+description: >-
+  A paper with Charlie Yang on the complexity of world-building in Mafia and in
+  three editions of Blood on the Clocktower, from linear time to NP-complete to
+  undecidable.
+---
+
+<style>
+  .pf-section { border-top: none; padding-top: 8px; }
+  .botc-sub { font-family: var(--sans); font-size: 0.96rem; color: var(--muted); margin: 0 0 4px; }
+  .botc-meta { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.04em; color: var(--muted); margin: 0 0 26px; }
+  .botc-body p { font-family: var(--sans); font-size: 1rem; line-height: 1.65; margin: 0 0 18px; }
+  .botc-cta { display: inline-block; font-family: var(--sans); font-size: 0.9rem; text-decoration: none;
+    color: var(--ink); background: rgba(var(--neuron-rgb), 0.2); border-radius: 999px; padding: 9px 20px; margin: 4px 0 30px; }
+  .botc-cta:hover { background: rgba(var(--neuron-rgb), 0.3); }
+  :root[data-theme="dark"] .botc-cta { background: rgba(255, 134, 207, 0.18); }
+  :root[data-theme="dark"] .botc-cta:hover { background: rgba(255, 134, 207, 0.28); }
+  .botc-table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.92rem; margin: 6px 0 30px; }
+  .botc-table th, .botc-table td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 0.5px solid var(--border); }
+  .botc-table th { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+  .botc-table td.verdict { font-weight: 600; }
+  .botc-h3 { font-family: var(--serif); font-size: 1.22rem; font-weight: 600; letter-spacing: -0.01em; margin: 30px 0 8px; }
+  .botc-embed { width: 100%; height: 760px; border: 0.5px solid var(--border); border-radius: 10px; margin: 10px 0 8px; }
+  @media (max-width: 720px) { .botc-embed { display: none; } }
+</style>
+
+<section class="pf-section">
+  <h2 class="pf-heading">computational complexity of blood on the clocktower</h2>
+
+  <p class="botc-sub">Charlie Yang and Saanvi Skanda Subramanian, California Institute of Technology</p>
+  <p class="botc-meta">15 SEPTEMBER 2026 &nbsp;·&nbsp; 20 PAGES</p>
+
+  <div class="botc-body">
+    <p>Every player in a social deduction game is solving the same problem without naming it. Given what people have claimed, who has died and who has been executed, is there any assignment of hidden roles and unobserved night actions that explains all of it? We call that problem <em>world-building</em>, and this paper asks how hard it is.</p>
+
+    <p>The answer depends on the script. Classic Mafia with an unbounded number of players is NP-complete, by a reduction from Vertex Cover in which overlapping Cop checks encode the edges of the graph. The introductory Blood on the Clocktower edition, <em>Trouble Brewing</em>, is easy for the opposite reason: the rulebook caps the game at 15 players with unique character tokens, so the space of possible Grimoires is a constant and world-building falls to O(t) time, linear in the number of elapsed days. Generalize that same script to unbounded players and duplicate tokens and it becomes NP-complete again, which we show with Virgin execution triggers and Investigator information as gadgets.</p>
+
+    <p>The two advanced editions leave the hierarchy entirely. <em>Bad Moon Rising</em> gives the Gossip a public statement that causes a night kill if and only if it was true, and <em>Sects &amp; Violets</em> lets the Artist ask the Storyteller any yes or no question. Neither ability restricts what the statement or the question can be about, so a player can assert that a given Turing machine halts on a given input and the rules force the Storyteller to adjudicate it. World-building in both editions is undecidable, by reduction from the Halting Problem.</p>
+
+    <table class="botc-table">
+      <thead>
+        <tr><th>Game or script</th><th>Players</th><th>Complexity</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mafia</td><td>n unbounded</td><td class="verdict">NP-complete</td></tr>
+        <tr><td>Trouble Brewing</td><td>5 to 15, standard</td><td class="verdict">O(t)</td></tr>
+        <tr><td>Generalized Trouble Brewing</td><td>n unbounded</td><td class="verdict">NP-complete</td></tr>
+        <tr><td>Bad Moon Rising</td><td>7 to 15, standard</td><td class="verdict">Undecidable</td></tr>
+        <tr><td>Sects &amp; Violets</td><td>7 to 15, standard</td><td class="verdict">Undecidable</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="botc-h3">What separates the three levels</h3>
+
+    <p>Hardness in the NP-complete cases comes from counting. With an arbitrary number of players, assigning roles explodes combinatorially, and the information abilities are what pin the assignment to a graph. Undecidability comes from somewhere else. Most roles choose from a finite menu of targets, but the Gossip and the Artist can state or ask anything, and the rulebook obliges the Storyteller to evaluate it. That one design choice moves the game next to <em>Magic: The Gathering</em> as a setting that can simulate arbitrary computation.</p>
+
+    <h3 class="botc-h3">What happens when good players bluff</h3>
+
+    <p>The proofs assume good players report honestly unless they are drunk, poisoned or mad, because unrestricted lying makes world-building trivial: any contradiction gets blamed on an uncooperative teammate. Real play sits between the two. The last section formalizes that middle as <em>minimum-lying world-building</em>, which asks for the fewest good players who must have lied to explain the transcript. The honest case is the special case of zero, so the problem inherits NP-hardness immediately. It also suggests how an automated deduction engine should behave when a claim does not add up: search with MaxSAT for the world that explains the game while assuming as few bluffs as possible, instead of declaring the transcript inconsistent and stopping.</p>
+
+    <a class="botc-cta" href="{{ '/assets/pdfs/botc-complexity.pdf' | relative_url }}" target="_blank" rel="noopener">read the paper (PDF)</a>
+
+    <object class="botc-embed" data="{{ '/assets/pdfs/botc-complexity.pdf' | relative_url }}#view=FitH" type="application/pdf">
+      <p class="botc-sub">Your browser cannot display the PDF inline. Use the link above.</p>
+    </object>
+  </div>
+</section>
