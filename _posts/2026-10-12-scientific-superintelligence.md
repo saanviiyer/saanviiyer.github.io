@@ -12,11 +12,23 @@ redirect_from:
 excerpt: "Reasoning improved fastest where answers are cheap to verify. Science runs the other way, because its verifier is slow and expensive and often missing. I think the bottleneck to scientific superintelligence is knowing when a claim is true."
 ---
 
-**TL;DR.** I think the reasoning gains of the last few years came from domains where a candidate answer is cheap to check. Math has proofs and code has test suites, and games keep score. You can let a model propose many reasoning paths and keep the ones a verifier accepts, and search plus a cheap verifier is most of what reasoning has meant. Science breaks the recipe, because the verifier is the experiment. An experiment is slow and expensive, and sometimes you cannot run it at all while the model is reasoning. So I think the path to models that do science runs through verifiers for open-ended claims. That is the same problem as building an evaluation that still means something once a model optimizes against it. The reasoning engine is ready, and the "is this true" oracle is the bottleneck.
+## 1 Introduction
 
-## Reasoning is propose-and-verify
+A chess engine and a research group are both searching, and only one of them can tell you quickly whether a move was any good. The engine plays a line, reaches a position, and reads off an evaluation in microseconds. The group runs an experiment, waits weeks, and often learns that the measurement was the wrong one. Both are proposing candidates into a space too large to enumerate. The difference is the cost of the judge.
 
-Strip a modern reasoning system down and you find a search with a judge. The model proposes candidate steps or whole solutions, and a verifier scores them. Training and inference can then both spend compute on many attempts and keep the ones that check out. **Where that judge is cheap and reliable, the loop is extraordinary.** A unit test passes or fails, and a theorem prover either closes the goal or leaves it open. You can push the model hard against a signal like that because the signal stays reliable. I read the last few years of reasoning progress as mostly a matter of where that reliable signal was cheap to get.
+In this piece I argue that the reasoning progress of the last few years came from the first situation, and that science is the second. Modern reasoning systems are a search with a judge attached, and they improved fastest exactly where a candidate answer is cheap to check. Science inverts the economics, because its judge is an experiment: slow, expensive, and sometimes unavailable while the model is still reasoning. My claim is that the bottleneck to scientific superintelligence is not the reasoner. It is knowing when a claim is true.
+
+### 1.1 Scope
+
+I take no position here on whether a model that cleared this bottleneck would be understanding anything, or on what to call it. The question is functional: which part of the loop currently limits scientific performance, and what would have to be built to move it. Everything below is about the judge.
+
+## 2 Reasoning is propose-and-verify
+
+Strip a modern reasoning system down and you find a search with a judge. The model proposes candidate steps or whole solutions, and a verifier scores them. Training and inference can then both spend compute on many attempts and keep the ones that check out.
+
+Where that judge is cheap and reliable, the loop is extraordinary. A unit test passes or fails. A theorem prover either closes the goal or leaves it open. A game keeps score. You can push a model hard against a signal like that, because the signal stays reliable under pressure. I read the last few years of reasoning progress as mostly a question of where such a signal was cheap to get.
+
+The property that matters is not accuracy in the ordinary sense. It is that the judge keeps its meaning while a search optimizes against it. A test suite does not become easier to pass because a model is trying hard to pass it.
 
 <figure class="ss-fig">
   <div class="ss-wrap"><canvas id="ss-plot"></canvas></div>
@@ -24,20 +36,40 @@ Strip a modern reasoning system down and you find a search with a judge. The mod
     <button id="ss-toggle" type="button">verifier: on</button>
     <span class="ss-readout" id="ss-count">candidates to check: pruned each step</span>
   </div>
-  <figcaption><strong>The verifier is what makes search tractable.</strong> A reasoning search branches at every step. With a reliable verifier, wrong branches are pruned as they appear and only a thin path survives, so the work grows slowly. Turn the verifier off, the case for open-ended science, and nothing can be pruned. Every branch stays live and the work explodes. The engine is the same. The judge is what changes.</figcaption>
+  <figcaption><strong>Figure 1: the judge, not the engine, is what makes search tractable.</strong> A reasoning search branches at every step. With a reliable verifier, wrong branches are pruned as they appear and a thin path survives, so the work grows slowly. Turn the verifier off, which is the case for open-ended science, and nothing can be pruned: every branch stays live and the work explodes. The engine is identical in both panels.</figcaption>
 </figure>
 
-## Science removes the judge
+## 3 Science removes the judge
 
-Now take the loop to a scientific question. Does this mutation change the protein's function? Is this the mechanism behind the disease? Here the verifier is an experiment. It is slow and costly, and sometimes the model cannot get one at all while it reasons. Worse, the field usually stands in for the experiment with a benchmark or a learned score. That kind of judge stops meaning what it claims the moment a search optimizes against it. A proxy that looked fine in bulk becomes the weakest scorer at the top of a ranking. A correctly computed number supports a wrong conclusion. A verifier inside an agent loop certifies a scorer that memorized the answers. I measured each of these myself, and together they are why I now read an output score as a projection of the computation. **When the judge is unreliable, more search amplifies the error, because the model optimizes the flaw.**
+Now take the loop to a scientific question. Does this mutation change the protein's function? Is this the mechanism behind the disease? The verifier is an experiment. It is slow and costly, and often the model cannot obtain one at all while it reasons.
 
-To me this reframes what it means to enhance scientific reasoning. It is tempting to picture a bigger model thinking harder, but I think the binding constraint sits upstream of that. Without a trustworthy verifier, **a more powerful reasoner is a more powerful optimizer of whatever proxy you handed it**, and it will find the proxy's shortcut before it finds the science. What we still need is cheap, reliable verification of open-ended claims.
+What the field does instead is substitute: a benchmark, or a learned score, standing in for the measurement. That substitute stops meaning what it claims the moment a search optimizes against it. I have measured three versions of this failure directly.
 
-If the judge is the bottleneck, then the research that matters is the research that builds better judges. I think that research takes three forms. The first is evaluations designed to survive optimization. Their scores should face trivial baselines and a top-tail utility test. They also need confound controls, held-out transfer and selection-aware nulls, so that passing them takes the science and closes the shortcut. The second is interpretability, which reads the computation behind a claim and goes beyond the claim itself. If a model can show its work in a form we can inspect, we can verify its reasoning internally when we cannot check it against the world. The third is a halting criterion. **An autonomous scientific agent needs to know when to stop and when a result is sound**, and that is the verifier problem in a scheduling form. We measure how well agents search, and we barely measure whether they know when they have finished. Of the three, I think the halting criterion is the one we measure least.
+1. A proxy that looks calibrated in bulk becomes the weakest scorer at the top of the ranking, which is the only region a design campaign ever visits.
+2. A number computed correctly supports a conclusion that is wrong, because the quantity being computed was not the quantity in the claim.
+3. A verifier operating inside an agent loop certifies a scorer that had memorized its answers.
 
-## What I actually expect
+Together these are why I now read an output score as a projection of the computation rather than as a measurement of the thing. When the judge is unreliable, more search amplifies the error, because the model optimizes the flaw.
 
-I expect scientific superintelligence to arrive, if it does, one domain at a time. It arrives as the judge gets cheaper and more trustworthy and as we point the search that already works at a signal that stays reliable. **Bulk calibration alone is insufficient for protein design.** Protein design gets there when an in-silico score matches measurement at the top of the ranking. Mechanistic claims get there when we can test them with something independent of the representation that generated them. Until then, I think the most important thing a reasoning system can do about a scientific claim is the least glamorous one. It should say how the claim would be wrong and how you would check. Reasoning was the easy part, and knowing when to believe it is the hard one.
+This reframes what it would mean to enhance scientific reasoning. The tempting picture is a bigger model thinking harder. The binding constraint sits upstream of that. Without a trustworthy verifier, a more powerful reasoner is a more powerful optimizer of whatever proxy you handed it, and it finds the proxy's shortcut before it finds the science.
+
+## 4 Three ways to build a better judge
+
+If the judge is the bottleneck, the research that matters is the research that builds judges. I see three forms it can take, and they fail in different places.
+
+**Evaluations designed to survive optimization.** A score should be made to face trivial baselines, a top-tail utility test, confound controls, held-out transfer and selection-aware nulls. Passing then requires the science and closes the shortcut. This is the most direct route and the one most often skipped, because the controls usually lower the headline number.
+
+**Interpretability.** Reading the computation behind a claim gives a second channel that does not run through the output score. If a model can show its work in a form we can inspect, its reasoning can be checked internally in the cases where it cannot be checked against the world. The limit is that the instrument itself has to be validated, which is its own measurement problem.
+
+**A halting criterion.** An autonomous scientific agent needs to know when to stop, and when a result is sound enough to report. That is the verifier problem in scheduling form. We measure how well agents search, and we barely measure whether they know when they have finished. Of the three, this is the one we measure least.
+
+## 5 What I expect
+
+Scientific superintelligence, if it arrives, arrives one domain at a time, as the judge in that domain gets cheaper and more trustworthy and the search that already works is pointed at a signal that stays reliable.
+
+Protein design gets there when an in-silico score matches measurement at the top of the ranking, since bulk calibration alone is insufficient. Mechanistic claims get there when they can be tested with something independent of the representation that generated them.
+
+Until then, the most useful thing a reasoning system can do with a scientific claim is the least glamorous one. It can say how the claim would be wrong, and how you would check. Reasoning was the easy part. Knowing when to believe it is the hard one.
 
 <style>
   .ss-fig .ss-wrap { width: 100%; aspect-ratio: 16 / 8.5; background: var(--read-card, #fffdf7); border: 1px solid var(--read-card-edge, #efe7d7); border-radius: 12px; }
