@@ -14,9 +14,7 @@ permalink: /pages/research/
 
 <p class="proj-line"><strong>PRISM:</strong> i built a pipeline that applies all 78 COSMIC single-base-substitution signatures to protein-coding sequences and measures how each mutant cloud moves through ESM-2 space relative to Pfam domain centroids. SBS17a repeatedly steered sequences toward PF17041 across two independent Pfam clans. the follow-up controls changed my interpretation: a composition-matched control reproduced 72% of the movement on the steering readout, and about 34% on the trajectory readout, while protein length explained 94.1% of displacement. the project became as much about auditing the representation as reading the signal.</p>
 
-<p class="proj-line"><strong>verify-agents:</strong> i red-team the verifier sitting inside an agent loop. a memorized scorer passes a trust gate at AUROC 0.991 while adding only 0.028 good candidates per batch, against 1.082 for an honest scorer. a pool-side attack corrupts only unmeasured candidates, so any gate that looks at measured data returns identical statistics. sequential probing catches 99.2% of that attack but recovers only 10% of the lost value, and a fallback model recovers 47%.</p>
-
-<p class="proj-line"><strong>gauntlet:</strong> gauntlet stress-tests protein fitness proxies before they are used to rank designs. on measured PETase activity, zero-shot ESM-2 ranks enzyme activity at rho = +0.007 across 504 variants, below a plain mutation count at +0.251. across 70 benchmark units, reported correlation explains 50% of selection value at the top 10% and 16% at the top 1%. the broader audit asks whether a proxy adds value beyond trivial baselines, stays useful in the top-ranked tail, and resists reward hacking.</p>
+<p class="proj-line"><strong>gauntlet:</strong> gauntlet stress-tests protein fitness proxies before they are used to rank designs. on measured PETase activity, a plain mutation-count baseline beat ESM-2 zero-shot. the broader audit asks whether a proxy adds value beyond trivial baselines, stays useful in the top-ranked tail, and resists reward hacking.</p>
 
 <p class="proj-line"><strong>action identifiability in protein-design agents:</strong> this project asks whether an agent's apparent success identifies the biological action that caused it. the goal is to separate good outcomes from justified decisions.</p>
 
@@ -29,16 +27,7 @@ permalink: /pages/research/
 
 <p class="proj-line"><strong>steerable heading:</strong> predictive world models recovered a steerable heading variable from a robot's range sensors without pose supervision, but only under partial observability. i ran these simulations to understand when missing observations force a model to maintain a stable internal state instead of relying on the current frame.</p>
 
-<p class="proj-line"><strong>task-space reward learning:</strong> with researchers at Google DeepMind and the University of Edinburgh, i fit recurrent neural networks to behavior in a 487-participant bandit task space, and i interpret what the learned latents say about how people learn rewards.</p>
-
-<p class="proj-line"><strong>steerable heading, continued:</strong> 86 models trained without pose supervision. a ring geometry appears even in the controls that cannot integrate, which is why the paper's claim is about alignment with heading under partial observability rather than about the ring itself.</p>
-
-<h2 class="section-heading">Genome and protein language models</h2>
-<p class="proj-blurb">i test what a generative sequence model has actually learned, separately from what its samples look like.</p>
-
-<p class="proj-line"><strong>genome LM evaluation harness (AITHYRA):</strong> i built a seeded, version-pinned harness for three autoregressive genome language models, Evo 2, GENERator and Carbon. Carbon collapsed into repetition on 22.4% of generations against 0.08% for GENERator, and the collapse traced to 6-mer tokenization. the generated nucleotide spectrum tracked the prompt rather than the training corpus.</p>
-
-<p class="proj-line"><strong>de novo enzyme design (Arnold Lab):</strong> computational design of new enzymes with diffusion models, targeting beta-lactamase activity.</p>
+<p class="proj-line"><strong>task-space reward learning:</strong> with researchers at Google DeepMind and the University of Edinburgh, i fit recurrent neural networks to behavior in a 487-participant bandit task space.</p>
 
 <p class="proj-line"><strong>surgical video models:</strong> i test whether video foundation models use temporal information when scoring surgical movement. a single still frame matched the full 16-frame video across the current encoders. the next experiments isolate order, change, and static appearance so the representation claim can be falsified.</p>
 
