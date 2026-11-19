@@ -865,6 +865,20 @@ footer a:hover { text-decoration: underline; }
   padding: 44px 28px 96px;
 }
 .home-hi { font-size: 1.5rem; font-weight: 500; margin-bottom: 1.6rem; }
+/* Portrait: a circle the opening paragraphs wrap around. */
+.home-photo {
+  float: right;
+  width: 184px;
+  height: 184px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 32%;
+  margin: 2px 0 20px 38px;
+  shape-outside: circle();
+}
+@media (max-width: 720px) {
+  .home-photo { float: none; display: block; width: 148px; height: 148px; margin: 0 0 26px; }
+}
 .home > p {
   font-size: 1.28rem;
   line-height: 1.5;
