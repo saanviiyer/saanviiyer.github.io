@@ -1,0 +1,64 @@
+---
+title: Reading, Saanvi S. Subramanian
+permalink: /reading/
+noindex: true
+description: >-
+  Papers and books I am reading, with my annotated copies where I have them.
+---
+
+<style>
+  .pf-section { border-top: none; padding-top: 8px; }
+  .rd-lead { font-family: var(--sans); font-size: 0.97rem; line-height: 1.6; color: var(--muted); max-width: 62ch; margin: 0 0 40px; }
+  .rd-group { margin-bottom: 46px; }
+  .rd-group-title { font-family: var(--serif); font-size: clamp(1.1rem, 1.8vw, 1.4rem); font-weight: 500;
+    letter-spacing: -0.03em; display: inline-block; background: rgba(var(--neuron-rgb), 0.13);
+    border-radius: 18px; padding: 0.3em 0.62em 0.38em; margin: 0 0 18px; }
+  :root[data-theme="dark"] .rd-group-title { background: rgba(255, 134, 207, 0.14); }
+  .rd-list { list-style: none; padding: 0; margin: 0; }
+  .rd-item { padding: 16px 0; border-top: 0.5px solid var(--border); }
+  .rd-item:first-child { border-top: none; padding-top: 4px; }
+  .rd-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .rd-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+  a.rd-title:hover { text-decoration: underline; }
+  .rd-by { font-family: var(--sans); font-size: 0.86rem; color: var(--muted); }
+  .rd-flag { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); border: 0.5px solid var(--accent); border-radius: 999px; padding: 2px 8px; }
+  .rd-note { font-family: var(--sans); font-size: 0.93rem; line-height: 1.55; margin: 7px 0 0; max-width: 64ch; }
+  .rd-links { font-family: var(--sans); font-size: 0.82rem; margin: 7px 0 0; }
+  .rd-links a { color: var(--accent); text-decoration: none; margin-right: 16px; }
+  .rd-links a:hover { text-decoration: underline; }
+  .rd-empty { font-family: var(--sans); font-size: 0.93rem; color: var(--muted); }
+</style>
+
+<section class="pf-section">
+  <h2 class="pf-heading">reading</h2>
+
+  <p class="rd-lead">what i am reading, and my marked-up copies where the annotations are worth sharing. papers first, then books.</p>
+
+  {% assign papers = site.data.reading | where: "kind", "paper" %}
+  {% assign books = site.data.reading | where: "kind", "book" %}
+
+  <div class="rd-group">
+    <h3 class="rd-group-title">papers</h3>
+    {% if papers.size > 0 %}
+    <ul class="rd-list">
+      {% for r in papers %}{% include reading-item.html r=r %}{% endfor %}
+    </ul>
+    {% else %}
+    <p class="rd-empty">nothing here yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="rd-group">
+    <h3 class="rd-group-title">books</h3>
+    {% if books.size > 0 %}
+    <ul class="rd-list">
+      {% for r in books %}{% include reading-item.html r=r %}{% endfor %}
+    </ul>
+    {% else %}
+    <p class="rd-empty">nothing here yet.</p>
+    {% endif %}
+  </div>
+
+  <p class="post-back"><a href="{{ '/' | relative_url }}">&larr; home</a></p>
+</section>

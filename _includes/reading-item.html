@@ -1,0 +1,18 @@
+{% comment %}
+One row on /reading/. Expects r, an entry from _data/reading.yml.
+{% endcomment %}
+<li class="rd-item">
+  <div class="rd-head">
+    {% if include.r.link and include.r.link != "" %}
+    <a class="rd-title" href="{{ include.r.link }}" target="_blank" rel="noopener noreferrer">{{ include.r.title }}</a>
+    {% else %}
+    <span class="rd-title">{{ include.r.title }}</span>
+    {% endif %}
+    <span class="rd-by">{{ include.r.author }}{% if include.r.year and include.r.year != "" %}, {{ include.r.year }}{% endif %}</span>
+    {% if include.r.status == "reading" %}<span class="rd-flag">in progress</span>{% endif %}
+  </div>
+  {% if include.r.note and include.r.note != "" %}<p class="rd-note">{{ include.r.note }}</p>{% endif %}
+  {% if include.r.annotated and include.r.annotated != "" %}
+  <p class="rd-links"><a href="{{ include.r.annotated | relative_url }}" target="_blank" rel="noopener noreferrer">my annotated copy</a></p>
+  {% endif %}
+</li>

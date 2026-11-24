@@ -1,0 +1,23 @@
+# The reading list shown at /reading/.
+#
+# Add a new entry by copying a block. Fields:
+#   title      required
+#   author     required
+#   kind       "paper" or "book". Controls which section it lands in.
+#   year       optional, shown next to the title
+#   note       optional, one or two sentences in your own voice
+#   link       optional, the source: arXiv, a publisher page, a bookshop
+#   annotated  optional, a PDF of your marked-up copy.
+#              Put the file in assets/pdfs/annotated/ and write the path here.
+#   status     optional, "reading" shows an "in progress" marker
+#
+# Newest first. The page does not sort, so order here is the order shown.
+
+- title: "Zero to One"
+  author: "Peter Thiel with Blake Masters"
+  kind: "book"
+  year: "2014"
+  note: ""
+  link: ""
+  annotated: ""
+  status: "reading"

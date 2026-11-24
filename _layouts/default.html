@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace }}" />
   <title>{{ page.title | default: site.title }}</title>
+  {% if page.noindex %}<meta name="robots" content="noindex, nofollow" />{% endif %}
 
   <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
   <meta property="og:title" content="{{ page.title | default: site.title }}" />
