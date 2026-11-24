@@ -13,6 +13,20 @@
 #
 # Newest first. The page does not sort, so order here is the order shown.
 
+- title: "Emergent parallels between language models and the brain"
+  author: "Andrew Kyle Lampinen"
+  kind: "paper"
+  year: ""
+  note: "A primer on what language models are, how they are trained, and which of their
+    parallels to the brain are real. My copy is marked up front to back, mostly with the
+    questions it left me: whether the residual stream is doing the job of a latent space,
+    whether humans build the same kind of probability distribution if the brain is a
+    predictive machine, and whether multimodal experience is simply a more efficient way
+    to learn than text alone."
+  link: ""
+  annotated: "/assets/pdfs/annotated/lampinen-emergent-parallels-annotated.pdf"
+  status: ""
+
 - title: "Zero to One"
   author: "Peter Thiel with Blake Masters"
   kind: "book"
