@@ -64,9 +64,13 @@ permalink: /writing/
   <ul class="wlist wsec">
     <!-- Substack posts: auto-synced from the RSS feed by scripts/fetch_substack.py
          (run on a schedule by .github/workflows/substack.yml). -->
-    {% comment %} the hobby-maxxing piece is one of the entries pinned to "things to look at first" {% endcomment %}
+    {% comment %} Substack pieces pinned to "things to look at first". Add a slug to this list
+    to pin another one. {% endcomment %}
+    {% assign pinned = "hobby-maxxing,the-brain-isnt-an-llm" | split: "," %}
     {% for p in site.data.substack %}
-    <li class="witem" data-date="{{ p.date | date: "%Y-%m-%d" }}" data-topics="nontechnical{% if p.url contains 'hobby-maxxing' %} first{% endif %}">
+    {% assign is_first = false %}
+    {% for slug in pinned %}{% if p.url contains slug %}{% assign is_first = true %}{% endif %}{% endfor %}
+    <li class="witem" data-date="{{ p.date | date: "%Y-%m-%d" }}" data-topics="nontechnical{% if is_first %} first{% endif %}">
       <div class="witem-head">
         <a class="witem-title" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a>
         <span class="witem-date">{{ p.date | date: "%B %Y" }}</span>
