@@ -17,13 +17,7 @@
   author: "Vivien Cheng, Jerry Liu, Morris Yau and Chris Ré, Hazy Research"
   kind: "paper"
   year: "2026"
-  note: "A closed-form rotation and a single global scale let one LLM use another's hidden
-    state in place of its own, with no gradient descent. Swapping a rotated donor key
-    flips the recipient's answer on 41% of factual recalls, against 55% when the recipient
-    uses its own key, and it unlocks 18% of the facts the recipient stores but cannot
-    retrieve. The part I keep circling is that geometric similarity turned out to be a
-    poor guide to which layers transfer: picking swap layers by mutual nearest-neighbour
-    similarity scores about a tenth of what picking by transfer accuracy does."
+  note: ""
   link: "https://hazyresearch.stanford.edu/blog/2026-11-25-platos-key"
   annotated: "/assets/pdfs/annotated/platos-key-annotated.pdf"
   status: ""
@@ -32,12 +26,7 @@
   author: "Andrew Kyle Lampinen"
   kind: "paper"
   year: ""
-  note: "A primer on what language models are, how they are trained, and which of their
-    parallels to the brain are real. My copy is marked up front to back, mostly with the
-    questions it left me: whether the residual stream is doing the job of a latent space,
-    whether humans build the same kind of probability distribution if the brain is a
-    predictive machine, and whether multimodal experience is simply a more efficient way
-    to learn than text alone."
+  note: ""
   link: ""
   annotated: "/assets/pdfs/annotated/lampinen-emergent-parallels-annotated.pdf"
   status: ""
