@@ -1405,7 +1405,7 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
         const plotH = height - pad.top - pad.bottom;
 
         // Clear background
-        ctx.fillStyle = '#FAF9F6';
+        ctx.fillStyle = '#faf6ec';
         ctx.fillRect(0, 0, width, height);
 
         const minLog = -5;
@@ -1422,10 +1422,10 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
         }
 
         // Horizontal log gridlines
-        ctx.strokeStyle = '#E5E2DC';
+        ctx.strokeStyle = '#e6ddc9';
         ctx.lineWidth = 1;
         ctx.font = '11px "JetBrains Mono", monospace';
-        ctx.fillStyle = '#57534E';
+        ctx.fillStyle = '#6a2350';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
 
@@ -1450,14 +1450,14 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
           ctx.beginPath();
           ctx.moveTo(x, pad.top + plotH);
           ctx.lineTo(x, pad.top + plotH + 5);
-          ctx.strokeStyle = '#A8A29E';
+          ctx.strokeStyle = '#b3a58b';
           ctx.stroke();
           ctx.fillText(String(mTick), x, pad.top + plotH + 8);
         }
 
         // Axis Titles
         ctx.font = '11px "Inter", sans-serif';
-        ctx.fillStyle = '#57534E';
+        ctx.fillStyle = '#6a2350';
         ctx.fillText('Amino acid substitutions (m)', pad.left + plotW / 2, height - 14);
 
         ctx.save();
@@ -1469,7 +1469,7 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
 
         // Draw Random Mutagenesis Curve (Terracotta)
         ctx.beginPath();
-        ctx.strokeStyle = '#C2592B';
+        ctx.strokeStyle = '#cf4d87';
         ctx.lineWidth = 2.5;
         let started = false;
         const steps = 160;
@@ -1494,7 +1494,7 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
 
         // Draw Homologous Recombination Curve (Teal)
         ctx.beginPath();
-        ctx.strokeStyle = '#0F6E6E';
+        ctx.strokeStyle = '#9c1c8c';
         ctx.lineWidth = 2.75;
         for (let i = 0; i <= steps; i++) {
           const mVal = (simState.D * i) / steps;
@@ -1510,7 +1510,7 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
         const mx = xPos(simState.m);
         ctx.save();
         ctx.setLineDash([4, 4]);
-        ctx.strokeStyle = '#2B5B84';
+        ctx.strokeStyle = '#6a2350';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(mx, pad.top);
@@ -1525,18 +1525,18 @@ excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a t
         if (pRand >= Math.pow(10, minLog)) {
           ctx.beginPath();
           ctx.arc(mx, yPos(pRand), 5, 0, Math.PI * 2);
-          ctx.fillStyle = '#C2592B';
+          ctx.fillStyle = '#cf4d87';
           ctx.fill();
-          ctx.strokeStyle = '#FFFFFF';
+          ctx.strokeStyle = '#fffdf7';
           ctx.lineWidth = 2;
           ctx.stroke();
         }
 
         ctx.beginPath();
         ctx.arc(mx, yPos(pRec), 5.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#0F6E6E';
+        ctx.fillStyle = '#9c1c8c';
         ctx.fill();
-        ctx.strokeStyle = '#FFFFFF';
+        ctx.strokeStyle = '#fffdf7';
         ctx.lineWidth = 2;
         ctx.stroke();
 
