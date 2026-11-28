@@ -1,0 +1,1646 @@
+---
+layout: post
+title: "The Word Game! Directing evolution through language"
+dek: "How turning MILK into SHOP one letter at a time explains sequence space, protein neutrality, and why directed evolution works."
+date: 2026-11-28
+tag: "Guide"
+section: technical
+rank: 3
+permalink: /writing/word-game/
+excerpt: "Proteins are words in a 20-letter alphabet. Changing one letter at a time, while every intermediate still has to mean something, is the whole problem of directed evolution. Three interactive labs: a playable word game over sequence space, a stability-margin simulator, and the engineering toolkit that maps onto each move."
+---
+
+<!-- Tailwind, with preflight off so it cannot reset the site chrome around it.
+     The brand scales below are remapped to the site's magenta. -->
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = {
+    corePlugins: { preflight: false },
+    theme: { extend: {
+      colors: {
+        paper: '#faf6ec', card: '#fffdf7', hairline: '#e6ddc9',
+        ink: '#17090f', muted: '#6a2350',
+        tealbrand: '#9c1c8c', terracotta: '#cf4d87', slateblue: '#6a2350',
+        teal:   { 50:'#fdf2fa',100:'#fbe3f4',200:'#f5c2e5',300:'#ea97d0',800:'#7a1570',900:'#5e1057' },
+        blue:   { 50:'#f8f1f6',100:'#f0ddea',200:'#ddbdd2' },
+        orange: { 50:'#fef1f6',100:'#fbdce9' },
+        stone:  { 100:'#f1ebdd',200:'#e6ddc9',300:'#d6cab2',400:'#b3a58b',800:'#2a1b22' },
+      },
+      fontFamily: {
+        serif: ['var(--sans)'], sans: ['var(--sans)'], mono: ['var(--code)'],
+      },
+      maxWidth: { article: '760px', lab: '920px' },
+    } },
+  };
+</script>
+
+<style>
+/* The post's own styles, recoloured. Scoped under .wg so nothing leaks out. */
+
+    .wg {
+      background-color: #faf6ec;
+      color: #17090f;
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .wg .prose-body p {
+      font-size: 1.05rem;
+      line-height: 1.78;
+      color: #17090f;
+      margin-bottom: 1.25rem;
+    }
+
+    .wg .prose-body h2 {
+      font-family: var(--sans);
+      font-size: 1.9rem;
+      line-height: 1.25;
+      font-weight: 600;
+      color: #17090f;
+      margin-top: 2.8rem;
+      margin-bottom: 0.9rem;
+      letter-spacing: -0.015em;
+    }
+
+    .wg .prose-body h3 {
+      font-family: var(--sans);
+      font-size: 1.35rem;
+      line-height: 1.35;
+      font-weight: 600;
+      color: #17090f;
+      margin-top: 2rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .wg .word-chip {
+      font-family: var(--code);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.08rem 0.42rem;
+      border-radius: 0.375rem;
+      font-size: 0.88em;
+    }
+
+    /* Custom range sliders */
+    .wg input[type="range"].lab-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #e6ddc9;
+      border-radius: 9999px;
+      outline: none;
+    }
+    .wg input[type="range"].lab-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #9c1c8c;
+      border: 2.5px solid #fffdf7;
+      box-shadow: 0 1px 4px rgba(28, 27, 24, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .wg input[type="range"].lab-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+    }
+    .wg input[type="range"].lab-slider.slider-terra::-webkit-slider-thumb {
+      background: #cf4d87;
+    }
+    .wg input[type="range"].lab-slider.slider-slate::-webkit-slider-thumb {
+      background: #6a2350;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+    .wg .animate-shake {
+      animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.97); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .wg .animate-pop {
+      animation: popIn 0.18s ease-out forwards;
+    }
+  </style>
+
+<div class="wg">
+<article class="pt-12 sm:pt-16">
+
+      
+
+      <!-- ==================== SECTION 1: SEQUENCE SPACE & THE WORD GAME ==================== -->
+      <section class="max-w-article mx-auto px-5 sm:px-6 prose-body">
+        <p>
+          Proteins are linear chains built from a 20-letter alphabet of amino acids. Because each position in a chain of length <span class="font-mono text-[0.92em]">N</span> can hold any of 20 residues, there are <span class="font-mono text-[0.92em] font-semibold">20<sup>N</sup></span> possible sequences. Even for short chains, that number grows faster than physical intuition can track.
+        </p>
+
+        <!-- Combinatorial Explosion Strip -->
+        <div class="my-7 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <div class="bg-card border border-hairline rounded-xl p-4">
+            <div class="text-xs font-mono uppercase tracking-wider text-muted mb-1">18 Residues</div>
+            <div class="font-mono text-2xl font-bold text-ink">~10<sup class="text-sm">23</sup></div>
+            <div class="text-xs text-muted mt-1">Comparable to the mass of a baseball</div>
+          </div>
+          <div class="bg-card border border-hairline rounded-xl p-4">
+            <div class="text-xs font-mono uppercase tracking-wider text-muted mb-1">37 Residues</div>
+            <div class="font-mono text-2xl font-bold text-ink">~10<sup class="text-sm">48</sup></div>
+            <div class="text-xs text-muted mt-1">Comparable to the mass of the Earth</div>
+          </div>
+          <div class="bg-card border border-terracotta/40 bg-orange-50/30 rounded-xl p-4">
+            <div class="text-xs font-mono uppercase tracking-wider text-terracotta mb-1">59 Residues</div>
+            <div class="font-mono text-2xl font-bold text-ink">~10<sup class="text-sm">77</sup></div>
+            <div class="text-xs text-muted mt-1">Exceeds the atoms in the observable universe</div>
+          </div>
+        </div>
+
+        <p>
+          Most enzymes are 200 to 500 residues long, and almost all random amino acid strings fail to fold into stable, functional structures. Natural selection cannot search that space by guessing at random. It moves one mutation at a time, and every intermediate sequence along the path must remain folded and functional. Any variant that drops below the fitness threshold is eliminated.
+        </p>
+
+        <p>
+          In 1970, evolutionary biologist John Maynard Smith framed this constraint as a four-letter English word game. Out of <span class="font-mono text-[0.92em]">26<sup>4</sup> = 456,976</span> possible four-letter strings, only a small fraction are real English words. Real words represent functional proteins, while gibberish strings represent unfolded sequences. To evolve one word into another, you change one letter per step while keeping every intermediate a valid word. Maynard Smith used <span class="word-chip bg-teal-50 text-tealbrand border border-teal-200">WORD</span> to <span class="word-chip bg-blue-50 text-slateblue border border-blue-200">GENE</span> as his example: <span class="font-mono text-[0.9em]">WORD → WORE → GORE → GONE → GENE</span>.
+        </p>
+
+        <p>
+          To map the geometry of this search, theoretical biologist Stuart Kauffman represented sequence space as a hypercube. Each sequence is a node, and each edge connects two sequences separated by a single substitution. For a protein of length <span class="font-mono text-[0.92em]">N</span>, every node has <span class="font-mono text-[0.92em] font-semibold">19N</span> single-mutation edges. The shortest theoretical path between two sequences is their Hamming distance, which is the number of positions where they differ.
+        </p>
+
+        <p>
+          In practice, the shortest Hamming path is often blocked. Consider turning <span class="word-chip bg-teal-50 text-tealbrand border border-teal-200">MILK</span> into <span class="word-chip bg-blue-50 text-slateblue border border-blue-200">SHOP</span>. All four letters differ, so the Hamming distance is 4. If you try to change one letter directly toward the target (<span class="font-mono text-[0.9em]">MILK → SILK → SHLK → SHOK → SHOP</span>), you hit nonsense at step 2 because <span class="font-mono text-terracotta">SHLK</span> and <span class="font-mono text-terracotta">SHOK</span> are not words. Every direct 4-step route fails. To stay on functional sequences, evolution has to take a 7-step detour through neutral space, such as <span class="font-mono text-[0.88em]">MILK → MILE → MOLE → MOLT → MOOT → SOOT → SHOT → SHOP</span>.
+        </p>
+      </section>
+
+      <!-- ==================== INTERACTIVE LAB 01: THE PROTEIN WORD GAME PLAYGROUND ==================== -->
+      <section id="word-game" class="max-w-lab mx-auto px-4 sm:px-6 my-10">
+        <div class="bg-card border border-hairline rounded-2xl shadow-sm overflow-hidden">
+          <!-- Lab Header -->
+          <div class="px-5 sm:px-7 py-5 border-b border-hairline bg-paper/70 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono uppercase tracking-wider text-tealbrand font-semibold mb-1">Interactive Lab 01</div>
+              <h2 class="font-serif text-2xl font-semibold text-ink !m-0">The Protein Word Game Playground</h2>
+            </div>
+            <!-- Preset Selector -->
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Word Game Presets">
+              <button type="button" data-preset="MILK-SHOP" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-tealbrand text-white border-tealbrand">
+                MILK → SHOP
+              </button>
+              <button type="button" data-preset="WORD-GENE" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-card text-ink border-hairline hover:border-stone-400">
+                WORD → GENE
+              </button>
+              <button type="button" data-preset="COLD-WARM" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-card text-ink border-hairline hover:border-stone-400">
+                COLD → WARM
+              </button>
+              <button type="button" id="toggleCustomBtn" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-dashed border-stone-400 text-muted hover:text-ink hover:border-ink transition-all">
+                Custom Pair
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Pair Drawer -->
+          <div id="customPairPanel" class="hidden px-5 sm:px-7 py-4 bg-paper border-b border-hairline">
+            <form id="customPairForm" class="flex flex-wrap items-end gap-3">
+              <div>
+                <label for="customStart" class="block text-xs font-medium text-muted mb-1">Start Word (4 letters)</label>
+                <input id="customStart" type="text" maxlength="4" placeholder="HEAD" class="w-28 px-3 py-1.5 rounded-lg border border-hairline font-mono uppercase text-sm font-semibold bg-card focus:outline-none focus:ring-2 focus:ring-tealbrand/30 focus:border-tealbrand" />
+              </div>
+              <span class="pb-2 text-muted font-mono">→</span>
+              <div>
+                <label for="customTarget" class="block text-xs font-medium text-muted mb-1">Target Word (4 letters)</label>
+                <input id="customTarget" type="text" maxlength="4" placeholder="TAIL" class="w-28 px-3 py-1.5 rounded-lg border border-hairline font-mono uppercase text-sm font-semibold bg-card focus:outline-none focus:ring-2 focus:ring-slateblue/30 focus:border-slateblue" />
+              </div>
+              <button type="submit" class="px-4 py-1.5 rounded-lg bg-ink text-white text-xs font-semibold hover:bg-stone-800 transition-colors">
+                Load Pair
+              </button>
+              <span id="customErrorMsg" class="text-xs text-terracotta font-medium hidden"></span>
+            </form>
+          </div>
+
+          <!-- Live Telemetry Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-hairline border-b border-hairline bg-card">
+            <div class="px-5 py-3.5">
+              <div class="text-[11px] font-medium uppercase tracking-wider text-muted">Steps Taken</div>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span id="statSteps" class="font-mono text-2xl font-bold text-ink">0</span>
+                <span id="statTargetLabel" class="text-xs font-mono text-muted">Target: SHOP</span>
+              </div>
+            </div>
+            <div class="px-5 py-3.5">
+              <div class="text-[11px] font-medium uppercase tracking-wider text-muted">Hamming Distance</div>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span id="statHamming" class="font-mono text-2xl font-bold text-slateblue">4</span>
+                <span class="text-xs text-muted">to target</span>
+              </div>
+            </div>
+            <div class="px-5 py-3.5">
+              <div class="text-[11px] font-medium uppercase tracking-wider text-muted">Functional Neighbors</div>
+              <div class="flex items-baseline gap-1.5 mt-0.5">
+                <span id="statNeighbors" class="font-mono text-2xl font-bold text-tealbrand">0</span>
+                <span class="text-xs font-mono text-muted">/ 100 moves</span>
+              </div>
+            </div>
+            <div class="px-5 py-3.5">
+              <div class="text-[11px] font-medium uppercase tracking-wider text-muted">Maynard Smith fN</div>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span id="statFN" class="font-mono text-2xl font-bold text-ink">0</span>
+                <span id="statFNBadge" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-tealbrand border border-teal-200">fN > 1</span>
+              </div>
+              <div id="statFVal" class="text-[11px] font-mono text-muted">f = 0.00</div>
+            </div>
+          </div>
+
+          <!-- Main Stage -->
+          <div class="p-5 sm:p-7">
+            <!-- Status Banner -->
+            <div id="gameBanner" class="hidden mb-5 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between gap-3">
+              <span id="gameBannerText"></span>
+              <button type="button" id="closeBannerBtn" class="text-xs opacity-70 hover:opacity-100 font-mono">Close</button>
+            </div>
+
+            <!-- Interactive Letter Tiles + Mode Toggle + Controls -->
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6 pb-6 border-b border-hairline">
+              <div class="flex flex-col items-center lg:items-start">
+                <div class="text-xs font-medium text-muted mb-2.5 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                  <span>Click any residue tile (1 to 4) to mutate that position</span>
+                  <span class="hidden sm:inline text-stone-300">·</span>
+                  <span class="font-mono text-[11px] text-tealbrand">Teal matches target</span>
+                </div>
+                <div id="wordTiles" class="flex items-center gap-2.5 sm:gap-3.5">
+                  <!-- 4 interactive tiles rendered by JS -->
+                </div>
+              </div>
+
+              <!-- Controls Column -->
+              <div class="w-full lg:w-auto flex flex-col gap-3">
+                <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
+                  <button type="button" id="undoBtn" class="px-3.5 py-2 rounded-xl border border-hairline text-xs sm:text-sm font-medium text-ink hover:bg-paper transition-colors disabled:opacity-40" disabled>
+                    Undo Step
+                  </button>
+                  <button type="button" id="resetBtn" class="px-3.5 py-2 rounded-xl border border-hairline text-xs sm:text-sm font-medium text-ink hover:bg-paper transition-colors">
+                    Reset
+                  </button>
+                  <button type="button" id="compareBfsBtn" class="px-4 py-2 rounded-xl bg-ink text-white text-xs sm:text-sm font-semibold hover:bg-stone-800 transition-colors">
+                    Show Optimal Detour (BFS)
+                  </button>
+                </div>
+
+                <!-- Allow Nonfunctional Jumps Toggle -->
+                <label class="flex items-center justify-center lg:justify-end gap-2.5 cursor-pointer select-none">
+                  <input id="allowJumpsToggle" type="checkbox" class="w-4 h-4 rounded accent-slateblue cursor-pointer" />
+                  <span class="text-xs text-muted">
+                    Allow Nonfunctional Jumps <span class="font-mono text-slateblue">(Rational Design mode)</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- A-Z Mutation Grid -->
+            <div id="letterPicker" class="hidden my-5 p-4 rounded-xl bg-paper border border-hairline animate-pop">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span id="letterPickerTitle" class="text-xs font-semibold text-ink">Mutate Position 1</span>
+                <div class="flex items-center gap-4 text-[11px]">
+                  <span class="flex items-center gap-1.5 text-tealbrand font-medium"><span class="w-2 h-2 rounded-full bg-tealbrand"></span> Folded / Functional</span>
+                  <span class="flex items-center gap-1.5 text-muted"><span class="w-2 h-2 rounded-full bg-stone-300"></span> Unfolded / Dead</span>
+                </div>
+              </div>
+              <div id="letterGrid" class="grid grid-cols-7 sm:grid-cols-13 gap-1.5">
+                <!-- A-Z buttons rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Path History -->
+            <div class="mt-6">
+              <div class="text-xs font-semibold uppercase tracking-wider text-muted mb-2.5">Path History</div>
+              <div id="evolutionTrail" class="flex flex-wrap items-center gap-2 p-3.5 rounded-xl bg-paper border border-hairline min-h-[52px]">
+                <!-- History badges rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Viable 1-Step Neighbors -->
+            <div class="mt-5">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-muted">Viable 1-Step Neighbors (Click to Step)</span>
+                <span id="neighborHint" class="text-xs text-muted font-mono"></span>
+              </div>
+              <div id="neighborChips" class="flex flex-wrap gap-2">
+                <!-- Neighbor chips rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Side-by-Side BFS Comparison Panel -->
+            <div id="bfsComparisonPanel" class="hidden mt-6 pt-5 border-t border-hairline grid grid-cols-1 md:grid-cols-2 gap-4 animate-pop">
+              <!-- Direct Hamming Walk -->
+              <div class="p-4 rounded-xl border border-terracotta/30 bg-orange-50/40">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-terracotta">Direct Hamming Walk</span>
+                  <span id="directStatusBadge" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-terracotta">Blocked</span>
+                </div>
+                <p id="directExplanation" class="text-xs text-ink leading-relaxed mb-3"></p>
+                <div id="directPathViz" class="flex flex-wrap items-center gap-1.5 text-xs font-mono"></div>
+              </div>
+              <!-- Shortest Valid Evolutionary Path (BFS) -->
+              <div class="p-4 rounded-xl border border-tealbrand/30 bg-teal-50/40">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-tealbrand">Shortest Valid Path (BFS)</span>
+                  <span id="bfsLengthBadge" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-teal-100 text-tealbrand"></span>
+                </div>
+                <p id="bfsExplanation" class="text-xs text-ink leading-relaxed mb-3"></p>
+                <div id="bfsPathViz" class="flex flex-wrap items-center gap-1.5 text-xs font-mono"></div>
+                <div class="mt-3 flex items-center gap-3">
+                  <button type="button" id="animateBfsBtn" class="text-xs font-semibold text-tealbrand hover:text-teal-900 underline underline-offset-2">
+                    Animate detour on board
+                  </button>
+                  <span id="dictSizeLabel" class="text-[11px] font-mono text-muted"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SECTION 2: WHY EVOLUTION WORKS (AND WHY IT STALLS) ==================== -->
+      <section class="max-w-article mx-auto px-5 sm:px-6 prose-body">
+        <h2>Why Evolution Works (and Why It Stalls)</h2>
+
+        <p>
+          In the word game, a sequence can keep evolving as long as it has at least one valid neighbor. Maynard Smith expressed this percolation condition as <span class="font-mono font-semibold text-ink">fN > 1</span>, where <span class="font-mono">N</span> is the number of single-mutation neighbors and <span class="font-mono">f</span> (often written as <span class="font-mono">ν</span>) is protein neutrality, defined as the fraction of single random mutations that leave the protein folded. Because a 300-residue protein has <span class="font-mono">19 × 300 = 5,700</span> single-step neighbors, even a modest neutrality value creates a dense web of viable paths.
+        </p>
+
+        <p>
+          Still, most random mutations hurt the protein. Across experimental libraries, roughly <strong>40% of mutations are strongly deleterious</strong>, about <strong>60% are neutral or weakly deleterious</strong>, and <strong>fewer than 1% are beneficial</strong>. The main bottleneck is thermodynamic stability. Natural proteins are only marginally stable, typically sitting <strong>5 to 15 kcal/mol</strong> more stable than their unfolded state. At 25 °C, a shift of just <strong>1.4 kcal/mol</strong> changes the folding equilibrium constant by a factor of 10.
+        </p>
+
+        <p>
+          That narrow stability margin explains why directed evolution can suddenly stall. A classic example comes from evolving cytochrome P450 BM3, an enzyme that naturally oxidizes long-chain fatty acids, to oxidize propane gas (Fasan et al., 2008). Over successive rounds of mutagenesis (WT → 139-3 → J → 35E11), propane activity climbed steadily. Then evolution hit a wall at variant 35E11. Every new functional mutation had chipped away at the enzyme's stability, dropping its thermal inactivation temperature (<span class="font-mono text-[0.92em]">T<sub>50</sub></span>) from about 55 °C down to 43 °C. At that threshold, almost any additional mutation unfolded the protein.
+        </p>
+
+        <p>
+          The fix was straightforward. By introducing two stabilizing mutations to create variant ETS8, the team raised <span class="font-mono text-[0.92em]">T<sub>50</sub></span> back to 48 °C. That extra stability buffer did not directly increase propane catalysis, yet it restored protein neutrality. With room to absorb more destabilizing active-site mutations, directed evolution resumed and reached P450<sub>PMO</sub> with over 33,000 total turnovers on propane.
+        </p>
+
+        <p>
+          Bloom et al. (2005) showed that under random mutagenesis, the fraction of proteins remaining folded after <span class="font-mono text-[0.92em]">m</span> substitutions falls off exponentially as <span class="font-mono font-semibold text-terracotta">P<sub>f</sub>(m) = ν<sup>m</sup></span>. Drummond et al. (2005) then compared this drop-off against homologous recombination, where segments are swapped between two already-functional parent proteins separated by <span class="font-mono text-[0.92em]">D</span> amino acid differences. Recombination follows <span class="font-mono font-semibold text-tealbrand">P<sub>f</sub>(m) = ρ<sup>m(D − m)/(D − 1)</sup></span>, where <span class="font-mono">ρ</span> is recombinational tolerance. In experiments on TEM-1 and PSE-4 beta-lactamases (<span class="font-mono">ρ = 0.79</span> compared to <span class="font-mono">ν = 0.54</span>), chimeras stayed on a functionally enriched ridge between the two parents instead of dropping off an exponential cliff.
+        </p>
+      </section>
+
+      <!-- ==================== INTERACTIVE LAB 02: STABILITY MARGIN & RECOMBINATION RIDGE SIMULATOR ==================== -->
+      <section id="stability-lab" class="max-w-lab mx-auto px-4 sm:px-6 my-10">
+        <div class="bg-card border border-hairline rounded-2xl shadow-sm overflow-hidden">
+          <!-- Lab Header -->
+          <div class="px-5 sm:px-7 py-5 border-b border-hairline bg-paper/70 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono uppercase tracking-wider text-tealbrand font-semibold mb-1">Interactive Lab 02</div>
+              <h2 class="font-serif text-2xl font-semibold text-ink !m-0">Stability Margin and Recombination Ridge Simulator</h2>
+            </div>
+            <!-- Empirical Presets -->
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Simulator Presets">
+              <button type="button" data-sim-preset="beta" class="sim-preset-btn px-3 py-1.5 rounded-lg text-xs font-medium border transition-all bg-tealbrand text-white border-tealbrand">
+                TEM-1 / PSE-4 (Drummond 2005)
+              </button>
+              <button type="button" data-sim-preset="marginal" class="sim-preset-btn px-3 py-1.5 rounded-lg text-xs font-medium border transition-all bg-card text-ink border-hairline hover:border-stone-400">
+                Marginal Parent (P450 35E11)
+              </button>
+              <button type="button" data-sim-preset="stabilized" class="sim-preset-btn px-3 py-1.5 rounded-lg text-xs font-medium border transition-all bg-card text-ink border-hairline hover:border-stone-400">
+                Stabilized Parent (M182T / ETS8)
+              </button>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-7">
+            <!-- Canvas Chart Column -->
+            <div class="lg:col-span-7 flex flex-col">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs">
+                <div class="flex items-center gap-4">
+                  <span class="flex items-center gap-1.5 font-medium text-ink">
+                    <span class="w-3 h-0.5 bg-terracotta inline-block rounded"></span>
+                    Random: P<sub>f</sub>(m) = ν<sup>m</sup>
+                  </span>
+                  <span class="flex items-center gap-1.5 font-medium text-ink">
+                    <span class="w-3 h-0.5 bg-tealbrand inline-block rounded"></span>
+                    Recombination: ρ<sup>m(D−m)/(D−1)</sup>
+                  </span>
+                </div>
+                <span class="font-mono text-[11px] text-muted">Log Y-axis (10<sup>−5</sup> to 1)</span>
+              </div>
+
+              <div class="relative w-full h-[310px] sm:h-[340px] bg-paper border border-hairline rounded-xl overflow-hidden">
+                <canvas id="ridgeCanvas" class="w-full h-full block"></canvas>
+              </div>
+
+              <!-- Readout Cards at Inspected m -->
+              <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3.5 rounded-xl bg-paper border border-hairline">
+                  <div class="text-[11px] font-medium text-muted">Random Survival at m = <span id="readoutM1" class="font-mono font-bold text-ink">30</span></div>
+                  <div id="readoutRandom" class="font-mono text-lg font-bold text-terracotta mt-0.5">0.00%</div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-paper border border-hairline">
+                  <div class="text-[11px] font-medium text-muted">Recombination at m = <span id="readoutM2" class="font-mono font-bold text-ink">30</span></div>
+                  <div id="readoutRecomb" class="font-mono text-lg font-bold text-tealbrand mt-0.5">0.00%</div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-blue-50/50 border border-slateblue/30">
+                  <div class="text-[11px] font-medium text-slateblue">Ridge Advantage</div>
+                  <div id="readoutAdvantage" class="font-mono text-lg font-bold text-slateblue mt-0.5">1.0×</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls Column -->
+            <div class="lg:col-span-5 flex flex-col justify-between gap-5">
+              <div class="space-y-4">
+                <!-- Slider: Neutrality v -->
+                <div>
+                  <div class="flex items-center justify-between text-xs mb-1.5">
+                    <label for="sliderV" class="font-semibold text-ink">Neutrality ν (single-mutation survival)</label>
+                    <span id="valV" class="font-mono font-bold text-terracotta">0.54</span>
+                  </div>
+                  <input id="sliderV" type="range" min="0.20" max="0.85" step="0.01" value="0.54" class="lab-slider slider-terra" />
+                </div>
+
+                <!-- Slider: Recombinational Tolerance rho -->
+                <div>
+                  <div class="flex items-center justify-between text-xs mb-1.5">
+                    <label for="sliderRho" class="font-semibold text-ink">Recombinational Tolerance ρ</label>
+                    <span id="valRho" class="font-mono font-bold text-tealbrand">0.79</span>
+                  </div>
+                  <input id="sliderRho" type="range" min="0.50" max="0.95" step="0.01" value="0.79" class="lab-slider" />
+                </div>
+
+                <!-- Slider: Parental Divergence D -->
+                <div>
+                  <div class="flex items-center justify-between text-xs mb-1.5">
+                    <label for="sliderD" class="font-semibold text-ink">Parental Divergence D (amino acid differences)</label>
+                    <span id="valD" class="font-mono font-bold text-ink">150</span>
+                  </div>
+                  <input id="sliderD" type="range" min="10" max="150" step="1" value="150" class="lab-slider slider-slate" />
+                </div>
+
+                <!-- Slider: Inspect Substitutions m -->
+                <div>
+                  <div class="flex items-center justify-between text-xs mb-1.5">
+                    <label for="sliderM" class="font-semibold text-ink">Inspect Substitutions m</label>
+                    <span id="valM" class="font-mono font-bold text-slateblue">30</span>
+                  </div>
+                  <input id="sliderM" type="range" min="1" max="150" step="1" value="30" class="lab-slider slider-slate" />
+                </div>
+              </div>
+
+              <!-- Live Stability Buffer Bar -->
+              <div class="p-4 rounded-xl bg-paper border border-hairline">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-semibold uppercase tracking-wider text-muted">Stability Buffer Status</span>
+                  <span id="bufferBadge" class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full">Marginal</span>
+                </div>
+                <div class="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden mb-2.5">
+                  <div id="bufferFill" class="h-full rounded-full transition-all duration-200" style="width: 45%"></div>
+                </div>
+                <p id="bufferNote" class="text-xs text-muted leading-relaxed"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SECTION 3: THE ENGINEERING TOOLKIT ==================== -->
+      <section class="max-w-article mx-auto px-5 sm:px-6 prose-body">
+        <h2>How Protein Engineers Play the Word Game</h2>
+
+        <p>
+          In the lab, protein engineers do not have to wait for slow natural mutations. Instead, they choose specific mutagenesis and design methods depending on how much structural information they have and how many variants their assay can screen. Each experimental method corresponds directly to a different way of moving from <span class="word-chip bg-teal-50 text-tealbrand border border-teal-200">MILK</span> to <span class="word-chip bg-blue-50 text-slateblue border border-blue-200">SHOP</span>.
+        </p>
+      </section>
+
+      <!-- ==================== INTERACTIVE LAB 03: THE ENGINEERING TOOLKIT (STRATEGY SWITCHER) ==================== -->
+      <section id="toolkit" class="max-w-lab mx-auto px-4 sm:px-6 my-8">
+        <div class="bg-card border border-hairline rounded-2xl shadow-sm overflow-hidden">
+          <!-- Header & Tabs -->
+          <div class="px-5 sm:px-7 pt-5 border-b border-hairline bg-paper/70">
+            <div class="text-xs font-mono uppercase tracking-wider text-slateblue font-semibold mb-1">Interactive Lab 03</div>
+            <h2 class="font-serif text-2xl font-semibold text-ink !mt-0 !mb-4">The Engineering Toolkit</h2>
+            <div class="flex flex-wrap gap-2 -mb-px" role="tablist" aria-label="Protein Engineering Strategies">
+              <button type="button" role="tab" data-tab="eppcr" aria-selected="true" class="toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border border-b-0 border-hairline bg-card text-tealbrand transition-colors">
+                1. Error-Prone PCR
+              </button>
+              <button type="button" role="tab" data-tab="ssm" aria-selected="false" class="toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-medium rounded-t-xl border border-transparent text-muted hover:text-ink transition-colors">
+                2. Site Saturation (SSM)
+              </button>
+              <button type="button" role="tab" data-tab="schema" aria-selected="false" class="toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-medium rounded-t-xl border border-transparent text-muted hover:text-ink transition-colors">
+                3. SCHEMA Recombination
+              </button>
+              <button type="button" role="tab" data-tab="rational" aria-selected="false" class="toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-medium rounded-t-xl border border-transparent text-muted hover:text-ink transition-colors">
+                4. Rational and AI Design
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Panels -->
+          <div class="p-5 sm:p-7">
+
+            <!-- TAB 1: epPCR -->
+            <div id="panel-eppcr" class="toolkit-panel animate-pop">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                <div class="md:col-span-7 space-y-3.5">
+                  <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-teal-50 text-tealbrand text-xs font-mono font-semibold">
+                    Word Game Analogy: Random single-letter typos across MILK
+                  </div>
+                  <h3 class="font-serif text-xl font-semibold text-ink">Error-Prone PCR (epPCR)</h3>
+                  <p class="text-sm text-ink leading-relaxed">
+                    Using a low-fidelity polymerase like Taq (which lacks proofreading) along with elevated Mn<sup>2+</sup> or unbalanced dNTPs introduces random nucleotide substitutions across the entire gene. The number of mutations per clone follows a Poisson distribution, <span class="font-mono text-xs">P(x) = e<sup>−λ</sup>λ<sup>x</sup> / x!</span>, so you can tune the average mutation load <span class="font-mono text-xs">λ</span> by adjusting reaction conditions.
+                  </p>
+                  <p class="text-sm text-ink leading-relaxed">
+                    There is a catch baked into the genetic code. Because a single nucleotide change in a 3-base codon can only reach at most 9 neighboring codons, and several of those code for the same amino acid, epPCR typically accesses only about <strong>6 of the 19 possible amino acid substitutions</strong> at any given residue.
+                  </p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div class="p-3 rounded-xl bg-paper border border-hairline text-xs">
+                      <div class="font-semibold text-tealbrand mb-1">Strengths</div>
+                      <p class="text-muted leading-relaxed">Requires no prior structural knowledge and can uncover beneficial mutations far from the active site.</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-paper border border-hairline text-xs">
+                      <div class="font-semibold text-terracotta mb-1">Limits</div>
+                      <p class="text-muted leading-relaxed">Hard to focus diversity on key residues and cannot sample all 20 amino acids cleanly at one site.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="md:col-span-5 p-4 rounded-xl bg-paper border border-hairline">
+                  <div class="text-xs font-mono uppercase tracking-wider text-muted mb-3">Codon Degeneracy Example</div>
+                  <div class="flex items-center justify-between p-3 rounded-lg bg-card border border-hairline mb-3">
+                    <span class="font-mono text-sm font-bold text-ink">GCU (Ala)</span>
+                    <span class="text-xs text-muted">1-base edits → 9 codons</span>
+                  </div>
+                  <div class="space-y-2 text-xs font-mono">
+                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-stone-100 text-muted">
+                      <span>GCC, GCA, GCG</span>
+                      <span>Synonymous (Ala)</span>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-teal-50 text-tealbrand border border-teal-200">
+                      <span>GUU, GAU, GGU</span>
+                      <span>Val, Asp, Gly</span>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-teal-50 text-tealbrand border border-teal-200">
+                      <span>UCU, CCU, ACU</span>
+                      <span>Ser, Pro, Thr</span>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-muted mt-3 leading-relaxed">
+                    Result: 3 silent mutations and only 6 reachable amino acids out of 19 possible changes.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: SSM -->
+            <div id="panel-ssm" class="toolkit-panel hidden animate-pop">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                <div class="md:col-span-6 space-y-3.5">
+                  <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-teal-50 text-tealbrand text-xs font-mono font-semibold">
+                    Word Game Analogy: Lock onto Position 4 in MILK and test all 26 letters
+                  </div>
+                  <h3 class="font-serif text-xl font-semibold text-ink">Site Saturation Mutagenesis (SSM)</h3>
+                  <p class="text-sm text-ink leading-relaxed">
+                    When you have a structural hypothesis (such as residues lining a binding pocket), SSM replaces the target codon with a degenerate primer mixture so all 20 amino acids are tested directly.
+                  </p>
+                  <p class="text-sm text-ink leading-relaxed">
+                    Choice of degenerate codon matters. <span class="font-mono text-xs font-semibold">NNN</span> uses all 64 codons (including 3 stop codons and heavy redundancy). <span class="font-mono text-xs font-semibold">NNK</span> cuts the pool to 32 codons (1 stop codon). The <strong>22c-trick</strong> (a mix of <span class="font-mono text-xs">NDT / VHG / TGG</span>, Kille et al., 2013) encodes all 20 amino acids in just 22 codons with zero stop codons and near-uniform frequencies.
+                  </p>
+                </div>
+
+                <!-- Interactive 3x Oversampling Mini-Calculator -->
+                <div class="md:col-span-6 p-4 sm:p-5 rounded-xl bg-paper border border-hairline">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-mono uppercase tracking-wider font-semibold text-ink">Screening Effort Calculator</span>
+                    <span class="font-mono text-[11px] text-muted">L = −V ln(1 − F)</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                      <label for="ssmSites" class="block text-xs font-medium text-muted mb-1">Simultaneous Sites</label>
+                      <select id="ssmSites" class="w-full px-3 py-2 rounded-lg border border-hairline bg-card text-xs font-mono font-semibold text-ink">
+                        <option value="1" selected>1 site (V = c¹)</option>
+                        <option value="2">2 sites (V = c²)</option>
+                        <option value="3">3 sites (V = c³)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="ssmCoverage" class="block text-xs font-medium text-muted mb-1">Target Coverage (F)</label>
+                      <select id="ssmCoverage" class="w-full px-3 py-2 rounded-lg border border-hairline bg-card text-xs font-mono font-semibold text-ink">
+                        <option value="0.90">90% (2.3× oversampling)</option>
+                        <option value="0.95" selected>95% (3.0× oversampling)</option>
+                        <option value="0.99">99% (4.6× oversampling)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="space-y-2.5 text-xs">
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-card border border-hairline">
+                      <div>
+                        <span class="font-mono font-bold text-ink">NNN</span>
+                        <span class="text-muted ml-1.5">(64 codons, 3 stops)</span>
+                      </div>
+                      <span id="calcNNN" class="font-mono font-bold text-terracotta">192 clones</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-card border border-hairline">
+                      <div>
+                        <span class="font-mono font-bold text-ink">NNK</span>
+                        <span class="text-muted ml-1.5">(32 codons, 1 stop)</span>
+                      </div>
+                      <span id="calcNNK" class="font-mono font-bold text-slateblue">96 clones</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-teal-50/70 border border-tealbrand/30">
+                      <div>
+                        <span class="font-mono font-bold text-tealbrand">22c-trick</span>
+                        <span class="text-muted ml-1.5">(22 codons, 0 stops)</span>
+                      </div>
+                      <span id="calc22c" class="font-mono font-bold text-tealbrand">66 clones</span>
+                    </div>
+                  </div>
+                  <p id="calcSummary" class="text-[11px] text-muted mt-3 leading-relaxed"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: SCHEMA Recombination -->
+            <div id="panel-schema" class="toolkit-panel hidden animate-pop">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                <div class="md:col-span-7 space-y-3.5">
+                  <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-blue-50 text-slateblue text-xs font-mono font-semibold">
+                    Word Game Analogy: Splice halves of two valid words (SHIP + SLOP → SHOP)
+                  </div>
+                  <h3 class="font-serif text-xl font-semibold text-ink">SCHEMA Recombination</h3>
+                  <p class="text-sm text-ink leading-relaxed">
+                    Instead of making tiny single-residue edits, homologous recombination swaps intact sequence blocks between two or more functional parent proteins. Every mutation introduced by recombination has already survived natural selection in a homologous fold.
+                  </p>
+                  <p class="text-sm text-ink leading-relaxed">
+                    Random crossover points can still break internal residue-residue contacts and unfold the chimera. SCHEMA (Voigt et al., 2002) uses a 3D structure to count how many pairwise contacts (within 4.5 Å) are disrupted by a given crossover: <span class="font-mono text-xs font-semibold">E<sub>αβ</sub> = Σ c<sub>ij</sub> P<sub>ij</sub></span>. By placing crossover boundaries at minima in the disruption profile, engineers make large leaps in sequence space while keeping a high fraction of chimeras folded.
+                  </p>
+                </div>
+                <div class="md:col-span-5 p-4 rounded-xl bg-paper border border-hairline">
+                  <div class="text-xs font-mono uppercase tracking-wider text-muted mb-3">Block Crossover Schematic</div>
+                  <div class="space-y-3 font-mono text-sm">
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-card border border-hairline">
+                      <span class="text-xs text-muted">Parent A</span>
+                      <div><span class="px-2 py-0.5 rounded bg-teal-50 text-tealbrand font-bold">SH</span><span class="px-2 py-0.5 rounded bg-stone-100 text-muted">IP</span></div>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-card border border-hairline">
+                      <span class="text-xs text-muted">Parent B</span>
+                      <div><span class="px-2 py-0.5 rounded bg-stone-100 text-muted">SL</span><span class="px-2 py-0.5 rounded bg-blue-50 text-slateblue font-bold">OP</span></div>
+                    </div>
+                    <div class="text-center text-xs text-muted">Low-disruption crossover (E<sub>αβ</sub> minimized)</div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-teal-50/50 border border-tealbrand/30">
+                      <span class="text-xs font-semibold text-tealbrand">Chimera</span>
+                      <div><span class="px-2 py-0.5 rounded bg-teal-100 text-tealbrand font-bold">SH</span><span class="px-2 py-0.5 rounded bg-blue-100 text-slateblue font-bold">OP</span></div>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-muted mt-3 leading-relaxed">
+                    In 3-parent beta-lactamase libraries (TEM-1, PSE-4, SED-1), SCHEMA-designed 8-block chimeras retained function in 20% of variants despite dozens of simultaneous mutations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 4: Rational and AI Design -->
+            <div id="panel-rational" class="toolkit-panel hidden animate-pop">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                <div class="md:col-span-7 space-y-3.5">
+                  <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-blue-50 text-slateblue text-xs font-mono font-semibold">
+                    Word Game Analogy: Jump directly from MILK to SHOP across the valley
+                  </div>
+                  <h3 class="font-serif text-xl font-semibold text-ink">Rational and AI-Guided Design</h3>
+                  <p class="text-sm text-ink leading-relaxed">
+                    Physics-based force fields, molecular dynamics simulations, and machine learning models are not restricted to single-step walks. They can propose 10 or more simultaneous mutations in one design cycle, jumping directly across nonfunctional valleys that natural selection cannot cross.
+                  </p>
+                  <p class="text-sm text-ink leading-relaxed">
+                    The strongest workflows pair rational design with directed evolution. In the Kemp eliminase design project (Privett et al., 2012 and Blomberg et al., 2013), computational design installed 12 active-site mutations to build a brand-new catalyst (HG-2 and HG-3) for a reaction with no natural enzyme. Seventeen rounds of directed evolution then refined HG-3 into HG-3.17, boosting catalytic efficiency (<span class="font-mono text-xs">k<sub>cat</sub>/K<sub>m</sub></span>) by nearly 200-fold to match natural enzymes like TIM.
+                  </p>
+                </div>
+                <div class="md:col-span-5 p-4 rounded-xl bg-paper border border-hairline">
+                  <div class="text-xs font-mono uppercase tracking-wider text-muted mb-3">Design + Evolution Synergy</div>
+                  <div class="space-y-2.5 text-xs">
+                    <div class="p-3 rounded-lg bg-card border border-hairline">
+                      <div class="flex items-center justify-between font-mono font-bold text-slateblue mb-1">
+                        <span>Step 1: Computational Jump</span>
+                        <span>HG-3</span>
+                      </div>
+                      <div class="text-muted">12 designed mutations create initial activity (k<sub>cat</sub>/K<sub>m</sub> = 1.3 × 10<sup>3</sup> M<sup>−1</sup>s<sup>−1</sup>)</div>
+                    </div>
+                    <div class="text-center font-mono text-muted">↓ 17 rounds of directed evolution</div>
+                    <div class="p-3 rounded-lg bg-teal-50/50 border border-tealbrand/30">
+                      <div class="flex items-center justify-between font-mono font-bold text-tealbrand mb-1">
+                        <span>Step 2: Local Optimization</span>
+                        <span>HG-3.17</span>
+                      </div>
+                      <div class="text-ink">Fine-tunes active-site geometry (k<sub>cat</sub>/K<sub>m</sub> = 2.3 × 10<sup>5</sup> M<sup>−1</sup>s<sup>−1</sup>, ~200× gain)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CLOSING & REFERENCES ==================== -->
+      <section id="notes" class="max-w-article mx-auto px-5 sm:px-6 prose-body mt-12">
+        <p>
+          Viewed through the word game, rational design and directed evolution solve complementary parts of the same search problem. Rational models and machine learning can jump across empty stretches of sequence space to land on a new functional island, while directed evolution and recombination explore the local neighborhood and climb peaks that physics-based scoring functions still miss. Together, they turn an impossibly large 20<sup>N</sup> alphabet into an engineering space we can navigate on purpose.
+        </p>
+
+        <!-- References -->
+        <div class="mt-12 pt-8 border-t border-hairline">
+          <h3 class="!mt-0 !mb-4 font-serif text-lg font-semibold text-ink">References</h3>
+          <ol class="space-y-2 text-xs sm:text-sm text-muted list-decimal pl-5 leading-relaxed">
+            <li>Maynard Smith, J. (1970). Natural selection and the concept of a protein space. <em>Nature</em>, 225, 563-564.</li>
+            <li>Bloom, J. D., Silberg, J. J., Wilke, C. O., Drummond, D. A., Adami, C., and Arnold, F. H. (2005). Thermodynamic prediction of protein neutrality. <em>PNAS</em>, 102(3), 606-611.</li>
+            <li>Drummond, D. A., Silberg, J. J., Meyer, M. M., Wilke, C. O., and Arnold, F. H. (2005). On the conservative nature of intragenic recombination. <em>PNAS</em>, 102(15), 5380-5385.</li>
+            <li>Fasan, R., Meharenna, Y. T., Snow, C. D., Poulos, T. L., and Arnold, F. H. (2008). Evolutionary history of a specialized P450 propane monooxygenase. <em>Journal of Molecular Biology</em>, 383(5), 1069-1080.</li>
+            <li>Voigt, C. A., Martinez, C., Wang, Z. G., Mayo, S. L., and Arnold, F. H. (2002). Protein building blocks preserved by recombination. <em>Nature Structural Biology</em>, 9(7), 553-558.</li>
+            <li>Kille, S., Acevedo-Rocha, C. G., Parra, L. P., Zhang, Z. G., Opperman, D. J., Reetz, M. T., and Acevedo, J. P. (2013). Reducing codon redundancy and screening effort of combinatorial protein libraries created by saturation mutagenesis. <em>ACS Synthetic Biology</em>, 2(2), 83-92.</li>
+            <li>Blomberg, R., Kries, H., Pinkas, D. M., Mittl, P. R. E., Grütter, M. G., Privett, H. K., Mayo, S. L., and Hilvert, D. (2013). Precision is essential for efficient catalysis in an evolved Kemp eliminase. <em>Nature</em>, 503, 418-421.</li>
+          </ol>
+        </div>
+      </section>
+    </article>
+</div>
+
+<script>
+(function () {
+      'use strict';
+
+      /* =====================================================================
+         1. COMPREHENSIVE 4-LETTER ENGLISH DICTIONARY (~850+ common words)
+         ===================================================================== */
+      const RAW_WORDS = (
+        'ABLE ACHE ACID ACME ACRE AGED AIDE AIMS AIRS AIRY AJAR AKIN ALAS ALLY ALMS ALOE ALSO ALTO AMEN AMID AMMO ANEW ANTE ANTI APEX ARCH AREA ARIA ARMY ARTS ARTY ASHY ATOM AUNT AURA AUTO AVID AVOW AWAY AWED AWRY AXES AXIS AXLE ' +
+        'BABE BABY BACK BADE BAGS BAIL BAIT BAKE BALD BALE BALL BALM BAND BANE BANG BANK BARE BARK BARN BARS BASE BASH BASK BASS BATH BATS BAWL BEAD BEAK BEAM BEAN BEAR BEAT BEAU BECK BEDS BEEF BEEN BEEP BEER BEES BEET BELL BELT BEND BENT BERG BERM BEST BETA BETS BIAS BIDE BIDS BIKE BILE BILL BIND BIRD BITE BITS BLAB BLAT BLED BLEW BLIP BLOB BLOC BLOT BLOW BLUE BLUR BOAR BOAT BODE BODY BOGS BOIL BOLD BOLE BOLL BOLT BOMB BOND BONE BONG BONY BOOK BOOM BOON BOOR BOOT BORE BORN BOSS BOTH BOUT BOWL BOWS BOXY BOYS BRAD BRAG BRAN BRAT BRAY BRED BREW BRIE BRIG BRIM BROW BUCK BUDS BUFF BUGS BULB BULK BULL BUMP BUMS BUNK BUNS BUNT BUOY BURN BURP BURR BURY BUSH BUSK BUSS BUST BUSY BUTS BUTT BUYS BUZZ BYTE ' +
+        'CABS CAFE CAGE CAGY CAKE CALF CALL CALM CAME CAMP CAMS CANE CANS CAPE CAPS CARD CARE CARP CARS CART CASE CASH CASK CAST CATS CAVE CAWS CEIL CELL CENT CHAD CHAP CHAR CHAT CHEF CHEW CHIC CHIN CHIP CHIT CHOP CHOW CHUG CHUM CITE CITY CLAD CLAM CLAN CLAP CLAW CLAY CLEF CLEW CLIP CLOD CLOG CLOP CLOT CLUB CLUE COAL COAT COAX COBS COCK CODA CODE CODS COED COGS COIL COIN COKE COLD COLE COLT COMA COMB COME CONE CONK CONS COOK COOL COOP COOT COPE COPS COPY CORD CORE CORK CORM CORN CORP COST COSY COTE COTS COUP COVE COWL COWS COZY CRAB CRAG CRAM CRAN CRAP CRAW CREW CRIB CRIM CROP CROW CRUD CRUX CUBE CUBS CUDS CUED CUES CUFF CULL CULT CUPS CURB CURD CURE CURL CURS CURT CUSP CUSS CUTE CUTS CYST ' +
+        'DABS DACE DADA DADO DADS DAFT DALE DAME DAMP DAMS DANE DANG DANK DARE DARK DARN DART DASH DATA DATE DAUB DAWN DAYS DAZE DEAD DEAF DEAL DEAN DEAR DEBT DECK DEED DEEM DEEP DEER DEFT DEFY DELI DELL DEMO DENS DENT DENY DESK DEWY DIAL DICE DIED DIES DIET DIGS DIKE DILL DIME DIMS DINE DING DINK DINO DINT DIPS DIRE DIRK DIRT DISC DISH DISK DIVE DOCK DODO DOER DOES DOGE DOGS DOLE DOLL DOLT DOME DONE DONG DOOM DOOR DOPE DOPY DORK DORM DOSE DOTE DOTH DOTS DOUR DOVE DOWN DOZE DRAB DRAG DRAM DRAW DRAY DREG DREW DRIP DROP DRUG DRUM DUAL DUBE DUBS DUCK DUCT DUDE DUDS DUEL DUET DUFF DUKE DULL DULY DUMB DUMP DUNE DUNG DUNK DUNS DUOS DUPE DURA DUSK DUST DUTY DYAD DYED DYER DYES ' +
+        'EACH EARL EARN EARS EASE EAST EASY EATS EAVE EBBS ECHO ECRU EDDY EDGE EDGY EDIT EELS EGAD EGGS EGIS EGRE EKED EKES ELAN ELKS ELMS ELSE EMIR EMIT EMUS ENDS ENVY EONS EPIC ERAS ERGO ERGS ERRS ERST ETCH EURO EVEN EVER EVES EVIL EWER EWES EXAM EXEC EXES EXIT EXPO EYED EYES ' +
+        'FACE FACT FADE FADS FAIL FAIN FAIR FAKE FALL FAME FANG FANS FARE FARM FARO FART FAST FATE FATS FAUN FAUX FAVE FAWN FAZE FEAR FEAT FEED FEEL FEES FEET FELL FELT FEND FERN FEST FETE FEUD FIAT FIBS FIEF FIFE FIGS FILE FILL FILM FILO FILT FIND FINE FINK FINO FINS FIRE FIRM FIRS FISH FIST FITS FIVE FIXE FIZZ FLAB FLAG FLAK FLAM FLAN FLAP FLAT FLAW FLAX FLAY FLEA FLED FLEE FLEW FLEX FLEY FLIP FLIT FLOC FLOE FLOG FLOP FLOW FLUB FLUE FLUX FOAL FOAM FOBS FOCI FOES FOGS FOGY FOIL FOLD FOLK FOND FONT FOOD FOOL FOOT FOPS FORD FORE FORK FORM FORT FOUL FOUR FOWL FRAY FREE FRET FRIG FRIT FROG FROM FROW FRUG FUCK FUDS FUEL FULL FUME FUMS FUND FUNK FUNS FURL FURS FURY FUSE FUSS FUZE FUZZ ' +
+        'GABS GADS GAFF GAGE GAGS GAIN GAIT GALA GALE GALL GAME GAMS GAMY GANG GAPE GAPS GARB GASH GASP GATE GATS GAVE GAWK GAWP GAYS GAZE GEAR GECK GEDS GEED GEEK GEES GEEZ GELD GELS GELT GEMS GENE GENS GENT GERM GETS GHEE GIBE GIBS GIDS GIFT GIGS GILD GILL GILT GIMP GINS GIRD GIRL GIRN GIRO GIRT GIST GIVE GLAD GLEE GLEN GLIB GLIM GLOB GLOM GLOP GLOW GLUE GLUG GLUM GLUT GNAR GNAT GNAW GNUS GOAD GOAL GOAT GOBS GODS GOER GOES GOLD GOLF GONE GONG GOOD GOOF GOOK GOON GOOP GOOS GORE GORY GOSH GOTH GOUT GOWN GRAB GRAD GRAM GRAN GRAY GREW GREY GRID GRIG GRIM GRIN GRIP GRIT GROG GROK GROT GROW GRUB GRUE GUAR GUCK GUFF GULF GULL GULP GUMS GUNK GUNS GURU GUSH GUST GUTS GUYS GYMS GYPS GYRE GYRO ' +
+        'HACK HADE HADS HAFT HAGS HAIL HAIR HAKE HALE HALF HALL HALM HALO HALT HAME HAMS HAND HANG HANK HAPS HARD HARE HARK HARM HARP HART HASH HASP HAST HATE HATH HATS HAUL HAVE HAWK HAWS HAYS HAZE HAZY HEAD HEAL HEAP HEAR HEAT HEBE HECK HEED HEEL HEFT HEIR HELD HELL HELM HELP HEME HEMP HEMS HENS HERB HERD HERE HERO HERS HEWN HEWS HICK HIDE HIED HIES HIGH HIKE HILL HILT HIMS HIND HINS HINT HIPS HIRE HISN HISS HITS HIVE HOAR HOAX HOBS HOCK HODS HOED HOER HOES HOGG HOGS HOLD HOLE HOLK HOLM HOLP HOLS HOLT HOLY HOME HOMO HOMY HONE HONG HONK HONS HOOD HOOF HOOK HOOP HOOT HOPE HOPS HORA HORN HOSE HOST HOTS HOUR HOVE HOWE HOWF HOWK HOWL HOWS HOYA HOYS HUBS HUCK HUED HUES HUFF HUGE HUGS HULA HULK HULL HUMP HUMS HUNG HUNK HUNS HUNT HURL HURT HUSH HUSK HUTS HYMN HYPE HYPO HYPS ' +
+        'IAMB IBEX IBIS ICED ICES ICKY ICON IDEA IDEM IDES IDLE IDLY IDOL IDYL IFFY IGGS IKON ILIA ILKA ILKS ILLS IMAM IMPI IMPS INCH INFO INKS INKY INNS INTO IONS IOTA IRED IRES IRID IRIS IRKS IRON ISBA ISLE ISMS ITCH ITEM IWIS IXIA ' +
+        'JABS JACK JADE JAGG JAGS JAIL JAKE JAMB JAMS JANE JAPE JARL JARS JATO JAUK JAUP JAWS JAYS JAZZ JEAN JEEP JEER JEES JEEZ JEFE JEHU JELL JEON JERK JEST JETE JETS JEUX JEWS JIAO JIBB JIBE JIBS JIFF JIGS JILT JINK JINN JINX JIRD JIVE JIVY JOES JOEY JOGS JOHN JOIN JOKE JOKY JOLE JOLT JOSH JOSS JOTA JOTS JOUK JOWL JOWS JOYS JUBA JUBE JUCO JUDO JUGA JUGS JUJU JUKE JUKU JUMP JUNK JUPE JURA JURY JUST JUTE JUTS ' +
+        'KALE KAME KANA KANE KAON KAPA KAPH KARN KART KATA KATS KAVA KAYO KAYS KBAR KEAS KECK KEFS KEGS KELP KELT KEMP KENO KENS KENT KEPI KEPS KEPT KERB KERF KERN KETO KEYS KHAF KHAN KHAT KHET KIBE KICK KIDS KIEF KIER KIFS KILL KILN KILO KILT KINA KIND KINE KING KINK KINO KINS KIPS KIRK KIRN KIRS KISS KIST KITE KITH KITS KIWI KNAP KNAR KNEE KNEW KNIT KNOB KNOP KNOT KNOW KNUR KOAN KOAS KOBO KOBS KOEL KOHL KOIS KOJI KOLA KOLO KONK KOOK KOPH KOPS KORA KORE KORS KOTO KRIS KUDO KUDU KUES KUFI KUNA KUNE KURU KVAS KYAK KYAR KYAT KYES KYTE ' +
+        'LABS LACE LACK LACS LACY LADE LADS LADY LAGS LAIC LAID LAIN LAIR LAKE LAKH LAKS LAMA LAMB LAME LAMP LAMS LAND LANE LANG LANK LAPS LARD LARI LARK LARS LASE LASH LASS LAST LATE LATH LATS LATU LAUD LAVA LAVE LAWS LAYE LAYS LAZE LAZY LEAD LEAF LEAK LEAL LEAN LEAP LEAR LEAS LECH LEED LEEK LEER LEES LEET LEFT LEGS LEHR LEIS LEKE LEKS LEKU LEND LENO LENS LENT LEPT LESS LEST LETS LEUD LEVA LEVO LEVY LEWD LEYS LIAR LIAS LIBS LICE LICH LICK LIDO LIDS LIED LIEN LIER LIES LIEU LIFE LIFT LIKE LILT LILY LIMA LIMB LIME LIMN LIMO LIMP LIMY LINE LING LINK LINN LINO LINS LINT LINY LION LIPA LIPE LIPS LIRE LIRI LISP LIST LITE LITS LITU LIVE LOAD LOAF LOAM LOAN LOBE LOBI LOBS LOCA LOCH LOCI LOCK LOCO LODE LOFT LOGE LOGO LOGS LOGY LOID LOIN LOLL LONE LONG LOOK LOOM LOON LOOP LOOR LOOS LOOT LOPE LOPS LORD LORE LORN LORY LOSE LOSS LOST LOTA LOTE LOTH LOTS LOUD LOUP LOUR LOUT LOVE LOWE LOWS LUAU LUBE LUCE LUCK LUDE LUDO LUDS LUES LUFF LUGE LUGS LULL LULU LUMP LUMS LUNA LUNE LUNG LUNK LUNT LUNY LURE LURK LUSH LUST LUTE LUTZ LUXE LWEI LYCH LYES LYNX LYRE LYSE ' +
+        'MABE MACE MACH MACK MACS MADE MADS MAGE MAGI MAGS MAID MAIL MAIM MAIN MAIR MAKE MAKO MALE MALL MALM MALT MAMA MANA MAND MANE MANS MANY MAPS MARA MARC MARE MARK MARL MARS MART MASH MASK MASS MAST MATE MATH MATS MATT MAUD MAUL MAUN MAUT MAWN MAWS MAXI MAYA MAYO MAYS MAZE MAZY MEAD MEAL MEAN MEAT MECK MEDS MEED MEEK MEET MEGA MEGS MELA MELD MELL MELO MELT MEME MEMO MEMS MEND MENO MENU MEOW MERC MERE MERK MERL MESA MESH MESS META METE METH METS MEWL MEWS MEZE MHOS MIBS MICA MICE MICK MICS MIDI MIDS MIEN MIFF MIGG MIGS MIKE MILD MILE MILK MILL MILO MILS MILT MIME MINA MIND MINE MING MINI MINK MINO MINT MINX MIPS MIRE MIRI MIRK MIRS MIRY MISE MISO MISS MIST MITE MITT MITY MIXT MOAN MOAS MOAT MOBS MOCK MOCS MODE MODI MODS MOGS MOIL MOJO MOKE MOLA MOLD MOLE MOLL MOLS MOLT MOLY MOME MOMI MOMS MONA MONG MONK MONO MONS MONY MOOD MOOL MOON MOOP MOOR MOOS MOOT MOPE MOPS MOPY MORA MORE MORN MORS MORT MOSH MOSK MOSS MOST MOTE MOTH MOTS MOTT MOUE MOUP MOVE MOWN MOWS MOXA MOZO MUCH MUCK MUDS MUFF MUGG MUGS MULE MULL MUMM MUMP MUMS MUMU MUNG MUNI MUNS MUON MURA MURE MURK MURR MUSE MUSH MUSK MUSO MUSS MUST MUTE MUTS MUTT MYCS MYNA MYTH ' +
+        'NAAN NABE NABS NADA NAFF NAGS NAIF NAIL NALA NAME NANA NANS NAOI NAOS NAPA NAPE NAPS NARC NARD NARK NARY NAVE NAVY NAYS NEAP NEAR NEAT NEBS NECK NEED NEEM NEEP NEGS NEIF NEMA NENE NEON NERD NERK NESH NESS NEST NETS NETT NEUK NEUM NEVE NEVI NEWS NEWT NEXT NIBS NICE NICK NIDE NIDI NIGH NILL NILS NIMS NINE NIPA NIPS NISI NITE NITS NIXE NIXY NOAH NOBS NOCK NODE NODI NODS NOEL NOES NOGG NOGS NOIL NOIR NOLE NOLL NOLO NOMA NOME NOMS NONA NONE NONG NOOK NOON NOPE NORI NORK NORM NOSE NOSY NOTA NOTE NOUN NOUP NOUS NOVA NOWS NOWT NUBS NUDE NUKE NULL NUMB NUNS NURD NURL NUTS ' +
+        'OAFS OAKS OAKY OARS OAST OATH OATS OBAS OBES OBEY OBIA OBIS OBIT OBOE OBOL OCAS ODAL ODAS ODDS ODEA ODES ODIC ODOR ODYL OFAY OFFS OGAM OGEE OGLE OGRE OHED OHIA OHMS OILS OILY OINK OKAS OKAY OKEH OKES OKRA OLDS OLDY OLEA OLEO OLES OLIO OLLA OMEN OMER OMIT ONCE ONER ONES ONLY ONOS ONTO ONUS ONYX OOHS OOMS OONS OONT OOPS OOSE OOSY OOTS OOZE OOZY OPAL OPED OPEN OPES OPTS OPUS ORAD ORAL ORBS ORBY ORCA ORCS ORDO ORES ORGY ORLE ORRA ORTS ORYX ORZO OSAR OSES OSSA OTIC OTTO OUDS OUPH OURS OUST OUTS OUZO OVAL OVEN OVER OVUM OWED OWES OWLS OWNS OWSE OXEN OXES OXID OXIM OYER OYES OYEZ ' +
+        'PACA PACE PACK PACS PACT PACY PADI PADS PAGE PAID PAIK PAIL PAIN PAIR PALE PALL PALM PALP PALS PALY PAMS PANE PANG PANS PANT PAPA PAPS PARA PARD PARE PARK PARR PARS PART PASE PASH PASS PAST PATE PATH PATS PATY PAVE PAWL PAWN PAWS PAYS PEAG PEAK PEAL PEAN PEAR PEAS PEAT PECH PECK PECS PEDS PEED PEEK PEEL PEEN PEEP PEER PEES PEGS PEHS PEIN PEKE PELA PELE PELF PELT PEND PENE PENI PENK PENS PENT PEON PEPO PEPS PERE PERI PERK PERM PERP PERT PERV PESO PEST PETS PEWS PFFT PFUI PHAT PHEW PHIS PHIZ PHOH PHON PHOT PHUT PIAL PIAN PIAS PICA PICE PICK PICS PIED PIER PIES PIGS PIKA PIKE PIKI PILE PILI PILL PILY PIMA PIMP PINA PINE PING PINK PINS PINT PINY PION PIPE PIPS PIPY PIRN PISH PISO PISS PITA PITH PITS PITY PIXY PLAN PLAT PLAY PLEA PLEB PLED PLEW PLEX PLIE PLOD PLOP PLOT PLOW PLOY PLUG PLUM PLUS POCK POCO PODS POEM POET POGY POIS POKE POKY POLE POLL POLO POLS POLY POME POMO POMP POMS POND PONE PONG PONS PONY POOD POOF POOH POOK POOL POON POOP POOR POOS POOT POPE POPS PORE PORK PORN PORT POSE POSH POST POSY POTS POUF POUR POUT POWS POXY PRAM PRAO PRAT PRAU PRAY PREE PREP PREX PREY PRIG PRIM PROA PROB PROD PROF PROG PROM PROP PROS PROW PRYS PSIS PSST PTUI PUBS PUCE PUCK PUDS PUFF PUGH PUGS PUJA PUKE PULA PULE PULI PULK PULL PULP PULS PULU PULY PUMA PUMP PUNA PUNG PUNK PUNS PUNT PUNY PUPA PUPS PUPU PURE PURI PURL PURR PURS PUSH PUSS PUTS PUTT PUTZ PYAS PYES PYIC PYIN PYRE PYRO ' +
+        'QADI QAID QATS QOPH QUAD QUAG QUAI QUAY QUEP QUEY QUID QUIN QUIP QUIT QUIZ QUOD ' +
+        'RACE RACK RACY RADS RAFF RAGA RAGE RAGG RAGS RAIA RAID RAIL RAIN RAIS RAJA RAKE RAKI RAKU RALE RAMI RAMP RAMS RAND RANG RANI RANK RANT RAPE RAPS RAPT RARE RASE RASH RASP RATE RATH RATO RATS RAVE RAWN RAWS RAYA RAYS RAZE RAZZ READ REAL REAM REAP REAR REBS RECK RECS REDD REDE REDO REDS REED REEF REEK REEL REES REFS REFT REGS REIF REIN REIS RELY REMS REND RENT REPO REPP REPS RESH REST RETE RETS REVS RHEA RHOS RHUS RIAL RIAS RIBS RICE RICH RICK RIDE RIDS RIFE RIFF RIFS RIFT RIGS RILE RILL RIME RIMS RIMY RIND RINE RING RINK RINS RIOT RIPE RIPS RISE RISK RITE RITZ ROAD ROAM ROAN ROAR ROBE ROBS ROCK RODE RODS ROES ROIL ROLE ROLF ROLL ROMP ROMS ROOD ROOF ROOK ROOM ROOS ROOT ROPE ROPY RORE RORT ROSE ROSY ROTA ROTE ROTI ROTL ROTO ROTS ROUE ROUP ROUT ROUX ROVE ROWS RUBE RUBS RUBY RUCK RUDD RUDE RUED RUER RUES RUFF RUGA RUGS RUIN RULE RULY RUMP RUMS RUNE RUNG RUNS RUNT RUSE RUSH RUSK RUST RUTH RUTS RYAHS RYAS RYES RYKE RYND RYOT ' +
+        'SABE SABS SACK SACS SADE SADI SADO SADS SAFE SAGA SAGE SAGO SAGS SAGY SAID SAIL SAIN SAKE SAKI SALE SALL SALP SALS SALT SAME SAMP SAND SANE SANG SANK SANS SAPS SARD SARI SARK SASH SASS SATE SATI SAUL SAVE SAWN SAWS SAYS SCAB SCAD SCAG SCAM SCAN SCAR SCAT SCOP SCOT SCOW SCRY SCUD SCUM SCUP SCUT SEAL SEAM SEAR SEAS SEAT SECS SECT SEED SEEK SEEL SEEM SEEN SEEP SEER SEES SEGO SEGS SEIF SEIS SELF SELL SEME SEMI SEND SENE SENT SEPT SERA SERE SERF SERS SETA SETS SETT SEWN SEWS SEXT SEXY SHAD SHAG SHAH SHAM SHAT SHAW SHAY SHEA SHED SHES SHEW SHIM SHIN SHIP SHIT SHIV SHMO SHOD SHOE SHOG SHOO SHOP SHOT SHOW SHRI SHUL SHUN SHUT SHWA SIAL SIBS SICE SICK SICS SIDE SIDH SIFT SIGH SIGN SIKA SIKE SILD SILK SILL SILO SILT SIMA SIMP SIMS SINE SING SINH SINK SINS SIPE SIPS SIRE SIRI SIRS SITE SITH SITS SIZE SIZY SKAG SKAS SKAT SKEE SKEG SKEP SKEW SKID SKIM SKIN SKIP SKIS SKIT SKUA SLAB SLAG SLAM SLAP SLAT SLAW SLAY SLED SLEW SLID SLIM SLIP SLIT SLOB SLOE SLOG SLOP SLOT SLOW SLUB SLUE SLUG SLUM SLUR SLUT SMEW SMIT SMOG SMUG SMUT SNAG SNAP SNAW SNED SNIB SNIP SNIT SNOB SNOG SNOT SNOW SNUB SNUG SNYE SOAK SOAP SOAR SOBS SOCA SOCK SODA SODS SOFA SOFT SOIL SOJA SOKE SOLA SOLD SOLE SOLI SOLO SOLS SOMA SOME SOMS SONE SONG SONS SOOK SOON SOOT SOPH SOPS SORA SORB SORD SORE SORI SORN SORT SOTH SOTS SOUK SOUL SOUP SOUR SOUS SOWN SOWS SOYA SOYS SPAE SPAM SPAN SPAR SPAS SPAT SPAY SPAZ SPEC SPED SPEW SPIC SPIK SPIL SPIN SPIT SPIV SPOT SPRY SPUD SPUE SPUN SPUR SRIS STAB STAG STAR STAT STAW STAY STEM STEP STEW STEY STIR STOA STOB STOP STOT STOW STUB STUD STUM STUN STYE SUBA SUBS SUCH SUCK SUDS SUED SUER SUES SUET SUGH SUKH SUKS SULK SULU SUMO SUMP SUMS SUNG SUNK SUNN SUNS SUPE SUPS SUQS SURA SURD SURE SURF SUSS SWAB SWAG SWAM SWAN SWAP SWAT SWAY SWIG SWIM SWIZ SWOB SWOP SWUM SYBO SYCE SYKE SYLI SYNC SYNE SYPH ' +
+        'TABS TABU TACE TACH TACK TACO TACT TADS TAEL TAGS TAHA TAIL TAIN TAKE TALA TALC TALE TALI TALK TALL TAME TAMP TAMS TANG TANK TANS TAOS TAPA TAPE TAPS TARE TARN TARO TARP TARS TART TASK TASS TATE TATS TAUS TAUT TAVS TAWS TAXA TAXI TEAK TEAL TEAM TEAR TEAS TEAT TECH TEDS TEDY TEED TEEK TEEL TEEM TEEN TEES TEFF TEGG TEGS TELA TELE TELL TELS TEMP TEND TENS TENT TEPA TERM TERN TEST TETH TETS TEWS TEXT THAE THAN THAT THAW THEE THEM THEN THEW THEY THIG THIN THIO THIR THIS THOU THRO THRU THUD THUG THUS TICK TICS TIDE TIDY TIED TIER TIES TIFF TIGE TIGS TIKE TIKI TILE TILL TILS TILT TIME TINE TING TINS TINT TINY TIPI TIPS TIRE TIRL TIRO TITI TITS TIVY TOAD TOBY TODS TODY TOEA TOED TOES TOFF TOFT TOFU TOGA TOGS TOIL TOIT TOKE TOLA TOLD TOLE TOLL TOLU TOMB TOME TOMS TONE TONG TONS TONY TOOK TOOL TOOM TOON TOOT TOPE TOPH TOPI TOPO TOPS TORA TORC TORE TORI TORN TORO TORR TORS TORT TORY TOSH TOSS TOST TOTE TOTS TOUK TOUN TOUR TOUT TOWN TOWS TOWY TOYO TOYS TRAD TRAM TRAP TRAY TREE TREF TREK TRES TRET TREW TRIG TRIM TRIO TRIP TROD TROG TROP TROT TROW TROY TRUE TRUG TSAR TSKS TUBA TUBE TUBS TUCK TUFA TUFF TUFT TUGS TUIS TULE TUMP TUNA TUNE TUNG TUNS TUPS TURD TURF TURK TURN TUSH TUSK TUTS TUTU TWAE TWAS TWAT TWEE TWIG TWIN TWIT TWOS TYEE TYER TYES TYIN TYKE TYNE TYPE TYPO TYPP TYPY TYRE TYRO TZAR ' +
+        'UDON UDOS UGHS UKES ULAN ULNA ULUS ULVA UMBO UMPS UNCI UNCO UNDE UNDO UNDY UNIT UNTO UPAS UPBY UPDO UPON URBS URDS UREA URGE URIC URNS URPS URSA URUS USED USER USES UTAS UTES UTIS ' +
+        'VACS VAGI VAIL VAIN VAIR VALE VAMP VANE VANG VANS VARA VARS VARY VASA VASE VAST VATS VATU VAUS VAVS VAWS VEAL VEEP VEER VEES VEGA VEIL VEIN VELA VELD VENA VEND VENT VERA VERB VERT VERY VEST VETO VETS VEXT VIAE VIAL VIAS VIBE VIBS VICE VIDE VIDS VIED VIER VIES VIEW VIGA VIGS VILE VILL VIMS VINA VINE VINO VINY VIOL VIRE VIRL VISA VISE VITA VIVA VIVE VOES VOID VOLE VOLK VOLT VOTE VOWS VROW VUGG VUGH VUGS VULN ' +
+        'WABS WACK WADE WADI WADS WADY WAES WAFF WAFT WAGE WAGS WAIF WAIL WAIN WAIR WAIT WAKE WALE WALK WALL WALY WAME WAND WANE WANK WANS WANT WANY WAPS WARD WARE WARK WARM WARN WARP WARS WART WARY WASH WASP WAST WATS WATT WAUK WAUL WAUR WAVE WAVY WAWA WAWE WAWL WAWS WAXY WAYS WEAK WEAL WEAN WEAR WEBS WEDS WEED WEEK WEEL WEEN WEEP WEER WEES WEET WEFT WEIR WEKA WELD WELL WELT WEND WENS WENT WEPT WERE WERT WEST WETA WETS WHAM WHAP WHAT WHEE WHEN WHET WHEW WHEY WHID WHIG WHIM WHIN WHIP WHIR WHIT WHIZ WHOA WHOM WHOP WHUP WHYS WICH WICK WIDE WIFE WIGS WILD WILE WILL WILT WILY WIMP WIND WINE WING WINK WINO WINS WINY WIPE WIRE WIRY WISE WISH WISP WISS WIST WITE WITH WITS WIVE WOAD WOCK WOES WOGS WOKE WOKS WOLD WOLF WOMB WONK WONS WONT WOOD WOOF WOOL WOON WOOS WOOT WOPS WORD WORE WORK WORM WORN WORT WOST WOTS WOVE WOWS WRAN WRAP WREN WRIT WUSS WYCH WYES WYLE WYND WYNN WYNS WYTE ' +
+        'XRAY XYST ' +
+        'YACK YAFF YAGI YAGS YAKS YALD YAMS YANG YANK YAPS YARD YARE YARN YAUD YAUP YAWL YAWN YAWP YAWS YAYS YEAH YEAN YEAR YEAS YECH YEGG YELD YELK YELL YELM YELP YENS YEPS YERK YESK YEST YETI YETT YEUK YEWS YIDS YILL YINS YIPE YIPS YIRD YIRK YIRR YITE YLEM YLKE YOBS YOCK YODE YODH YODS YOGA YOGH YOGI YOKE YOKS YOND YONI YORE YOUR YOUS YOWE YOWL YOWS YUAN YUCA YUCH YUCK YUFT YUGA YUGS YUKE YUKO YUKS YUKY YULE YUPS YURT YUTZ YWIS ' +
+        'ZAGS ZANY ZAPS ZARF ZEAL ZEBU ZEDS ZEES ZEIN ZEKS ZEPS ZERK ZERO ZEST ZETA ZIGS ZILL ZINC ZINE ZING ZINS ZIPS ZITI ZITS ZOEA ZOIC ZONA ZONE ZONK ZOOM ZOON ZOOS ZORI ZOUK ZYME'
+      );
+
+      const DICT = new Set(RAW_WORDS.trim().split(/\s+/).filter(w => w.length === 4));
+      const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+      /* =====================================================================
+         2. LAB 01: PROTEIN WORD GAME PLAYGROUND
+         ===================================================================== */
+      const wordGameState = {
+        start: 'MILK',
+        target: 'SHOP',
+        current: 'MILK',
+        trail: [{ word: 'MILK', mutatedIdx: -1, valid: true }],
+        selectedPos: null,
+        allowJumps: false,
+        animTimer: null
+      };
+
+      const elWordTiles = document.getElementById('wordTiles');
+      const elLetterPicker = document.getElementById('letterPicker');
+      const elLetterPickerTitle = document.getElementById('letterPickerTitle');
+      const elLetterGrid = document.getElementById('letterGrid');
+      const elTrail = document.getElementById('evolutionTrail');
+      const elNeighborChips = document.getElementById('neighborChips');
+      const elNeighborHint = document.getElementById('neighborHint');
+      const elStatSteps = document.getElementById('statSteps');
+      const elStatTargetLabel = document.getElementById('statTargetLabel');
+      const elStatHamming = document.getElementById('statHamming');
+      const elStatNeighbors = document.getElementById('statNeighbors');
+      const elStatFN = document.getElementById('statFN');
+      const elStatFNBadge = document.getElementById('statFNBadge');
+      const elStatFVal = document.getElementById('statFVal');
+      const elUndoBtn = document.getElementById('undoBtn');
+      const elResetBtn = document.getElementById('resetBtn');
+      const elAllowJumps = document.getElementById('allowJumpsToggle');
+      const elGameBanner = document.getElementById('gameBanner');
+      const elGameBannerText = document.getElementById('gameBannerText');
+      const elCloseBannerBtn = document.getElementById('closeBannerBtn');
+      const elCompareBfsBtn = document.getElementById('compareBfsBtn');
+      const elBfsPanel = document.getElementById('bfsComparisonPanel');
+      const elDirectStatusBadge = document.getElementById('directStatusBadge');
+      const elDirectExplanation = document.getElementById('directExplanation');
+      const elDirectPathViz = document.getElementById('directPathViz');
+      const elBfsLengthBadge = document.getElementById('bfsLengthBadge');
+      const elBfsExplanation = document.getElementById('bfsExplanation');
+      const elBfsPathViz = document.getElementById('bfsPathViz');
+      const elAnimateBfsBtn = document.getElementById('animateBfsBtn');
+      const elDictSizeLabel = document.getElementById('dictSizeLabel');
+
+      elDictSizeLabel.textContent = DICT.size.toLocaleString() + ' valid 4-letter words';
+
+      function hammingDistance(a, b) {
+        let d = 0;
+        for (let i = 0; i < 4; i++) {
+          if (a[i] !== b[i]) d++;
+        }
+        return d;
+      }
+
+      function getValidNeighbors(word) {
+        const neighbors = [];
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < ALPHABET.length; j++) {
+            const ch = ALPHABET[j];
+            if (ch === word[i]) continue;
+            const candidate = word.slice(0, i) + ch + word.slice(i + 1);
+            if (DICT.has(candidate)) {
+              neighbors.push({ word: candidate, idx: i });
+            }
+          }
+        }
+        return neighbors;
+      }
+
+      function findShortestPathBFS(startWord, targetWord) {
+        if (startWord === targetWord) return [startWord];
+        const queue = [[startWord]];
+        const visited = new Set([startWord]);
+        while (queue.length > 0) {
+          const path = queue.shift();
+          const last = path[path.length - 1];
+          for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < ALPHABET.length; j++) {
+              const ch = ALPHABET[j];
+              if (ch === last[i]) continue;
+              const next = last.slice(0, i) + ch + last.slice(i + 1);
+              if (next === targetWord) return path.concat(next);
+              if (DICT.has(next) && !visited.has(next)) {
+                visited.add(next);
+                queue.push(path.concat(next));
+              }
+            }
+          }
+        }
+        return null;
+      }
+
+      function buildDirectHammingWalk(startWord, targetWord) {
+        const steps = [{ word: startWord, valid: DICT.has(startWord) }];
+        let cur = startWord;
+        for (let i = 0; i < 4; i++) {
+          if (cur[i] !== targetWord[i]) {
+            cur = cur.slice(0, i) + targetWord[i] + cur.slice(i + 1);
+            steps.push({ word: cur, valid: DICT.has(cur) });
+          }
+        }
+        return steps;
+      }
+
+      function showBanner(message, type) {
+        elGameBannerText.textContent = message;
+        elGameBanner.className = 'mb-5 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between gap-3 border animate-pop';
+        if (type === 'success') {
+          elGameBanner.classList.add('bg-teal-50', 'text-tealbrand', 'border-teal-200');
+        } else if (type === 'error') {
+          elGameBanner.classList.add('bg-orange-50', 'text-terracotta', 'border-terracotta/30');
+        } else {
+          elGameBanner.classList.add('bg-blue-50', 'text-slateblue', 'border-slateblue/30');
+        }
+      }
+
+      function hideBanner() {
+        elGameBanner.classList.add('hidden');
+      }
+
+      function stopAnimation() {
+        if (wordGameState.animTimer) {
+          clearInterval(wordGameState.animTimer);
+          wordGameState.animTimer = null;
+        }
+      }
+
+      function applyMove(nextWord, mutatedIdx) {
+        const isValid = DICT.has(nextWord);
+        if (!isValid && !wordGameState.allowJumps) {
+          showBanner('Unfolded / Nonfunctional intermediate (' + nextWord + '). Natural selection eliminates broken sequences. Enable "Allow Nonfunctional Jumps" to cross valleys.', 'error');
+          elWordTiles.classList.remove('animate-shake');
+          void elWordTiles.offsetWidth;
+          elWordTiles.classList.add('animate-shake');
+          return;
+        }
+
+        wordGameState.current = nextWord;
+        wordGameState.trail.push({ word: nextWord, mutatedIdx: mutatedIdx, valid: isValid });
+        wordGameState.selectedPos = null;
+        elLetterPicker.classList.add('hidden');
+
+        if (nextWord === wordGameState.target) {
+          const steps = wordGameState.trail.length - 1;
+          const hadJumps = wordGameState.trail.some(t => !t.valid);
+          if (hadJumps) {
+            showBanner('Target ' + wordGameState.target + ' reached in ' + steps + ' steps using nonfunctional valley jumps (Rational Design mode).', 'info');
+          } else {
+            showBanner('Target ' + wordGameState.target + ' reached in ' + steps + ' functional evolutionary steps!', 'success');
+          }
+        } else if (!isValid) {
+          showBanner('Jumped to nonfunctional intermediate ' + nextWord + ' (Rational Design mode active).', 'info');
+        } else {
+          hideBanner();
+        }
+
+        renderWordGame();
+      }
+
+      function renderLetterPicker() {
+        if (wordGameState.selectedPos === null) {
+          elLetterPicker.classList.add('hidden');
+          return;
+        }
+        const pos = wordGameState.selectedPos;
+        const cur = wordGameState.current;
+        elLetterPickerTitle.textContent = 'Mutate Position ' + (pos + 1) + ' (currently ' + cur[pos] + ', target ' + wordGameState.target[pos] + ')';
+        elLetterGrid.innerHTML = '';
+
+        ALPHABET.forEach(letter => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const candidate = cur.slice(0, pos) + letter + cur.slice(pos + 1);
+          const isCurrent = letter === cur[pos];
+          const isValid = DICT.has(candidate);
+
+          btn.textContent = letter;
+          btn.className = 'h-9 rounded-lg font-mono text-sm font-semibold border transition-all flex items-center justify-center ';
+
+          if (isCurrent) {
+            btn.className += 'bg-stone-200 text-muted border-stone-300 cursor-default';
+            btn.disabled = true;
+          } else if (isValid) {
+            btn.className += 'bg-teal-50 text-tealbrand border-teal-300 hover:bg-tealbrand hover:text-white cursor-pointer';
+            btn.title = 'Valid word: ' + candidate;
+            btn.addEventListener('click', () => applyMove(candidate, pos));
+          } else {
+            btn.className += wordGameState.allowJumps
+              ? 'bg-card text-slateblue border-slateblue/30 hover:bg-blue-50 cursor-pointer'
+              : 'bg-card text-stone-400 border-hairline hover:border-terracotta/40 hover:text-terracotta cursor-pointer';
+            btn.title = 'Nonfunctional: ' + candidate;
+            btn.addEventListener('click', () => applyMove(candidate, pos));
+          }
+          elLetterGrid.appendChild(btn);
+        });
+
+        elLetterPicker.classList.remove('hidden');
+      }
+
+      function renderWordGame() {
+        const cur = wordGameState.current;
+        const target = wordGameState.target;
+        const steps = wordGameState.trail.length - 1;
+        const hDist = hammingDistance(cur, target);
+        const neighbors = getValidNeighbors(cur);
+        const fN = neighbors.length;
+        const fVal = (fN / 100).toFixed(2);
+
+        // Telemetry
+        elStatSteps.textContent = String(steps);
+        elStatTargetLabel.textContent = 'Target: ' + target;
+        elStatHamming.textContent = String(hDist);
+        elStatNeighbors.textContent = String(fN);
+        elStatFN.textContent = String(fN);
+        elStatFVal.textContent = 'f = ' + fVal + ' (out of N = 100 edits)';
+
+        if (fN > 1) {
+          elStatFNBadge.textContent = 'fN > 1 (Connected)';
+          elStatFNBadge.className = 'text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-tealbrand border border-teal-200';
+        } else if (fN === 1) {
+          elStatFNBadge.textContent = 'fN = 1 (Threshold)';
+          elStatFNBadge.className = 'text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-terracotta border border-terracotta/30';
+        } else {
+          elStatFNBadge.textContent = 'fN = 0 (Isolated)';
+          elStatFNBadge.className = 'text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-terracotta border border-terracotta/40';
+        }
+
+        elUndoBtn.disabled = wordGameState.trail.length <= 1;
+
+        // 4 Interactive Residue Tiles
+        elWordTiles.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const matchesTarget = cur[i] === target[i];
+          const isSelected = wordGameState.selectedPos === i;
+          const isCurValid = DICT.has(cur);
+
+          let cls = 'w-14 h-16 sm:w-16 sm:h-[72px] rounded-xl font-mono text-2xl sm:text-3xl font-bold border-2 transition-all flex flex-col items-center justify-center relative ';
+          if (isSelected) {
+            cls += 'border-ink bg-ink text-white shadow-md -translate-y-0.5';
+          } else if (!isCurValid) {
+            cls += 'border-terracotta/60 bg-orange-50 text-terracotta hover:border-terracotta';
+          } else if (matchesTarget) {
+            cls += 'border-tealbrand bg-teal-50 text-tealbrand hover:bg-teal-100/70';
+          } else {
+            cls += 'border-hairline bg-paper text-ink hover:border-stone-400';
+          }
+
+          btn.className = cls;
+          btn.innerHTML = '<span>' + cur[i] + '</span><span class="text-[9px] font-sans font-medium opacity-60 absolute bottom-1">Pos ' + (i + 1) + '</span>';
+          btn.addEventListener('click', () => {
+            wordGameState.selectedPos = wordGameState.selectedPos === i ? null : i;
+            renderWordGame();
+          });
+          elWordTiles.appendChild(btn);
+        }
+
+        renderLetterPicker();
+
+        // Trail History
+        elTrail.innerHTML = '';
+        wordGameState.trail.forEach((step, idx) => {
+          if (idx > 0) {
+            const arrow = document.createElement('span');
+            arrow.textContent = '→';
+            arrow.className = 'text-muted font-mono text-xs';
+            elTrail.appendChild(arrow);
+          }
+          const chip = document.createElement('span');
+          chip.className = 'inline-flex items-center px-2.5 py-1 rounded-lg font-mono text-xs font-semibold border ' +
+            (step.word === target
+              ? 'bg-tealbrand text-white border-tealbrand'
+              : step.valid
+                ? 'bg-card text-ink border-hairline'
+                : 'bg-orange-50 text-terracotta border-terracotta/40');
+
+          let html = '';
+          for (let c = 0; c < 4; c++) {
+            if (c === step.mutatedIdx && step.word !== target) {
+              html += '<span class="underline decoration-2 ' + (step.valid ? 'text-tealbrand' : 'text-terracotta') + '">' + step.word[c] + '</span>';
+            } else {
+              html += step.word[c];
+            }
+          }
+          chip.innerHTML = html;
+          elTrail.appendChild(chip);
+        });
+
+        // Viable 1-Step Neighbors
+        elNeighborChips.innerHTML = '';
+        if (neighbors.length === 0) {
+          elNeighborHint.textContent = 'No valid 1-step neighbors in dictionary';
+          const empty = document.createElement('span');
+          empty.className = 'text-xs text-muted italic';
+          empty.textContent = 'Dead end. Undo a step or enable nonfunctional jumps.';
+          elNeighborChips.appendChild(empty);
+        } else {
+          elNeighborHint.textContent = neighbors.length + ' functional single-letter moves';
+          // Sort neighbors that reduce Hamming distance to target first
+          neighbors.sort((a, b) => hammingDistance(a.word, target) - hammingDistance(b.word, target));
+          neighbors.forEach(n => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            const closer = hammingDistance(n.word, target) < hDist;
+            btn.className = 'px-2.5 py-1.5 rounded-lg font-mono text-xs font-semibold border transition-all ' +
+              (n.word === target
+                ? 'bg-tealbrand text-white border-tealbrand hover:bg-teal-800'
+                : closer
+                  ? 'bg-teal-50/70 text-tealbrand border-teal-200 hover:bg-tealbrand hover:text-white'
+                  : 'bg-card text-ink border-hairline hover:border-tealbrand hover:text-tealbrand');
+            btn.textContent = n.word;
+            btn.addEventListener('click', () => applyMove(n.word, n.idx));
+            elNeighborChips.appendChild(btn);
+          });
+        }
+      }
+
+      function loadPair(startWord, targetWord) {
+        stopAnimation();
+        wordGameState.start = startWord;
+        wordGameState.target = targetWord;
+        wordGameState.current = startWord;
+        wordGameState.trail = [{ word: startWord, mutatedIdx: -1, valid: true }];
+        wordGameState.selectedPos = null;
+        elBfsPanel.classList.add('hidden');
+        hideBanner();
+        renderWordGame();
+      }
+
+      // Preset Buttons
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.preset-btn').forEach(b => {
+            b.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-card text-ink border-hairline hover:border-stone-400';
+          });
+          btn.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-tealbrand text-white border-tealbrand';
+          const parts = btn.getAttribute('data-preset').split('-');
+          loadPair(parts[0], parts[1]);
+        });
+      });
+
+      // Custom Pair Panel
+      const elCustomPanel = document.getElementById('customPairPanel');
+      const elCustomForm = document.getElementById('customPairForm');
+      const elCustomStart = document.getElementById('customStart');
+      const elCustomTarget = document.getElementById('customTarget');
+      const elCustomError = document.getElementById('customErrorMsg');
+
+      document.getElementById('toggleCustomBtn').addEventListener('click', () => {
+        elCustomPanel.classList.toggle('hidden');
+      });
+
+      elCustomForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const s = elCustomStart.value.trim().toUpperCase();
+        const t = elCustomTarget.value.trim().toUpperCase();
+        if (s.length !== 4 || t.length !== 4) {
+          elCustomError.textContent = 'Enter two 4-letter English words.';
+          elCustomError.classList.remove('hidden');
+          return;
+        }
+        if (!DICT.has(s) || !DICT.has(t)) {
+          elCustomError.textContent = (!DICT.has(s) ? s : t) + ' is not in the built-in 4-letter dictionary.';
+          elCustomError.classList.remove('hidden');
+          return;
+        }
+        if (s === t) {
+          elCustomError.textContent = 'Start and target words must be different.';
+          elCustomError.classList.remove('hidden');
+          return;
+        }
+        elCustomError.classList.add('hidden');
+        document.querySelectorAll('.preset-btn').forEach(b => {
+          b.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-all bg-card text-ink border-hairline hover:border-stone-400';
+        });
+        loadPair(s, t);
+      });
+
+      // Undo, Reset, Toggle, Banner Close
+      elUndoBtn.addEventListener('click', () => {
+        stopAnimation();
+        if (wordGameState.trail.length > 1) {
+          wordGameState.trail.pop();
+          wordGameState.current = wordGameState.trail[wordGameState.trail.length - 1].word;
+          wordGameState.selectedPos = null;
+          hideBanner();
+          renderWordGame();
+        }
+      });
+
+      elResetBtn.addEventListener('click', () => {
+        loadPair(wordGameState.start, wordGameState.target);
+      });
+
+      elAllowJumps.addEventListener('change', () => {
+        wordGameState.allowJumps = elAllowJumps.checked;
+        renderLetterPicker();
+      });
+
+      elCloseBannerBtn.addEventListener('click', hideBanner);
+
+      // BFS Comparison
+      let cachedBfsPath = null;
+
+      elCompareBfsBtn.addEventListener('click', () => {
+        const start = wordGameState.start;
+        const target = wordGameState.target;
+        const directSteps = buildDirectHammingWalk(start, target);
+        const directAllValid = directSteps.every(s => s.valid);
+        const bfsPath = findShortestPathBFS(start, target);
+        cachedBfsPath = bfsPath;
+
+        // Render Direct Hamming Walk
+        elDirectPathViz.innerHTML = '';
+        directSteps.forEach((step, idx) => {
+          if (idx > 0) {
+            const arr = document.createElement('span');
+            arr.textContent = '→';
+            arr.className = 'text-muted';
+            elDirectPathViz.appendChild(arr);
+          }
+          const span = document.createElement('span');
+          span.textContent = step.word + (step.valid ? '' : ' [dead]');
+          span.className = 'px-2 py-0.5 rounded font-semibold ' +
+            (step.valid ? 'bg-card text-ink border border-hairline' : 'bg-orange-100 text-terracotta line-through');
+          elDirectPathViz.appendChild(span);
+        });
+
+        if (directAllValid) {
+          elDirectStatusBadge.textContent = 'Open (' + (directSteps.length - 1) + ' steps)';
+          elDirectExplanation.textContent = 'A direct left-to-right Hamming walk stays on valid words without hitting any unfolded intermediates.';
+        } else {
+          elDirectStatusBadge.textContent = 'Blocked';
+          elDirectExplanation.textContent = 'Swapping letters directly from ' + start + ' toward ' + target + ' hits unfolded intermediates that natural selection eliminates.';
+        }
+
+        // Render BFS Path
+        elBfsPathViz.innerHTML = '';
+        if (!bfsPath) {
+          elBfsLengthBadge.textContent = 'No path';
+          elBfsExplanation.textContent = 'No connected single-letter path exists between ' + start + ' and ' + target + ' in this dictionary.';
+          elAnimateBfsBtn.classList.add('hidden');
+        } else {
+          const bfsSteps = bfsPath.length - 1;
+          const hDist = hammingDistance(start, target);
+          elBfsLengthBadge.textContent = bfsSteps + ' steps';
+          elBfsExplanation.textContent = bfsSteps > hDist
+            ? 'Hamming distance is ' + hDist + ', yet evolution needs a ' + bfsSteps + '-step detour to stay on folded intermediates.'
+            : 'An evolutionary path exists right at the minimum Hamming distance of ' + hDist + ' steps.';
+          elAnimateBfsBtn.classList.remove('hidden');
+
+          bfsPath.forEach((w, idx) => {
+            if (idx > 0) {
+              const arr = document.createElement('span');
+              arr.textContent = '→';
+              arr.className = 'text-muted';
+              elBfsPathViz.appendChild(arr);
+            }
+            const span = document.createElement('span');
+            span.textContent = w;
+            span.className = 'px-2 py-0.5 rounded font-semibold ' +
+              (idx === bfsPath.length - 1 ? 'bg-tealbrand text-white' : 'bg-card text-ink border border-teal-200');
+            elBfsPathViz.appendChild(span);
+          });
+        }
+
+        elBfsPanel.classList.remove('hidden');
+      });
+
+      elAnimateBfsBtn.addEventListener('click', () => {
+        if (!cachedBfsPath || cachedBfsPath.length < 2) return;
+        stopAnimation();
+        wordGameState.current = cachedBfsPath[0];
+        wordGameState.trail = [{ word: cachedBfsPath[0], mutatedIdx: -1, valid: true }];
+        wordGameState.selectedPos = null;
+        hideBanner();
+        renderWordGame();
+
+        let stepIdx = 1;
+        wordGameState.animTimer = setInterval(() => {
+          if (stepIdx >= cachedBfsPath.length) {
+            stopAnimation();
+            return;
+          }
+          const prev = cachedBfsPath[stepIdx - 1];
+          const next = cachedBfsPath[stepIdx];
+          let changedPos = -1;
+          for (let i = 0; i < 4; i++) {
+            if (prev[i] !== next[i]) changedPos = i;
+          }
+          applyMove(next, changedPos);
+          stepIdx++;
+        }, 550);
+      });
+
+      renderWordGame();
+
+      /* =====================================================================
+         3. LAB 02: STABILITY MARGIN & RECOMBINATION RIDGE SIMULATOR (CANVAS)
+         ===================================================================== */
+      const ridgeCanvas = document.getElementById('ridgeCanvas');
+      const ctx = ridgeCanvas.getContext('2d');
+
+      const sliderV = document.getElementById('sliderV');
+      const sliderRho = document.getElementById('sliderRho');
+      const sliderD = document.getElementById('sliderD');
+      const sliderM = document.getElementById('sliderM');
+
+      const valV = document.getElementById('valV');
+      const valRho = document.getElementById('valRho');
+      const valD = document.getElementById('valD');
+      const valM = document.getElementById('valM');
+
+      const readoutM1 = document.getElementById('readoutM1');
+      const readoutM2 = document.getElementById('readoutM2');
+      const readoutRandom = document.getElementById('readoutRandom');
+      const readoutRecomb = document.getElementById('readoutRecomb');
+      const readoutAdvantage = document.getElementById('readoutAdvantage');
+
+      const bufferBadge = document.getElementById('bufferBadge');
+      const bufferFill = document.getElementById('bufferFill');
+      const bufferNote = document.getElementById('bufferNote');
+
+      const simState = { v: 0.54, rho: 0.79, D: 150, m: 30 };
+
+      function pfRandom(v, m) {
+        return Math.pow(v, m);
+      }
+
+      function pfRecomb(rho, m, D) {
+        if (D <= 1) return 1;
+        const exp = (m * (D - m)) / (D - 1);
+        return Math.pow(rho, exp);
+      }
+
+      function formatProb(p) {
+        if (p >= 0.01) return (p * 100).toFixed(2) + '%';
+        if (p >= 0.0001) return (p * 100).toFixed(4) + '%';
+        if (p === 0) return '< 10⁻⁹⁹';
+        const exp = Math.floor(Math.log10(p));
+        const mant = (p / Math.pow(10, exp)).toFixed(1);
+        return mant + ' × 10^' + exp;
+      }
+
+      function formatAdvantage(ratio) {
+        if (!isFinite(ratio) || ratio > 1e12) return '> 10^12×';
+        if (ratio >= 1000) {
+          const exp = Math.floor(Math.log10(ratio));
+          const mant = (ratio / Math.pow(10, exp)).toFixed(1);
+          return mant + ' × 10^' + exp + '×';
+        }
+        if (ratio >= 10) return Math.round(ratio).toLocaleString() + '×';
+        return ratio.toFixed(1) + '×';
+      }
+
+      function updateStabilityBuffer() {
+        const pRand = pfRandom(simState.v, simState.m);
+        // Qualitative score combining neutrality and current random survival
+        const score = Math.min(100, Math.max(5, Math.round((simState.v - 0.20) / 0.65 * 70 + Math.min(1, pRand * 5) * 30)));
+        bufferFill.style.width = score + '%';
+
+        if (simState.v < 0.42 || pRand < 0.002) {
+          bufferBadge.textContent = 'Unfolded Risk';
+          bufferBadge.className = 'text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-orange-100 text-terracotta';
+          bufferFill.className = 'h-full rounded-full transition-all duration-200 bg-terracotta';
+          bufferNote.textContent = 'Low stability margin. Random mutations quickly push variants past the unfolding threshold, similar to P450 35E11 before stabilizing mutations were added.';
+        } else if (simState.v < 0.62) {
+          bufferBadge.textContent = 'Marginal';
+          bufferBadge.className = 'text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-slateblue';
+          bufferFill.className = 'h-full rounded-full transition-all duration-200 bg-slateblue';
+          bufferNote.textContent = 'Typical wild-type stability margin. Single mutations are tolerated, while multi-mutation leaps survive far better via homologous recombination.';
+        } else {
+          bufferBadge.textContent = 'Buffered';
+          bufferBadge.className = 'text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-teal-50 text-tealbrand';
+          bufferFill.className = 'h-full rounded-full transition-all duration-200 bg-tealbrand';
+          bufferNote.textContent = 'Stabilized parent (like M182T or ETS8). Extra thermodynamic margin absorbs destabilizing active-site mutations and keeps evolution moving.';
+        }
+      }
+
+      function drawRidgeChart() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = ridgeCanvas.parentElement.getBoundingClientRect();
+        const width = Math.max(280, rect.width);
+        const height = Math.max(260, rect.height);
+
+        ridgeCanvas.width = Math.round(width * dpr);
+        ridgeCanvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const pad = { top: 24, right: 24, bottom: 44, left: 56 };
+        const plotW = width - pad.left - pad.right;
+        const plotH = height - pad.top - pad.bottom;
+
+        // Clear background
+        ctx.fillStyle = '#FAF9F6';
+        ctx.fillRect(0, 0, width, height);
+
+        const minLog = -5;
+        const maxLog = 0;
+
+        function xPos(mVal) {
+          return pad.left + (mVal / simState.D) * plotW;
+        }
+        function yPos(prob) {
+          const clamped = Math.max(Math.pow(10, minLog), Math.min(1, prob));
+          const logVal = Math.log10(clamped);
+          const frac = (logVal - minLog) / (maxLog - minLog);
+          return pad.top + (1 - frac) * plotH;
+        }
+
+        // Horizontal log gridlines
+        ctx.strokeStyle = '#E5E2DC';
+        ctx.lineWidth = 1;
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#57534E';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+
+        for (let exp = minLog; exp <= maxLog; exp++) {
+          const y = yPos(Math.pow(10, exp));
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y);
+          ctx.lineTo(pad.left + plotW, y);
+          ctx.stroke();
+
+          const label = exp === 0 ? '1' : '10^' + exp;
+          ctx.fillText(label, pad.left - 8, y);
+        }
+
+        // X-axis ticks
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const tickCount = 5;
+        for (let i = 0; i <= tickCount; i++) {
+          const mTick = Math.round((simState.D / tickCount) * i);
+          const x = xPos(mTick);
+          ctx.beginPath();
+          ctx.moveTo(x, pad.top + plotH);
+          ctx.lineTo(x, pad.top + plotH + 5);
+          ctx.strokeStyle = '#A8A29E';
+          ctx.stroke();
+          ctx.fillText(String(mTick), x, pad.top + plotH + 8);
+        }
+
+        // Axis Titles
+        ctx.font = '11px "Inter", sans-serif';
+        ctx.fillStyle = '#57534E';
+        ctx.fillText('Amino acid substitutions (m)', pad.left + plotW / 2, height - 14);
+
+        ctx.save();
+        ctx.translate(15, pad.top + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center';
+        ctx.fillText('Fraction Functional Pf(m)', 0, 0);
+        ctx.restore();
+
+        // Draw Random Mutagenesis Curve (Terracotta)
+        ctx.beginPath();
+        ctx.strokeStyle = '#C2592B';
+        ctx.lineWidth = 2.5;
+        let started = false;
+        const steps = 160;
+        for (let i = 0; i <= steps; i++) {
+          const mVal = (simState.D * i) / steps;
+          const p = pfRandom(simState.v, mVal);
+          if (p < Math.pow(10, minLog) && i > 0) {
+            const y = yPos(Math.pow(10, minLog));
+            ctx.lineTo(xPos(mVal), y);
+            break;
+          }
+          const x = xPos(mVal);
+          const y = yPos(p);
+          if (!started) {
+            ctx.moveTo(x, y);
+            started = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.stroke();
+
+        // Draw Homologous Recombination Curve (Teal)
+        ctx.beginPath();
+        ctx.strokeStyle = '#0F6E6E';
+        ctx.lineWidth = 2.75;
+        for (let i = 0; i <= steps; i++) {
+          const mVal = (simState.D * i) / steps;
+          const p = pfRecomb(simState.rho, mVal, simState.D);
+          const x = xPos(mVal);
+          const y = yPos(p);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Draw Vertical Inspection Marker at current m
+        const mx = xPos(simState.m);
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = '#2B5B84';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(mx, pad.top);
+        ctx.lineTo(mx, pad.top + plotH);
+        ctx.stroke();
+        ctx.restore();
+
+        // Marker dots
+        const pRand = pfRandom(simState.v, simState.m);
+        const pRec = pfRecomb(simState.rho, simState.m, simState.D);
+
+        if (pRand >= Math.pow(10, minLog)) {
+          ctx.beginPath();
+          ctx.arc(mx, yPos(pRand), 5, 0, Math.PI * 2);
+          ctx.fillStyle = '#C2592B';
+          ctx.fill();
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(mx, yPos(pRec), 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#0F6E6E';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Update readouts
+        readoutM1.textContent = String(simState.m);
+        readoutM2.textContent = String(simState.m);
+        readoutRandom.textContent = formatProb(pRand);
+        readoutRecomb.textContent = formatProb(pRec);
+        const advantage = pRand > 0 ? pRec / pRand : Infinity;
+        readoutAdvantage.textContent = formatAdvantage(advantage);
+
+        updateStabilityBuffer();
+      }
+
+      function syncSimUI() {
+        sliderV.value = simState.v;
+        sliderRho.value = simState.rho;
+        sliderD.value = simState.D;
+        sliderM.max = simState.D;
+        if (simState.m > simState.D) simState.m = simState.D;
+        sliderM.value = simState.m;
+
+        valV.textContent = simState.v.toFixed(2);
+        valRho.textContent = simState.rho.toFixed(2);
+        valD.textContent = String(simState.D);
+        valM.textContent = String(simState.m);
+        drawRidgeChart();
+      }
+
+      sliderV.addEventListener('input', () => { simState.v = parseFloat(sliderV.value); syncSimUI(); });
+      sliderRho.addEventListener('input', () => { simState.rho = parseFloat(sliderRho.value); syncSimUI(); });
+      sliderD.addEventListener('input', () => { simState.D = parseInt(sliderD.value, 10); syncSimUI(); });
+      sliderM.addEventListener('input', () => { simState.m = parseInt(sliderM.value, 10); syncSimUI(); });
+
+      const SIM_PRESETS = {
+        beta: { v: 0.54, rho: 0.79, D: 150, m: 30 },
+        marginal: { v: 0.35, rho: 0.72, D: 60, m: 10 },
+        stabilized: { v: 0.68, rho: 0.88, D: 60, m: 10 }
+      };
+
+      document.querySelectorAll('.sim-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.sim-preset-btn').forEach(b => {
+            b.className = 'sim-preset-btn px-3 py-1.5 rounded-lg text-xs font-medium border transition-all bg-card text-ink border-hairline hover:border-stone-400';
+          });
+          btn.className = 'sim-preset-btn px-3 py-1.5 rounded-lg text-xs font-medium border transition-all bg-tealbrand text-white border-tealbrand';
+          const p = SIM_PRESETS[btn.getAttribute('data-sim-preset')];
+          Object.assign(simState, p);
+          syncSimUI();
+        });
+      });
+
+      window.addEventListener('resize', drawRidgeChart);
+      syncSimUI();
+
+      /* =====================================================================
+         4. LAB 03: TOOLKIT STRATEGY SWITCHER + SSM OVERSAMPLING CALCULATOR
+         ===================================================================== */
+      const tabs = document.querySelectorAll('.toolkit-tab');
+      const panels = document.querySelectorAll('.toolkit-panel');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const targetId = 'panel-' + tab.getAttribute('data-tab');
+          tabs.forEach(t => {
+            t.setAttribute('aria-selected', 'false');
+            t.className = 'toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-medium rounded-t-xl border border-transparent text-muted hover:text-ink transition-colors';
+          });
+          tab.setAttribute('aria-selected', 'true');
+          tab.className = 'toolkit-tab px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border border-b-0 border-hairline bg-card text-tealbrand transition-colors';
+
+          panels.forEach(p => {
+            if (p.id === targetId) p.classList.remove('hidden');
+            else p.classList.add('hidden');
+          });
+        });
+      });
+
+      const elSsmSites = document.getElementById('ssmSites');
+      const elSsmCoverage = document.getElementById('ssmCoverage');
+      const elCalcNNN = document.getElementById('calcNNN');
+      const elCalcNNK = document.getElementById('calcNNK');
+      const elCalc22c = document.getElementById('calc22c');
+      const elCalcSummary = document.getElementById('calcSummary');
+
+      function updateSsmCalc() {
+        const sites = parseInt(elSsmSites.value, 10);
+        const F = parseFloat(elSsmCoverage.value);
+        const factor = -Math.log(1 - F);
+
+        const nnn = Math.ceil(Math.pow(64, sites) * factor);
+        const nnk = Math.ceil(Math.pow(32, sites) * factor);
+        const c22 = Math.ceil(Math.pow(22, sites) * factor);
+
+        elCalcNNN.textContent = nnn.toLocaleString() + ' clones';
+        elCalcNNK.textContent = nnk.toLocaleString() + ' clones';
+        elCalc22c.textContent = c22.toLocaleString() + ' clones';
+
+        const savingsVsNNK = (nnk / c22).toFixed(1);
+        elCalcSummary.textContent = 'For ' + sites + ' site' + (sites > 1 ? 's' : '') + ' at ' + Math.round(F * 100) + '% coverage, the 22c-trick cuts screening effort by ' + savingsVsNNK + '× compared to NNK.';
+      }
+
+      elSsmSites.addEventListener('change', updateSsmCalc);
+      elSsmCoverage.addEventListener('change', updateSsmCalc);
+      updateSsmCalc();
+    })();
+</script>
